@@ -1,0 +1,150 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FURUTABI Wire | App</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅（ログイン後）</div>
+        <nav>
+          <a href="../public/index.html">公開トップ</a>
+          <a href="../public/stories.html">公開Stories</a>
+          <a href="../public/safety.html">安心</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="ログイン後ホーム">
+    <section class="section fv" aria-label="メインタブ">
+      <div class="tabs">
+        <a class="tab is-on" href="#tab-proposals">提案</a>
+        <a class="tab" href="#tab-map">地図</a>
+        <a class="tab" href="#tab-contact">連絡</a>
+      </div>
+    </section>
+
+    <!-- 提案 -->
+    <section class="section" id="tab-proposals" aria-label="提案">
+      <h1 class="h1">提案</h1>
+      <p class="lead">少数提示（まず3）。</p>
+      <div class="grid3" style="margin-top:16px;">
+        <article class="card">
+          <div class="ph ph--thumb"></div>
+          <div class="ph ph--line w-70"></div>
+          <div class="ph ph--line w-50"></div>
+          <a class="btn ghost" href="#">見る（ワイヤ）</a>
+        </article>
+        <article class="card">
+          <div class="ph ph--thumb"></div>
+          <div class="ph ph--line w-80"></div>
+          <div class="ph ph--line w-60"></div>
+          <a class="btn ghost" href="#">見る（ワイヤ）</a>
+        </article>
+        <article class="card">
+          <div class="ph ph--thumb"></div>
+          <div class="ph ph--line w-60"></div>
+          <div class="ph ph--line w-40"></div>
+          <a class="btn ghost" href="#">見る（ワイヤ）</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- 地図（サブタブ：私 / 断片） -->
+    <section class="section" id="tab-map" aria-label="地図">
+      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <h2 class="h1">地図</h2>
+          <p class="lead">「私の地図」と「断片の地図」を切り替える。</p>
+        </div>
+        <div class="tabs">
+          <a class="tab is-on" href="#sub-my">わたしの地図</a>
+          <a class="tab" href="#sub-frag">断片の地図</a>
+        </div>
+      </div>
+
+      <!-- 私の地図 -->
+      <div id="sub-my" style="margin-top:16px;">
+        <div class="fullbleed">
+          <div class="container">
+            <div class="ph ph--map"></div>
+          </div>
+        </div>
+        <div class="denseBox">
+          <div>
+            <div class="h2">わたしの地図</div>
+            <p class="note">本人のみデフォ（公開範囲は段階的に）。</p>
+          </div>
+          <a class="btn primary" href="#">記録する（ワイヤ）</a>
+        </div>
+      </div>
+
+      <!-- 断片の地図 -->
+      <div id="sub-frag" style="margin-top:22px;">
+        <div class="fullbleed">
+          <div class="container">
+            <div class="mapStage" aria-label="断片の地図">
+              <div class="ph ph--map" aria-hidden="true"></div>
+
+              <a class="mapPin pin--a" href="../public/story.html" aria-label="断片 1">
+                <span class="ph ph--pinThumb" aria-hidden="true"></span>
+                <span class="pinText">
+                  <span class="ph ph--line w-90" aria-hidden="true"></span>
+                  <span class="ph ph--line w-70" aria-hidden="true"></span>
+                  <span class="pinMeta">— ニックネーム</span>
+                </span>
+              </a>
+
+              <a class="mapPin pin--b" href="../public/story.html" aria-label="断片 2">
+                <span class="ph ph--pinThumb" aria-hidden="true"></span>
+                <span class="pinText">
+                  <span class="ph ph--line w-80" aria-hidden="true"></span>
+                  <span class="ph ph--line w-60" aria-hidden="true"></span>
+                  <span class="pinMeta">— ニックネーム</span>
+                </span>
+              </a>
+
+              <a class="mapPin pin--c" href="../public/story.html" aria-label="断片 3">
+                <span class="ph ph--pinThumb" aria-hidden="true"></span>
+                <span class="pinText">
+                  <span class="ph ph--line w-90" aria-hidden="true"></span>
+                  <span class="ph ph--line w-50" aria-hidden="true"></span>
+                  <span class="pinMeta">— ニックネーム</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <p class="note" style="margin-top:14px;">公開仕様の断片を「地図で味わう」。</p>
+      </div>
+    </section>
+
+    <!-- 連絡（非公開） -->
+    <section class="section" id="tab-contact" aria-label="連絡">
+      <h2 class="h1">連絡（非公開）</h2>
+      <p class="lead">公開の空気を壊さず、困りごと・改善提案は非公開で届く。</p>
+      <div class="grid2" style="margin-top:16px;">
+        <div class="card">
+          <div class="h2">非公開フォーム</div>
+          <div class="ph ph--line w-90"></div>
+          <div class="ph ph--line w-80"></div>
+          <div class="ph ph--line w-70"></div>
+          <a class="btn primary" href="#">送る（ワイヤ）</a>
+        </div>
+        <div class="card">
+          <div class="h2">通報・ブロック</div>
+          <div class="ph ph--line w-90"></div>
+          <div class="ph ph--line w-60"></div>
+          <div class="ph ph--line w-80"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

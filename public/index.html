@@ -1,0 +1,172 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FURUTABI Wire | Top</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav>
+          <a href="bridge.html">ブリッジ</a>
+          <a href="stories.html">Stories</a>
+          <a href="about.html">詳しくは</a>
+          <a href="safety.html">安心と連絡</a>
+          <a href="local.html">地域の方へ</a>
+          <a href="../auth/login.html">ログイン</a>
+          <a href="../app/home.html">（ログイン後）</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="公開トップ">
+    <!-- FV: ヒーロー写真ドーン（説明しない） -->
+    <section class="section fv" aria-label="ヒーロー">
+      <div class="fullbleed">
+        <div class="ph ph--hero" aria-hidden="true"></div>
+      </div>
+      <div style="margin-top:14px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:flex-end;">
+        <div>
+          <h1 class="h1">（コピーは置かない前提）</h1>
+          <p class="lead">雰囲気で惹きつける。能書は「詳しくは」へ。</p>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn ghost" href="about.html">詳しくは</a>
+          <a class="btn ghost" href="safety.html">安心と連絡</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 地図ドーン + 地図上ピン（断片3） -->
+    <section class="section" aria-label="地図と断片">
+      <h2 class="h2">地図</h2>
+      <p class="lead">地図は狭く感じない面積で。断片は「ピンとして刺さる」見え方（まず3）。</p>
+
+      <div class="fullbleed" style="margin-top:14px;">
+        <div class="container">
+          <div class="mapStage" aria-label="地図">
+            <div class="ph ph--map" aria-hidden="true"></div>
+
+            <a class="mapPin pin--a" href="story.html" aria-label="断片 1">
+              <span class="ph ph--pinThumb" aria-hidden="true"></span>
+              <span class="pinText">
+                <span class="ph ph--line w-90" aria-hidden="true"></span>
+                <span class="ph ph--line w-70" aria-hidden="true"></span>
+                <span class="pinMeta">— ニックネーム</span>
+              </span>
+            </a>
+
+            <a class="mapPin pin--b" href="story.html" aria-label="断片 2">
+              <span class="ph ph--pinThumb" aria-hidden="true"></span>
+              <span class="pinText">
+                <span class="ph ph--line w-80" aria-hidden="true"></span>
+                <span class="ph ph--line w-60" aria-hidden="true"></span>
+                <span class="pinMeta">— ニックネーム</span>
+              </span>
+            </a>
+
+            <a class="mapPin pin--c" href="story.html" aria-label="断片 3">
+              <span class="ph ph--pinThumb" aria-hidden="true"></span>
+              <span class="pinText">
+                <span class="ph ph--line w-90" aria-hidden="true"></span>
+                <span class="ph ph--line w-50" aria-hidden="true"></span>
+                <span class="pinMeta">— ニックネーム</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="denseBox">
+        <div>
+          <div class="h2">公開Storiesを読む</div>
+          <p class="note">公開仕様はログイン前でも読める。トップは断片、本文は個別で。</p>
+        </div>
+        <a class="btn ghost" href="stories.html">Storiesへ</a>
+      </div>
+    </section>
+
+    <!-- 初めての方へ（能書は別ページ） -->
+    <section class="section" aria-label="初めての方へ">
+      <h2 class="h2">はじめの一歩</h2>
+      <p class="lead">ハートウォーミングに惹きつける。詳しい説明は「詳しくは」へ。</p>
+      <div class="grid2" style="margin-top:16px;">
+        <div class="card">
+          <div class="ph ph--line w-90"></div>
+          <div class="ph ph--line w-70"></div>
+          <div class="ph ph--line w-80"></div>
+          <a class="link" href="about.html">詳しくは →</a>
+        </div>
+        <div class="card">
+          <div class="ph ph--line w-80"></div>
+          <div class="ph ph--line w-60"></div>
+          <div class="ph ph--line w-70"></div>
+          <a class="link" href="about.html">このサイトの考え方 →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 入口カード：3枚 + 横スライド（ここでハブの顔が主役） -->
+    <section class="section" aria-label="入口カード">
+      <h2 class="h2">最初の入口</h2>
+      <p class="lead">実例で直感理解。3枚だけ見せて、横に続きがある。</p>
+
+      <div class="slider" aria-label="入口カード（3枚＋横スクロール）" style="margin-top:16px;">
+        <article class="card">
+          <div class="ph ph--thumb" aria-hidden="true"></div>
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+            <span class="pill">入口カテゴリ</span>
+            <div class="ph ph--avatar" aria-hidden="true"></div>
+          </div>
+          <div class="ph ph--line w-70"></div>
+          <div class="ph ph--line w-50"></div>
+          <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+        </article>
+
+        <article class="card">
+          <div class="ph ph--thumb" aria-hidden="true"></div>
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+            <span class="pill">入口カテゴリ</span>
+            <div class="ph ph--avatar" aria-hidden="true"></div>
+          </div>
+          <div class="ph ph--line w-80"></div>
+          <div class="ph ph--line w-60"></div>
+          <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+        </article>
+
+        <article class="card">
+          <div class="ph ph--thumb" aria-hidden="true"></div>
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+            <span class="pill">入口カテゴリ</span>
+            <div class="ph ph--avatar" aria-hidden="true"></div>
+          </div>
+          <div class="ph ph--line w-60"></div>
+          <div class="ph ph--line w-40"></div>
+          <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+        </article>
+      </div>
+
+      <div class="denseBox">
+        <div>
+          <div class="h2">安心と連絡</div>
+          <p class="note">公開の場は空気を守る。困りごと・改善提案は非公開で届く。</p>
+        </div>
+        <a class="btn ghost" href="safety.html">非公開で連絡する</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div style="display:grid; gap:12px;">
+        <div class="ph ph--line w-40"></div>
+        <div class="ph ph--line w-60"></div>
+        <div class="ph ph--line w-50"></div>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>

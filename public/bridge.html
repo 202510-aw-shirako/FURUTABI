@@ -1,0 +1,27 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FURUTABI Wire | Bridge</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="bridgePage">
+  <main class="bridgeStage" aria-label="ブリッジカット">
+    <div class="bridgeMedia" aria-hidden="true"></div>
+
+    <div class="bridgeControls" aria-label="操作">
+      <a class="bridgeBtn bridgeBtn--ghost" href="index.html">SKIP</a>
+      <!-- 公開トップを経由せず認証へ直行 -->
+      <a class="bridgeBtn bridgeBtn--primary" href="../auth/login.html">ログイン</a>
+    </div>
+  </main>
+
+  <script>
+    // 10秒後に公開トップへ（後で変更可）
+    window.setTimeout(function () {
+      window.location.href = "index.html";
+    }, 10000);
+  </script>
+</body>
+</html>

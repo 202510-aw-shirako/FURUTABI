@@ -1,0 +1,229 @@
+﻿/* css/style.css (generated equivalent of scss/style.scss) */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Noto Sans JP", sans-serif;
+  background: #fafafa;
+  color: #222;
+  line-height: 1.55;
+}
+
+a { color: inherit; }
+a.link { text-decoration: underline; color: #666; }
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+.fullbleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250,250,250,.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid #e6e6e6;
+}
+.topbar .inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+}
+.topbar .brand { font-size: 12px; color: #666; letter-spacing: .02em; }
+.topbar nav { display: flex; gap: 14px; flex-wrap: wrap; }
+.topbar nav a { font-size: 13px; color: #666; text-decoration: none; }
+.topbar nav a:hover { text-decoration: underline; }
+
+.section {
+  padding: 30px 0;
+  border-bottom: 1px solid #e6e6e6;
+}
+.section.fv { padding: 52px 0; }
+
+.h1 { margin: 0; font-size: 26px; letter-spacing: .01em; }
+.h2 { margin: 0; font-size: 18px; }
+.lead { margin: 10px 0 0; color: #666; font-size: 13px; }
+.note { margin: 10px 0 0; color: #666; font-size: 13px; }
+.small { font-size: 12px; color: #666; }
+
+.btn {
+  display: inline-block;
+  padding: 11px 16px;
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+  text-decoration: none;
+  font-size: 14px;
+  background: #fff;
+}
+.btn.primary { background: #222; border-color: #222; color: #fff; }
+.btn.ghost { background: transparent; }
+
+.grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+.grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+@media (max-width: 980px) {
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.ph {
+  background: #e9e9e9;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  position: relative;
+}
+.ph--hero { aspect-ratio: 21/9; border-radius: 0; }
+.ph--map { aspect-ratio: 16/9; }
+.ph--thumb { aspect-ratio: 4/3; border-radius: 14px; }
+.ph--avatar { width: 72px; height: 72px; border-radius: 999px; }
+.ph--pinThumb { width: 92px; height: 72px; border-radius: 12px; border: 1px solid #e6e6e6; background: #e9e9e9; }
+
+.ph--line {
+  height: 12px;
+  border-radius: 999px;
+  background: #dcdcdc;
+}
+.w-30{width:30%} .w-40{width:40%} .w-50{width:50%} .w-60{width:60%}
+.w-70{width:70%} .w-80{width:80%} .w-90{width:90%}
+
+.pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+  color: #666;
+}
+
+.slider {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(360px, 420px);
+  gap: 18px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-snap-type: x mandatory;
+}
+.slider .card { scroll-snap-align: start; }
+
+.denseBox {
+  margin-top: 18px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.footer { padding: 22px 0; }
+
+/* ===== Map stage with pins overlay (TOP + App fragments map) ===== */
+.mapStage { position: relative; }
+.mapPin {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: center;
+  width: min(420px, 34vw);
+  padding: 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(4px);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 6px 24px rgba(0,0,0,.06);
+}
+.mapPin:hover { outline: 2px solid rgba(0,0,0,.08); }
+.pinText { display: grid; gap: 10px; }
+.pinMeta { font-size: 12px; color: #666; display:block; margin-top: 2px; }
+
+/* Wire-only pin positions (adjust later) */
+.pin--a { left: 6%; top: 14%; }
+.pin--b { left: 52%; top: 18%; }
+.pin--c { left: 28%; top: 58%; }
+
+@media (max-width: 980px) {
+  /* On small screens, pins become stacked cards under map */
+  .mapPin { position: static; width: auto; }
+  .mapStage { display: grid; gap: 12px; }
+}
+
+/* ===== Tabs (App) ===== */
+.tabs { display:flex; gap: 10px; flex-wrap: wrap; }
+.tab {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  color: #666;
+}
+.tab.is-on { background:#222; border-color:#222; color:#fff; }
+
+/* ===== Bridge page (fullscreen) ===== */
+.bridgePage { margin: 0; background: #000; }
+.bridgeStage {
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  overflow: hidden;
+}
+.bridgeMedia {
+  position: absolute;
+  inset: 0;
+  /* 写真/動画の面確保（グレー） */
+  background: #e9e9e9;
+}
+.bridgeControls {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+.bridgeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.38);
+  text-decoration: none;
+  font-size: 13px;
+  color: rgba(255,255,255,.92);
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+}
+.bridgeBtn--ghost { background: rgba(0,0,0,.28); }
+.bridgeBtn--primary {
+  background: rgba(255,255,255,.92);
+  color: #111;
+  border-color: rgba(255,255,255,.92);
+}
+.bridgeBtn:focus { outline: 2px solid rgba(255,255,255,.55); outline-offset: 2px; }
