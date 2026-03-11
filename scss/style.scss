@@ -202,8 +202,10 @@ a.link { text-decoration: underline; color: $muted; }
 .bridgeMedia {
   position: absolute;
   inset: 0;
-  /* 写真/動画の面確保（グレー） */
-  background: $ph;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 .bridgeControls {
   position: absolute;
