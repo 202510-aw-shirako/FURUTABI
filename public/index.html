@@ -42,44 +42,60 @@
       </div>
     </section>
 
-    <!-- 地図ドーン + 地図上ピン（断片3） -->
-    <section class="section" aria-label="地図と断片">
+    <!-- わたしの地図 + ごひいきさんの足あと -->
+    <section class="section topMapSection" aria-label="わたしの地図とごひいきさんの足あと">
       <h2 class="h2">わたしの地図</h2>
-      <p class="lead">わたしの地図は狭く感じない面積で。断片は「ピンとして刺さる」見え方（まず3）。</p>
+      <p class="lead">場所の上に、誰かの記録や視点が差してあることが一目でわかる構成にする。</p>
 
-      <div class="fullbleed" style="margin-top:14px;">
-        <div class="container">
-          <div class="mapStage" aria-label="わたしの地図">
-            <div class="ph ph--map" aria-hidden="true"></div>
+      <div class="topMapLayout" style="margin-top:18px;">
+        <svg class="topMapLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="29" y1="18" x2="74" y2="24"></line>
+          <line x1="29" y1="42" x2="86" y2="36"></line>
+          <line x1="29" y1="66" x2="68" y2="70"></line>
+        </svg>
 
-            <a class="mapPin pin--a" href="story.html" aria-label="断片 1">
-              <span class="ph ph--pinThumb" aria-hidden="true"></span>
-              <span class="pinText">
-                <span class="ph ph--line w-90" aria-hidden="true"></span>
-                <span class="ph ph--line w-70" aria-hidden="true"></span>
-                <span class="pinMeta">— ニックネーム</span>
-              </span>
-            </a>
+        <div class="topMapCards" aria-label="ごひいきさんの足あととわたしの地図の断片">
+          <a class="card topMapCard" href="story.html" aria-label="ごひいきさんの足あと 1">
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">ごひいきさんの足あと</span>
+              <span class="small">01</span>
+            </div>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div class="ph ph--line w-90" aria-hidden="true"></div>
+            <div class="ph ph--line w-60" aria-hidden="true"></div>
+            <span class="pinMeta">— ニックネーム</span>
+          </a>
 
-            <a class="mapPin pin--b" href="story.html" aria-label="断片 2">
-              <span class="ph ph--pinThumb" aria-hidden="true"></span>
-              <span class="pinText">
-                <span class="ph ph--line w-80" aria-hidden="true"></span>
-                <span class="ph ph--line w-60" aria-hidden="true"></span>
-                <span class="pinMeta">— ニックネーム</span>
-              </span>
-            </a>
+          <a class="card topMapCard" href="story.html" aria-label="ごひいきさんの足あと 2">
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">ごひいきさんの足あと</span>
+              <span class="small">02</span>
+            </div>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div class="ph ph--line w-80" aria-hidden="true"></div>
+            <div class="ph ph--line w-50" aria-hidden="true"></div>
+            <span class="pinMeta">— ニックネーム</span>
+          </a>
 
-            <a class="mapPin pin--c" href="story.html" aria-label="断片 3">
-              <span class="ph ph--pinThumb" aria-hidden="true"></span>
-              <span class="pinText">
-                <span class="ph ph--line w-90" aria-hidden="true"></span>
-                <span class="ph ph--line w-50" aria-hidden="true"></span>
-                <span class="pinMeta">— ニックネーム</span>
-              </span>
-            </a>
-          </div>
+          <a class="card topMapCard" href="story.html" aria-label="わたしの地図の断片 3">
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">わたしの地図</span>
+              <span class="small">03</span>
+            </div>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div class="ph ph--line w-90" aria-hidden="true"></div>
+            <div class="ph ph--line w-70" aria-hidden="true"></div>
+            <span class="pinMeta">— ニックネーム</span>
+          </a>
         </div>
+
+        <div class="topMapStage" aria-label="わたしの地図">
+          <div class="ph ph--map topMapCanvas" aria-hidden="true"></div>
+        </div>
+
+        <a class="topMapPin topMapPin--a" href="story.html" aria-label="ごひいきさんの足あと 1 の場所"></a>
+        <a class="topMapPin topMapPin--b" href="story.html" aria-label="ごひいきさんの足あと 2 の場所"></a>
+        <a class="topMapPin topMapPin--c" href="story.html" aria-label="わたしの地図の断片 3 の場所"></a>
       </div>
 
       <div class="denseBox">
