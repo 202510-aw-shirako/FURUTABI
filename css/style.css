@@ -89,6 +89,7 @@ a.link { text-decoration: underline; color: #666; }
   position: relative;
 }
 .ph--hero { aspect-ratio: 21/9; border-radius: 0; }
+.ph--pageHero { min-height: 50vh; border-radius: 0; }
 .ph--map { aspect-ratio: 16/9; }
 .ph--thumb { aspect-ratio: 4/3; border-radius: 14px; }
 .ph--avatar { width: 72px; height: 72px; border-radius: 999px; }
