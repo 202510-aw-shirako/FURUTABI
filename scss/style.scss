@@ -331,6 +331,9 @@ a.link { text-decoration: underline; color: $muted; }
   text-decoration: none;
   transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
+.myMapPinsLayer .topMapPin {
+  pointer-events: auto;
+}
 .topMapPin span {
   transform: rotate(45deg);
   line-height: 1;
@@ -346,6 +349,12 @@ a.link { text-decoration: underline; color: $muted; }
   pointer-events: none;
 }
 .appTopMapLayout[data-my-map] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+.appTopMapLayout[data-top-map] {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 14px;
@@ -394,6 +403,12 @@ a.link { text-decoration: underline; color: $muted; }
 }
 .appTopMapLayout[data-my-map] .topMapStage {
   cursor: crosshair;
+}
+.appTopMapLayout[data-top-map] .topMapStage.is-draggable {
+  cursor: grab;
+}
+.appTopMapLayout[data-top-map] .topMapStage.is-dragging {
+  cursor: grabbing;
 }
 .appTopMapLayout[data-my-map] .topMapStage.is-draggable {
   cursor: grab;
@@ -514,6 +529,9 @@ a.link { text-decoration: underline; color: $muted; }
     min-height: 0;
   }
   .appTopMapLayout[data-my-map] {
+    grid-template-columns: 1fr;
+  }
+  .appTopMapLayout[data-top-map] {
     grid-template-columns: 1fr;
   }
   .topMapCards {

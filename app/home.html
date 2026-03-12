@@ -190,13 +190,22 @@
             </article>
           </div>
 
-          <div class="topMapStage" aria-label="ごひいきさんの足あと">
-            <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
+          <div class="myMapMain">
+            <div class="topMapStage" aria-label="ごひいきさんの足あと" data-top-map-stage>
+              <div class="myMapViewport" data-top-map-viewport>
+                <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" data-top-map-image />
+                <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
+                  <a class="topMapPin topMapPin--a is-active" href="../public/story.html" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+                  <a class="topMapPin topMapPin--b" href="../public/story.html" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+                  <a class="topMapPin topMapPin--c" href="../public/story.html" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <a class="topMapPin topMapPin--a is-active" href="../public/story.html" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-          <a class="topMapPin topMapPin--b" href="../public/story.html" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-          <a class="topMapPin topMapPin--c" href="../public/story.html" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+          <div class="myMapZoomControls" aria-label="地図の拡大縮小">
+            <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-in>＋</button>
+            <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-out>−</button>
+          </div>
         </div>
 
         <div class="card" style="margin-top:18px;">
@@ -249,9 +258,9 @@
           link: '#sub-my',
           reactions: { like: 12, thanks: 4 },
           stories: {
-            '1': { id: '1', meta: '— ニックネーム', aria: 'わたしの地図 1' },
-            '2': { id: '2', meta: '— ニックネーム', aria: 'わたしの地図 2' },
-            '3': { id: '3', meta: '— ニックネーム', aria: 'わたしの地図 3' }
+            '1': { id: '1', meta: '— ニックネーム', aria: 'わたしの地図 1', recordedAt: '2026-03-12', season: 'spring' },
+            '2': { id: '2', meta: '— ニックネーム', aria: 'わたしの地図 2', recordedAt: '2026-06-12', season: 'summer' },
+            '3': { id: '3', meta: '— ニックネーム', aria: 'わたしの地図 3', recordedAt: '2026-10-12', season: 'autumn' }
           }
         },
         footprints: {
@@ -259,12 +268,41 @@
           link: '../public/stories.html',
           reactions: { like: 12, thanks: 4 },
           stories: {
-            '1': { id: '1', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 1' },
-            '2': { id: '2', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 2' },
-            '3': { id: '3', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 3' }
+            '1': { id: '1', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 1', recordedAt: '2026-03-12', season: 'spring' },
+            '2': { id: '2', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 2', recordedAt: '2026-07-12', season: 'summer' },
+            '3': { id: '3', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 3', recordedAt: '2026-11-12', season: 'autumn' }
           }
         }
       };
+
+      function getSeasonFromDateString(dateString) {
+        var date = new Date(dateString);
+        var month;
+
+        if (!dateString || Number.isNaN(date.getTime())) {
+          return 'all';
+        }
+
+        month = date.getMonth() + 1;
+
+        if (month >= 3 && month <= 5) {
+          return 'spring';
+        }
+        if (month >= 6 && month <= 8) {
+          return 'summer';
+        }
+        if (month >= 9 && month <= 11) {
+          return 'autumn';
+        }
+        return 'winter';
+      }
+
+      function getTodayDateString() {
+        var now = new Date();
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var day = String(now.getDate()).padStart(2, '0');
+        return now.getFullYear() + '-' + month + '-' + day;
+      }
 
       topMaps.forEach(function (topMap) {
         var card = topMap.querySelector('[data-top-map-card]');
@@ -274,6 +312,20 @@
         var kind = topMap.getAttribute('data-top-map-kind');
         var config = topMapConfigs[kind];
         var selectedId = '1';
+        var topMapStage = topMap.querySelector('[data-top-map-stage]');
+        var topMapViewport = topMap.querySelector('[data-top-map-viewport]');
+        var topMapPinsLayer = topMap.querySelector('[data-top-map-pins-layer]');
+        var topMapZoomIn = topMap.querySelector('[data-top-map-zoom-in]');
+        var topMapZoomOut = topMap.querySelector('[data-top-map-zoom-out]');
+        var topMapZoom = 1;
+        var topMapPanX = 0;
+        var topMapPanY = 0;
+        var topMapDragging = false;
+        var topMapDragged = false;
+        var topMapDragStartX = 0;
+        var topMapDragStartY = 0;
+        var topMapPanStartX = 0;
+        var topMapPanStartY = 0;
 
         function syncCard() {
           var story = config && config.stories[selectedId];
@@ -285,6 +337,8 @@
 
           card.setAttribute('aria-label', story.aria);
           card.dataset.topMapCurrent = story.id;
+          card.dataset.recordedAt = story.recordedAt || '';
+          card.dataset.season = story.season || getSeasonFromDateString(story.recordedAt);
           card.querySelector('[data-top-map-label-text]').textContent = config.label;
           card.querySelector('[data-top-map-marker]').textContent = story.id;
           card.querySelector('[data-top-map-meta]').textContent = story.meta;
@@ -304,6 +358,11 @@
           }
 
           pins.forEach(function (pin) {
+            var pinStory = config.stories[pin.getAttribute('data-top-map-pin')];
+            if (pinStory) {
+              pin.dataset.recordedAt = pinStory.recordedAt || '';
+              pin.dataset.season = pinStory.season || getSeasonFromDateString(pinStory.recordedAt);
+            }
             pin.classList.toggle('is-active', pin.getAttribute('data-top-map-pin') === selectedId);
           });
         }
@@ -311,6 +370,10 @@
         pins.forEach(function (pin) {
           pin.addEventListener('click', function (event) {
             event.preventDefault();
+            if (topMapDragged) {
+              topMapDragged = false;
+              return;
+            }
             if (!pin.getAttribute('data-top-map-pin')) {
               return;
             }
@@ -319,7 +382,95 @@
           });
         });
 
+        function syncTopMapZoom() {
+          if (topMapViewport) {
+            topMapViewport.style.transform = 'translate(' + topMapPanX + 'px, ' + topMapPanY + 'px) scale(' + topMapZoom + ')';
+          }
+          if (topMapZoomIn) {
+            topMapZoomIn.disabled = topMapZoom >= 1.8;
+          }
+          if (topMapZoomOut) {
+            topMapZoomOut.disabled = topMapZoom <= 1;
+          }
+          if (topMapStage) {
+            topMapStage.classList.toggle('is-draggable', topMapZoom > 1);
+          }
+        }
+
+        function startTopMapDrag(event) {
+          if (topMapZoom <= 1 || !topMapStage) {
+            return;
+          }
+          event.preventDefault();
+          topMapDragging = true;
+          topMapDragStartX = event.clientX;
+          topMapDragStartY = event.clientY;
+          topMapPanStartX = topMapPanX;
+          topMapPanStartY = topMapPanY;
+          topMapDragged = false;
+          topMapStage.classList.add('is-dragging');
+        }
+
+        function moveTopMapDrag(event) {
+          if (!topMapDragging) {
+            return;
+          }
+          if (Math.abs(event.clientX - topMapDragStartX) > 3 || Math.abs(event.clientY - topMapDragStartY) > 3) {
+            topMapDragged = true;
+          }
+          topMapPanX = topMapPanStartX + (event.clientX - topMapDragStartX);
+          topMapPanY = topMapPanStartY + (event.clientY - topMapDragStartY);
+          syncTopMapZoom();
+        }
+
+        function endTopMapDrag() {
+          if (!topMapDragging) {
+            return;
+          }
+          topMapDragging = false;
+          if (topMapStage) {
+            topMapStage.classList.remove('is-dragging');
+          }
+        }
+
+        if (topMapStage) {
+          topMapStage.addEventListener('mousedown', function (event) {
+            var pinTarget = event.target.closest('[data-top-map-pin]');
+            if (
+              event.target !== topMapStage &&
+              event.target !== topMapPinsLayer &&
+              !event.target.classList.contains('topMapCanvasImage') &&
+              !pinTarget
+            ) {
+              return;
+            }
+            startTopMapDrag(event);
+          });
+        }
+
+        if (topMapZoomIn) {
+          topMapZoomIn.addEventListener('click', function () {
+            topMapZoom = Math.min(1.8, topMapZoom + 0.1);
+            syncTopMapZoom();
+          });
+        }
+
+        if (topMapZoomOut) {
+          topMapZoomOut.addEventListener('click', function () {
+            topMapZoom = Math.max(1, topMapZoom - 0.1);
+            if (topMapZoom === 1) {
+              topMapPanX = 0;
+              topMapPanY = 0;
+            }
+            syncTopMapZoom();
+          });
+        }
+
+        document.addEventListener('mousemove', moveTopMapDrag);
+        document.addEventListener('mouseup', endTopMapDrag);
+
         syncCard();
+        syncTopMapZoom();
       });
 
       if (myMap) {
@@ -383,6 +534,8 @@
             button.type = 'button';
             button.className = 'topMapPin myMapPin' + (myMapSelectedId === pin.id ? ' is-active' : '');
             button.setAttribute('data-my-map-pin-id', pin.id);
+            button.dataset.recordedAt = pin.recordedAt || '';
+            button.dataset.season = pin.season || getSeasonFromDateString(pin.recordedAt);
             button.setAttribute('aria-label', 'わたしの地図のピン ' + (index + 1));
             button.style.left = pin.x + '%';
             button.style.top = pin.y + '%';
@@ -535,6 +688,9 @@
               body: ''
             };
 
+            pin.recordedAt = getTodayDateString();
+            pin.season = getSeasonFromDateString(pin.recordedAt);
+
             myMapPinsData.push(pin);
             myMapSelectedId = pin.id;
             renderMyMapPins();
@@ -569,6 +725,8 @@
             pin.title = myMapTitleInput ? myMapTitleInput.value : '';
             pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
             pin.body = myMapBodyInput ? myMapBodyInput.value : '';
+            pin.recordedAt = pin.recordedAt || getTodayDateString();
+            pin.season = getSeasonFromDateString(pin.recordedAt);
             closeMyMapSheet();
             renderMyMapPins();
             openMyMapMenu(pin);
