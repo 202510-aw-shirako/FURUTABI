@@ -50,65 +50,31 @@
       </div>
       <p class="lead">場所の上に、誰かの記録や視点が差してあることが一目でわかる構成にする。</p>
 
-      <div class="topMapLayout" style="margin-top:18px;">
-        <div class="topMapCards" aria-label="ごひいきさんの足あととわたしの地図の断片">
-          <article class="card topMapCard" aria-label="ごひいきさんの足あと 1">
+      <div class="topMapLayout" style="margin-top:18px;" data-top-map>
+        <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
+          <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
             <div class="topMapCardBody">
               <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
               <div class="topMapCardText">
                 <div class="topMapCardHead">
-                  <span class="pill">ごひいきさんの足あと</span>
-                  <span class="topMapMarker"><span>1</span></span>
+                  <span class="pill" data-top-map-label>ごひいきさんの足あと</span>
+                  <span class="topMapMarker"><span data-top-map-marker>1</span></span>
                 </div>
-                <div class="topMapComment" aria-hidden="true">
+                <div class="topMapComment" aria-hidden="true" data-top-map-comment="1">
                   <div class="ph ph--line w-90"></div>
                   <div class="ph ph--line w-80"></div>
                   <div class="ph ph--line w-70"></div>
                   <div class="ph ph--line w-85"></div>
                 </div>
-                <span class="pinMeta">— ニックネーム</span>
-                <a class="btn ghost topMapMore" href="stories.html">続きは</a>
+                <span class="pinMeta" data-top-map-meta>— ニックネーム</span>
               </div>
             </div>
-          </article>
-
-          <article class="card topMapCard" aria-label="ごひいきさんの足あと 2">
-            <div class="topMapCardBody">
-              <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
-              <div class="topMapCardText">
-                <div class="topMapCardHead">
-                  <span class="pill">ごひいきさんの足あと</span>
-                  <span class="topMapMarker"><span>2</span></span>
-                </div>
-                <div class="topMapComment" aria-hidden="true">
-                  <div class="ph ph--line w-85"></div>
-                  <div class="ph ph--line w-90"></div>
-                  <div class="ph ph--line w-75"></div>
-                  <div class="ph ph--line w-80"></div>
-                </div>
-                <span class="pinMeta">— ニックネーム</span>
-                <a class="btn ghost topMapMore" href="stories.html">続きは</a>
+            <div class="topMapFooter">
+              <div class="topMapActions" aria-label="反応">
+                <button class="topMapActionBtn" type="button">いいね <span>12</span></button>
+                <button class="topMapActionBtn topMapActionBtn--thanks" type="button">ありがとう <span>4</span></button>
               </div>
-            </div>
-          </article>
-
-          <article class="card topMapCard" aria-label="ごひいきさんの足あと 3">
-            <div class="topMapCardBody">
-              <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
-              <div class="topMapCardText">
-                <div class="topMapCardHead">
-                  <span class="pill">ごひいきさんの足あと</span>
-                  <span class="topMapMarker"><span>3</span></span>
-                </div>
-                <div class="topMapComment" aria-hidden="true">
-                  <div class="ph ph--line w-90"></div>
-                  <div class="ph ph--line w-75"></div>
-                  <div class="ph ph--line w-85"></div>
-                  <div class="ph ph--line w-70"></div>
-                </div>
-                <span class="pinMeta">— ニックネーム</span>
-                <a class="btn ghost topMapMore" href="stories.html">続きは</a>
-              </div>
+              <a class="btn ghost topMapMore" href="stories.html" data-top-map-link>続きは</a>
             </div>
           </article>
         </div>
@@ -117,9 +83,9 @@
           <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="わたしの地図" />
         </div>
 
-        <a class="topMapPin topMapPin--a" href="story.html" aria-label="ごひいきさんの足あと 1 の場所"><span>1</span></a>
-        <a class="topMapPin topMapPin--b" href="story.html" aria-label="ごひいきさんの足あと 2 の場所"><span>2</span></a>
-        <a class="topMapPin topMapPin--c" href="story.html" aria-label="ごひいきさんの足あと 3 の場所"><span>3</span></a>
+        <a class="topMapPin topMapPin--a is-active" href="story.html" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+        <a class="topMapPin topMapPin--b" href="story.html" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+        <a class="topMapPin topMapPin--c" href="story.html" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
       </div>
 
     </section>
@@ -220,5 +186,70 @@
       </div>
     </footer>
   </main>
+  <script>
+    (() => {
+      const topMap = document.querySelector('[data-top-map]');
+      if (!topMap) return;
+
+      const card = topMap.querySelector('[data-top-map-card]');
+      const pins = Array.from(topMap.querySelectorAll('[data-top-map-pin]'));
+      const storyData = {
+        '1': {
+          id: '1',
+          label: 'ごひいきさんの足あと',
+          meta: '— ニックネーム',
+          link: 'stories.html',
+          aria: 'ごひいきさんの足あと 1'
+        },
+        '2': {
+          id: '2',
+          label: 'ごひいきさんの足あと',
+          meta: '— ニックネーム',
+          link: 'stories.html',
+          aria: 'ごひいきさんの足あと 2'
+        },
+        '3': {
+          id: '3',
+          label: 'ごひいきさんの足あと',
+          meta: '— ニックネーム',
+          link: 'stories.html',
+          aria: 'ごひいきさんの足あと 3'
+        }
+      };
+      let selectedId = '1';
+
+      function syncCard() {
+        const story = storyData[selectedId];
+        if (!story || !card) return;
+
+        card.setAttribute('aria-label', story.aria);
+        card.dataset.topMapCurrent = story.id;
+        card.querySelector('[data-top-map-label]').textContent = story.label;
+        card.querySelector('[data-top-map-marker]').textContent = story.id;
+        card.querySelector('[data-top-map-meta]').textContent = story.meta;
+        card.querySelector('[data-top-map-link]').setAttribute('href', story.link);
+
+        const comment = card.querySelector('.topMapComment');
+        if (comment) {
+          comment.setAttribute('data-top-map-comment', story.id);
+        }
+
+        pins.forEach((pin) => {
+          pin.classList.toggle('is-active', pin.dataset.topMapPin === selectedId);
+        });
+      }
+
+      pins.forEach((pin) => {
+        pin.addEventListener('click', (event) => {
+          event.preventDefault();
+          if (!pin.dataset.topMapPin) return;
+          selectedId = pin.dataset.topMapPin;
+          syncCard();
+        });
+      });
+
+      syncCard();
+    })();
+  </script>
 </body>
 </html>

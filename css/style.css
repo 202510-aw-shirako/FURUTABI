@@ -174,57 +174,51 @@ a.link { text-decoration: underline; color: #666; }
 /* ===== Top page map + story layout ===== */
 .topMapSection { overflow: hidden; }
 .topMapLayout {
-  --top-map-stage-height: 640px;
-  --top-map-card-gap: 16px;
-  --top-map-card-padding: 8px;
-  --top-map-card-height: calc((var(--top-map-stage-height) - (var(--top-map-card-gap) * 2)) / 3);
-  --top-map-card-inner-size: calc(var(--top-map-card-height) - (var(--top-map-card-padding) * 2));
+  --top-map-stage-height: 760px;
+  --top-map-card-padding: 11px;
+  --top-map-card-thumb-size: 132px;
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr);
-  gap: 28px;
-  align-items: start;
-  width: calc(100% + 28px);
-  margin-right: -28px;
+  width: 100%;
+  margin-right: 0;
+  min-height: var(--top-map-stage-height);
 }
 .topMapCards {
-  display: grid;
-  gap: var(--top-map-card-gap);
-  grid-template-rows: repeat(3, var(--top-map-card-height));
-  align-content: start;
-  position: relative;
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: min(396px, calc(100% - 40px));
   z-index: 4;
-  height: var(--top-map-stage-height);
 }
 .topMapCard {
   padding: var(--top-map-card-padding);
   text-decoration: none;
   color: inherit;
-  height: 100%;
+  display: grid;
+  gap: 11px;
 }
 .topMapCardBody {
   width: 100%;
-  height: var(--top-map-card-inner-size);
+  min-height: var(--top-map-card-thumb-size);
   display: grid;
-  grid-template-columns: var(--top-map-card-inner-size) minmax(0, 1fr);
-  gap: 8px;
+  grid-template-columns: var(--top-map-card-thumb-size) minmax(0, 1fr);
+  gap: 11px;
   align-items: stretch;
 }
 .topMapCardHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 9px;
 }
 .topMapMarker {
   display: inline-grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 999px;
   background: #222;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1;
   font-weight: 600;
   padding-top: 0;
@@ -238,36 +232,65 @@ a.link { text-decoration: underline; color: #666; }
   display: grid;
   grid-template-rows: auto 1fr auto;
   min-width: 0;
-  gap: 10px;
+  gap: 11px;
 }
 .topMapComment {
   display: grid;
   align-content: center;
+  gap: 9px;
+}
+.topMapActions {
+  display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+}
+.topMapFooter {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+.topMapActionBtn {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 999px;
+  background: #fff;
+  color: #555;
+  font-size: 12px;
+  line-height: 1;
+}
+.topMapActionBtn span {
+  font-variant-numeric: tabular-nums;
+}
+.topMapActionBtn--thanks {
+  border-color: #d0d6dc;
 }
 .topMapMore {
-  justify-self: end;
-  align-self: end;
-  padding: 7px 12px;
+  padding: 8px 13px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
 }
 .topMapThumb {
-  width: var(--top-map-card-inner-size);
-  height: var(--top-map-card-inner-size);
+  width: var(--top-map-card-thumb-size);
+  height: var(--top-map-card-thumb-size);
   aspect-ratio: 1 / 1;
 }
 .topMapStage {
   position: relative;
-  min-height: var(--top-map-stage-height);
+  width: 100%;
+  margin: 0;
+  height: var(--top-map-stage-height);
   display: flex;
   justify-content: flex-end;
   align-items: stretch;
   z-index: 1;
+  overflow: hidden;
+  border-radius: 24px;
 }
 .topMapCanvas {
   width: 100%;
-  min-height: var(--top-map-stage-height);
+  height: 100%;
   border-radius: 24px;
 }
 .topMapCanvasImage {
@@ -294,10 +317,15 @@ a.link { text-decoration: underline; color: #666; }
   font-size: 11px;
   font-weight: 600;
   text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
 .topMapPin span {
   transform: rotate(45deg);
   line-height: 1;
+}
+.topMapPin.is-active {
+  background: #111;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.92), 0 0 0 3px rgba(17,17,17,.24);
 }
 .topMapPin--a { left: 74%; top: 24%; }
 .topMapPin--b { left: 86%; top: 36%; }
@@ -335,17 +363,17 @@ a.link { text-decoration: underline; color: #666; }
   .mapPin { position: static; width: auto; }
   .mapStage { display: grid; gap: 12px; }
   .topMapLayout {
-    grid-template-columns: 1fr;
-    gap: 18px;
     width: 100%;
     margin-right: 0;
+    min-height: 0;
   }
   .topMapCards {
-    grid-template-rows: none;
-    height: auto;
+    position: static;
+    width: 100%;
+    margin-bottom: 18px;
   }
   .topMapCard {
-    height: auto;
+    min-height: 0;
   }
   .topMapCardBody {
     display: grid;
