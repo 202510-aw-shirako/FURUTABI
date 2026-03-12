@@ -91,6 +91,14 @@ a.link { text-decoration: underline; color: #666; }
 .ph--hero { aspect-ratio: 21/9; border-radius: 0; }
 .ph--pageHero { min-height: 50vh; border-radius: 0; }
 .ph--map { aspect-ratio: 16/9; }
+.appMapImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+}
 .ph--thumb { aspect-ratio: 4/3; border-radius: 14px; }
 .ph--avatar { width: 72px; height: 72px; border-radius: 999px; }
 .ph--pinThumb { width: 92px; height: 72px; border-radius: 12px; border: 1px solid #e6e6e6; background: #e9e9e9; }
@@ -334,6 +342,32 @@ a.link { text-decoration: underline; color: #666; }
   color: #666;
 }
 .tab.is-on { background:#222; border-color:#222; color:#fff; }
+.appMapTabs--title { gap: 12px; align-items: center; }
+.appMapTabsDivider {
+  width: 30px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(34,34,34,.22), rgba(34,34,34,.5), rgba(34,34,34,.22));
+  transform: translateY(2px);
+}
+.appMapTab {
+  font-size: 26px;
+  line-height: 1.1;
+  padding: 0 0 4px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #9a9a9a;
+}
+.appMapTab.is-on {
+  background: transparent;
+  border: 0;
+  color: #222;
+}
+@media (max-width: 760px) {
+  .appMapTabsDivider {
+    width: 18px;
+  }
+}
 
 /* ===== Bridge page (fullscreen) ===== */
 .bridgePage { margin: 0; background: #000; }

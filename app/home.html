@@ -62,31 +62,27 @@
       <div class="card" style="margin-top:18px;">
         <div class="h2">運用ルール</div>
         <ul class="aboutFeatureList">
-          <li>– 提案は、その人に手渡せるものだけ、短く選びます。</li>
-          <li>– 受け手が続いているなら、地域チャットをつなぐのではなく、その先のひろがりはそこで開きます。写真に応じて、どこかに足を運んでもらっても大丈夫です。</li>
-          <li>– チャットの中で、言葉を選ぶことや表情がほしい場面で、外に連れ出すこともあります。旅行者の体験や、その場によりでます。中断をすすめることもあります。</li>
+          <li>– 提案は、つなぎ手が提示するいくつかの候補の中から選べます。</li>
+          <li>– 双方が合いそうであれば、直接チャットをつなぐので、その先のやり取りはそこで行います。必要に応じて、運営に相談してもらっても大丈夫です。</li>
+          <li>– チャットの中で、危険を伴うことや判断が難しい体験が出てきた場合は、運営に相談してください。同意書の案内や、場合によっては中止をすすめることもあります。</li>
         </ul>
       </div>
     </section>
 
     <!-- 地図（サブタブ：私 / 断片） -->
     <section class="section" id="tab-map" aria-label="わたしの地図">
-      <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-end;">
-        <div>
-          <h2 class="h1">わたしの地図</h2>
-          <p class="lead">「わたしの地図」と「ごひいきさんの足あと」を切り替える。</p>
-        </div>
-        <div class="tabs" role="tablist" aria-label="地図の切り替え">
-          <button class="tab is-on" type="button" role="tab" aria-selected="true" aria-controls="sub-my" data-map-tab="sub-my">わたしの地図</button>
-          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="sub-footprints" data-map-tab="sub-footprints">ごひいきさんの足あと</button>
-        </div>
+      <div class="tabs appMapTabs appMapTabs--title" role="tablist" aria-label="地図の切り替え">
+        <button class="tab appMapTab is-on" type="button" role="tab" aria-selected="true" aria-controls="sub-my" data-map-tab="sub-my">わたしの地図</button>
+        <span class="appMapTabsDivider" aria-hidden="true"></span>
+        <button class="tab appMapTab" type="button" role="tab" aria-selected="false" aria-controls="sub-footprints" data-map-tab="sub-footprints">ごひいきさんの足あと</button>
       </div>
+      <p class="lead">表示を切り替えて見ます。</p>
 
       <!-- 私の地図 -->
       <div id="sub-my" style="margin-top:16px;">
         <div class="fullbleed">
           <div class="container">
-            <div class="ph ph--map"></div>
+            <img class="ph ph--map appMapImage" src="../public/assets/images/凪咲町.svg" alt="わたしの地図" />
           </div>
         </div>
         <div class="denseBox">
@@ -96,6 +92,15 @@
           </div>
           <a class="btn primary" href="#">記録する（ワイヤ）</a>
         </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="h2">運用ルール</div>
+            <ul class="aboutFeatureList">
+            <li>– 公開は、私の地図にだけ、地域に公開、一般に公開の三つから選べます。</li>
+              <li>– 公開するときは、私有地や撮影禁止の場所、個人情報や暮らしの細部が出すぎないように気をつけながら、公開範囲を選んで記録します。</li>
+              <li>– また、特別に親切にしてもらったことや、個別の対応として受け取るべきことを一般公開で書いてしまうと、次の方も同じことを期待してしまい、地域の負担になることがあります。そうした内容は、地域の方に向けた公開範囲で伝えるようにします。</li>
+            </ul>
+          </div>
       </div>
 
       <!-- ごひいきさんの足あと -->
@@ -103,7 +108,7 @@
         <div class="fullbleed">
           <div class="container">
             <div class="mapStage" aria-label="ごひいきさんの足あと">
-              <div class="ph ph--map" aria-hidden="true"></div>
+              <img class="ph ph--map appMapImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
 
               <a class="mapPin pin--a" href="../public/story.html" aria-label="ごひいきさんの足あと 1">
                 <span class="ph ph--pinThumb" aria-hidden="true"></span>
@@ -136,15 +141,16 @@
         </div>
 
         <p class="note" style="margin-top:14px;">公開仕様のごひいきさんの足あとを「地図で味わう」。</p>
-      </div>
 
-      <div class="card" style="margin-top:18px;">
-        <div class="h2">運用ルール</div>
-        <ul class="aboutFeatureList">
-          <li>– 一般の方は、「いまいる」ピン、「思い出」ピン、「お気に入り」ピンで拾えるようにします。</li>
-          <li>– 公開するときは、位置情報や個人情報がそのまま出ないように気をつけながら、地域全体で共有します。</li>
-          <li>– また、音声に合わせてもらったことや、今回の体験として受け取れるような余白をつくるのではなく、体験を一枚の写真として語ってしまうと、次の方も同じことを期待してしまい、地域の側は、体験の場に向けた準備で疲れてしまいます。そのため、写真は、地域の方に向けた時点であくまで記録として残るようにし、地域の蓄積にならないことがあります。そうした体験は、地域の方と関係が見えるようにします。</li>
-        </ul>
+        <div class="card" style="margin-top:18px;">
+          <div class="h2">運用ルール</div>
+            <ul class="aboutFeatureList">
+            <li>– 一般の方は「いいね」ボタン、地元の方は「ありがとう」ボタンで応えられるようにします。</li>
+            <li>– この場では、星評価や点数はつけません。残してほしいのは批評よりも、その土地で見つけた好きや、受け取った縁や優しさへのお礼です。</li>
+              <li>– 困りごとや改善点は公開の場ではなく、非公開で運営に伝えてもらいます。</li>
+              <li>– また、特別な対応や現場ごとの細かな運用知は、必要に応じて地域の方にだけ見える範囲で扱います。そうすることで、公開の場の空気を守りながら、地域側の学びや受け入れの工夫にもつなげていきます。</li>
+            </ul>
+          </div>
       </div>
     </section>
 
