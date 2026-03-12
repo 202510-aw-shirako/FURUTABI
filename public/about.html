@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
@@ -6,7 +6,7 @@
   <title>FURUTABI Wire | About</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
-<body>
+<body class="aboutPage">
   <header class="topbar">
     <div class="container">
       <div class="inner">
@@ -21,42 +21,251 @@
     </div>
   </header>
 
-  <main class="container" aria-label="私たちの目指すもの">
-    <section class="section" aria-label="ヒーローイメージ">
-      <div class="fullbleed">
-        <div class="ph ph--pageHero" aria-hidden="true"></div>
-      </div>
-    </section>
+  <button class="aboutMenuBtn" type="button" aria-expanded="false" aria-controls="aboutQuickNav">このページの目次</button>
 
-    <section class="section fv">
-      <h1 class="h1">私たちの目指すもの</h1>
-      <p class="lead">トップは雰囲気と実例。説明はここに集約。</p>
-    </section>
+  <section class="aboutHero aboutHero--full" aria-label="ヒーロー">
+    <div class="aboutHeroMedia placeholder" aria-hidden="true"></div>
+    <div class="aboutHeroOverlay">
+      <h1 class="aboutHeroTitle">見物から、関係の旅へ。</h1>
+      <p class="aboutHeroSub">良い地域は良い旅人で育つ。良い地域も、また。</p>
+    </div>
+  </section>
 
-    <section class="section">
-      <div class="grid2">
-        <div class="card">
-          <div class="h2">正解探しではない</div>
-          <div class="ph ph--line w-90"></div>
-          <div class="ph ph--line w-70"></div>
-          <div class="ph ph--line w-80"></div>
-        </div>
-        <div class="card">
-          <div class="h2">公開と非公開の分業</div>
-          <div class="ph ph--line w-90"></div>
-          <div class="ph ph--line w-60"></div>
-          <div class="ph ph--line w-80"></div>
-        </div>
-      </div>
+  <main class="aboutMain" aria-label="私たちの目指すもの">
+    <aside class="aboutSideNav" id="aboutQuickNav" aria-label="ページ内ナビゲーション">
+      <a href="#about-features">このサイトでできること</a>
+      <a class="aboutSideNavChild" href="#feature-footprints">ごひいきさんの足あと</a>
+      <a class="aboutSideNavChild" href="#feature-map">わたしの地図</a>
+      <a class="aboutSideNavChild" href="#feature-gate">ちいきの入り口</a>
+      <a class="aboutSideNavChild" href="#feature-okatte">ちいきのおかって</a>
+      <a href="#about-wishes">私たちの願い</a>
+      <a href="#about-guidelines">ご利用にあたって</a>
+    </aside>
 
-      <div class="denseBox">
-        <div>
-          <div class="h2">登録/ログインで開くもの</div>
-          <p class="note">“読む”ではなく“関わる”が開く（ちいきのおかって、本人のみわたしの地図、調整、非公開連絡）。</p>
+    <div class="aboutContent">
+      <section class="aboutIntro" aria-label="導入">
+        <div class="aboutIntroLead">
+          <p>テーマパークで世界観が守られるのは、つくる側だけでなく、いいお客さんがいるからでもあります。世界観を大切にして楽しむお客さんが集まることで、場の空気も育っていきます。テーマパークと同じように、観光地としての地域もまた、来る方によって少しずつ空気がつくられる場所です。</p>
+          <p>一方で、テーマパークと違い、地域は土地や暮らしと深く結びついています。旅人にとっては魅力的な旅先でも、そこに住む方にとっては毎日の生活の場です。そこには、親や、そのまた親の代から積み重なってきた時間があり、子どもや孫へ受け渡していく場でもあります。だから地域は、自分たちが大切にしてきたものを守ろうとします。</p>
+          <p>FURUTABIは、そんな地域の感覚を、旅人にわかりやすく翻訳するための入口です。その土地で大切にされてきたものを、守る側になってもらえたら。地域の奥深さや、大切にされてきたものを味わう感覚も、少しずつ育ってくるかもしれません。</p>
         </div>
-        <a class="btn primary" href="../auth/login.html">ログインへ</a>
-      </div>
-    </section>
+      </section>
+
+      <section class="aboutSection" id="about-features" aria-label="このサイトでできること">
+        <div class="aboutSectionHead">
+          <p class="aboutEyebrow">2. このサイトでできること</p>
+          <h2 class="aboutSectionTitle">このサイトでできること</h2>
+          <p class="aboutSectionLead">ここでは、FURUTABIで提供する4つの機能を紹介します。それぞれの機能には、背景となる狙いと、具体的な使い方、そして誰にとってどんな価値があるのかを添えています。</p>
+        </div>
+
+        <div class="aboutFeatureGrid">
+          <article class="aboutFeatureCard" id="feature-footprints">
+            <button class="aboutFeatureSummary" type="button" aria-expanded="false">
+              <span class="aboutFeatureIcon" aria-hidden="true">01</span>
+              <span class="aboutFeatureSummaryText">
+                <span class="aboutFeatureName">ごひいきさんの足あと</span>
+                <span class="aboutFeaturePreview">ごひいきさん
+歌舞伎や相撲のごひいきのように、その土地を好きになって、何度も訪れ、応援するように関わってきた人。
+魅力を見つけ、読み解いて、そっと教えてくれる人。
+FURUTABIでは、そうした旅人を「ごひいきさん」と呼びます。
+
+1. どんな機能か
+– ごひいきさんの足あとは、誰でも書ける口コミではなく、ごひいきさん登録をしてくださった方だけが書き込めるものです。</span>
+              </span>
+            </button>
+            <div class="aboutFeatureBody">
+              <p>ごひいきさん</p>
+              <p>歌舞伎や相撲のごひいきのように、その土地を好きになって、何度も訪れ、応援するように関わってきた人。<br>魅力を見つけ、読み解いて、そっと教えてくれる人。<br>FURUTABIでは、そうした旅人を「ごひいきさん」と呼びます。</p>
+              <div class="aboutFeatureSubhead">1. どんな機能か</div>
+              <ul class="aboutFeatureList">
+                <li>– ごひいきさんの足あとは、誰でも書ける口コミではなく、ごひいきさん登録をしてくださった方だけが書き込めるものです。</li>
+                <li>– その地域で良い出会いがあったり、奥深さに触れたり、また訪れたくなる「好き」を見つけたごひいきさんが、その視点を写真と言葉で地域に返していく場です。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">2. 狙い</div>
+              <ul class="aboutFeatureList">
+                <li>– また来たくなる方が見つけた「好き」の視点を知れること。</li>
+                <li>– 関係を深めてきた人の配慮やまなざしを、読む方がなんとなく感じられること。</li>
+                <li>– 地域と旅人のあいだに、感謝や好きを返し合う良い循環が生まれること。</li>
+                <li>– 投稿を通じて、その人の関心や人となりが伝わり、ハブや地域の人が、どんな関わり方や案内が合いそうかを考える参考になること。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">4. 活用ストーリー</div>
+              <p>地図を開くと、ごひいきさんのピンに、町はずれの高台にある静かな境内の写真と、こんな言葉が残されていました。<br>「境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで。秋だなぁと思いながらOOさんで買ったおはぎを食べる時間が大好きです。」<br>その投稿を読んだAさんは、その場所をただ“見る”だけでなく、少し座って、その土地の時間を味わってみたくなります。<br>地域の方にとっても、「そんなふうにこの場所を見てくれていたんだ」と、自分たちの地域の魅力をあらためて知るきっかけになります。<br>境内を掃除している方々や和菓子店の方々も、その話を肴に旨い酒が飲めます。</p>
+            </div>
+          </article>
+
+          <article class="aboutFeatureCard" id="feature-map">
+            <button class="aboutFeatureSummary" type="button" aria-expanded="false">
+              <span class="aboutFeatureIcon" aria-hidden="true">02</span>
+              <span class="aboutFeatureSummaryText">
+                <span class="aboutFeatureName">わたしの地図</span>
+                <span class="aboutFeaturePreview">1. どんな機能か／狙い
+– わたしの地図は、旅先で訪れた場所や体験したことを、自分の地図として残していく機能です。
+– 写真やメモを添えてピンを立てられ、公開範囲は「自分だけ」「地域の関係者まで」「全体公開」から選べます。
+– 通うほどにピンが増え、季節や出来事が地図の上に積み重なっていくことで、自分と地域との関係が見えるようになります。公開した記録は、ごひいきさんの足あとにも追加されます。</span>
+              </span>
+            </button>
+            <div class="aboutFeatureBody">
+              <div class="aboutFeatureSubhead">1. どんな機能か／狙い</div>
+              <ul class="aboutFeatureList">
+                <li>– わたしの地図は、旅先で訪れた場所や体験したことを、自分の地図として残していく機能です。</li>
+                <li>– 写真やメモを添えてピンを立てられ、公開範囲は「自分だけ」「地域の関係者まで」「全体公開」から選べます。</li>
+                <li>– 通うほどにピンが増え、季節や出来事が地図の上に積み重なっていくことで、自分と地域との関係が見えるようになります。公開した記録は、ごひいきさんの足あとにも追加されます。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">3. 活用ストーリー</div>
+              <p>何度か同じ地域を訪れたBさんが、自分の地図を開くと、春に歩いた川辺、夏に立ち寄った商店、秋に見つけた静かな境内のピンが少しずつ増えています。<br>前に撮った写真やそのとき書いた一言を見返すと、「この時こう感じてたな」「またここに行きたいな」と、その土地との時間が自分の中にちゃんと積み重なっていることがわかります。<br>また、旅先でうれしいことをしてもらったのにその場でお礼を言えなかったとき、ここに書くことで「ありがとう」を伝えることもできます。</p>
+            </div>
+          </article>
+
+          <article class="aboutFeatureCard" id="feature-gate">
+            <button class="aboutFeatureSummary" type="button" aria-expanded="false">
+              <span class="aboutFeatureIcon" aria-hidden="true">03</span>
+              <span class="aboutFeatureSummaryText">
+                <span class="aboutFeatureName">ちいきの入り口</span>
+                <span class="aboutFeaturePreview">1. どんな機能か
+– ちいきの入り口は、初めて地域に関わる人が、短時間・低リスクの入口カードを選べる機能です。
+– カードにはつなぎ手と、所要時間や雰囲気タグが添えられていて、旅人は自分に合いそうなものを選べます。
+– たとえば「10分｜店先でおしゃべり」「30分｜森の散歩」「60分｜季節の手入れ」といったものです。
+– 多くの場合は、観光協会職員やバー・カフェの店主、お寺の住職など、地域のつなぎ手が入口になります。相手のスケジュールの範囲で、あなたが選べます。</span>
+              </span>
+            </button>
+            <div class="aboutFeatureBody">
+              <div class="aboutFeatureSubhead">1. どんな機能か</div>
+              <ul class="aboutFeatureList">
+                <li>– ちいきの入り口は、初めて地域に関わる人が、短時間・低リスクの入口カードを選べる機能です。</li>
+                <li>– カードにはつなぎ手と、所要時間や雰囲気タグが添えられていて、旅人は自分に合いそうなものを選べます。</li>
+                <li>– たとえば「10分｜店先でおしゃべり」「30分｜森の散歩」「60分｜季節の手入れ」といったものです。</li>
+                <li>– 多くの場合は、観光協会職員やバー・カフェの店主、お寺の住職など、地域のつなぎ手が入口になります。相手のスケジュールの範囲で、あなたが選べます。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">2. この機能の狙い</div>
+              <ul class="aboutFeatureList">
+                <li>– 旅先では、見物から関係に移る最初の一歩が難しいことがあります。</li>
+                <li>– 地域は、信頼の積み重ねの中で少しずつ心を開いていく場所です。</li>
+                <li>– そこでまずは、短時間の入口を自分で選べるようにし、不安を減らしながら「相性」を確かめてもらいます。</li>
+                <li>– つなぎ手があなたのことを少しずつ理解し、双方の信頼を積み重ねる最初の一歩を支えます。</li>
+                <li>– 合わなければ無理に続ける必要はなく、別のつなぎ手や関わり方に移ることもできます。関係を一足飛びに深めるのではなく、少しずつ育てていくための入口です。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">4. 活用ストーリー</div>
+              <p>初めてFURUTABIを訪れたCさんは、ちいきの入り口で「30分｜町はずれの小さな川沿いを散歩」というカードを見つけます。カードには「静けさ重視」「会話少なめ」とあり、つなぎ手も添えられていました。<br>歩きながら少し話してみると、つなぎ手が「この天気で今の季節なら、海沿いの高台にあるあの店で見る夕日がきれいですよ」と教えてくれます。<br>その日の夕方にその店を訪れ、「つなぎ手さんに教えてもらって来ました」と伝えると、店の方もやわらかく迎えてくれて、会話が自然に広がります。景色だけでなく、その土地との距離も少し近づいたように感じられました。</p>
+            </div>
+          </article>
+
+          <article class="aboutFeatureCard" id="feature-okatte">
+            <button class="aboutFeatureSummary" type="button" aria-expanded="false">
+              <span class="aboutFeatureIcon" aria-hidden="true">04</span>
+              <span class="aboutFeatureSummaryText">
+                <span class="aboutFeatureName">ちいきのおかって</span>
+                <span class="aboutFeaturePreview">1. どんな機能か
+– ちいきのおかってとは、古い家の裏側に、信頼できる人にだけ開かれたお勝手口があったように、少し関係ができた人に向けて開かれる、地域のもう一つの入口です。
+– ちいきの入り口などを通して信頼が積み重なったあと、つなぎ手が「この人なら合いそう」と思う体験や関わり方を、いくつか提案します。
+– その中から、あなたが自分に合いそうなものを選べます。</span>
+              </span>
+            </button>
+            <div class="aboutFeatureBody">
+              <div class="aboutFeatureSubhead">1. どんな機能か</div>
+              <ul class="aboutFeatureList">
+                <li>– ちいきのおかってとは、古い家の裏側に、信頼できる人にだけ開かれたお勝手口があったように、少し関係ができた人に向けて開かれる、地域のもう一つの入口です。</li>
+                <li>– ちいきの入り口などを通して信頼が積み重なったあと、つなぎ手が「この人なら合いそう」と思う体験や関わり方を、いくつか提案します。</li>
+                <li>– その中から、あなたが自分に合いそうなものを選べます。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">2. この機能の狙い</div>
+              <ul class="aboutFeatureList">
+                <li>– 地域には、誰にでも開かれている表の入口だけでなく、信頼関係があるからこそ案内できる関わり方があります。</li>
+                <li>– ちいきのおかっては、そうした体験を、無理のない形で少しずつ開いていくための機能です。</li>
+                <li>– つなぎ手が、あなたの関心やこれまでの関わり方を見ながら、次の一歩を提案します。</li>
+              </ul>
+              <div class="aboutFeatureSubhead">4. 活用ストーリー</div>
+              <p>何度か地域を訪れて、信頼関係を積み重ねてきた4人家族に、つなぎ手から「今の時期なら、漁船に乗ってカキ養殖を見学できますよ」と提案が届きました。<br>家族はその体験を選び、チャットで集合時間や服装、子どもでも参加できるかなどを確認します。<br>当日は、普段はなかなかできない漁船に乗って海へ。はじめて見る牡蠣棚に子どもたちもびっくりします。港に戻って採れたての牡蠣を焼いて味わうと、そのおいしさに大興奮。漁師さんの男ぶりに息子もすっかり感化され、帰ってからも「あんな男になりたい」と漁師の真似をする始末。家族みんなにとって、かけがえのない思い出になりました。</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="aboutSection aboutSection--soft" id="about-wishes" aria-label="私たちの願い">
+        <div class="aboutSectionHead">
+          <p class="aboutEyebrow">3. 私たちの願い</p>
+          <h2 class="aboutSectionTitle">私たちの願い</h2>
+        </div>
+        <div class="aboutTwoCol">
+          <div class="aboutPanel">
+            <h3 class="aboutPanelTitle">旅が地域見物になりやすいのは・・・</h3>
+            <p>地域の方も旅人も、相性の良い方とは関わりたいと思っている人がたくさんいます。<br>一方、配慮に欠ける方もいるので、観光業は安全を優先した設計になりがちです。<br>また、お互い迷惑ではないかと遠慮して、一歩を踏み出せないこともあります。</p>
+          </div>
+          <div class="aboutPanel">
+            <h3 class="aboutPanelTitle">地域と関わる旅も・・・</h3>
+            <p>一部の幸運な旅人は、地域のつなぎ手と出逢い、そこから地域のいろいろな方と深く関わって、貴重な体験や、価値観が変わるような体験をしてきました。<br>お金に余裕のある方は、別荘や常宿を持って定期的にその地域を訪れ、知り合いと親交を深めたり、風土を楽しんできました。</p>
+          </div>
+          <div class="aboutPanel">
+            <h3 class="aboutPanelTitle">地域と旅人が育てあう関係へ</h3>
+            <p>そんなふうに、地域と関係を育てながら味わう旅の楽しみ方を、もっと多くの方に開いていきたい。<br>それによって旅人も地域も育っていく良いサイクルを作っていきたい。</p>
+          </div>
+          <div class="aboutPanel">
+            <h3 class="aboutPanelTitle">このサイトのねらい</h3>
+            <p>地域やそこに住む方のどんな面と触れ合えるかは、あなたがどんな方かでも変わってきます。<br>また、見物ではなく関係作りをするためには、あなたの情報も必要になっていきます。<br>信頼を可視化して積み重ねることが得意なIT技術を使い、<br>地域という資源を通じて、人と人を豊かな関係でつないでいきたい。<br>そう思っています。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="aboutSection" id="about-guidelines" aria-label="ご利用にあたって">
+        <div class="aboutSectionHead">
+          <p class="aboutEyebrow">4. ご利用にあたって</p>
+          <h2 class="aboutSectionTitle">ご利用にあたって</h2>
+        </div>
+        <ul class="aboutGuidelines">
+          <li>
+            <strong>① 地域は暮らしの場です</strong>
+            <span>入ってよい場所か、撮ってよいものか、公開してよいことかを、ひと呼吸おいて考えてください。</span>
+          </li>
+          <li>
+            <strong>② 無理に踏み込まないでください</strong>
+            <span>合わないときは別のつなぎ手や関わり方を選び、困ったときは早めに相談してください。</span>
+          </li>
+          <li>
+            <strong>③ 情報の取り扱いについて</strong>
+            <span>プライバシーに配慮しながら、あなたの情報を一部記録し、ちいきのおかってなどで活用させていただくことがあります。詳しくはプライバシーポリシーをご確認ください。</span>
+          </li>
+        </ul>
+      </section>
+    </div>
   </main>
+
+  <script>
+    (function () {
+      var menuButton = document.querySelector('.aboutMenuBtn');
+      var quickNav = document.getElementById('aboutQuickNav');
+      var featureCards = document.querySelectorAll('.aboutFeatureCard');
+      var featureButtons = document.querySelectorAll('.aboutFeatureSummary');
+
+      if (menuButton && quickNav) {
+        menuButton.addEventListener('click', function () {
+          var expanded = menuButton.getAttribute('aria-expanded') === 'true';
+          menuButton.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          quickNav.classList.toggle('is-open', !expanded);
+        });
+      }
+
+      featureButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var card = button.closest('.aboutFeatureCard');
+          var isOpen = card.classList.contains('is-open');
+
+          featureCards.forEach(function (otherCard) {
+            otherCard.classList.remove('is-open');
+            otherCard.querySelector('.aboutFeatureSummary').setAttribute('aria-expanded', 'false');
+          });
+
+          if (!isOpen) {
+            card.classList.add('is-open');
+            button.setAttribute('aria-expanded', 'true');
+            window.requestAnimationFrame(function () {
+              window.requestAnimationFrame(function () {
+                var targetTop = button.getBoundingClientRect().top + window.scrollY;
+                window.scrollTo({ top: targetTop, behavior: 'smooth' });
+              });
+            });
+          }
+        });
+      });
+    }());
+  </script>
 </body>
 </html>
