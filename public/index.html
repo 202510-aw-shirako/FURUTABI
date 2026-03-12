@@ -44,16 +44,13 @@
 
     <!-- わたしの地図 + ごひいきさんの足あと -->
     <section class="section topMapSection" aria-label="わたしの地図とごひいきさんの足あと">
-      <h2 class="h2">ごひいきさんの足あと</h2>
+      <div class="sectionTitleRow">
+        <h2 class="h2">ごひいきさんの足あと</h2>
+        <a class="sectionTitleLink" href="about.html#feature-footprints">詳しくは。</a>
+      </div>
       <p class="lead">場所の上に、誰かの記録や視点が差してあることが一目でわかる構成にする。</p>
 
       <div class="topMapLayout" style="margin-top:18px;">
-        <svg class="topMapLines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <line x1="31" y1="16.7" x2="74" y2="24"></line>
-          <line x1="31" y1="50" x2="86" y2="36"></line>
-          <line x1="31" y1="83.3" x2="68" y2="70"></line>
-        </svg>
-
         <div class="topMapCards" aria-label="ごひいきさんの足あととわたしの地図の断片">
           <article class="card topMapCard" aria-label="ごひいきさんの足あと 1">
             <div class="topMapCardBody">
@@ -61,7 +58,7 @@
               <div class="topMapCardText">
                 <div class="topMapCardHead">
                   <span class="pill">ごひいきさんの足あと</span>
-                  <span class="small">01</span>
+                  <span class="topMapMarker"><span>1</span></span>
                 </div>
                 <div class="topMapComment" aria-hidden="true">
                   <div class="ph ph--line w-90"></div>
@@ -81,7 +78,7 @@
               <div class="topMapCardText">
                 <div class="topMapCardHead">
                   <span class="pill">ごひいきさんの足あと</span>
-                  <span class="small">02</span>
+                  <span class="topMapMarker"><span>2</span></span>
                 </div>
                 <div class="topMapComment" aria-hidden="true">
                   <div class="ph ph--line w-85"></div>
@@ -95,13 +92,13 @@
             </div>
           </article>
 
-          <article class="card topMapCard" aria-label="わたしの地図の断片 3">
+          <article class="card topMapCard" aria-label="ごひいきさんの足あと 3">
             <div class="topMapCardBody">
               <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
               <div class="topMapCardText">
                 <div class="topMapCardHead">
-                  <span class="pill">わたしの地図</span>
-                  <span class="small">03</span>
+                  <span class="pill">ごひいきさんの足あと</span>
+                  <span class="topMapMarker"><span>3</span></span>
                 </div>
                 <div class="topMapComment" aria-hidden="true">
                   <div class="ph ph--line w-90"></div>
@@ -120,16 +117,19 @@
           <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="わたしの地図" />
         </div>
 
-        <a class="topMapPin topMapPin--a" href="story.html" aria-label="ごひいきさんの足あと 1 の場所"></a>
-        <a class="topMapPin topMapPin--b" href="story.html" aria-label="ごひいきさんの足あと 2 の場所"></a>
-        <a class="topMapPin topMapPin--c" href="story.html" aria-label="わたしの地図の断片 3 の場所"></a>
+        <a class="topMapPin topMapPin--a" href="story.html" aria-label="ごひいきさんの足あと 1 の場所"><span>1</span></a>
+        <a class="topMapPin topMapPin--b" href="story.html" aria-label="ごひいきさんの足あと 2 の場所"><span>2</span></a>
+        <a class="topMapPin topMapPin--c" href="story.html" aria-label="ごひいきさんの足あと 3 の場所"><span>3</span></a>
       </div>
 
     </section>
 
     <!-- 初めての方へ（能書は別ページ） -->
     <section class="section" aria-label="初めての方へ">
-      <h2 class="h2">私たちの目指すもの</h2>
+      <div class="sectionTitleRow">
+        <h2 class="h2">私たちの目指すもの</h2>
+        <a class="sectionTitleLink" href="about.html">詳しくは。</a>
+      </div>
       <p class="lead">ハートウォーミングに惹きつける。詳しい説明は「私たちの目指すもの」へ。</p>
       <div class="grid2" style="margin-top:16px;">
         <div class="card">
@@ -149,8 +149,14 @@
 
     <!-- 入口カード：3枚 + 横スライド（ここでハブの顔が主役） -->
     <section class="section" aria-label="入口カード">
-      <h2 class="h2">ちいきの入り口</h2>
+      <div class="sectionTitleRow">
+        <h2 class="h2">ちいきの入り口</h2>
+        <a class="sectionTitleLink" href="about.html#feature-gate">詳しくは。</a>
+      </div>
       <p class="lead">実例で直感理解。3枚だけ見せて、横に続きがある。</p>
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <p class="note" style="margin:0;">ごひいきさん登録後に見ることができます。</p>
+      </div>
 
       <div class="slider" aria-label="入口カード（3枚＋横スクロール）" style="margin-top:16px;">
         <article class="card">

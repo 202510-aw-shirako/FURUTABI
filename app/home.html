@@ -37,7 +37,10 @@
 
     <!-- 提案 -->
     <section class="section" id="tab-proposals" aria-label="ちいきのおかって">
-      <h1 class="h1">ちいきのおかって</h1>
+      <div class="sectionTitleRow">
+        <h1 class="h1">ちいきのおかって</h1>
+        <a class="sectionTitleLink" href="../public/about.html#feature-okatte">詳しくは。</a>
+      </div>
       <p class="lead">少数提示（まず3）。</p>
       <div class="grid3" style="margin-top:16px;">
         <article class="card">
@@ -71,10 +74,13 @@
 
     <!-- 地図（サブタブ：私 / 断片） -->
     <section class="section" id="tab-map" aria-label="わたしの地図">
-      <div class="tabs appMapTabs appMapTabs--title" role="tablist" aria-label="地図の切り替え">
-        <button class="tab appMapTab is-on" type="button" role="tab" aria-selected="true" aria-controls="sub-my" data-map-tab="sub-my">わたしの地図</button>
-        <span class="appMapTabsDivider" aria-hidden="true"></span>
-        <button class="tab appMapTab" type="button" role="tab" aria-selected="false" aria-controls="sub-footprints" data-map-tab="sub-footprints">ごひいきさんの足あと</button>
+      <div class="sectionTitleRow">
+        <div class="tabs appMapTabs appMapTabs--title" role="tablist" aria-label="地図の切り替え">
+          <button class="tab appMapTab is-on" type="button" role="tab" aria-selected="true" aria-controls="sub-my" data-map-tab="sub-my">わたしの地図</button>
+          <span class="appMapTabsDivider" aria-hidden="true"></span>
+          <button class="tab appMapTab" type="button" role="tab" aria-selected="false" aria-controls="sub-footprints" data-map-tab="sub-footprints">ごひいきさんの足あと</button>
+        </div>
+        <a class="sectionTitleLink" id="appMapDetailLink" href="../public/about.html#feature-map">詳しくは。</a>
       </div>
       <p class="lead">表示を切り替えて見ます。</p>
 
@@ -156,7 +162,10 @@
 
     <!-- 連絡（非公開） -->
     <section class="section" id="tab-contact" aria-label="連絡">
-      <h2 class="h1">連絡（非公開）</h2>
+      <div class="sectionTitleRow">
+        <h2 class="h1">連絡（非公開）</h2>
+        <a class="sectionTitleLink" href="../public/safety.html">詳しくは。</a>
+      </div>
       <p class="lead">公開の空気を壊さず、困りごと・改善の連絡は非公開で届く。</p>
       <div class="grid2" style="margin-top:16px;">
         <div class="card">
@@ -179,6 +188,7 @@
   <script>
     (function () {
       var mapTabs = document.querySelectorAll('[data-map-tab]');
+      var mapDetailLink = document.getElementById('appMapDetailLink');
 
       if (!mapTabs.length) {
         return;
@@ -200,6 +210,15 @@
               panel.hidden = !isActive;
             }
           });
+
+          if (mapDetailLink) {
+            mapDetailLink.setAttribute(
+              'href',
+              targetId === 'sub-footprints'
+                ? '../public/about.html#feature-footprints'
+                : '../public/about.html#feature-map'
+            );
+          }
         });
       });
     }());
