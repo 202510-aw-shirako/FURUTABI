@@ -508,7 +508,7 @@ html { scroll-behavior: smooth; }
 }
 .aboutHero {
   position: relative;
-  min-height: 52vh;
+  min-height: 46vh;
   border-radius: 28px;
   overflow: hidden;
   background: #d8d8d8;
@@ -533,7 +533,7 @@ html { scroll-behavior: smooth; }
 .aboutHeroOverlay {
   position: relative;
   z-index: 1;
-  min-height: 52vh;
+  min-height: 46vh;
   display: grid;
   place-content: center;
   text-align: center;
@@ -564,9 +564,12 @@ html { scroll-behavior: smooth; }
   display: grid;
   gap: 18px;
   padding: 34px;
+  width: fit-content;
+  max-width: 100%;
+  justify-self: start;
   border-radius: 24px;
-  background: #ede6da;
-  border: 1px solid #dfd4c3;
+  background: #111;
+  border: 1px solid #262626;
 }
 .aboutIntroLead {
   display: grid;
@@ -575,8 +578,11 @@ html { scroll-behavior: smooth; }
 .aboutIntroLead p {
   margin: 0;
   max-width: 880px;
+  font-family: "UD Digi Kyokasho NK-R", "UD Digi Kyokasho NP-R", "UD Digi Kyokasho N-R", "Yu Mincho", "Hiragino Mincho ProN", serif;
   font-size: 16px;
   line-height: 1.9;
+  letter-spacing: .03em;
+  color: #fff;
   opacity: 0;
   clip-path: inset(0 100% 0 0);
   filter: blur(6px);
@@ -790,7 +796,7 @@ html { scroll-behavior: smooth; }
   }
   .aboutHero,
   .aboutHeroOverlay {
-    min-height: 44vh;
+    min-height: 40vh;
   }
   .aboutHero--full {
     width: auto;
@@ -800,6 +806,9 @@ html { scroll-behavior: smooth; }
   .aboutIntro,
   .aboutSection--soft {
     padding: 22px;
+  }
+  .aboutIntroLead p {
+    font-size: 16px;
   }
   .aboutFeatureGrid,
   .aboutTwoCol {
