@@ -74,11 +74,11 @@
       <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-end;">
         <div>
           <h2 class="h1">わたしの地図</h2>
-          <p class="lead">「わたしの地図」と「断片の地図」を切り替える。</p>
+          <p class="lead">「わたしの地図」と「ごひいきさんの足あと」を切り替える。</p>
         </div>
-        <div class="tabs">
-          <a class="tab is-on" href="#sub-my">わたしの地図</a>
-          <a class="tab" href="#sub-frag">断片の地図</a>
+        <div class="tabs" role="tablist" aria-label="地図の切り替え">
+          <button class="tab is-on" type="button" role="tab" aria-selected="true" aria-controls="sub-my" data-map-tab="sub-my">わたしの地図</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="sub-footprints" data-map-tab="sub-footprints">ごひいきさんの足あと</button>
         </div>
       </div>
 
@@ -98,14 +98,14 @@
         </div>
       </div>
 
-      <!-- 断片の地図 -->
-      <div id="sub-frag" style="margin-top:22px;">
+      <!-- ごひいきさんの足あと -->
+      <div id="sub-footprints" style="margin-top:22px;" hidden>
         <div class="fullbleed">
           <div class="container">
-            <div class="mapStage" aria-label="断片の地図">
+            <div class="mapStage" aria-label="ごひいきさんの足あと">
               <div class="ph ph--map" aria-hidden="true"></div>
 
-              <a class="mapPin pin--a" href="../public/story.html" aria-label="断片 1">
+              <a class="mapPin pin--a" href="../public/story.html" aria-label="ごひいきさんの足あと 1">
                 <span class="ph ph--pinThumb" aria-hidden="true"></span>
                 <span class="pinText">
                   <span class="ph ph--line w-90" aria-hidden="true"></span>
@@ -114,7 +114,7 @@
                 </span>
               </a>
 
-              <a class="mapPin pin--b" href="../public/story.html" aria-label="断片 2">
+              <a class="mapPin pin--b" href="../public/story.html" aria-label="ごひいきさんの足あと 2">
                 <span class="ph ph--pinThumb" aria-hidden="true"></span>
                 <span class="pinText">
                   <span class="ph ph--line w-80" aria-hidden="true"></span>
@@ -123,7 +123,7 @@
                 </span>
               </a>
 
-              <a class="mapPin pin--c" href="../public/story.html" aria-label="断片 3">
+              <a class="mapPin pin--c" href="../public/story.html" aria-label="ごひいきさんの足あと 3">
                 <span class="ph ph--pinThumb" aria-hidden="true"></span>
                 <span class="pinText">
                   <span class="ph ph--line w-90" aria-hidden="true"></span>
@@ -135,7 +135,7 @@
           </div>
         </div>
 
-        <p class="note" style="margin-top:14px;">公開仕様の断片を「地図で味わう」。</p>
+        <p class="note" style="margin-top:14px;">公開仕様のごひいきさんの足あとを「地図で味わう」。</p>
       </div>
 
       <div class="card" style="margin-top:18px;">
@@ -169,5 +169,34 @@
       </div>
     </section>
   </main>
+
+  <script>
+    (function () {
+      var mapTabs = document.querySelectorAll('[data-map-tab]');
+
+      if (!mapTabs.length) {
+        return;
+      }
+
+      mapTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var targetId = tab.getAttribute('data-map-tab');
+
+          mapTabs.forEach(function (otherTab) {
+            var panelId = otherTab.getAttribute('data-map-tab');
+            var panel = document.getElementById(panelId);
+            var isActive = otherTab === tab;
+
+            otherTab.classList.toggle('is-on', isActive);
+            otherTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+
+            if (panel) {
+              panel.hidden = !isActive;
+            }
+          });
+        });
+      });
+    }());
+  </script>
 </body>
 </html>
