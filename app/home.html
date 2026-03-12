@@ -39,7 +39,7 @@
     <section class="section" id="tab-proposals" aria-label="ちいきのおかって">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきのおかって</h1>
-        <a class="sectionTitleLink" href="../public/about.html#feature-okatte">詳しくは。</a>
+        <a class="sectionTitleLink" href="../public/about.html#feature-okatte">ご説明</a>
       </div>
       <p class="lead">少数提示（まず3）。</p>
       <div class="grid3" style="margin-top:16px;">
@@ -80,23 +80,30 @@
           <span class="appMapTabsDivider" aria-hidden="true"></span>
           <button class="tab appMapTab" type="button" role="tab" aria-selected="false" aria-controls="sub-footprints" data-map-tab="sub-footprints">ごひいきさんの足あと</button>
         </div>
-        <a class="sectionTitleLink" id="appMapDetailLink" href="../public/about.html#feature-map">詳しくは。</a>
+        <a class="sectionTitleLink" id="appMapDetailLink" href="../public/about.html#feature-map">ご説明</a>
       </div>
       <p class="lead">表示を切り替えて見ます。</p>
 
       <!-- 私の地図 -->
       <div id="sub-my" style="margin-top:16px;">
-        <div class="fullbleed">
-          <div class="container">
-            <img class="ph ph--map appMapImage" src="../public/assets/images/凪咲町.svg" alt="わたしの地図" />
+        <div class="topMapLayout appTopMapLayout" data-my-map>
+          <div class="myMapMain">
+            <div class="myMapRegisterPrompt" hidden data-my-map-menu>
+              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-create>新規登録</button>
+              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-edit hidden>編集</button>
+              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-delete hidden>削除</button>
+            </div>
+            <div class="topMapStage" aria-label="わたしの地図">
+              <div class="myMapViewport" data-my-map-viewport>
+                <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="わたしの地図" data-my-map-image />
+                <div class="myMapPinsLayer" aria-hidden="false" data-my-map-pins></div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="denseBox">
-          <div>
-            <div class="h2">わたしの地図</div>
-            <p class="note">本人のみデフォ（公開範囲は段階的に）。</p>
+          <div class="myMapZoomControls" aria-label="地図の拡大縮小">
+            <button class="btn ghost myMapZoomBtn" type="button" data-my-map-zoom-in>＋</button>
+            <button class="btn ghost myMapZoomBtn" type="button" data-my-map-zoom-out>−</button>
           </div>
-          <a class="btn primary" href="#">記録する（ワイヤ）</a>
         </div>
 
         <div class="card" style="margin-top:18px;">
@@ -107,46 +114,90 @@
               <li>– また、特別に親切にしてもらったことや、個別の対応として受け取るべきことを一般公開で書いてしまうと、次の方も同じことを期待してしまい、地域の負担になることがあります。そうした内容は、地域の方に向けた公開範囲で伝えるようにします。</li>
             </ul>
           </div>
+
+        <div class="myMapSheetWrap" hidden data-my-map-sheet-wrap>
+          <section class="card myMapSheet" aria-label="わたしの地図の新規登録">
+            <div class="myMapSheetHead">
+              <div>
+                <div class="h2" data-my-map-sheet-title>新規登録</div>
+                <p class="note">写真と記事をここで下書きします。</p>
+              </div>
+              <button class="btn ghost" type="button" data-my-map-close>閉じる</button>
+            </div>
+            <div class="myMapSheetBody">
+              <div class="ph ph--thumb myMapSheetPhoto" aria-hidden="true"></div>
+              <div class="myMapSheetForm">
+                <label class="myMapField">
+                  <span>タイトル</span>
+                  <input type="text" placeholder="タイトルを入力" data-my-map-title-input />
+                </label>
+                <label class="myMapField">
+                  <span>写真メモ</span>
+                  <input type="text" placeholder="写真のひとこと" data-my-map-photo-input />
+                </label>
+                <label class="myMapField">
+                  <span>記事</span>
+                  <textarea rows="7" placeholder="ここに記事を書きます" data-my-map-body-input></textarea>
+                </label>
+                <div class="myMapSheetActions">
+                  <button class="btn ghost" type="button" data-my-map-draft>下書き保存</button>
+                  <button class="btn primary" type="button" data-my-map-submit>登録を完了</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="myMapConfirmWrap" hidden data-my-map-confirm-wrap>
+          <section class="card myMapConfirm" aria-label="削除確認">
+            <div class="h2">このピンを削除しますか</div>
+            <p class="note">登録内容もこのピンから外れます。</p>
+            <div class="myMapConfirmActions">
+              <button class="btn ghost" type="button" data-my-map-confirm-cancel>キャンセル</button>
+              <button class="btn primary" type="button" data-my-map-confirm-delete>削除する</button>
+            </div>
+          </section>
+        </div>
       </div>
 
       <!-- ごひいきさんの足あと -->
       <div id="sub-footprints" style="margin-top:22px;" hidden>
-        <div class="fullbleed">
-          <div class="container">
-            <div class="mapStage" aria-label="ごひいきさんの足あと">
-              <img class="ph ph--map appMapImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
-
-              <a class="mapPin pin--a" href="../public/story.html" aria-label="ごひいきさんの足あと 1">
-                <span class="ph ph--pinThumb" aria-hidden="true"></span>
-                <span class="pinText">
-                  <span class="ph ph--line w-90" aria-hidden="true"></span>
-                  <span class="ph ph--line w-70" aria-hidden="true"></span>
-                  <span class="pinMeta">— ニックネーム</span>
-                </span>
-              </a>
-
-              <a class="mapPin pin--b" href="../public/story.html" aria-label="ごひいきさんの足あと 2">
-                <span class="ph ph--pinThumb" aria-hidden="true"></span>
-                <span class="pinText">
-                  <span class="ph ph--line w-80" aria-hidden="true"></span>
-                  <span class="ph ph--line w-60" aria-hidden="true"></span>
-                  <span class="pinMeta">— ニックネーム</span>
-                </span>
-              </a>
-
-              <a class="mapPin pin--c" href="../public/story.html" aria-label="ごひいきさんの足あと 3">
-                <span class="ph ph--pinThumb" aria-hidden="true"></span>
-                <span class="pinText">
-                  <span class="ph ph--line w-90" aria-hidden="true"></span>
-                  <span class="ph ph--line w-50" aria-hidden="true"></span>
-                  <span class="pinMeta">— ニックネーム</span>
-                </span>
-              </a>
-            </div>
+        <div class="topMapLayout appTopMapLayout" data-top-map data-top-map-kind="footprints">
+          <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
+            <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
+              <div class="topMapCardBody">
+                <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
+                <div class="topMapCardText">
+                  <div class="topMapCardHead">
+                    <span class="pill" data-top-map-label-text>ごひいきさんの足あと</span>
+                    <span class="topMapMarker"><span data-top-map-marker>1</span></span>
+                  </div>
+                  <div class="topMapComment" aria-hidden="true" data-top-map-comment="1">
+                    <div class="ph ph--line w-90"></div>
+                    <div class="ph ph--line w-80"></div>
+                    <div class="ph ph--line w-70"></div>
+                    <div class="ph ph--line w-85"></div>
+                  </div>
+                  <span class="pinMeta" data-top-map-meta>— ニックネーム</span>
+                </div>
+              </div>
+              <div class="topMapFooter">
+                <div class="topMapActions" aria-label="反応">
+                    <button class="topMapActionBtn" type="button" data-top-map-like>いいね <span>12</span></button>
+                    <button class="topMapActionBtn topMapActionBtn--thanks" type="button" data-top-map-thanks>ありがとう <span>4</span></button>
+                  </div>
+                  <a class="btn ghost topMapMore" href="../public/stories.html" data-top-map-link-anchor>続きは</a>
+                </div>
+            </article>
           </div>
-        </div>
 
-        <p class="note" style="margin-top:14px;">公開仕様のごひいきさんの足あとを「地図で味わう」。</p>
+          <div class="topMapStage" aria-label="ごひいきさんの足あと">
+            <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
+          </div>
+
+          <a class="topMapPin topMapPin--a is-active" href="../public/story.html" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+          <a class="topMapPin topMapPin--b" href="../public/story.html" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+          <a class="topMapPin topMapPin--c" href="../public/story.html" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+        </div>
 
         <div class="card" style="margin-top:18px;">
           <div class="h2">運用ルール</div>
@@ -164,7 +215,7 @@
     <section class="section" id="tab-contact" aria-label="連絡">
       <div class="sectionTitleRow">
         <h2 class="h1">連絡（非公開）</h2>
-        <a class="sectionTitleLink" href="../public/safety.html">詳しくは。</a>
+        <a class="sectionTitleLink" href="../public/safety.html">ご説明</a>
       </div>
       <p class="lead">公開の空気を壊さず、困りごと・改善の連絡は非公開で届く。</p>
       <div class="grid2" style="margin-top:16px;">
@@ -189,6 +240,419 @@
     (function () {
       var mapTabs = document.querySelectorAll('[data-map-tab]');
       var mapDetailLink = document.getElementById('appMapDetailLink');
+      var topMaps = document.querySelectorAll('[data-top-map]');
+      var myMap = document.querySelector('[data-my-map]');
+
+      var topMapConfigs = {
+        'my-map': {
+          label: 'わたしの地図',
+          link: '#sub-my',
+          reactions: { like: 12, thanks: 4 },
+          stories: {
+            '1': { id: '1', meta: '— ニックネーム', aria: 'わたしの地図 1' },
+            '2': { id: '2', meta: '— ニックネーム', aria: 'わたしの地図 2' },
+            '3': { id: '3', meta: '— ニックネーム', aria: 'わたしの地図 3' }
+          }
+        },
+        footprints: {
+          label: 'ごひいきさんの足あと',
+          link: '../public/stories.html',
+          reactions: { like: 12, thanks: 4 },
+          stories: {
+            '1': { id: '1', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 1' },
+            '2': { id: '2', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 2' },
+            '3': { id: '3', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 3' }
+          }
+        }
+      };
+
+      topMaps.forEach(function (topMap) {
+        var card = topMap.querySelector('[data-top-map-card]');
+        var pins = topMap.querySelectorAll('[data-top-map-pin]');
+        var likeBtn = topMap.querySelector('[data-top-map-like] span');
+        var thanksBtn = topMap.querySelector('[data-top-map-thanks] span');
+        var kind = topMap.getAttribute('data-top-map-kind');
+        var config = topMapConfigs[kind];
+        var selectedId = '1';
+
+        function syncCard() {
+          var story = config && config.stories[selectedId];
+          var comment;
+
+          if (!config || !story || !card) {
+            return;
+          }
+
+          card.setAttribute('aria-label', story.aria);
+          card.dataset.topMapCurrent = story.id;
+          card.querySelector('[data-top-map-label-text]').textContent = config.label;
+          card.querySelector('[data-top-map-marker]').textContent = story.id;
+          card.querySelector('[data-top-map-meta]').textContent = story.meta;
+          card.querySelector('[data-top-map-link-anchor]').setAttribute('href', config.link);
+
+          if (likeBtn) {
+            likeBtn.textContent = String(config.reactions.like);
+          }
+
+          if (thanksBtn) {
+            thanksBtn.textContent = String(config.reactions.thanks);
+          }
+
+          comment = card.querySelector('.topMapComment');
+          if (comment) {
+            comment.setAttribute('data-top-map-comment', story.id);
+          }
+
+          pins.forEach(function (pin) {
+            pin.classList.toggle('is-active', pin.getAttribute('data-top-map-pin') === selectedId);
+          });
+        }
+
+        pins.forEach(function (pin) {
+          pin.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (!pin.getAttribute('data-top-map-pin')) {
+              return;
+            }
+            selectedId = pin.getAttribute('data-top-map-pin');
+            syncCard();
+          });
+        });
+
+        syncCard();
+      });
+
+      if (myMap) {
+        var myMapStage = myMap.querySelector('.topMapStage');
+        var myMapPinsLayer = myMap.querySelector('[data-my-map-pins]');
+        var myMapMenu = myMap.querySelector('[data-my-map-menu]');
+        var myMapCreate = myMap.querySelector('[data-my-map-create]');
+        var myMapEdit = myMap.querySelector('[data-my-map-edit]');
+        var myMapDelete = myMap.querySelector('[data-my-map-delete]');
+        var myMapSheetWrap = document.querySelector('[data-my-map-sheet-wrap]');
+        var myMapClose = document.querySelector('[data-my-map-close]');
+        var myMapSubmit = document.querySelector('[data-my-map-submit]');
+        var myMapDraft = document.querySelector('[data-my-map-draft]');
+        var myMapTitleInput = document.querySelector('[data-my-map-title-input]');
+        var myMapPhotoInput = document.querySelector('[data-my-map-photo-input]');
+        var myMapBodyInput = document.querySelector('[data-my-map-body-input]');
+        var myMapSheetTitle = document.querySelector('[data-my-map-sheet-title]');
+        var myMapConfirmWrap = document.querySelector('[data-my-map-confirm-wrap]');
+        var myMapConfirmCancel = document.querySelector('[data-my-map-confirm-cancel]');
+        var myMapConfirmDelete = document.querySelector('[data-my-map-confirm-delete]');
+        var myMapViewport = myMap.querySelector('[data-my-map-viewport]');
+        var myMapImage = myMap.querySelector('[data-my-map-image]');
+        var myMapZoomIn = myMap.querySelector('[data-my-map-zoom-in]');
+        var myMapZoomOut = myMap.querySelector('[data-my-map-zoom-out]');
+        var myMapPinsData = [];
+        var myMapSelectedId = null;
+        var myMapEditingId = null;
+        var myMapIdSeed = 1;
+        var myMapZoom = 1;
+        var myMapPanX = 0;
+        var myMapPanY = 0;
+        var myMapDragging = false;
+        var myMapDragged = false;
+        var myMapDragStartX = 0;
+        var myMapDragStartY = 0;
+        var myMapPanStartX = 0;
+        var myMapPanStartY = 0;
+
+        function getMyMapPin(id) {
+          return myMapPinsData.find(function (pin) { return pin.id === id; }) || null;
+        }
+
+        function closeMyMapMenu() {
+          if (myMapMenu) {
+            myMapMenu.hidden = true;
+            myMapMenu.style.left = '';
+            myMapMenu.style.top = '';
+          }
+        }
+
+        function renderMyMapPins() {
+          if (!myMapPinsLayer) {
+            return;
+          }
+
+          myMapPinsLayer.innerHTML = '';
+          myMapPinsData.forEach(function (pin, index) {
+            var button = document.createElement('button');
+            var inner = document.createElement('span');
+
+            button.type = 'button';
+            button.className = 'topMapPin myMapPin' + (myMapSelectedId === pin.id ? ' is-active' : '');
+            button.setAttribute('data-my-map-pin-id', pin.id);
+            button.setAttribute('aria-label', 'わたしの地図のピン ' + (index + 1));
+            button.style.left = pin.x + '%';
+            button.style.top = pin.y + '%';
+
+            inner.textContent = String(index + 1);
+            button.appendChild(inner);
+
+            button.addEventListener('click', function (event) {
+              event.stopPropagation();
+              myMapSelectedId = pin.id;
+              renderMyMapPins();
+              openMyMapMenu(pin);
+            });
+
+            myMapPinsLayer.appendChild(button);
+          });
+        }
+
+        function openMyMapMenu(pin) {
+          var createVisible = !!pin && !pin.registered;
+          var editVisible = !!pin && pin.registered;
+
+          if (!myMapMenu || !pin) {
+            return;
+          }
+
+          myMapMenu.hidden = false;
+          myMapMenu.style.left = pin.x + '%';
+          myMapMenu.style.top = pin.y + '%';
+          if (myMapCreate) myMapCreate.hidden = !createVisible;
+          if (myMapEdit) myMapEdit.hidden = !editVisible;
+          if (myMapDelete) myMapDelete.hidden = !editVisible;
+        }
+
+        function openMyMapSheet(mode) {
+          var pin = getMyMapPin(myMapSelectedId);
+          if (!pin || !myMapSheetWrap) {
+            return;
+          }
+
+          myMapEditingId = pin.id;
+          myMapSheetWrap.hidden = false;
+          if (myMapSheetTitle) {
+            myMapSheetTitle.textContent = mode === 'edit' ? '編集' : '新規登録';
+          }
+          if (myMapTitleInput) myMapTitleInput.value = pin.title || '';
+          if (myMapPhotoInput) myMapPhotoInput.value = pin.photoNote || '';
+          if (myMapBodyInput) myMapBodyInput.value = pin.body || '';
+        }
+
+        function closeMyMapSheet() {
+          if (myMapSheetWrap) {
+            myMapSheetWrap.hidden = true;
+          }
+        }
+
+        function openMyMapConfirm() {
+          if (myMapConfirmWrap) {
+            myMapConfirmWrap.hidden = false;
+          }
+        }
+
+        function closeMyMapConfirm() {
+          if (myMapConfirmWrap) {
+            myMapConfirmWrap.hidden = true;
+          }
+        }
+
+        function syncMyMapZoom() {
+          if (myMapViewport) {
+            myMapViewport.style.transform = 'translate(' + myMapPanX + 'px, ' + myMapPanY + 'px) scale(' + myMapZoom + ')';
+          }
+          if (myMapZoomIn) {
+            myMapZoomIn.disabled = myMapZoom >= 1.8;
+          }
+          if (myMapZoomOut) {
+            myMapZoomOut.disabled = myMapZoom <= 1;
+          }
+          if (myMapStage) {
+            myMapStage.classList.toggle('is-draggable', myMapZoom > 1);
+          }
+        }
+
+        function startMyMapDrag(event) {
+          if (myMapZoom <= 1 || !myMapStage) {
+            return;
+          }
+          event.preventDefault();
+          myMapDragging = true;
+          myMapDragStartX = event.clientX;
+          myMapDragStartY = event.clientY;
+          myMapPanStartX = myMapPanX;
+          myMapPanStartY = myMapPanY;
+          myMapDragged = false;
+          myMapStage.classList.add('is-dragging');
+        }
+
+        function moveMyMapDrag(event) {
+          if (!myMapDragging) {
+            return;
+          }
+          if (Math.abs(event.clientX - myMapDragStartX) > 3 || Math.abs(event.clientY - myMapDragStartY) > 3) {
+            myMapDragged = true;
+          }
+          myMapPanX = myMapPanStartX + (event.clientX - myMapDragStartX);
+          myMapPanY = myMapPanStartY + (event.clientY - myMapDragStartY);
+          syncMyMapZoom();
+        }
+
+        function endMyMapDrag() {
+          if (!myMapDragging) {
+            return;
+          }
+          myMapDragging = false;
+          if (myMapStage) {
+            myMapStage.classList.remove('is-dragging');
+          }
+        }
+
+        if (myMapStage) {
+          myMapStage.addEventListener('click', function (event) {
+            var rect;
+            var x;
+            var y;
+            var pin;
+
+            if (event.target !== myMapStage && !event.target.classList.contains('topMapCanvasImage') && event.target !== myMapPinsLayer) {
+              return;
+            }
+            if (myMapDragged) {
+              myMapDragged = false;
+              return;
+            }
+
+            rect = myMapStage.getBoundingClientRect();
+            x = ((event.clientX - rect.left) / rect.width) * 100;
+            y = ((event.clientY - rect.top) / rect.height) * 100;
+
+            myMapPinsData = myMapPinsData.filter(function (item) {
+              return item.registered;
+            });
+
+            pin = {
+              id: 'pin-' + myMapIdSeed++,
+              x: Math.max(3, Math.min(97, x)),
+              y: Math.max(5, Math.min(95, y)),
+              registered: false,
+              title: '',
+              photoNote: '',
+              body: ''
+            };
+
+            myMapPinsData.push(pin);
+            myMapSelectedId = pin.id;
+            renderMyMapPins();
+          });
+        }
+
+        if (myMapCreate) {
+          myMapCreate.addEventListener('click', function () {
+            openMyMapSheet('create');
+          });
+        }
+
+        if (myMapEdit) {
+          myMapEdit.addEventListener('click', function () {
+            openMyMapSheet('edit');
+          });
+        }
+
+        if (myMapDelete) {
+          myMapDelete.addEventListener('click', function () {
+            openMyMapConfirm();
+          });
+        }
+
+        if (myMapSubmit) {
+          myMapSubmit.addEventListener('click', function () {
+            var pin = getMyMapPin(myMapEditingId);
+            if (!pin) {
+              return;
+            }
+            pin.registered = true;
+            pin.title = myMapTitleInput ? myMapTitleInput.value : '';
+            pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
+            pin.body = myMapBodyInput ? myMapBodyInput.value : '';
+            closeMyMapSheet();
+            renderMyMapPins();
+            openMyMapMenu(pin);
+          });
+        }
+
+        if (myMapDraft) {
+          myMapDraft.addEventListener('click', function () {
+            closeMyMapSheet();
+          });
+        }
+
+        if (myMapClose) {
+          myMapClose.addEventListener('click', function () {
+            closeMyMapSheet();
+          });
+        }
+
+        if (myMapConfirmCancel) {
+          myMapConfirmCancel.addEventListener('click', function () {
+            closeMyMapConfirm();
+          });
+        }
+
+        if (myMapConfirmDelete) {
+          myMapConfirmDelete.addEventListener('click', function () {
+            myMapPinsData = myMapPinsData.filter(function (pin) {
+              return pin.id !== myMapSelectedId;
+            });
+            myMapSelectedId = null;
+            closeMyMapConfirm();
+            closeMyMapMenu();
+            renderMyMapPins();
+          });
+        }
+
+        if (myMapZoomIn) {
+          myMapZoomIn.addEventListener('click', function () {
+            myMapZoom = Math.min(1.8, myMapZoom + 0.1);
+            syncMyMapZoom();
+          });
+        }
+
+        if (myMapZoomOut) {
+          myMapZoomOut.addEventListener('click', function () {
+            myMapZoom = Math.max(1, myMapZoom - 0.1);
+            if (myMapZoom === 1) {
+              myMapPanX = 0;
+              myMapPanY = 0;
+            }
+            syncMyMapZoom();
+          });
+        }
+
+        if (myMapStage) {
+          myMapStage.addEventListener('mousedown', function (event) {
+            if (
+              event.target !== myMapStage &&
+              event.target !== myMapPinsLayer &&
+              !event.target.classList.contains('topMapCanvasImage')
+            ) {
+              return;
+            }
+            startMyMapDrag(event);
+          });
+        }
+
+        document.addEventListener('mousemove', moveMyMapDrag);
+        document.addEventListener('mouseup', endMyMapDrag);
+
+        document.addEventListener('click', function (event) {
+          if (!myMap.contains(event.target) && myMapSheetWrap && !myMapSheetWrap.contains(event.target) && myMapConfirmWrap && !myMapConfirmWrap.contains(event.target)) {
+            closeMyMapMenu();
+            return;
+          }
+
+          if (myMapMenu && !myMapMenu.hidden && !myMapMenu.contains(event.target) && !event.target.closest('[data-my-map-pin-id]')) {
+            closeMyMapMenu();
+          }
+        });
+
+        renderMyMapPins();
+        syncMyMapZoom();
+      }
 
       if (!mapTabs.length) {
         return;
