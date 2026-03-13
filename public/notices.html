@@ -11,12 +11,7 @@
     <div class="container">
       <div class="inner">
         <div class="brand">FURUTABI｜郷旅</div>
-        <nav>
-          <a href="index.html">トップ</a>
-          <a href="about.html">私たちの目指すもの</a>
-          <a href="index.html#top-footprints">ごひいきさんの足あと</a>
-          <a href="../auth/login.html">ログイン</a>
-        </nav>
+        <nav data-site-nav="public_secondary"></nav>
       </div>
     </div>
   </header>
@@ -30,11 +25,12 @@
 
     <section class="section fv">
       <h1 class="h1">お知らせ</h1>
-      <p class="lead">この場所の運用や案内の更新を、静かにまとめています。</p>
+      <p class="lead">入口の公開タイミングや案内の更新を、一覧で確認できます。</p>
     </section>
 
     <section class="section">
-      <!-- TODO: 本実装時は CMS / API の一覧レスポンスでこのリストを置き換える -->
+      <!-- 一覧ページは preview 用の項目だけを描画する。
+           Java化では一覧 API やサーバー描画結果をここに差し込む想定。 -->
       <div class="noticeList" data-notice-list-items data-notice-base=""></div>
     </section>
 
@@ -43,13 +39,14 @@
       <div class="noticeExternalPlaceholder">
         <div>
           <div class="h2">地域全体の観光情報について</div>
-          <p class="note">催し・営業時間・広域案内などの総合情報は、観光協会サイトへの導線をここに差し込む想定です。</p>
+          <p class="note">催しや広域の観光情報は、観光協会サイトへの外部導線をここに設置する想定です。</p>
         </div>
         <span class="noticeExternalBadge">外部リンク想定</span>
       </div>
     </section>
   </main>
 
+  <script src="./assets/scripts/shared-ui.js"></script>
   <script src="./assets/scripts/notices.js"></script>
 </body>
 </html>

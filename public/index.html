@@ -11,15 +11,7 @@
     <div class="container">
       <div class="inner">
         <div class="brand">FURUTABI｜郷旅</div>
-        <nav>
-          <a href="bridge.html">ブリッジ</a>
-          <a href="#top-footprints">ごひいきさんの足あと</a>
-          <a href="about.html">私たちの目指すもの</a>
-          <a href="safety.html">安心と連絡</a>
-          <a href="local.html">地域の方へ</a>
-          <a href="../auth/login.html">ログイン</a>
-          <a href="../app/home.html">（ログイン後）</a>
-        </nav>
+        <nav data-site-nav="public_main"></nav>
       </div>
     </div>
   </header>
@@ -137,62 +129,7 @@
         <div class="entryCarouselStage">
           <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
           <div class="entryCarouselViewport">
-            <div class="entryCarouselTrack" data-entry-track>
-              <article class="card entryCarouselCard" data-entry-card>
-                <div class="ph ph--thumb" aria-hidden="true"></div>
-                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-                  <span class="pill">30分</span>
-                  <div class="ph ph--avatar" aria-hidden="true"></div>
-                </div>
-                <div class="h2">町はずれの小さな川沿いを散歩</div>
-                <p class="note">静けさ重視 / 会話少なめ</p>
-                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-              </article>
-
-              <article class="card entryCarouselCard" data-entry-card>
-                <div class="ph ph--thumb" aria-hidden="true"></div>
-                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-                  <span class="pill">10分</span>
-                  <div class="ph ph--avatar" aria-hidden="true"></div>
-                </div>
-                <div class="h2">店先で少しだけ話す</div>
-                <p class="note">短時間 / はじめて向け</p>
-                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-              </article>
-
-              <article class="card entryCarouselCard" data-entry-card>
-                <div class="ph ph--thumb" aria-hidden="true"></div>
-                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-                  <span class="pill">60分</span>
-                  <div class="ph ph--avatar" aria-hidden="true"></div>
-                </div>
-                <div class="h2">季節の手入れを少し手伝う</div>
-                <p class="note">体験寄り / つなぎ手あり</p>
-                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-              </article>
-
-              <article class="card entryCarouselCard" data-entry-card>
-                <div class="ph ph--thumb" aria-hidden="true"></div>
-                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-                  <span class="pill">20分</span>
-                  <div class="ph ph--avatar" aria-hidden="true"></div>
-                </div>
-                <div class="h2">海沿いの高台で夕方を待つ</div>
-                <p class="note">景色重視 / ひとり時間寄り</p>
-                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-              </article>
-
-              <article class="card entryCarouselCard" data-entry-card>
-                <div class="ph ph--thumb" aria-hidden="true"></div>
-                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-                  <span class="pill">45分</span>
-                  <div class="ph ph--avatar" aria-hidden="true"></div>
-                </div>
-                <div class="h2">朝の商店街を一緒に歩く</div>
-                <p class="note">会話あり / 暮らし寄り</p>
-                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-              </article>
-            </div>
+            <div class="entryCarouselTrack" data-entry-track data-entry-list data-entry-context="public"></div>
           </div>
           <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
         </div>
@@ -200,12 +137,7 @@
 
       <div class="card" style="margin-top:18px;">
         <div class="h2">運用ルール</div>
-        <ul class="aboutFeatureList">
-          <li>– 入口カードは、地域側の受け入れ余力や季節に合わせて、限定して掲示します。</li>
-          <li>– 参加するときは時間やルールを尊重し、写真撮影や質問はつなぎ手の案内に沿って行います。</li>
-          <li>– 内容に不安がある場合は、無理に参加せず、別のカードや時期を選べます。</li>
-          <li>– ここで大切にしたいのは、何かをこなすことよりも、安心して最初の一歩を踏み出せることです。</li>
-        </ul>
+        <ul class="aboutFeatureList" data-rule-list="gate_public"></ul>
       </div>
 
       <div class="denseBox">
@@ -245,6 +177,7 @@
       </div>
     </footer>
   </main>
+  <script src="./assets/scripts/shared-ui.js"></script>
   <script src="./assets/scripts/entry-carousel.js"></script>
   <script src="./assets/scripts/footprints.js"></script>
   <script src="./assets/scripts/notices.js"></script>

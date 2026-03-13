@@ -11,12 +11,7 @@
     <div class="container">
       <div class="inner">
         <div class="brand">FURUTABI｜郷旅</div>
-        <nav>
-          <a href="index.html">トップ</a>
-          <a href="index.html#top-footprints">ごひいきさんの足あと</a>
-          <a href="about.html">私たちの目指すもの</a>
-          <a href="../auth/login.html">ログイン</a>
-        </nav>
+        <nav data-site-nav="public_secondary"></nav>
       </div>
     </div>
   </header>
@@ -32,27 +27,26 @@
       <div class="fullbleed">
         <div class="ph ph--hero"></div>
       </div>
-      <p class="small" style="margin-top:10px;" data-story-meta>— 町はずれの風を好きになった人</p>
+      <p class="small" style="margin-top:10px;" data-story-meta>生まれ育った町を静かに見返す人</p>
     </section>
 
     <section class="section">
+      <!-- 本文エリアは単一テンプレート。
+           Java化では query の story を path variable / slug に置き換え、
+           詳細データだけサーバーまたは API から注入する想定。 -->
       <h1 class="h1" data-story-title>境内の風と、OOさんのおはぎ</h1>
-      <p class="lead" data-story-summary>ただ景色を見るだけでなく、少し座って時間を味わいたくなる足あとです。</p>
+      <p class="lead" data-story-summary>大きく説明するのではなく、時間の混ざり方が伝わるような足あとです。</p>
       <div class="card noticeArticle" style="margin-top:18px;" data-story-body>
-        <p>境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。</p>
-        <p>その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。</p>
-        <p>誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+        <p>境内のベンチに座っていると、時々サーっと風が渡ってきます。</p>
+        <p>木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。</p>
+        <p>その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。</p>
       </div>
     </section>
 
     <section class="section" aria-label="ごひいきさんの足あとの運用ルール">
       <div class="card">
         <div class="h2">運用ルール</div>
-        <ul class="aboutFeatureList">
-          <li>– この場では、星評価や点数はつけません。残してほしいのは批評よりも、その土地で見つけた好きや、受け取った縁や優しさへのお礼です。</li>
-          <li>– 困りごとや改善点は公開の場ではなく、非公開で運営に伝えてもらいます。</li>
-          <li>– また、特別な対応や現場ごとの細かな運用知は、必要に応じて地域の方にだけ見える範囲で扱います。そうすることで、公開の場の空気を守りながら、地域側の学びや受け入れの工夫にもつなげていきます。</li>
-        </ul>
+        <ul class="aboutFeatureList" data-rule-list="footprints"></ul>
       </div>
     </section>
 
@@ -61,9 +55,11 @@
         <h2 class="h2">ほかのごひいきさんの足あと</h2>
         <a class="sectionTitleLink" href="index.html">トップへ</a>
       </div>
-      <p class="lead">地図から別の足あとも選べます。</p>
+      <p class="lead">地図から別の足あとを選び、その場でカードを切り替えて読めます。</p>
 
-      <div class="topMapLayout appTopMapLayout" style="margin-top:18px;" data-story-map>
+      <div class="topMapLayout appTopMapLayout" style="margin-top:18px;" data-story-map data-top-map data-top-map-kind="footprints">
+        <!-- 記事下の地図は「別記事へ回遊するための軽量 preview」。
+             Java化でも詳細本文とは別に、関連数件だけ返す設計が向いている。 -->
         <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
           <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
             <div class="topMapCardBody">
@@ -76,7 +72,7 @@
                 <div class="topMapComment" data-top-map-comment="1">
                   <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
                   <div data-top-map-comment-body>
-                    <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                    <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。</p>
                   </div>
                 </div>
               </div>
@@ -115,18 +111,22 @@
       <div class="denseBox">
         <div>
           <div class="h2">関わる入口を開く</div>
-          <p class="note">入口の詳細・案内は登録/ログイン後。</p>
+          <p class="note">入口の詳細や登録はログイン/登録後に進みます。</p>
         </div>
         <a class="btn primary" href="../auth/login.html">ログインへ</a>
       </div>
     </section>
   </main>
+
+  <script src="./assets/scripts/shared-ui.js"></script>
   <script src="./assets/scripts/footprints.js"></script>
   <script>
     (function () {
+      var shared = window.FURUTABI_SHARED_UI;
       var params = new URLSearchParams(window.location.search);
       var storyId = params.get('story') || '1';
       var footprints = window.FURUTABI_FOOTPRINTS;
+      // Wireでは共通JSから読むが、Java化ではここを API / サーバー注入データに差し替える。
       var storyData = footprints ? footprints.withBasePath('') : {};
       var currentStory = storyData[storyId] || storyData['1'];
       var title = document.querySelector('[data-story-title]');
@@ -135,17 +135,24 @@
       var body = document.querySelector('[data-story-body]');
       var map = document.querySelector('[data-story-map]');
 
+      if (!currentStory) {
+        return;
+      }
+
       if (title) title.textContent = currentStory.title;
       if (summary) summary.textContent = currentStory.summary;
       if (meta) meta.textContent = currentStory.meta;
-      if (body) {
-        body.innerHTML = currentStory.body.map(function (paragraph) {
-          return '<p>' + paragraph + '</p>';
-        }).join('');
+      if (body && shared) {
+        shared.renderParagraphs(body, currentStory.body || []);
       }
-      document.title = 'FURUTABI Wire | ' + currentStory.title;
+      if (shared) {
+        shared.setPageTitle('FURUTABI Wire | ', currentStory.title);
+      } else {
+        document.title = 'FURUTABI Wire | ' + currentStory.title;
+      }
 
       if (map && footprints) {
+        // preview 地図は共通ロジックで回し、ページごとの差分は初期選択IDだけにする。
         footprints.initPreviewMap(map, storyData, {
           label: 'ごひいきさんの足あと',
           initialStoryId: currentStory.id

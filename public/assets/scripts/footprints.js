@@ -1,48 +1,53 @@
 (function () {
   var defaultLabel = 'ごひいきさんの足あと';
+  // Wire段階の足あと共通データ。
+  // Java化では `stories` は DB + API へ置き換え、
+  // このファイルには preview 地図の UI ロジックだけ残す想定。
   var stories = {
     '1': {
       id: '1',
       title: '境内の風と、OOさんのおはぎ',
-      meta: '— 町はずれの風を好きになった人',
-      summary: 'ただ景色を見るだけでなく、少し座って時間を味わいたくなる足あとです。',
+      meta: '生まれ育った町を静かに見返す人',
+      summary: '大きく説明するのではなく、時間の混ざり方が伝わるような足あとです。',
       recordedAt: '2026-03-12',
       season: 'spring',
       body: [
-        '境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。',
-        'その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。',
-        '誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。'
+        '境内のベンチに座っていると、時々サーっと風が渡ってきます。',
+        '木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。',
+        '観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。'
       ]
     },
     '2': {
       id: '2',
-      title: '小さな川沿いを、話しすぎずに歩く',
-      meta: '— 川沿いを歩くのが好きな人',
-      summary: '静けさの中で地域の空気に触れられる、短い散歩の足あとです。',
+      title: '小さな店先で、ひとこと教わる',
+      meta: '暮らしの声をやわらかく受け取る人',
+      summary: '声をかけるだけでなく、そこで流れている時間ごと受け取る足あとです。',
       recordedAt: '2026-07-12',
       season: 'summer',
       body: [
-        '町はずれの小さな川沿いを歩いていると、観光地のメイン通りでは感じにくい生活の速度が見えてきます。',
-        '無理に会話を広げなくても、時々「この先の光がきれいですよ」と教えてもらうくらいで、十分に豊かでした。',
-        'この土地では、何か大きな体験をすることだけが旅ではないのだと、歩きながら少しずつわかってきた気がします。'
+        '通りの角にある小さな店先で、季節の話を少しだけ聞かせてもらいました。',
+        '何かを買うことよりも、まずその場にある空気を受け取ることが大事なのだと感じました。店の人の言葉は短かったけれど、暮らしに根ざした重みがありました。',
+        'こういう時間は、強いおすすめ文句にしなくても十分に残ると思います。読み終わったあとに、町を歩く速度が少し変わるような足あとになればと思っています。'
       ]
     },
     '3': {
       id: '3',
-      title: '手を入れている人がいる景色を好きになる',
-      meta: '— 季節の手入れに惹かれた人',
-      summary: '地域の手入れや気配に触れて、その場所の見え方が変わる足あとです。',
+      title: '朝の入り口で見つけた、町のやさしさ',
+      meta: '朝の気配を静かに受け取った人',
+      summary: '場所だけでなく、そこに流れる関係や気配を持ち帰る足あとです。',
       recordedAt: '2026-11-12',
       season: 'autumn',
       body: [
-        '季節の手入れをしている方の話を少し聞いたあとで同じ道を歩くと、見えるものがまったく違いました。',
-        'きれいだなと思っていた風景の奥に、誰かが手をかけて守ってきた時間があるとわかると、その景色が少し深くなります。',
-        'また来るときは、ただ訪れるだけでなく、その豊かさをちゃんと味わえる旅人でいたいと思いました。'
+        '朝の入口を歩いていると、急いでいない人たちのやりとりが自然に目に入ってきました。',
+        '誰かが何かをしてあげているというより、その場で当たり前に支え合っている感じがありました。旅先として見るより先に、生活の輪郭を受け取った気がしました。',
+        'まだ言葉にしきれないけれど、その優しさをちゃんと返せる旅人でいたいと思いました。'
       ]
     }
   };
 
   function withBasePath(basePath) {
+    // 画面ごとに public / app で相対パスが違うため、リンクだけここで吸収する。
+    // Javaルーティング化したら `/stories/{id}` などの絶対パス生成に置き換える。
     return Object.keys(stories).reduce(function (acc, id) {
       var story = stories[id];
       acc[id] = {
@@ -70,18 +75,22 @@
 
   function renderPreviewCard(card, story, label) {
     var commentWrap;
+    var labelNode;
+    var linkNode;
 
     if (!card || !story) {
       return;
     }
 
+    // 詳細ページでは本文全文を出すが、地図カードでは同じデータから軽量表示だけを使う。
     card.setAttribute('aria-label', story.aria);
     card.dataset.topMapCurrent = story.id;
     card.dataset.recordedAt = story.recordedAt || '';
     card.dataset.season = story.season || '';
 
-    if (card.querySelector('[data-top-map-label]')) {
-      card.querySelector('[data-top-map-label]').textContent = label || defaultLabel;
+    labelNode = card.querySelector('[data-top-map-label]') || card.querySelector('[data-top-map-label-text]');
+    if (labelNode) {
+      labelNode.textContent = label || defaultLabel;
     }
     if (card.querySelector('[data-top-map-marker]')) {
       card.querySelector('[data-top-map-marker]').textContent = story.id;
@@ -89,8 +98,9 @@
     if (card.querySelector('[data-top-map-title]')) {
       card.querySelector('[data-top-map-title]').textContent = story.title;
     }
-    if (card.querySelector('[data-top-map-link]')) {
-      card.querySelector('[data-top-map-link]').setAttribute('href', story.link);
+    linkNode = card.querySelector('[data-top-map-link]') || card.querySelector('[data-top-map-link-anchor]');
+    if (linkNode) {
+      linkNode.setAttribute('href', story.link);
     }
 
     renderPreviewBody(card.querySelector('[data-top-map-comment-body]'), story);
@@ -115,6 +125,8 @@
   }
 
   function initPreviewMap(root, storyData, options) {
+    // Top / 記事詳細 / ログイン後ホームの「ごひいきさんの足あと」は
+    // すべてこの初期化関数を通す。ページごとの差分は options に閉じ込める。
     var card = root ? root.querySelector('[data-top-map-card]') : null;
     var pins = root ? Array.prototype.slice.call(root.querySelectorAll('[data-top-map-pin]')) : [];
     var stage = root ? root.querySelector('[data-top-map-stage]') : null;
@@ -132,6 +144,7 @@
     var dragStartY = 0;
     var panStartX = 0;
     var panStartY = 0;
+    var pointerId = null;
 
     if (!root || !card || !storyData) {
       return null;
@@ -143,6 +156,8 @@
         return;
       }
 
+      // Java化後も「一覧用の軽いカード更新」はフロントで維持しやすいよう、
+      // 詳細取得と切り分けた単純な同期処理にしている。
       renderPreviewCard(card, story, options && options.label ? options.label : defaultLabel);
       syncPreviewPins(pins, selectedId, storyData);
       if (options && typeof options.onSync === 'function') {
@@ -165,14 +180,26 @@
       }
     }
 
+    function getClientPoint(event) {
+      if (event.touches && event.touches.length) {
+        return { x: event.touches[0].clientX, y: event.touches[0].clientY };
+      }
+      if (event.changedTouches && event.changedTouches.length) {
+        return { x: event.changedTouches[0].clientX, y: event.changedTouches[0].clientY };
+      }
+      return { x: event.clientX, y: event.clientY };
+    }
+
     function startDrag(event) {
+      var point = getClientPoint(event);
       if (zoom <= 1 || !stage) {
         return;
       }
       event.preventDefault();
       dragging = true;
-      dragStartX = event.clientX;
-      dragStartY = event.clientY;
+      pointerId = typeof event.pointerId === 'number' ? event.pointerId : null;
+      dragStartX = point.x;
+      dragStartY = point.y;
       panStartX = panX;
       panStartY = panY;
       dragged = false;
@@ -180,14 +207,19 @@
     }
 
     function moveDrag(event) {
+      var point;
       if (!dragging) {
         return;
       }
-      if (Math.abs(event.clientX - dragStartX) > 3 || Math.abs(event.clientY - dragStartY) > 3) {
+      if (pointerId !== null && typeof event.pointerId === 'number' && event.pointerId !== pointerId) {
+        return;
+      }
+      point = getClientPoint(event);
+      if (Math.abs(point.x - dragStartX) > 3 || Math.abs(point.y - dragStartY) > 3) {
         dragged = true;
       }
-      panX = panStartX + (event.clientX - dragStartX);
-      panY = panStartY + (event.clientY - dragStartY);
+      panX = panStartX + (point.x - dragStartX);
+      panY = panStartY + (point.y - dragStartY);
       syncZoom();
     }
 
@@ -196,11 +228,23 @@
         return;
       }
       dragging = false;
+      pointerId = null;
       if (stage) {
         stage.classList.remove('is-dragging');
       }
     }
 
+    function updateZoom(nextZoom) {
+      zoom = Math.max(1, Math.min(1.8, nextZoom));
+      if (zoom === 1) {
+        panX = 0;
+        panY = 0;
+      }
+      syncZoom();
+    }
+
+    // ピン押下では遷移せず、その場でカードだけ差し替える。
+    // 実詳細への遷移はカード側のリンクで行う設計。
     pins.forEach(function (pin) {
       pin.addEventListener('click', function (event) {
         var id = pin.getAttribute('data-top-map-pin');
@@ -218,7 +262,7 @@
     });
 
     if (stage) {
-      stage.addEventListener('mousedown', function (event) {
+      stage.addEventListener('pointerdown', function (event) {
         var pinTarget = event.target.closest('[data-top-map-pin]');
         if (
           event.target !== stage &&
@@ -230,28 +274,29 @@
         }
         startDrag(event);
       });
+
+      stage.addEventListener('wheel', function (event) {
+        var delta = event.deltaY < 0 ? 0.1 : -0.1;
+        event.preventDefault();
+        updateZoom(zoom + delta);
+      }, { passive: false });
     }
 
     if (zoomIn) {
       zoomIn.addEventListener('click', function () {
-        zoom = Math.min(1.8, zoom + 0.1);
-        syncZoom();
+        updateZoom(zoom + 0.1);
       });
     }
 
     if (zoomOut) {
       zoomOut.addEventListener('click', function () {
-        zoom = Math.max(1, zoom - 0.1);
-        if (zoom === 1) {
-          panX = 0;
-          panY = 0;
-        }
-        syncZoom();
+        updateZoom(zoom - 0.1);
       });
     }
 
-    document.addEventListener('mousemove', moveDrag);
-    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('pointermove', moveDrag);
+    document.addEventListener('pointerup', endDrag);
+    document.addEventListener('pointercancel', endDrag);
 
     syncCard();
     syncZoom();

@@ -1,17 +1,19 @@
 (function () {
   var ONE_MONTH_FALLBACK_DAYS = 31;
+  var shared = window.FURUTABI_SHARED_UI;
 
-  // TODO: 本実装時は CMS / API から取得した公開中のお知らせに差し替える。
+  // Wire段階のお知らせ共通データ。
+  // Java化では notices テーブルや CMS 由来の API レスポンスに置き換える。
   var notices = [
     {
-      title: '春の受け入れ日程を更新しました',
-      summary: '入口カードの公開タイミングと、今月の案内枠の考え方をまとめています。',
+      title: '春の入口公開タイミングを更新しました',
+      summary: '入口カードの公開日時と、初回案内の流れをまとめています。',
       body: [
-        '今月は、初めて地域に入る方に向けた入口カードの公開タイミングを少し調整しています。',
-        '混雑を避けながら、静かに関われる入口を中心に並べる方針です。',
-        '詳細な受け入れ状況は、つなぎ手の案内やログイン後の画面で順次ご確認ください。'
+        '春に向けて、地域の人と最初に会う導線を少しだけ整えました。',
+        '公開トップで見えるトピックス欄からも、静かに確認できるようにしています。',
+        '詳しい入口の扱いや案内の考え方は、ログイン後のページでも追える構成です。'
       ],
-      category: '運用',
+      category: '案内',
       publishedAt: '2026-03-10T09:00:00+09:00',
       status: 'published',
       slug: 'spring-acceptance-update',
@@ -22,14 +24,14 @@
       updatedAt: '2026-03-10T09:00:00+09:00'
     },
     {
-      title: 'ごひいきさん登録まわりの案内を整えました',
-      summary: '登録前に確認したい流れを、公開ページ側でも見つけやすくしています。',
+      title: 'ごひいきさん足あとまわりの導線を整えました',
+      summary: '足あと記事へ直接進める構成と、記事下の回遊導線を見直しています。',
       body: [
-        'ごひいきさん登録に進む前に、サイト内で確認してほしい導線を見直しました。',
-        'はじめての方でも、登録前に「この場所がどういう空気を守ろうとしているか」を追いやすくしています。',
-        '具体的な登録導線は、ログインや案内ページからご確認ください。'
+        'ごひいきさんの足あとは、一覧を挟まずに詳細へ進めるようにしました。',
+        '記事ページの下にも、地図と別の記事への入口を置いています。',
+        '必要以上に強い説明を増やさず、自然に回遊できるよう整えています。'
       ],
-      category: '案内',
+      category: '更新',
       publishedAt: '2026-03-07T12:00:00+09:00',
       status: 'published',
       slug: 'guide-refresh',
@@ -40,14 +42,14 @@
       updatedAt: '2026-03-07T12:00:00+09:00'
     },
     {
-      title: '町はずれの散歩導線を見直しています',
-      summary: '季節の変化に合わせて、案内する順路と紹介文の調整を進めています。',
+      title: '歩きやすさの調整予定を反映しています',
+      summary: '町歩きの見え方にあわせて、表示上の説明や余白を見直しています。',
       body: [
-        '町はずれの小さな川沿いを歩く導線について、季節に合わせた紹介文の更新を進めています。',
-        '静かに過ごしたい方が選びやすいよう、所要時間や雰囲気タグの見せ方も再確認しています。',
-        '細かな案内は今後も見直しながら整えていきます。'
+        '歩きやすい見え方になるよう、案内の密度や余白の調整を進めています。',
+        '過剰な説明を避けつつ、必要な情報だけ拾える状態を目指しています。',
+        '大きな変更は段階的に行い、更新内容はこのお知らせで追えるようにします。'
       ],
-      category: '更新',
+      category: '予定',
       publishedAt: '2026-02-26T10:00:00+09:00',
       status: 'published',
       slug: 'walkway-adjustment',
@@ -58,45 +60,9 @@
       updatedAt: '2026-02-26T10:00:00+09:00'
     },
     {
-      title: '非公開の相談導線を準備しています',
-      summary: '困りごとや改善提案を、公開の空気を壊さず届ける設計を進めています。',
-      body: [
-        '公開の場ではなく、非公開で相談や改善提案を届けられる導線の整理を進めています。',
-        '公開ページ側では、空気を守ることを優先しつつ、必要な連絡先に迷わずたどり着ける構成を目指しています。',
-        '運用方針は今後も調整の可能性があります。'
-      ],
-      category: '準備中',
-      publishedAt: '2026-02-18T10:30:00+09:00',
-      status: 'published',
-      slug: 'private-contact-flow',
-      topicsEnabled: true,
-      topicsStartAt: '',
-      topicsEndAt: '',
-      createdAt: '2026-02-17T11:00:00+09:00',
-      updatedAt: '2026-02-18T10:30:00+09:00'
-    },
-    {
-      title: '地域の方へ向けた説明ページを見直しました',
-      summary: '受け入れ側の考え方を共有する説明を、読み返しやすく整えています。',
-      body: [
-        '地域の方へ向けた説明ページの構成を見直しました。',
-        'どんな方にどんな空気で関わってほしいかが、読み返しやすい形になるよう調整しています。',
-        '今後も状況に応じて言葉を磨いていきます。'
-      ],
-      category: '更新',
-      publishedAt: '2026-01-25T09:00:00+09:00',
-      status: 'published',
-      slug: 'local-page-refresh',
-      topicsEnabled: true,
-      topicsStartAt: '',
-      topicsEndAt: '',
-      createdAt: '2026-01-23T10:00:00+09:00',
-      updatedAt: '2026-01-25T09:00:00+09:00'
-    },
-    {
-      title: '準備中のお知らせサンプル',
-      summary: '公開前のためトピックスには出ません。',
-      body: ['これは下書き状態のサンプルです。'],
+      title: '確認中の下書きサンプル',
+      summary: '公開前のためトピックスには出しません。',
+      body: ['これは運用確認用のサンプルです。'],
       category: '下書き',
       publishedAt: '2026-03-12T08:00:00+09:00',
       status: 'draft',
@@ -159,7 +125,8 @@
       return explicitEnd;
     }
 
-    // topicsEndAt 未設定時は topicsStartAt -> publishedAt の順に1か月後を採用する。
+    // Java側でも同じ判定を再利用できるよう、ここでは純粋な日付関数に寄せている。
+    // topicsEndAt 未設定時は topicsStartAt -> publishedAt の順で1か月後を使う。
     return addOneMonth(start || publishedAt);
   }
 
@@ -203,6 +170,8 @@
   }
 
   function getTopicsNotices(options) {
+    // トピックスは「一覧データの一部を切り出す」だけに留める。
+    // 将来は API 側で max 件に絞って返してもよい。
     var current = options && options.now ? options.now : new Date();
     var max = options && options.max ? options.max : 5;
 
@@ -231,17 +200,21 @@
   }
 
   function renderTopics(root) {
+    // トップ / ログイン後ホームは同じトピックス描画を使う。
+    // 差分は basePath と max 件数だけ data-* で渡す。
     var basePath = root.getAttribute('data-notice-base') || '';
     var max = Number(root.getAttribute('data-notice-max') || '5');
     var items = getTopicsNotices({ max: max });
-    var html;
+    var section = root.closest('[data-notice-topics]');
 
     if (!items.length) {
-      root.closest('[data-notice-topics]').hidden = true;
+      if (section) {
+        section.hidden = true;
+      }
       return;
     }
 
-    html = items.map(function (notice) {
+    root.innerHTML = items.map(function (notice) {
       var meta = notice.category || formatDateLabel(notice.publishedAt);
       return '' +
         '<a class="topicItemLink" href="' + escapeHtml(buildNoticeHref(basePath, notice.slug)) + '">' +
@@ -249,14 +222,14 @@
             (meta ? '<span class="topicMetaText">' + escapeHtml(meta) + '</span>' : '') +
             '<span class="topicTitle">' + escapeHtml(notice.title) + '</span>' +
           '</span>' +
-          '<span class="topicCta" aria-hidden="true">›</span>' +
+          '<span class="topicCta" aria-hidden="true">→</span>' +
         '</a>';
     }).join('');
-
-    root.innerHTML = html;
   }
 
   function renderNoticeList(root) {
+    // 一覧ページは preview 用の項目だけ描画する。
+    // Java化ではこの関数を残し、データ取得だけ API に差し替えやすい。
     var basePath = root.getAttribute('data-notice-base') || '';
     var items = getSortedPublishedNotices();
 
@@ -277,12 +250,11 @@
   }
 
   function renderNoticeDetail(root) {
-    var params = new URLSearchParams(window.location.search);
-    var slug = params.get('slug');
-    var notice = getSortedPublishedNotices().find(function (item) {
+    var slug = shared ? shared.readQueryParam('slug') : new URLSearchParams(window.location.search).get('slug');
+    var sorted = getSortedPublishedNotices();
+    var notice = sorted.find(function (item) {
       return item.slug === slug;
-    }) || getSortedPublishedNotices()[0];
-    var bodyHtml;
+    }) || sorted[0];
     var relatedBase = root.getAttribute('data-notice-base') || '';
 
     if (!notice) {
@@ -290,12 +262,13 @@
       return;
     }
 
-    // TODO: 将来は slug または id ごとに CMS / API の詳細データへ差し替える。
-    bodyHtml = (notice.body || []).map(function (paragraph) {
-      return '<p>' + escapeHtml(paragraph) + '</p>';
-    }).join('');
-
-    document.title = 'FURUTABI Wire | ' + notice.title;
+    // TODO: 本実装時は slug または id をもとに CMS / API の詳細データへ置き換える
+    // いまは単一テンプレート + query で詳細切り替えの設計だけ先に固めている。
+    if (shared) {
+      shared.setPageTitle('FURUTABI Wire | ', notice.title);
+    } else {
+      document.title = 'FURUTABI Wire | ' + notice.title;
+    }
 
     root.innerHTML = '' +
       '<section class="section fv">' +
@@ -309,7 +282,7 @@
         '</div>' +
       '</section>' +
       '<section class="section">' +
-        '<div class="noticeArticle card">' + bodyHtml + '</div>' +
+        '<div class="noticeArticle card" data-notice-body></div>' +
       '</section>' +
       '<section class="section">' +
         '<div class="denseBox">' +
@@ -320,9 +293,15 @@
           '<a class="btn ghost" href="' + escapeHtml(buildNoticeListHref(relatedBase)) + '">一覧を見る</a>' +
         '</div>' +
       '</section>';
+
+    if (shared) {
+      shared.renderParagraphs(root.querySelector('[data-notice-body]'), notice.body || []);
+    }
   }
 
   function init() {
+    // 画面側は data-* を置くだけで一覧 / 詳細 / トピックスを差し込める。
+    // Javaテンプレート化してもこの接続点を維持しやすい。
     document.querySelectorAll('[data-notice-topics-items]').forEach(renderTopics);
     document.querySelectorAll('[data-notice-list-items]').forEach(renderNoticeList);
     document.querySelectorAll('[data-notice-detail-root]').forEach(renderNoticeDetail);

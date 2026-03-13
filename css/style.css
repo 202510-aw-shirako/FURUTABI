@@ -591,6 +591,7 @@ a.link { text-decoration: underline; color: #666; }
   z-index: 1;
   overflow: hidden;
   border-radius: 24px;
+  touch-action: none;
 }
 .topMapCanvas {
   width: 100%;
