@@ -26,24 +26,14 @@
 
   <main class="container" aria-label="公開トップ">
     <!-- FV: ヒーロー写真ドーン（説明しない） -->
-    <section class="section fv section--hero" aria-label="ヒーロー">
+    <section class="section fv section--hero topHeroSection" aria-label="ヒーロー">
       <div class="fullbleed">
         <div class="ph ph--hero" aria-hidden="true"></div>
-      </div>
-      <div style="margin-top:14px; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:flex-end;">
-        <div>
-          <h1 class="h1">（コピーは置かない前提）</h1>
-          <p class="lead">雰囲気で惹きつける。能書は「私たちの目指すもの」へ。</p>
-        </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="btn ghost" href="about.html">私たちの目指すもの</a>
-          <a class="btn ghost" href="safety.html">安心と連絡</a>
-        </div>
       </div>
     </section>
 
     <!-- TODO: 本実装時は CMS / API から取得した公開中のお知らせをここに流し込む -->
-    <section class="section topicsSection" aria-label="トピックス" data-notice-topics>
+    <section class="section topicsSection topTopicsSection" aria-label="トピックス" data-notice-topics>
       <div class="topicsPanelShell">
         <div class="topicsPanelHead">
           <h2 class="topicsPanelTitle">トピックス</h2>
@@ -54,7 +44,7 @@
     </section>
 
     <!-- わたしの地図 + ごひいきさんの足あと -->
-    <section class="section topMapSection" aria-label="わたしの地図とごひいきさんの足あと">
+    <section class="section topMapSection topMapSection--first" aria-label="わたしの地図とごひいきさんの足あと">
       <div class="sectionTitleRow">
         <h2 class="h2">ごひいきさんの足あと</h2>
         <a class="sectionTitleLink" href="about.html#feature-footprints">ご説明</a>

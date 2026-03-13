@@ -367,6 +367,18 @@ a.link { text-decoration: underline; color: #666; }
 
 /* ===== Top page map + story layout ===== */
 .topMapSection { overflow: hidden; }
+.topHeroSection {
+  border-bottom: 0;
+  padding-bottom: 5px;
+}
+.topTopicsSection {
+  border-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 6px;
+}
+.topMapSection--first {
+  padding-top: 16px;
+}
 .topMapLayout {
   --top-map-stage-height: 760px;
   --top-map-card-padding: 11px;
