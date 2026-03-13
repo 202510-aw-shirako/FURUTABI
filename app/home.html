@@ -13,7 +13,7 @@
         <div class="brand">FURUTABI｜郷旅（ログイン後）</div>
         <nav>
           <a href="../public/index.html">公開トップ</a>
-          <a href="../public/stories.html">公開ごひいきさんの足あと</a>
+          <a href="../public/index.html#top-footprints">公開ごひいきさんの足あと</a>
           <a href="../public/safety.html">安心</a>
         </nav>
       </div>
@@ -196,7 +196,7 @@
                     <button class="topMapActionBtn" type="button" data-top-map-like>いいね <span>12</span></button>
                     <button class="topMapActionBtn topMapActionBtn--thanks" type="button" data-top-map-thanks>ありがとう <span>4</span></button>
                   </div>
-                  <a class="btn ghost topMapMore" href="../public/stories.html" data-top-map-link-anchor>続きは</a>
+                  <a class="btn ghost topMapMore" href="../public/story.html?story=1" data-top-map-link-anchor>続きは</a>
                 </div>
             </article>
           </div>
@@ -206,9 +206,9 @@
               <div class="myMapViewport" data-top-map-viewport>
                 <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" data-top-map-image />
                 <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
-                  <a class="topMapPin topMapPin--a is-active" href="../public/story.html" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-                  <a class="topMapPin topMapPin--b" href="../public/story.html" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-                  <a class="topMapPin topMapPin--c" href="../public/story.html" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+                  <a class="topMapPin topMapPin--a is-active" href="../public/story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+                  <a class="topMapPin topMapPin--b" href="../public/story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+                  <a class="topMapPin topMapPin--c" href="../public/story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
                 </div>
               </div>
             </div>
@@ -354,7 +354,7 @@
           card.querySelector('[data-top-map-label-text]').textContent = config.label;
           card.querySelector('[data-top-map-marker]').textContent = story.id;
           card.querySelector('[data-top-map-meta]').textContent = story.meta;
-          card.querySelector('[data-top-map-link-anchor]').setAttribute('href', config.link);
+          card.querySelector('[data-top-map-link-anchor]').setAttribute('href', story.link || config.link);
 
           if (likeBtn) {
             likeBtn.textContent = String(config.reactions.like);
@@ -374,6 +374,9 @@
             if (pinStory) {
               pin.dataset.recordedAt = pinStory.recordedAt || '';
               pin.dataset.season = pinStory.season || getSeasonFromDateString(pinStory.recordedAt);
+              if (pinStory.link) {
+                pin.setAttribute('href', pinStory.link);
+              }
             }
             pin.classList.toggle('is-active', pin.getAttribute('data-top-map-pin') === selectedId);
           });
