@@ -125,39 +125,69 @@
         <p class="note" style="margin:0;">ごひいきさん登録後に見ることができます。</p>
       </div>
 
-      <div class="slider" aria-label="入口カード（3枚＋横スクロール）" style="margin-top:16px;">
-        <article class="card">
-          <div class="ph ph--thumb" aria-hidden="true"></div>
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-            <span class="pill">入口カテゴリ</span>
-            <div class="ph ph--avatar" aria-hidden="true"></div>
-          </div>
-          <div class="ph ph--line w-70"></div>
-          <div class="ph ph--line w-50"></div>
-          <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-        </article>
+      <div class="entryCarousel" aria-label="入口カード" data-entry-carousel style="margin-top:16px;">
+        <div class="entryCarouselStage">
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
+          <div class="entryCarouselViewport">
+            <div class="entryCarouselTrack" data-entry-track>
+              <article class="card entryCarouselCard" data-entry-card>
+                <div class="ph ph--thumb" aria-hidden="true"></div>
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                  <span class="pill">30分</span>
+                  <div class="ph ph--avatar" aria-hidden="true"></div>
+                </div>
+                <div class="h2">町はずれの小さな川沿いを散歩</div>
+                <p class="note">静けさ重視 / 会話少なめ</p>
+                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+              </article>
 
-        <article class="card">
-          <div class="ph ph--thumb" aria-hidden="true"></div>
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-            <span class="pill">入口カテゴリ</span>
-            <div class="ph ph--avatar" aria-hidden="true"></div>
-          </div>
-          <div class="ph ph--line w-80"></div>
-          <div class="ph ph--line w-60"></div>
-          <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-        </article>
+              <article class="card entryCarouselCard" data-entry-card>
+                <div class="ph ph--thumb" aria-hidden="true"></div>
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                  <span class="pill">10分</span>
+                  <div class="ph ph--avatar" aria-hidden="true"></div>
+                </div>
+                <div class="h2">店先で少しだけ話す</div>
+                <p class="note">短時間 / はじめて向け</p>
+                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+              </article>
 
-        <article class="card">
-          <div class="ph ph--thumb" aria-hidden="true"></div>
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-            <span class="pill">入口カテゴリ</span>
-            <div class="ph ph--avatar" aria-hidden="true"></div>
+              <article class="card entryCarouselCard" data-entry-card>
+                <div class="ph ph--thumb" aria-hidden="true"></div>
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                  <span class="pill">60分</span>
+                  <div class="ph ph--avatar" aria-hidden="true"></div>
+                </div>
+                <div class="h2">季節の手入れを少し手伝う</div>
+                <p class="note">体験寄り / つなぎ手あり</p>
+                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+              </article>
+
+              <article class="card entryCarouselCard" data-entry-card>
+                <div class="ph ph--thumb" aria-hidden="true"></div>
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                  <span class="pill">20分</span>
+                  <div class="ph ph--avatar" aria-hidden="true"></div>
+                </div>
+                <div class="h2">海沿いの高台で夕方を待つ</div>
+                <p class="note">景色重視 / ひとり時間寄り</p>
+                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+              </article>
+
+              <article class="card entryCarouselCard" data-entry-card>
+                <div class="ph ph--thumb" aria-hidden="true"></div>
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                  <span class="pill">45分</span>
+                  <div class="ph ph--avatar" aria-hidden="true"></div>
+                </div>
+                <div class="h2">朝の商店街を一緒に歩く</div>
+                <p class="note">会話あり / 暮らし寄り</p>
+                <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
+              </article>
+            </div>
           </div>
-          <div class="ph ph--line w-60"></div>
-          <div class="ph ph--line w-40"></div>
-          <a class="btn primary" href="../auth/login.html">この入口を選ぶ（登録/ログイン）</a>
-        </article>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
+        </div>
       </div>
 
       <div class="card" style="margin-top:18px;">
@@ -207,6 +237,7 @@
       </div>
     </footer>
   </main>
+  <script src="./assets/scripts/entry-carousel.js"></script>
   <script src="./assets/scripts/notices.js"></script>
   <script>
     (() => {

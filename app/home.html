@@ -253,9 +253,81 @@
           <div class="ph ph--line w-80"></div>
         </div>
       </div>
+
+      <div class="card" style="margin-top:18px;">
+        <div class="sectionTitleRow">
+          <h2 class="h2">地域の入り口</h2>
+          <a class="sectionTitleLink" href="../public/gate.html">一覧へ</a>
+        </div>
+        <p class="note">相性を見直したいときだけでなく、別のつなぎ手や人脈の入口を増やしたいときにも選べます。</p>
+
+        <div class="entryCarousel" aria-label="地域の入り口カード" data-entry-carousel style="margin-top:16px;">
+          <div class="entryCarouselStage">
+            <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
+            <div class="entryCarouselViewport">
+              <div class="entryCarouselTrack" data-entry-track>
+          <article class="card entryCarouselCard" data-entry-card>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">30分</span>
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </div>
+            <div class="h2">町はずれの小さな川沿いを散歩</div>
+            <p class="note">静けさ重視 / 会話少なめ</p>
+            <a class="btn ghost" href="../public/gate.html">この入口を見る</a>
+          </article>
+
+          <article class="card entryCarouselCard" data-entry-card>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">10分</span>
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </div>
+            <div class="h2">店先で少しだけ話す</div>
+            <p class="note">短時間 / はじめて向け</p>
+            <a class="btn ghost" href="../public/gate.html">この入口を見る</a>
+          </article>
+
+          <article class="card entryCarouselCard" data-entry-card>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">60分</span>
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </div>
+            <div class="h2">季節の手入れを少し手伝う</div>
+            <p class="note">体験寄り / つなぎ手あり</p>
+            <a class="btn ghost" href="../public/gate.html">この入口を見る</a>
+          </article>
+          <article class="card entryCarouselCard" data-entry-card>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">20分</span>
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </div>
+            <div class="h2">海沿いの高台で夕方を待つ</div>
+            <p class="note">景色重視 / ひとり時間寄り</p>
+            <a class="btn ghost" href="../public/gate.html">この入口を見る</a>
+          </article>
+          <article class="card entryCarouselCard" data-entry-card>
+            <div class="ph ph--thumb" aria-hidden="true"></div>
+            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+              <span class="pill">45分</span>
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </div>
+            <div class="h2">朝の商店街を一緒に歩く</div>
+            <p class="note">会話あり / 暮らし寄り</p>
+            <a class="btn ghost" href="../public/gate.html">この入口を見る</a>
+          </article>
+              </div>
+            </div>
+            <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 
+  <script src="../public/assets/scripts/entry-carousel.js"></script>
   <script src="../public/assets/scripts/notices.js"></script>
   <script>
     (function () {
@@ -277,12 +349,12 @@
         },
         footprints: {
           label: 'ごひいきさんの足あと',
-          link: '../public/stories.html',
+          link: '../public/story.html?story=1',
           reactions: { like: 12, thanks: 4 },
           stories: {
-            '1': { id: '1', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 1', recordedAt: '2026-03-12', season: 'spring' },
-            '2': { id: '2', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 2', recordedAt: '2026-07-12', season: 'summer' },
-            '3': { id: '3', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 3', recordedAt: '2026-11-12', season: 'autumn' }
+            '1': { id: '1', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 1', recordedAt: '2026-03-12', season: 'spring', link: '../public/story.html?story=1' },
+            '2': { id: '2', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 2', recordedAt: '2026-07-12', season: 'summer', link: '../public/story.html?story=2' },
+            '3': { id: '3', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 3', recordedAt: '2026-11-12', season: 'autumn', link: '../public/story.html?story=3' }
           }
         }
       };
