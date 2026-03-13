@@ -27,6 +27,17 @@
       </div>
     </section>
 
+    <!-- TODO: 本実装時はログイン状態に応じたお知らせ出し分けが必要ならここで行う -->
+    <section class="section topicsSection" aria-label="トピックス" data-notice-topics>
+      <div class="topicsPanelShell">
+        <div class="topicsPanelHead">
+          <h2 class="topicsPanelTitle">トピックス</h2>
+          <a class="topicsPanelLink" href="../public/notices.html">一覧</a>
+        </div>
+        <div class="topicsPanel" data-notice-topics-items data-notice-base="../public/" data-notice-max="5"></div>
+      </div>
+    </section>
+
     <section class="section fv" aria-label="メインタブ">
       <div class="tabs">
         <a class="tab is-on" href="#tab-proposals">ちいきのおかって</a>
@@ -245,6 +256,7 @@
     </section>
   </main>
 
+  <script src="../public/assets/scripts/notices.js"></script>
   <script>
     (function () {
       var mapTabs = document.querySelectorAll('[data-map-tab]');
