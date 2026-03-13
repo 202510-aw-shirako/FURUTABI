@@ -42,6 +42,17 @@
       </div>
     </section>
 
+    <!-- TODO: 本実装時は CMS / API から取得した公開中のお知らせをここに流し込む -->
+    <section class="section topicsSection" aria-label="トピックス" data-notice-topics>
+      <div class="topicsPanelShell">
+        <div class="topicsPanelHead">
+          <h2 class="topicsPanelTitle">トピックス</h2>
+          <a class="topicsPanelLink" href="notices.html">一覧</a>
+        </div>
+        <div class="topicsPanel" data-notice-topics-items data-notice-base="./" data-notice-max="5"></div>
+      </div>
+    </section>
+
     <!-- わたしの地図 + ごひいきさんの足あと -->
     <section class="section topMapSection" aria-label="わたしの地図とごひいきさんの足あと">
       <div class="sectionTitleRow">
@@ -178,6 +189,26 @@
       </div>
     </section>
 
+    <section class="section" aria-label="お知らせ導線">
+      <div class="card noticePromoCard">
+        <div class="noticePromoCopy">
+          <div class="h2">お知らせ</div>
+          <p class="note">入口の公開タイミングや案内の更新を、一覧で確認できます。</p>
+        </div>
+        <div class="noticePromoActions">
+          <a class="btn ghost" href="notices.html">一覧を見る</a>
+        </div>
+      </div>
+      <!-- TODO: 観光協会サイトの正式URL確定後、ここに外部リンクを設定 -->
+      <div class="noticeExternalPlaceholder">
+        <div>
+          <div class="h2">地域全体の観光情報について</div>
+          <p class="note">催しや広域の観光情報は、観光協会サイトへの外部導線をここに設置する想定です。</p>
+        </div>
+        <span class="noticeExternalBadge">外部リンク想定</span>
+      </div>
+    </section>
+
     <footer class="footer">
       <div style="display:grid; gap:12px;">
         <div class="ph ph--line w-40"></div>
@@ -186,6 +217,7 @@
       </div>
     </footer>
   </main>
+  <script src="./assets/scripts/notices.js"></script>
   <script>
     (() => {
       const topMap = document.querySelector('[data-top-map]');

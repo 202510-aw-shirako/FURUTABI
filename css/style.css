@@ -95,6 +95,7 @@ a.link { text-decoration: underline; color: #666; }
 .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
 @media (max-width: 980px) {
   .grid2, .grid3 { grid-template-columns: 1fr; }
+  .noticePromoCard { grid-template-columns: 1fr; }
 }
 
 .card {
@@ -167,6 +168,199 @@ a.link { text-decoration: underline; color: #666; }
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
+}
+
+.topicsSection {
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+.topicsPanelShell {
+  width: min(100%, 24rem);
+  padding: 5px 8px;
+  border: 1px solid rgba(34,34,34,.06);
+  border-radius: 12px;
+  background: rgba(255,255,255,.62);
+}
+.topicsPanelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.topicsPanelTitle {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #6f675b;
+}
+.topicsPanelLink {
+  font-size: 10px;
+  line-height: 1.2;
+  color: #8b8378;
+  text-decoration: none;
+}
+.topicsPanel {
+  display: grid;
+  gap: 1px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.topicItemLink {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+  min-height: 20px;
+  padding: 1px 4px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  transition: background-color .18s ease, color .18s ease;
+}
+.topicItemLink:hover {
+  background: rgba(255,255,255,.8);
+}
+.topicLine {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.topicMetaText,
+.topicTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.topicMetaText {
+  flex: 0 0 auto;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #8b8378;
+}
+.topicTitle {
+  font-size: 11px;
+  line-height: 1.2;
+  color: #222;
+}
+.topicCta {
+  font-size: 11px;
+  color: #8b8378;
+  white-space: nowrap;
+}
+.noticePromoCard {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+}
+.noticePromoCopy {
+  display: grid;
+  gap: 10px;
+}
+.noticePromoActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.noticeExternalPlaceholder {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px;
+  border: 1px dashed #cfc7ba;
+  border-radius: 16px;
+  background: rgba(255,255,255,.78);
+}
+.noticeExternalBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid #ddd3c4;
+  color: #6f675b;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.noticeList {
+  display: grid;
+  gap: 14px;
+}
+.noticeListItem {
+  margin: 0;
+}
+.noticeListLink {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid #e6e6e6;
+  border-radius: 18px;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .18s ease, transform .18s ease;
+}
+.noticeListLink:hover {
+  border-color: rgba(34,34,34,.18);
+  transform: translateY(-1px);
+}
+.noticeListMeta,
+.noticeDetailMeta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.noticeListDate,
+.noticeDetailDate {
+  font-size: 12px;
+  color: #777;
+}
+.noticeListTitle {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4;
+}
+.noticeListSummary {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.noticeListCta {
+  font-size: 13px;
+  color: #666;
+}
+.noticeDetailHead {
+  display: grid;
+  gap: 12px;
+}
+.noticeDetailTitle {
+  max-width: 18em;
+}
+.noticeDetailLead {
+  max-width: 54em;
+}
+.noticeArticle {
+  gap: 16px;
+  padding: 22px;
+}
+.noticeArticle p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #2d2d2d;
 }
 
 .footer { padding: 22px 0; }
@@ -577,6 +771,25 @@ a.link { text-decoration: underline; color: #666; }
   }
   .topMapLines {
     display: none;
+  }
+  .topicsPanel {
+    padding: 0;
+  }
+  .topicItemLink {
+    min-height: 20px;
+    padding: 1px 4px;
+  }
+  .noticeExternalPlaceholder {
+    align-items: start;
+  }
+  .topicLine {
+    gap: 6px;
+  }
+  .topicTitle {
+    font-size: 11px;
+  }
+  .topicsPanelShell {
+    width: 100%;
   }
 }
 
