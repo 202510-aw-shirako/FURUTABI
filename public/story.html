@@ -21,7 +21,7 @@
     </div>
   </header>
 
-  <main class="container" aria-label="Story個別">
+  <main class="container" aria-label="ごひいきさんの足あと詳細">
     <section class="section section--hero" aria-label="ヒーローイメージ">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -32,14 +32,16 @@
       <div class="fullbleed">
         <div class="ph ph--hero"></div>
       </div>
-      <p class="small" style="margin-top:10px;" data-story-meta>— ニックネーム</p>
+      <p class="small" style="margin-top:10px;" data-story-meta>— 町はずれの風を好きになった人</p>
     </section>
 
     <section class="section">
-      <h1 class="h1" data-story-title>本文</h1>
-      <p class="lead" data-story-summary>公開仕様の本文が入ります。</p>
+      <h1 class="h1" data-story-title>境内の風と、OOさんのおはぎ</h1>
+      <p class="lead" data-story-summary>ただ景色を見るだけでなく、少し座って時間を味わいたくなる足あとです。</p>
       <div class="card noticeArticle" style="margin-top:18px;" data-story-body>
-        <p>本文が入ります。</p>
+        <p>境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。</p>
+        <p>その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。</p>
+        <p>誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
       </div>
     </section>
 
@@ -61,7 +63,7 @@
       </div>
       <p class="lead">地図から別の足あとも選べます。</p>
 
-      <div class="topMapLayout" style="margin-top:18px;" data-story-map>
+      <div class="topMapLayout appTopMapLayout" style="margin-top:18px;" data-story-map>
         <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
           <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
             <div class="topMapCardBody">
@@ -71,13 +73,12 @@
                   <span class="pill" data-top-map-label>ごひいきさんの足あと</span>
                   <span class="topMapMarker"><span data-top-map-marker>1</span></span>
                 </div>
-                <div class="topMapComment" aria-hidden="true" data-top-map-comment="1">
-                  <div class="ph ph--line w-90"></div>
-                  <div class="ph ph--line w-80"></div>
-                  <div class="ph ph--line w-70"></div>
-                  <div class="ph ph--line w-85"></div>
+                <div class="topMapComment" data-top-map-comment="1">
+                  <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                  <div data-top-map-comment-body>
+                    <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                  </div>
                 </div>
-                <span class="pinMeta" data-top-map-meta>— ニックネーム</span>
               </div>
             </div>
             <div class="topMapFooter">
@@ -90,13 +91,23 @@
           </article>
         </div>
 
-        <div class="topMapStage" aria-label="ごひいきさんの足あと地図">
-          <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
+        <div class="myMapMain">
+          <div class="topMapStage" aria-label="ごひいきさんの足あと地図" data-top-map-stage>
+            <div class="myMapViewport" data-top-map-viewport>
+              <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
+              <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
+                <a class="topMapPin topMapPin--a is-active" href="story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+                <a class="topMapPin topMapPin--b" href="story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+                <a class="topMapPin topMapPin--c" href="story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <a class="topMapPin topMapPin--a is-active" href="story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-        <a class="topMapPin topMapPin--b" href="story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-        <a class="topMapPin topMapPin--c" href="story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+        <div class="myMapZoomControls" aria-label="地図の拡大縮小">
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-in>＋</button>
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-out>−</button>
+        </div>
       </div>
     </section>
 
@@ -104,65 +115,25 @@
       <div class="denseBox">
         <div>
           <div class="h2">関わる入口を開く</div>
-          <p class="note">入口の詳細・調整は登録/ログイン後。</p>
+          <p class="note">入口の詳細・案内は登録/ログイン後。</p>
         </div>
         <a class="btn primary" href="../auth/login.html">ログインへ</a>
       </div>
     </section>
   </main>
+  <script src="./assets/scripts/footprints.js"></script>
   <script>
     (function () {
       var params = new URLSearchParams(window.location.search);
       var storyId = params.get('story') || '1';
-      var storyData = {
-        '1': {
-          id: '1',
-          meta: '— 町はずれの風を好きになった人',
-          title: '境内の風と、OOさんのおはぎ',
-          summary: 'ただ景色を見るだけでなく、少し座って時間を味わいたくなる足あとです。',
-          body: [
-            '境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。',
-            'その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。',
-            '誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。'
-          ],
-          link: 'story.html?story=1',
-          aria: 'ごひいきさんの足あと 1'
-        },
-        '2': {
-          id: '2',
-          meta: '— 川沿いを歩くのが好きな人',
-          title: '小さな川沿いを、話しすぎずに歩く',
-          summary: '静けさの中で地域の空気に触れられる、短い散歩の足あとです。',
-          body: [
-            '町はずれの小さな川沿いを歩いていると、観光地のメイン通りでは感じにくい生活の速度が見えてきます。',
-            '無理に会話を広げなくても、時々「この先の光がきれいですよ」と教えてもらうくらいで、十分に豊かでした。',
-            'この土地では、何か大きな体験をすることだけが旅ではないのだと、歩きながら少しずつわかってきた気がします。'
-          ],
-          link: 'story.html?story=2',
-          aria: 'ごひいきさんの足あと 2'
-        },
-        '3': {
-          id: '3',
-          meta: '— 季節の手入れに惹かれた人',
-          title: '手を入れている人がいる景色を好きになる',
-          summary: '地域の手入れや気配に触れて、その場所の見え方が変わる足あとです。',
-          body: [
-            '季節の手入れをしている方の話を少し聞いたあとで同じ道を歩くと、見えるものがまったく違いました。',
-            'きれいだなと思っていた風景の奥に、誰かが手をかけて守ってきた時間があるとわかると、その景色が少し深くなります。',
-            'また来るときは、ただ訪れるだけでなく、その豊かさをちゃんと味わえる旅人でいたいと思いました。'
-          ],
-          link: 'story.html?story=3',
-          aria: 'ごひいきさんの足あと 3'
-        }
-      };
+      var footprints = window.FURUTABI_FOOTPRINTS;
+      var storyData = footprints ? footprints.withBasePath('') : {};
       var currentStory = storyData[storyId] || storyData['1'];
       var title = document.querySelector('[data-story-title]');
       var summary = document.querySelector('[data-story-summary]');
       var meta = document.querySelector('[data-story-meta]');
       var body = document.querySelector('[data-story-body]');
       var map = document.querySelector('[data-story-map]');
-      var card = map ? map.querySelector('[data-top-map-card]') : null;
-      var pins = map ? Array.prototype.slice.call(map.querySelectorAll('[data-top-map-pin]')) : [];
 
       if (title) title.textContent = currentStory.title;
       if (summary) summary.textContent = currentStory.summary;
@@ -174,27 +145,12 @@
       }
       document.title = 'FURUTABI Wire | ' + currentStory.title;
 
-      function syncStoryMap(selectedId) {
-        var story = storyData[selectedId];
-        if (!story || !card) return;
-
-        card.setAttribute('aria-label', story.aria);
-        card.dataset.topMapCurrent = story.id;
-        card.querySelector('[data-top-map-label]').textContent = 'ごひいきさんの足あと';
-        card.querySelector('[data-top-map-marker]').textContent = story.id;
-        card.querySelector('[data-top-map-meta]').textContent = story.meta;
-        card.querySelector('[data-top-map-link]').setAttribute('href', story.link);
-
-        pins.forEach(function (pin) {
-          var id = pin.getAttribute('data-top-map-pin');
-          pin.classList.toggle('is-active', id === selectedId);
-          if (storyData[id]) {
-            pin.setAttribute('href', storyData[id].link);
-          }
+      if (map && footprints) {
+        footprints.initPreviewMap(map, storyData, {
+          label: 'ごひいきさんの足あと',
+          initialStoryId: currentStory.id
         });
       }
-
-      syncStoryMap(currentStory.id);
     })();
   </script>
 </body>

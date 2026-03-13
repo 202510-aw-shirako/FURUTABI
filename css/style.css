@@ -523,7 +523,25 @@ a.link { text-decoration: underline; color: #666; }
 .topMapComment {
   display: grid;
   align-content: center;
-  gap: 9px;
+  gap: 8px;
+}
+.topMapCardTitle {
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #222;
+}
+.topMapCommentText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #444;
+}
+.topMapCommentText--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 .topMapActions {
   display: flex;

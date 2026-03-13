@@ -51,7 +51,7 @@
       </div>
       <p class="lead">場所の上に、誰かの記録や視点が差してあることが一目でわかる構成にする。</p>
 
-      <div class="topMapLayout" style="margin-top:18px;" data-top-map>
+      <div class="topMapLayout appTopMapLayout" style="margin-top:18px;" data-top-map>
         <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
           <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
             <div class="topMapCardBody">
@@ -61,13 +61,12 @@
                   <span class="pill" data-top-map-label>ごひいきさんの足あと</span>
                   <span class="topMapMarker"><span data-top-map-marker>1</span></span>
                 </div>
-                <div class="topMapComment" aria-hidden="true" data-top-map-comment="1">
-                  <div class="ph ph--line w-90"></div>
-                  <div class="ph ph--line w-80"></div>
-                  <div class="ph ph--line w-70"></div>
-                  <div class="ph ph--line w-85"></div>
+                <div class="topMapComment" data-top-map-comment="1">
+                  <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                  <div data-top-map-comment-body>
+                    <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                  </div>
                 </div>
-                <span class="pinMeta" data-top-map-meta>— ニックネーム</span>
               </div>
             </div>
             <div class="topMapFooter">
@@ -80,13 +79,22 @@
           </article>
         </div>
 
-        <div class="topMapStage" aria-label="わたしの地図">
-          <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="わたしの地図" />
+        <div class="myMapMain">
+          <div class="topMapStage" aria-label="わたしの地図" data-top-map-stage>
+            <div class="myMapViewport" data-top-map-viewport>
+              <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="わたしの地図" />
+              <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
+                <a class="topMapPin topMapPin--a is-active" href="story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+                <a class="topMapPin topMapPin--b" href="story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+                <a class="topMapPin topMapPin--c" href="story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <a class="topMapPin topMapPin--a is-active" href="story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-        <a class="topMapPin topMapPin--b" href="story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-        <a class="topMapPin topMapPin--c" href="story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+        <div class="myMapZoomControls" aria-label="地図の拡大縮小">
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-in>＋</button>
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-out>−</button>
+        </div>
       </div>
 
     </section>
@@ -238,73 +246,19 @@
     </footer>
   </main>
   <script src="./assets/scripts/entry-carousel.js"></script>
+  <script src="./assets/scripts/footprints.js"></script>
   <script src="./assets/scripts/notices.js"></script>
   <script>
     (() => {
       const topMap = document.querySelector('[data-top-map]');
-      if (!topMap) return;
+      const footprints = window.FURUTABI_FOOTPRINTS;
+      if (!topMap || !footprints) return;
+      const storyData = footprints.withBasePath('');
 
-      const card = topMap.querySelector('[data-top-map-card]');
-      const pins = Array.from(topMap.querySelectorAll('[data-top-map-pin]'));
-      const storyData = {
-        '1': {
-          id: '1',
-          label: 'ごひいきさんの足あと',
-          meta: '— ニックネーム',
-          link: 'story.html?story=1',
-          aria: 'ごひいきさんの足あと 1'
-        },
-        '2': {
-          id: '2',
-          label: 'ごひいきさんの足あと',
-          meta: '— ニックネーム',
-          link: 'story.html?story=2',
-          aria: 'ごひいきさんの足あと 2'
-        },
-        '3': {
-          id: '3',
-          label: 'ごひいきさんの足あと',
-          meta: '— ニックネーム',
-          link: 'story.html?story=3',
-          aria: 'ごひいきさんの足あと 3'
-        }
-      };
-      let selectedId = '1';
-
-      function syncCard() {
-        const story = storyData[selectedId];
-        if (!story || !card) return;
-
-        card.setAttribute('aria-label', story.aria);
-        card.dataset.topMapCurrent = story.id;
-        card.querySelector('[data-top-map-label]').textContent = story.label;
-        card.querySelector('[data-top-map-marker]').textContent = story.id;
-        card.querySelector('[data-top-map-meta]').textContent = story.meta;
-        card.querySelector('[data-top-map-link]').setAttribute('href', story.link);
-
-        const comment = card.querySelector('.topMapComment');
-        if (comment) {
-          comment.setAttribute('data-top-map-comment', story.id);
-        }
-
-        pins.forEach((pin) => {
-          pin.classList.toggle('is-active', pin.dataset.topMapPin === selectedId);
-          if (pin.dataset.topMapPin && storyData[pin.dataset.topMapPin]) {
-            pin.setAttribute('href', storyData[pin.dataset.topMapPin].link);
-          }
-        });
-      }
-
-      pins.forEach((pin) => {
-        pin.addEventListener('click', (event) => {
-          event.preventDefault();
-          if (!pin.dataset.topMapPin) return;
-          selectedId = pin.dataset.topMapPin;
-          syncCard();
-        });
+      footprints.initPreviewMap(topMap, storyData, {
+        label: 'ごひいきさんの足あと',
+        initialStoryId: '1'
       });
-
-      syncCard();
     })();
   </script>
 </body>

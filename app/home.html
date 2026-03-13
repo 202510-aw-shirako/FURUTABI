@@ -182,13 +182,12 @@
                     <span class="pill" data-top-map-label-text>ごひいきさんの足あと</span>
                     <span class="topMapMarker"><span data-top-map-marker>1</span></span>
                   </div>
-                  <div class="topMapComment" aria-hidden="true" data-top-map-comment="1">
-                    <div class="ph ph--line w-90"></div>
-                    <div class="ph ph--line w-80"></div>
-                    <div class="ph ph--line w-70"></div>
-                    <div class="ph ph--line w-85"></div>
+                  <div class="topMapComment" data-top-map-comment="1">
+                    <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                    <div data-top-map-comment-body>
+                      <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                    </div>
                   </div>
-                  <span class="pinMeta" data-top-map-meta>— ニックネーム</span>
                 </div>
               </div>
               <div class="topMapFooter">
@@ -328,6 +327,7 @@
   </main>
 
   <script src="../public/assets/scripts/entry-carousel.js"></script>
+  <script src="../public/assets/scripts/footprints.js"></script>
   <script src="../public/assets/scripts/notices.js"></script>
   <script>
     (function () {
@@ -335,6 +335,8 @@
       var mapDetailLink = document.getElementById('appMapDetailLink');
       var topMaps = document.querySelectorAll('[data-top-map]');
       var myMap = document.querySelector('[data-my-map]');
+      var footprints = window.FURUTABI_FOOTPRINTS;
+      var footprintStories = footprints ? footprints.withBasePath('../public/') : null;
 
       var topMapConfigs = {
         'my-map': {
@@ -351,11 +353,7 @@
           label: 'ごひいきさんの足あと',
           link: '../public/story.html?story=1',
           reactions: { like: 12, thanks: 4 },
-          stories: {
-            '1': { id: '1', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 1', recordedAt: '2026-03-12', season: 'spring', link: '../public/story.html?story=1' },
-            '2': { id: '2', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 2', recordedAt: '2026-07-12', season: 'summer', link: '../public/story.html?story=2' },
-            '3': { id: '3', meta: '— ニックネーム', aria: 'ごひいきさんの足あと 3', recordedAt: '2026-11-12', season: 'autumn', link: '../public/story.html?story=3' }
-          }
+          stories: footprintStories
         }
       };
 
@@ -425,7 +423,9 @@
           card.dataset.season = story.season || getSeasonFromDateString(story.recordedAt);
           card.querySelector('[data-top-map-label-text]').textContent = config.label;
           card.querySelector('[data-top-map-marker]').textContent = story.id;
-          card.querySelector('[data-top-map-meta]').textContent = story.meta;
+          if (card.querySelector('[data-top-map-title]')) {
+            card.querySelector('[data-top-map-title]').textContent = story.title || '';
+          }
           card.querySelector('[data-top-map-link-anchor]').setAttribute('href', story.link || config.link);
 
           if (likeBtn) {
@@ -436,6 +436,9 @@
             thanksBtn.textContent = String(config.reactions.thanks);
           }
 
+          if (footprints) {
+            footprints.renderPreviewBody(card.querySelector('[data-top-map-comment-body]'), story);
+          }
           comment = card.querySelector('.topMapComment');
           if (comment) {
             comment.setAttribute('data-top-map-comment', story.id);
