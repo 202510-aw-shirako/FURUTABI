@@ -48,30 +48,30 @@
         <h1 class="h1">ちいきのおかって</h1>
         <a class="sectionTitleLink" href="../public/about.html#feature-okatte">ご説明</a>
       </div>
-      <p class="lead">少数提示（まず3）。</p>
-      <div class="grid3" style="margin-top:16px;">
-        <article class="card">
-          <div class="ph ph--thumb"></div>
-          <div class="ph ph--line w-70"></div>
-          <div class="ph ph--line w-50"></div>
-          <a class="btn ghost" href="#">見る（ワイヤ）</a>
-        </article>
-        <article class="card">
-          <div class="ph ph--thumb"></div>
-          <div class="ph ph--line w-80"></div>
-          <div class="ph ph--line w-60"></div>
-          <a class="btn ghost" href="#">見る（ワイヤ）</a>
-        </article>
-        <article class="card">
-          <div class="ph ph--thumb"></div>
-          <div class="ph ph--line w-60"></div>
-          <div class="ph ph--line w-40"></div>
-          <a class="btn ghost" href="#">見る（ワイヤ）</a>
-        </article>
-      </div>
+      <p class="lead">見て楽しく、少し先の時間が想像できる提案だけを静かに並べます。</p>
+      <div class="proposalGrid" style="margin-top:16px;" data-proposal-grid="okatte" data-proposal-base="../public/" data-proposal-context="app"></div>
       <div class="card" style="margin-top:18px;">
         <div class="h2">運用ルール</div>
         <ul class="aboutFeatureList" data-rule-list="okatte"></ul>
+      </div>
+
+      <div class="sectionTitleRow" style="margin-top:18px;">
+        <h2 class="h2">ごひいきさんツアー</h2>
+        <a class="sectionTitleLink" href="../public/tour.html">ページへ</a>
+      </div>
+      <div class="tourTeaserCard tourTeaserCard--app" style="margin-top:14px;">
+        <figure class="tourTeaserMedia">
+          <img src="../public/assets/images/凪咲町.jpg" alt="ごひいきさんツアーの雰囲気" />
+        </figure>
+        <div class="tourTeaserBody">
+          <p class="tourTeaserEyebrow">観光会社とのコラボ企画</p>
+          <h3 class="tourTeaserTitle">ごひいきさんツアー</h3>
+          <p class="tourTeaserText">実際の申込受付や旅行代金の収受、当日の運営は提携する観光会社が担います。FURUTABI側では、この旅の背景や内容を見られるようにしています。</p>
+          <div class="tourTeaserActions">
+            <a class="btn primary" href="../public/tour.html">ツアーページを見る</a>
+            <a class="btn ghost" href="#">観光会社の申込ページへ</a>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -247,7 +247,7 @@
           <div class="entryCarouselStage">
             <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
             <div class="entryCarouselViewport">
-              <div class="entryCarouselTrack" data-entry-track data-entry-list data-entry-context="app"></div>
+              <div class="entryCarouselTrack" data-entry-track data-proposal-list="gate" data-proposal-base="../public/" data-proposal-context="app"></div>
             </div>
             <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
           </div>
@@ -257,6 +257,7 @@
   </main>
 
   <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script src="../public/assets/scripts/proposals.js"></script>
   <script src="../public/assets/scripts/entry-carousel.js"></script>
   <script src="../public/assets/scripts/footprints.js"></script>
   <script src="../public/assets/scripts/notices.js"></script>

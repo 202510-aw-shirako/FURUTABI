@@ -129,7 +129,7 @@
         <div class="entryCarouselStage">
           <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
           <div class="entryCarouselViewport">
-            <div class="entryCarouselTrack" data-entry-track data-entry-list data-entry-context="public"></div>
+            <div class="entryCarouselTrack" data-entry-track data-proposal-list="gate" data-proposal-base="./" data-proposal-context="public"></div>
           </div>
           <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
         </div>
@@ -169,6 +169,26 @@
       </div>
     </section>
 
+    <section class="section" aria-label="ごひいきさんツアー">
+      <div class="sectionTitleRow">
+        <h2 class="h2">ごひいきさんツアー</h2>
+        <a class="sectionTitleLink" href="tour-preview.html">参考ページへ</a>
+      </div>
+      <div class="tourTeaserCard">
+        <figure class="tourTeaserMedia">
+          <img src="./assets/images/凪咲町.jpg" alt="ごひいきさんツアーの雰囲気" />
+        </figure>
+        <div class="tourTeaserBody">
+          <p class="tourTeaserEyebrow">例えばこんなツアー</p>
+          <h3 class="tourTeaserTitle">梅林地区と海辺の一泊二日（仮）</h3>
+          <p class="tourTeaserText">公開トップでは参考として見られるツアーページです。実際の募集や申込は、提携する観光会社側で行う想定です。</p>
+          <div class="tourTeaserActions">
+            <a class="btn ghost" href="tour-preview.html">参考ページを見る</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <footer class="footer">
       <div style="display:grid; gap:12px;">
         <div class="ph ph--line w-40"></div>
@@ -178,6 +198,7 @@
     </footer>
   </main>
   <script src="./assets/scripts/shared-ui.js"></script>
+  <script src="./assets/scripts/proposals.js"></script>
   <script src="./assets/scripts/entry-carousel.js"></script>
   <script src="./assets/scripts/footprints.js"></script>
   <script src="./assets/scripts/notices.js"></script>
