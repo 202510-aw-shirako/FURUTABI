@@ -443,75 +443,510 @@ a.link { text-decoration: underline; color: #666; }
   color: #2d2d2d;
 }
 
-.gateEntryLeadSection {
-  border-bottom: 0;
-}
-.gateEntryHero {
+.proposalGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 360px);
-  gap: 20px;
-  align-items: start;
-}
-.gateEntryHeroCopy {
-  display: grid;
-  gap: 12px;
-  max-width: 52rem;
-}
-.gateEntryConnectorCard {
-  align-content: start;
-}
-.gateEntryConnectorVisual {
-  width: 92px;
-  height: 92px;
-}
-.gateEntryBodyGrid {
-  align-items: start;
-}
-.gateEntrySideStack {
-  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
 }
-.gateEntryMapSection {
-  display: grid;
-  gap: 8px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+.proposalCard {
+  padding: 14px;
+  gap: 14px;
+  border-radius: 22px;
 }
-.topMapLayout.gateEntryMapLayout {
-  --top-map-stage-height: 300px;
-  width: min(100%, 560px);
+.proposalCard.is-active {
+  border-color: rgba(34,34,34,.22);
+}
+.proposalPortrait,
+.proposalVisual {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #ece8df;
+}
+.proposalPortrait {
+  aspect-ratio: 4 / 5;
+}
+.proposalVisual {
+  position: relative;
+  aspect-ratio: 5 / 4;
+}
+.proposalPortrait img,
+.proposalVisual img,
+.proposalDetailHeroMedia img,
+.proposalDetailPersonMedia img,
+.proposalPersonModalPhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.proposalCard--gate {
+  background: #fcfbf7;
+}
+.proposalCard--okatte {
+  background: #f6f3ed;
+}
+.proposalFaceChip {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 54px;
+  height: 54px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.88);
+}
+.proposalFaceChip img {
+  border-radius: 999px;
+}
+.proposalCardMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.proposalDuration {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(34,34,34,.08);
+  color: #444;
+  font-size: 12px;
+}
+.proposalPersonMini {
+  font-size: 12px;
+  color: #6d665d;
+}
+.proposalCardBody {
+  display: grid;
+  gap: 10px;
+}
+.proposalTitle {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+.proposalSummary {
+  margin: 0;
+  color: #5c564f;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.proposalTags,
+.proposalDetailTags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.proposalTag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(34,34,34,.06);
+  color: #686057;
+  font-size: 12px;
+}
+.proposalMore {
+  justify-self: start;
+  border-radius: 999px;
+}
+
+.proposalDetailLead {
+  border-bottom: 0;
+}
+.proposalDetailHero {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.1fr) minmax(0, .9fr);
+  gap: 24px;
+  align-items: center;
+}
+.proposalDetailHeroMedia {
+  margin: 0;
+  aspect-ratio: 6 / 5;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #ece8df;
+}
+.proposalDetailHeroCopy {
+  display: grid;
+  gap: 14px;
+}
+.proposalDetailTitle {
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.18;
+}
+.proposalDetailIntro {
+  margin: 0;
+  max-width: 36rem;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #534d47;
+}
+.proposalDetailTextSection {
+  border-bottom: 0;
+}
+.proposalDetailTwoCol {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.proposalDetailPanel {
+  padding: 24px;
+  gap: 14px;
+  border-radius: 24px;
+  background: #fbfaf6;
+}
+.proposalDetailSectionTitle {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.35;
+}
+.proposalDetailCopy {
+  display: grid;
+  gap: 12px;
+}
+.proposalDetailCopy p {
+  margin: 0;
+  color: #514d48;
+  line-height: 1.9;
+}
+.proposalDetailPersonSection {
+  border-bottom: 0;
+  padding-top: 8px;
+}
+.proposalDetailPersonCard {
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  border-radius: 24px;
+  background: #fbfaf7;
+}
+.proposalDetailPersonMedia {
+  overflow: hidden;
+  border-radius: 20px;
+  background: #ece8df;
+}
+.proposalDetailPersonBody {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.proposalDetailPersonRole,
+.proposalPersonModalRole {
+  margin: 0;
+  color: #837666;
+  font-size: 12px;
+}
+.proposalDetailPersonName,
+.proposalPersonModalName {
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.proposalDetailPersonSummary,
+.proposalPersonModalLead {
+  margin: 0;
+  color: #4f4a44;
+  line-height: 1.85;
+}
+.proposalDetailMapSection {
+  display: grid;
+  gap: 12px;
+}
+.topMapLayout.proposalDetailMapLayout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 8px;
+  gap: 12px;
   align-items: start;
   aspect-ratio: auto;
   min-height: 0;
-  margin-left: auto;
-  margin-right: auto;
-  position: static;
 }
-.topMapLayout.gateEntryMapLayout .topMapCanvasImage {
-  padding: 0;
-}
-.gateEntryRelatedCarousel {
-  margin-top: 0;
-}
-.gateEntryRelatedTrack {
+.proposalDetailMapTrack {
   grid-auto-columns: calc((100% - 32px) / 3);
 }
-.gateEntryRelatedCard {
-  gap: 10px;
-  min-width: 0;
+.proposalDetailMapCarousel .proposalCard {
+  height: 100%;
 }
-.gateEntryRelatedCard.is-active {
-  border-color: rgba(34,34,34,.28);
+
+.proposalPersonModal {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
 }
-.gateEntryRelatedHead {
-  display: flex;
-  justify-content: space-between;
+.proposalPersonModal[hidden] {
+  display: none !important;
+}
+.proposalPersonModalBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(17,17,17,.48);
+}
+.proposalPersonModalDialog {
+  position: relative;
+  width: min(920px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  margin: 20px auto;
+  padding: 22px;
+  overflow: auto;
+  border-radius: 28px;
+  background: #f8f5ef;
+  border: 1px solid rgba(34,34,34,.08);
+}
+.proposalPersonModalClose {
+  position: sticky;
+  top: 0;
+  justify-self: end;
+  z-index: 2;
+  background: #fff;
+}
+.proposalPersonModalBody {
+  display: grid;
+  gap: 22px;
+}
+.proposalPersonModalHeader {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.proposalPersonModalPhoto {
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #ece8df;
+}
+.proposalPersonModalIntro {
+  display: grid;
+  gap: 12px;
+}
+.proposalPersonModalSection {
+  display: grid;
   gap: 10px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(34,34,34,.08);
+}
+.proposalPersonModalHeading {
+  margin: 0;
+  font-size: 18px;
+}
+.proposalPersonModalText {
+  display: grid;
+  gap: 10px;
+}
+.proposalPersonModalText p {
+  margin: 0;
+  line-height: 1.85;
+  color: #4f4a44;
+}
+.proposalPersonModalList {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: #4f4a44;
+}
+body.hasProposalModal {
+  overflow: hidden;
+}
+
+.localPage {
+  display: grid;
+  gap: 0;
+}
+.localHeroSection {
+  border-bottom: 0;
+}
+.localHero {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(320px, .9fr);
+  gap: 22px;
   align-items: center;
 }
+.localHeroCopy {
+  display: grid;
+  gap: 14px;
+  max-width: 38rem;
+}
+.localEyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #8b735f;
+}
+.localHeroTitle {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 1.12;
+}
+.localHeroLead {
+  margin: 0;
+  font-size: clamp(18px, 2.2vw, 24px);
+  color: #5a5148;
+}
+.localHeroText,
+.localSectionText {
+  margin: 0;
+  color: #5c564f;
+  line-height: 1.9;
+}
+.localHeroActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.localHeroMedia,
+.localSplitMedia {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #ece6dd;
+}
+.localHeroMedia {
+  aspect-ratio: 6 / 5;
+}
+.localHeroMedia img,
+.localSplitMedia img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.localIntroSection {
+  border-bottom: 0;
+  padding-top: 10px;
+}
+.localQuoteCard,
+.localSoftCard,
+.localContactCard {
+  padding: 28px;
+  border-radius: 26px;
+  background: #fbf8f2;
+  border: 1px solid #e7dfd3;
+}
+.localQuote {
+  display: grid;
+  gap: 6px;
+  margin: 18px 0 16px;
+}
+.localQuote p {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.45;
+  color: #2d2926;
+}
+.localSectionHead {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.localSectionTitle {
+  margin: 0;
+  font-size: clamp(28px, 3.8vw, 42px);
+  line-height: 1.2;
+}
+.localRoleGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.localRoleCard {
+  padding: 22px;
+  gap: 12px;
+  border-radius: 22px;
+  background: #fffdf9;
+}
+.localRoleIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  background: #f2ece2;
+  color: #7a6451;
+  font-size: 12px;
+}
+.localPrimarySection {
+  display: grid;
+  gap: 20px;
+}
+.localSplitHero {
+  display: grid;
+  grid-template-columns: minmax(320px, .95fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+}
+.localSplitMedia {
+  aspect-ratio: 6 / 5;
+}
+.localSplitCopy {
+  display: grid;
+  gap: 16px;
+}
+.localExampleGrid,
+.localSupportGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.localExampleCard,
+.localSupportCard {
+  padding: 22px;
+  gap: 10px;
+  border-radius: 22px;
+  background: #fff;
+}
+.localInlineCta {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 6px;
+}
+.localSoftSection {
+  border-bottom: 0;
+}
+.localSoftList {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.localSoftList span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid #e5ddd2;
+  color: #62574c;
+  font-size: 13px;
+}
+.localContactSection {
+  border-bottom: 0;
+  padding-top: 8px;
+}
+
+.loginRoleGrid,
+.loginSupportGrid {
+  align-items: start;
+}
+
+.okattePin--a { left: 74%; top: 24%; }
+.okattePin--b { left: 86%; top: 36%; }
+.okattePin--c { left: 68%; top: 70%; }
+
 .gateEntryPin--a { left: 28%; top: 39%; }
 .gateEntryPin--b { left: 46%; top: 31%; }
 .gateEntryPin--c { left: 57%; top: 50%; }
@@ -768,12 +1203,43 @@ a.link { text-decoration: underline; color: #666; }
 .myMapZoomControls {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   align-self: start;
 }
-.myMapZoomBtn {
-  min-width: 40px;
-  padding: 0 12px;
+.btn.ghost.myMapZoomBtn {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  min-height: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #2b2b2b;
+  border-radius: 14px;
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0;
+  transition: background-color .12s ease, border-color .12s ease, color .12s ease;
+}
+.btn.ghost.myMapZoomBtn:hover {
+  background: #222;
+  border-color: #222;
+}
+.btn.ghost.myMapZoomBtn:active {
+  background: #1c1c1c;
+  border-color: #1c1c1c;
+}
+.btn.ghost.myMapZoomBtn:focus-visible {
+  outline: 2px solid rgba(34,34,34,.28);
+  outline-offset: 2px;
+}
+.btn.ghost.myMapZoomBtn:disabled {
+  opacity: .5;
+  cursor: default;
 }
 .appTopMapLayout[data-my-map] .topMapStage {
   cursor: crosshair;
@@ -897,6 +1363,17 @@ a.link { text-decoration: underline; color: #666; }
   /* On small screens, pins become stacked cards under map */
   .mapPin { position: static; width: auto; }
   .mapStage { display: grid; gap: 12px; }
+  .localHero,
+  .localSplitHero,
+  .localRoleGrid,
+  .localExampleGrid,
+  .localSupportGrid,
+  .proposalGrid,
+  .proposalDetailTwoCol,
+  .proposalDetailPersonCard,
+  .proposalPersonModalHeader {
+    grid-template-columns: 1fr;
+  }
   .topMapLayout {
     width: 100%;
     margin-right: 0;
@@ -968,17 +1445,8 @@ a.link { text-decoration: underline; color: #666; }
   .noticeExternalPlaceholder {
     align-items: start;
   }
-  .gateEntryHero {
-    grid-template-columns: 1fr;
-  }
-  .gateEntryMapLayout {
-    grid-template-columns: 1fr;
-  }
-  .gateEntryMapLayout .myMapZoomControls {
-    flex-direction: row;
-  }
-  .gateEntryRelatedTrack {
-    grid-auto-columns: minmax(240px, 78vw);
+  .proposalDetailMapTrack {
+    grid-auto-columns: minmax(250px, 78vw);
   }
   .topicLine {
     gap: 6px;
@@ -988,6 +1456,16 @@ a.link { text-decoration: underline; color: #666; }
   }
   .topicsPanelShell {
     width: 100%;
+  }
+  .proposalPersonModalDialog {
+    width: calc(100vw - 24px);
+    margin: 12px auto;
+    padding: 16px;
+  }
+  .localQuoteCard,
+  .localSoftCard,
+  .localContactCard {
+    padding: 22px;
   }
 }
 

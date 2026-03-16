@@ -24,15 +24,15 @@
     </section>
 
     <section class="section fv">
-      <h1 class="h1">ログイン認証</h1>
-      <p class="lead">ブリッジからは公開トップを経由せず、ここへ直行。</p>
+      <h1 class="h1">ログイン</h1>
+      <p class="lead">一般の方、地域の方、管理者で入口を分けています。</p>
     </section>
 
     <section class="section">
-      <div class="grid2">
+      <div class="grid3 loginRoleGrid">
         <div class="card">
-          <div class="h2">メールでログイン</div>
-          <p class="note">ワイヤ：入力欄はプレースホルダー。</p>
+          <div class="h2">一般の方</div>
+          <p class="note">ごひいきさんとして地域に入る方のログインです。</p>
           <div style="display:grid; gap:12px; margin-top:12px;">
             <div>
               <div class="small">メール</div>
@@ -49,23 +49,40 @@
           </div>
         </div>
 
-        <div class="card">
-          <div class="h2">他の方法</div>
-          <p class="note">ワイヤ：SSO等の入口。</p>
+        <div class="card" id="login-local">
+          <div class="h2">地域の方</div>
+          <p class="note">協力したい方、ちいきのおかってをひらきたい方、場に手を貸したい方向けの入口です。</p>
           <div style="display:grid; gap:10px; margin-top:12px;">
-            <a class="btn ghost" href="../app/home.html">Googleで続行（ワイヤ）</a>
-            <a class="btn ghost" href="../app/home.html">Appleで続行（ワイヤ）</a>
+            <a class="btn ghost" href="../app/local-home.html">地域アカウントでログイン（ワイヤ）</a>
+            <a class="btn ghost" href="#">地域アカウント登録（ワイヤ）</a>
           </div>
           <div class="denseBox" style="margin-top:16px;">
             <div>
-              <div class="h2">登録</div>
-              <p class="note">関わる入口を開くための登録。</p>
+              <div class="h2">ログイン後に見られるもの</div>
+              <p class="note">詳しい募集内容、提案フォーム、関わり方の設計相談。</p>
             </div>
-            <a class="btn primary" href="../public/gate.html">登録へ（ワイヤ）</a>
+            <a class="btn primary" href="../app/local-home.html">地域アカウントへ（ワイヤ）</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="h2">管理者</div>
+          <p class="note">観光協会や運営側の管理用ログインです。</p>
+          <div style="display:grid; gap:10px; margin-top:12px;">
+            <a class="btn ghost" href="#">管理画面へ（ワイヤ）</a>
+            <a class="btn ghost" href="#">SSOで続行（ワイヤ）</a>
+          </div>
+          <div class="denseBox" style="margin-top:16px;">
+            <div>
+              <div class="h2">管理項目</div>
+              <p class="note">つなぎ手、提案、地域アカウント、相談導線の管理。</p>
+            </div>
+            <a class="btn ghost" href="#">確認する</a>
           </div>
         </div>
       </div>
     </section>
+
   </main>
   <script src="../public/assets/scripts/shared-ui.js"></script>
 </body>
