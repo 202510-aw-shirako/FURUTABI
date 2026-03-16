@@ -443,6 +443,81 @@ a.link { text-decoration: underline; color: #666; }
   color: #2d2d2d;
 }
 
+.gateEntryLeadSection {
+  border-bottom: 0;
+}
+.gateEntryHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, 360px);
+  gap: 20px;
+  align-items: start;
+}
+.gateEntryHeroCopy {
+  display: grid;
+  gap: 12px;
+  max-width: 52rem;
+}
+.gateEntryConnectorCard {
+  align-content: start;
+}
+.gateEntryConnectorVisual {
+  width: 92px;
+  height: 92px;
+}
+.gateEntryBodyGrid {
+  align-items: start;
+}
+.gateEntrySideStack {
+  display: grid;
+  gap: 18px;
+}
+.gateEntryMapSection {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.topMapLayout.gateEntryMapLayout {
+  --top-map-stage-height: 300px;
+  width: min(100%, 560px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  aspect-ratio: auto;
+  min-height: 0;
+  margin-left: auto;
+  margin-right: auto;
+  position: static;
+}
+.topMapLayout.gateEntryMapLayout .topMapCanvasImage {
+  padding: 0;
+}
+.gateEntryRelatedCarousel {
+  margin-top: 0;
+}
+.gateEntryRelatedTrack {
+  grid-auto-columns: calc((100% - 32px) / 3);
+}
+.gateEntryRelatedCard {
+  gap: 10px;
+  min-width: 0;
+}
+.gateEntryRelatedCard.is-active {
+  border-color: rgba(34,34,34,.28);
+}
+.gateEntryRelatedHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+.gateEntryPin--a { left: 28%; top: 39%; }
+.gateEntryPin--b { left: 46%; top: 31%; }
+.gateEntryPin--c { left: 57%; top: 50%; }
+.gateEntryPin--d { left: 76%; top: 37%; }
+.gateEntryPin--e { left: 38%; top: 65%; }
+
 .footer { padding: 22px 0; }
 
 /* ===== Top page map + story layout ===== */
@@ -892,6 +967,18 @@ a.link { text-decoration: underline; color: #666; }
   }
   .noticeExternalPlaceholder {
     align-items: start;
+  }
+  .gateEntryHero {
+    grid-template-columns: 1fr;
+  }
+  .gateEntryMapLayout {
+    grid-template-columns: 1fr;
+  }
+  .gateEntryMapLayout .myMapZoomControls {
+    flex-direction: row;
+  }
+  .gateEntryRelatedTrack {
+    grid-auto-columns: minmax(240px, 78vw);
   }
   .topicLine {
     gap: 6px;

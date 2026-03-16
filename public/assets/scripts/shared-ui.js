@@ -120,13 +120,15 @@
   function getEntryButton(root) {
     var context = root.getAttribute('data-entry-context') || 'public';
 
-    if (context === 'app') {
-      return { href: '../public/gate.html', label: 'この入口を見る', buttonClass: 'ghost' };
-    }
-    if (context === 'gate') {
-      return { href: '../app/home.html', label: 'この入口から進む', buttonClass: 'primary' };
-    }
-    return { href: '../auth/login.html', label: 'この入口を選ぶ（登録/ログイン）', buttonClass: 'primary' };
+    return { context: context, label: '詳しく見る', buttonClass: 'ghost' };
+  }
+
+  function buildEntryDetailHref(root, entryId, contextOverride) {
+    var context = contextOverride || root.getAttribute('data-entry-context') || 'public';
+    var basePath = context === 'app' ? '../public/' : '';
+
+    // Java化では `entry id` を path variable または slug に置き換える想定。
+    return basePath + 'gate-entry.html?entry=' + encodeURIComponent(entryId) + '&context=' + encodeURIComponent(context);
   }
 
   function renderEntryCards(root) {
@@ -144,7 +146,7 @@
           '</div>' +
           '<div class="h2">' + escapeHtml(card.title) + '</div>' +
           '<p class="note">' + escapeHtml(card.note) + '</p>' +
-          '<a class="btn ' + escapeHtml(button.buttonClass) + '" href="' + escapeHtml(button.href) + '">' + escapeHtml(button.label) + '</a>' +
+          '<a class="btn ' + escapeHtml(button.buttonClass) + '" href="' + escapeHtml(buildEntryDetailHref(root, card.id, button.context)) + '">' + escapeHtml(button.label) + '</a>' +
         '</article>';
     }).join('');
   }
@@ -189,6 +191,7 @@
 
   window.FURUTABI_SHARED_UI = {
     entryCards: entryCards,
+    buildEntryDetailHref: buildEntryDetailHref,
     ruleLists: ruleLists,
     navConfigs: navConfigs,
     readQueryParam: readQueryParam,
