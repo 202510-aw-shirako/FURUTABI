@@ -301,6 +301,7 @@
   <script src="../public/assets/scripts/entry-carousel.js"></script>
   <script src="../public/assets/scripts/footprints.js"></script>
   <script src="../public/assets/scripts/notices.js"></script>
+  <script src="../public/assets/scripts/interactions.js"></script>
   <script>
     (function () {
       var mapTabs = document.querySelectorAll('[data-map-tab]');
@@ -308,6 +309,7 @@
       var topMaps = document.querySelectorAll('[data-top-map]');
       var myMap = document.querySelector('[data-my-map]');
       var footprints = window.FURUTABI_FOOTPRINTS;
+      var interactions = window.FURUTABI_INTERACTIONS;
       var footprintStories = footprints ? footprints.withBasePath('../public/') : null;
 
       var topMapConfigs = {
@@ -410,10 +412,13 @@
         var myMapImage = myMap.querySelector('[data-my-map-image]');
         var myMapZoomIn = myMap.querySelector('[data-my-map-zoom-in]');
         var myMapZoomOut = myMap.querySelector('[data-my-map-zoom-out]');
-        var myMapPinsData = [];
+        var myMapPinsData = interactions ? interactions.getMapRecords() : [];
         var myMapSelectedId = null;
         var myMapEditingId = null;
-        var myMapIdSeed = 1;
+        var myMapIdSeed = myMapPinsData.reduce(function (max, pin) {
+          var numeric = Number(String(pin.id || '').replace('pin-', ''));
+          return Number.isFinite(numeric) ? Math.max(max, numeric + 1) : max;
+        }, 1);
         var myMapZoom = 1;
         var myMapPanX = 0;
         var myMapPanY = 0;
@@ -455,6 +460,12 @@
           });
         }
 
+        function persistMyMapPins() {
+          if (interactions) {
+            interactions.saveMapRecords(myMapPinsData);
+          }
+        }
+
         function getMyMapPin(id) {
           return myMapPinsData.find(function (pin) { return pin.id === id; }) || null;
         }
@@ -487,6 +498,11 @@
           myMapRecordList.innerHTML = registeredPins.map(function (pin, index) {
             var visibility = getVisibilityMeta(pin.visibility);
             var dateText = pin.visibilityUpdatedAt ? '更新: ' + pin.visibilityUpdatedAt : '';
+            var reactions = interactions ? interactions.getReactionSummary('map_record', pin.id) : {
+              like: { count: 0, isActive: false },
+              thank_you: { count: 0, isActive: false }
+            };
+            var comments = interactions ? interactions.getComments('map_record', pin.id) : [];
             return '' +
               '<article class="myMapRecordRow">' +
                 '<div class="myMapRecordMain">' +
@@ -497,6 +513,27 @@
                   '<div class="myMapRecordTitle">' + escapeMyMapText(pin.title || 'タイトル未設定') + '</div>' +
                   '<p class="myMapRecordBody">' + escapeMyMapText(pin.body || 'まだ本文は入っていません。') + '</p>' +
                   '<p class="myMapRecordHelp">' + visibility.hint + ' 迷う内容は、まずは本人のみで残せます。' + (dateText ? ' ' + dateText : '') + '</p>' +
+                  '<div class="interactionBar interactionBar--compact">' +
+                    '<button class="topMapActionBtn' + (reactions.like.isActive ? ' is-on' : '') + '" type="button" data-my-map-reaction="like" data-my-map-target="' + pin.id + '">いいね <span>' + reactions.like.count + '</span></button>' +
+                    '<button class="topMapActionBtn topMapActionBtn--thanks' + (reactions.thank_you.isActive ? ' is-on' : '') + '" type="button" data-my-map-reaction="thank_you" data-my-map-target="' + pin.id + '">ありがとう <span>' + reactions.thank_you.count + '</span></button>' +
+                  '</div>' +
+                  '<div class="commentSection commentSection--compact">' +
+                    '<div class="sectionTitleRow">' +
+                      '<h3 class="h2">コメント</h3>' +
+                      '<span class="note">' + comments.length + '件</span>' +
+                    '</div>' +
+                    '<div class="commentList">' +
+                      (comments.length
+                        ? comments.map(function (comment) {
+                            return '<article class="commentItem"><div class="commentMeta"><span class="commentAuthor">' + escapeMyMapText(comment.nickname) + '</span><time>' + escapeMyMapText(comment.created_at) + '</time>' + (comment.user_id === 'wire-user-1' ? '<button class="commentDeleteBtn" type="button" data-my-map-comment-delete="' + comment.comment_id + '" data-my-map-comment-target="' + pin.id + '">削除</button>' : '') + '</div><p class="commentBody">' + escapeMyMapText(comment.body) + '</p></article>';
+                          }).join('')
+                        : '<p class="note">まだコメントはありません。</p>') +
+                    '</div>' +
+                    '<div class="commentComposer">' +
+                      '<label class="myMapField"><span>コメントを書く</span><textarea rows="2" placeholder="残しておきたい気持ちや言葉を、短く書いてください。" data-my-map-comment-input="' + pin.id + '"></textarea></label>' +
+                      '<div class="commentComposerActions"><button class="btn ghost" type="button" data-my-map-comment-submit="' + pin.id + '">コメントする</button></div>' +
+                    '</div>' +
+                  '</div>' +
                 '</div>' +
                 '<button class="btn ghost" type="button" data-my-map-record-edit="' + pin.id + '">公開範囲を変更</button>' +
               '</article>';
@@ -506,6 +543,36 @@
             button.addEventListener('click', function () {
               myMapSelectedId = button.getAttribute('data-my-map-record-edit');
               openMyMapSheet('edit');
+            });
+          });
+
+          Array.prototype.slice.call(myMapRecordList.querySelectorAll('[data-my-map-reaction]')).forEach(function (button) {
+            button.addEventListener('click', function () {
+              if (!interactions) {
+                return;
+              }
+              interactions.toggleReaction('map_record', button.getAttribute('data-my-map-target'), button.getAttribute('data-my-map-reaction'));
+              renderMyMapRecordList();
+            });
+          });
+
+          Array.prototype.slice.call(myMapRecordList.querySelectorAll('[data-my-map-comment-submit]')).forEach(function (button) {
+            button.addEventListener('click', function () {
+              var id = button.getAttribute('data-my-map-comment-submit');
+              var input = myMapRecordList.querySelector('[data-my-map-comment-input="' + id + '"]');
+              var value = input ? input.value.trim() : '';
+              if (!interactions || !value) {
+                return;
+              }
+              interactions.addComment('map_record', id, value);
+              renderMyMapRecordList();
+            });
+          });
+
+          Array.prototype.slice.call(myMapRecordList.querySelectorAll('[data-my-map-comment-delete]')).forEach(function (button) {
+            button.addEventListener('click', function () {
+              interactions.removeComment('map_record', button.getAttribute('data-my-map-comment-target'), button.getAttribute('data-my-map-comment-delete'));
+              renderMyMapRecordList();
             });
           });
         }
@@ -698,6 +765,7 @@
 
             myMapPinsData.push(pin);
             myMapSelectedId = pin.id;
+            persistMyMapPins();
             renderMyMapPins();
           });
         }
@@ -734,6 +802,7 @@
             pin.visibilityUpdatedAt = getTodayDateString();
             pin.recordedAt = pin.recordedAt || getTodayDateString();
             pin.season = getSeasonFromDateString(pin.recordedAt);
+            persistMyMapPins();
             closeMyMapSheet();
             renderMyMapPins();
             openMyMapMenu(pin);
@@ -764,6 +833,7 @@
               return pin.id !== myMapSelectedId;
             });
             myMapSelectedId = null;
+            persistMyMapPins();
             closeMyMapConfirm();
             closeMyMapMenu();
             renderMyMapPins();

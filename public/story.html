@@ -41,6 +41,34 @@
         <p>木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。</p>
         <p>その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。</p>
       </div>
+      <section class="storyInteractionSection" aria-label="反応とコメント" data-story-interaction-root style="margin-top:18px;">
+        <!-- コメント機能は、長い議論や自由掲示板のためではない -->
+        <!-- 公開コメントには、残しておきたい気持ちや言葉を中心に置く -->
+        <!-- 困りごとや改善点は公開コメントではなく非公開導線に送る -->
+        <!-- ありがとう / いいね は、公開の場に好意を積み上げる軽い反応 -->
+        <!-- コメントしたもの一覧と、反応したもの一覧を見返せるようにする -->
+        <!-- 対象は「わたしの地図」と「ごひいきさんの足あと」 -->
+        <div class="card interactionCard">
+          <div class="interactionBar" data-story-reactions></div>
+          <div class="commentSection">
+            <div class="sectionTitleRow">
+              <h2 class="h2">コメント</h2>
+              <span class="note" data-story-comment-count>0件</span>
+            </div>
+            <p class="note">残しておきたい気持ちや言葉を書いてください。困りごとや改善点は、公開コメントではなく非公開でお知らせください。</p>
+            <div class="commentList" data-story-comment-list></div>
+            <div class="commentComposer">
+              <label class="myMapField">
+                <span>コメントを書く</span>
+                <textarea rows="3" placeholder="気持ちや返しておきたい言葉を、短く書いてください。" data-story-comment-input></textarea>
+              </label>
+              <div class="commentComposerActions">
+                <button class="btn primary" type="button" data-story-comment-submit>コメントする</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
 
     <section class="section" aria-label="ごひいきさんの足あとの運用ルール">
@@ -120,12 +148,14 @@
 
   <script src="./assets/scripts/shared-ui.js"></script>
   <script src="./assets/scripts/footprints.js"></script>
+  <script src="./assets/scripts/interactions.js"></script>
   <script>
     (function () {
       var shared = window.FURUTABI_SHARED_UI;
       var params = new URLSearchParams(window.location.search);
       var storyId = params.get('story') || '1';
       var footprints = window.FURUTABI_FOOTPRINTS;
+      var interactions = window.FURUTABI_INTERACTIONS;
       // Wireでは共通JSから読むが、Java化ではここを API / サーバー注入データに差し替える。
       var storyData = footprints ? footprints.withBasePath('') : {};
       var currentStory = storyData[storyId] || storyData['1'];
@@ -134,6 +164,7 @@
       var meta = document.querySelector('[data-story-meta]');
       var body = document.querySelector('[data-story-body]');
       var map = document.querySelector('[data-story-map]');
+      var interactionRoot = document.querySelector('[data-story-interaction-root]');
 
       if (!currentStory) {
         return;
@@ -157,6 +188,74 @@
           label: 'ごひいきさんの足あと',
           initialStoryId: currentStory.id
         });
+      }
+
+      function escapeText(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function renderInteractions() {
+        var reactions;
+        var comments;
+        var reactionsRoot;
+        var commentCount;
+        var commentList;
+        if (!interactionRoot || !interactions) {
+          return;
+        }
+
+        reactions = interactions.getReactionSummary('story_post', currentStory.id);
+        comments = interactions.getComments('story_post', currentStory.id);
+        reactionsRoot = interactionRoot.querySelector('[data-story-reactions]');
+        commentCount = interactionRoot.querySelector('[data-story-comment-count]');
+        commentList = interactionRoot.querySelector('[data-story-comment-list]');
+
+        reactionsRoot.innerHTML =
+          '<button class="topMapActionBtn' + (reactions.like.isActive ? ' is-on' : '') + '" type="button" data-story-reaction="like">いいね <span>' + reactions.like.count + '</span></button>' +
+          '<button class="topMapActionBtn topMapActionBtn--thanks' + (reactions.thank_you.isActive ? ' is-on' : '') + '" type="button" data-story-reaction="thank_you">ありがとう <span>' + reactions.thank_you.count + '</span></button>';
+        commentCount.textContent = comments.length + '件';
+        commentList.innerHTML = comments.length
+          ? comments.map(function (comment) {
+              return '' +
+                '<article class="commentItem">' +
+                  '<div class="commentMeta"><span class="commentAuthor">' + escapeText(comment.nickname) + '</span><time>' + escapeText(comment.created_at) + '</time>' + (comment.user_id === 'wire-user-1' ? '<button class="commentDeleteBtn" type="button" data-story-comment-delete="' + escapeText(comment.comment_id) + '">削除</button>' : '') + '</div>' +
+                  '<p class="commentBody">' + escapeText(comment.body) + '</p>' +
+                '</article>';
+            }).join('')
+          : '<p class="note">まだコメントはありません。</p>';
+
+        Array.prototype.slice.call(interactionRoot.querySelectorAll('[data-story-reaction]')).forEach(function (button) {
+          button.addEventListener('click', function () {
+            interactions.toggleReaction('story_post', currentStory.id, button.getAttribute('data-story-reaction'));
+            renderInteractions();
+          });
+        });
+
+        Array.prototype.slice.call(interactionRoot.querySelectorAll('[data-story-comment-delete]')).forEach(function (button) {
+          button.addEventListener('click', function () {
+            interactions.removeComment('story_post', currentStory.id, button.getAttribute('data-story-comment-delete'));
+            renderInteractions();
+          });
+        });
+      }
+
+      if (interactionRoot && interactions) {
+        interactionRoot.querySelector('[data-story-comment-submit]').addEventListener('click', function () {
+          var input = interactionRoot.querySelector('[data-story-comment-input]');
+          var value = input.value.trim();
+          if (!value) {
+            return;
+          }
+          interactions.addComment('story_post', currentStory.id, value);
+          input.value = '';
+          renderInteractions();
+        });
+        renderInteractions();
       }
     })();
   </script>
