@@ -2384,6 +2384,28 @@ body.hasProposalModal {
   box-shadow: 0 12px 30px rgba(0,0,0,.12);
   transform: translate(18px, -50%);
 }
+.myMapMenuSummary {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(34,34,34,.08);
+  margin-bottom: 4px;
+}
+.myMapMenuTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.myMapMenuMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.myMapMenuDate {
+  font-size: 11px;
+  color: #7b7064;
+}
 .myMapRegisterPrompt[hidden] {
   display: none !important;
 }
@@ -2496,6 +2518,111 @@ body.hasProposalModal {
   background: #fff;
   font: inherit;
   color: #222;
+}
+.myMapVisibilityChoice {
+  display: grid;
+  gap: 8px;
+}
+.myMapVisibilityOption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  row-gap: 2px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1px solid rgba(34,34,34,.08);
+  border-radius: 14px;
+  background: #fff;
+}
+.myMapVisibilityOption--simple {
+  padding: 2px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.myMapVisibilityOption input {
+  margin-top: 2px;
+}
+.myMapVisibilityLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.myMapVisibilityHint,
+.myMapVisibilityHelp {
+  grid-column: 2;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #6f665d;
+}
+.myMapVisibilityHelp {
+  margin: 0;
+}
+.myMapVisibilityBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #f3efe8;
+  color: #5a5148;
+  font-size: 12px;
+  font-weight: 600;
+}
+.myMapVisibilityBadge--private {
+  background: #f4efe8;
+}
+.myMapVisibilityBadge--limited {
+  background: #efe8f4;
+}
+.myMapVisibilityBadge--public {
+  background: #e8f1ee;
+}
+.myMapRecordList {
+  display: grid;
+  gap: 12px;
+}
+.myMapRecordRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(34,34,34,.08);
+}
+.myMapRecordRow:first-child {
+  border-top: 0;
+  padding-top: 6px;
+}
+.myMapRecordMain {
+  display: grid;
+  gap: 8px;
+}
+.myMapRecordHead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.myMapRecordIndex,
+.myMapRecordHelp {
+  font-size: 12px;
+  color: #7b7064;
+}
+.myMapRecordTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.myMapRecordBody {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #4a433c;
+}
+.myMapRecordHelp {
+  margin: 0;
+  line-height: 1.7;
 }
 .myMapSheetActions {
   display: flex;
@@ -2747,6 +2874,9 @@ body.hasProposalModal {
     flex-direction: row;
   }
   .myMapSheetBody {
+    grid-template-columns: 1fr;
+  }
+  .myMapRecordRow {
     grid-template-columns: 1fr;
   }
   .topMapLines {

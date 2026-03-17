@@ -94,6 +94,20 @@
         <div class="topMapLayout appTopMapLayout" data-my-map>
           <div class="myMapMain">
             <div class="myMapRegisterPrompt" hidden data-my-map-menu>
+              <!-- わたしの地図の公開範囲は機能の中核 -->
+              <!-- 初期値は必ず「本人のみ」 -->
+              <!-- 公開範囲は記録ごとに選べる -->
+              <!-- あとから公開範囲を変更できる -->
+              <!-- 一覧や地図上で現在の公開状態が分かるようにする -->
+              <!-- 位置は必要以上に細かく見せない -->
+              <!-- 公開してよいか迷う情報は、まずは本人のみで残せるようにする -->
+              <div class="myMapMenuSummary" data-my-map-menu-summary hidden>
+                <div class="myMapMenuTitle" data-my-map-menu-title>記録のタイトル</div>
+                <div class="myMapMenuMeta">
+                  <span class="myMapVisibilityBadge" data-my-map-menu-visibility>本人のみ</span>
+                  <span class="myMapMenuDate" data-my-map-menu-date></span>
+                </div>
+              </div>
               <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-create>新規登録</button>
               <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-edit hidden>編集</button>
               <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-delete hidden>削除</button>
@@ -115,6 +129,16 @@
           <div class="h2">運用ルール</div>
             <ul class="aboutFeatureList" data-rule-list="my_map"></ul>
           </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="sectionTitleRow">
+            <h2 class="h2">記録一覧</h2>
+            <span class="note">公開状態をあとから見直せます</span>
+          </div>
+          <div class="myMapRecordList" data-my-map-record-list>
+            <p class="note">まだ記録はありません。地図上を押して新しい記録を残せます。</p>
+          </div>
+        </div>
 
         <div class="myMapSheetWrap" hidden data-my-map-sheet-wrap>
           <section class="card myMapSheet" aria-label="わたしの地図の新規登録">
@@ -140,6 +164,23 @@
                   <span>記事</span>
                   <textarea rows="7" placeholder="ここに記事を書きます" data-my-map-body-input></textarea>
                 </label>
+                <div class="myMapField">
+                  <span>公開範囲</span>
+                  <div class="myMapVisibilityChoice" role="radiogroup" aria-label="公開範囲">
+                    <label class="myMapVisibilityOption myMapVisibilityOption--simple">
+                      <input type="radio" name="my-map-visibility" value="private" checked data-my-map-visibility-input />
+                      <span class="myMapVisibilityLabel">本人のみ</span>
+                    </label>
+                    <label class="myMapVisibilityOption myMapVisibilityOption--simple">
+                      <input type="radio" name="my-map-visibility" value="limited" data-my-map-visibility-input />
+                      <span class="myMapVisibilityLabel">限られた相手</span>
+                    </label>
+                    <label class="myMapVisibilityOption myMapVisibilityOption--simple">
+                      <input type="radio" name="my-map-visibility" value="public" data-my-map-visibility-input />
+                      <span class="myMapVisibilityLabel">公開</span>
+                    </label>
+                  </div>
+                </div>
                 <div class="myMapSheetActions">
                   <button class="btn ghost" type="button" data-my-map-draft>下書き保存</button>
                   <button class="btn primary" type="button" data-my-map-submit>登録を完了</button>
@@ -355,10 +396,16 @@
         var myMapTitleInput = document.querySelector('[data-my-map-title-input]');
         var myMapPhotoInput = document.querySelector('[data-my-map-photo-input]');
         var myMapBodyInput = document.querySelector('[data-my-map-body-input]');
+        var myMapVisibilityInputs = Array.prototype.slice.call(document.querySelectorAll('[data-my-map-visibility-input]'));
         var myMapSheetTitle = document.querySelector('[data-my-map-sheet-title]');
         var myMapConfirmWrap = document.querySelector('[data-my-map-confirm-wrap]');
         var myMapConfirmCancel = document.querySelector('[data-my-map-confirm-cancel]');
         var myMapConfirmDelete = document.querySelector('[data-my-map-confirm-delete]');
+        var myMapMenuSummary = myMap.querySelector('[data-my-map-menu-summary]');
+        var myMapMenuTitle = myMap.querySelector('[data-my-map-menu-title]');
+        var myMapMenuVisibility = myMap.querySelector('[data-my-map-menu-visibility]');
+        var myMapMenuDate = myMap.querySelector('[data-my-map-menu-date]');
+        var myMapRecordList = document.querySelector('[data-my-map-record-list]');
         var myMapViewport = myMap.querySelector('[data-my-map-viewport]');
         var myMapImage = myMap.querySelector('[data-my-map-image]');
         var myMapZoomIn = myMap.querySelector('[data-my-map-zoom-in]');
@@ -376,6 +423,37 @@
         var myMapDragStartY = 0;
         var myMapPanStartX = 0;
         var myMapPanStartY = 0;
+        var myMapDefaultVisibility = 'private';
+
+        function getVisibilityMeta(value) {
+          if (value === 'limited') {
+            return { label: '限定公開', hint: '限られた相手にだけ見える設定です。' };
+          }
+          if (value === 'public') {
+            return { label: '公開中', hint: '公開可能な範囲で広く見える設定です。' };
+          }
+          return { label: '本人のみ', hint: '自分だけが見られる設定です。' };
+        }
+
+        function getSelectedVisibility() {
+          var checked = myMapVisibilityInputs.find(function (input) { return input.checked; });
+          return checked ? checked.value : myMapDefaultVisibility;
+        }
+
+        function escapeMyMapText(value) {
+          return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function setSelectedVisibility(value) {
+          myMapVisibilityInputs.forEach(function (input) {
+            input.checked = input.value === value;
+          });
+        }
 
         function getMyMapPin(id) {
           return myMapPinsData.find(function (pin) { return pin.id === id; }) || null;
@@ -386,7 +464,50 @@
             myMapMenu.hidden = true;
             myMapMenu.style.left = '';
             myMapMenu.style.top = '';
+            if (myMapMenuSummary) {
+              myMapMenuSummary.hidden = true;
+            }
           }
+        }
+
+        function renderMyMapRecordList() {
+          var registeredPins;
+
+          if (!myMapRecordList) {
+            return;
+          }
+
+          registeredPins = myMapPinsData.filter(function (pin) { return pin.registered; });
+
+          if (!registeredPins.length) {
+            myMapRecordList.innerHTML = '<p class="note">まだ記録はありません。地図上を押して新しい記録を残せます。</p>';
+            return;
+          }
+
+          myMapRecordList.innerHTML = registeredPins.map(function (pin, index) {
+            var visibility = getVisibilityMeta(pin.visibility);
+            var dateText = pin.visibilityUpdatedAt ? '更新: ' + pin.visibilityUpdatedAt : '';
+            return '' +
+              '<article class="myMapRecordRow">' +
+                '<div class="myMapRecordMain">' +
+                  '<div class="myMapRecordHead">' +
+                    '<span class="myMapRecordIndex">記録 ' + String(index + 1) + '</span>' +
+                    '<span class="myMapVisibilityBadge myMapVisibilityBadge--' + pin.visibility + '">' + visibility.label + '</span>' +
+                  '</div>' +
+                  '<div class="myMapRecordTitle">' + escapeMyMapText(pin.title || 'タイトル未設定') + '</div>' +
+                  '<p class="myMapRecordBody">' + escapeMyMapText(pin.body || 'まだ本文は入っていません。') + '</p>' +
+                  '<p class="myMapRecordHelp">' + visibility.hint + ' 迷う内容は、まずは本人のみで残せます。' + (dateText ? ' ' + dateText : '') + '</p>' +
+                '</div>' +
+                '<button class="btn ghost" type="button" data-my-map-record-edit="' + pin.id + '">公開範囲を変更</button>' +
+              '</article>';
+          }).join('');
+
+          Array.prototype.slice.call(myMapRecordList.querySelectorAll('[data-my-map-record-edit]')).forEach(function (button) {
+            button.addEventListener('click', function () {
+              myMapSelectedId = button.getAttribute('data-my-map-record-edit');
+              openMyMapSheet('edit');
+            });
+          });
         }
 
         function renderMyMapPins() {
@@ -420,11 +541,14 @@
 
             myMapPinsLayer.appendChild(button);
           });
+
+          renderMyMapRecordList();
         }
 
         function openMyMapMenu(pin) {
           var createVisible = !!pin && !pin.registered;
           var editVisible = !!pin && pin.registered;
+          var visibility;
 
           if (!myMapMenu || !pin) {
             return;
@@ -436,6 +560,16 @@
           if (myMapCreate) myMapCreate.hidden = !createVisible;
           if (myMapEdit) myMapEdit.hidden = !editVisible;
           if (myMapDelete) myMapDelete.hidden = !editVisible;
+          if (myMapMenuSummary) myMapMenuSummary.hidden = !editVisible;
+          if (editVisible) {
+            visibility = getVisibilityMeta(pin.visibility);
+            if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
+            if (myMapMenuVisibility) {
+              myMapMenuVisibility.textContent = visibility.label;
+              myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--' + pin.visibility;
+            }
+            if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
+          }
         }
 
         function openMyMapSheet(mode) {
@@ -452,6 +586,7 @@
           if (myMapTitleInput) myMapTitleInput.value = pin.title || '';
           if (myMapPhotoInput) myMapPhotoInput.value = pin.photoNote || '';
           if (myMapBodyInput) myMapBodyInput.value = pin.body || '';
+          setSelectedVisibility(pin.visibility || myMapDefaultVisibility);
         }
 
         function closeMyMapSheet() {
@@ -553,7 +688,9 @@
               registered: false,
               title: '',
               photoNote: '',
-              body: ''
+              body: '',
+              visibility: myMapDefaultVisibility,
+              visibilityUpdatedAt: getTodayDateString()
             };
 
             pin.recordedAt = getTodayDateString();
@@ -593,6 +730,8 @@
             pin.title = myMapTitleInput ? myMapTitleInput.value : '';
             pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
             pin.body = myMapBodyInput ? myMapBodyInput.value : '';
+            pin.visibility = getSelectedVisibility();
+            pin.visibilityUpdatedAt = getTodayDateString();
             pin.recordedAt = pin.recordedAt || getTodayDateString();
             pin.season = getSeasonFromDateString(pin.recordedAt);
             closeMyMapSheet();
