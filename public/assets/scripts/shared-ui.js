@@ -1,4 +1,8 @@
 (function () {
+  // Java移行時メモ:
+  // このファイルは公開側 / ログイン後の共通UIを仮描画する層です。
+  // 本実装では、header / footer / 導線リンクはサーバー側テンプレートや設定APIで出し分ける形も考えやすそうです。
+  // bridge と ログイン後 はワイヤ用補助導線として置いているため、本番では utilityLinks から外す整理もしやすいです。
   var entryCards = [
     { id: 'gate-1', duration: '30分', title: '海まで歩いて景色の話を聞く', note: '海を見ながら、この土地の好きな時間をたどる入口です。' },
     { id: 'gate-2', duration: '20分', title: 'ハウスの前で野菜を見る', note: '育てているものを見ながら、地域の挑戦を少し聞きます。' },
@@ -54,7 +58,7 @@
         { href: '../app/home.html', label: 'ログイン後' }
       ],
       action: [
-        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
       ]
     },
@@ -74,7 +78,7 @@
         { href: '../app/home.html', label: 'ログイン後' }
       ],
       action: [
-        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
       ]
     },
@@ -94,7 +98,7 @@
         { href: '../app/home.html', label: 'ログイン後' }
       ],
       action: [
-        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
       ]
     },
@@ -114,7 +118,7 @@
         { href: '../app/home.html', label: 'ログイン後' }
       ],
       action: [
-        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
       ]
     },
@@ -264,18 +268,22 @@
 
   function withBasePrefix(href) {
     var current = getCurrentPathname();
-    var appPaths = ['home.html', 'local-home.html', 'login.html'];
+    var authOrAppPaths = ['home.html', 'local-home.html', 'login.html', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'];
 
     if (href === '#') {
       return href;
     }
 
-    if (appPaths.indexOf(current) !== -1 && href.indexOf('../') !== 0) {
+    if (authOrAppPaths.indexOf(current) !== -1 && href.indexOf('../') !== 0) {
       return '../public/' + href;
     }
 
-    if (current === 'login.html' && href === '../auth/login.html') {
+    if (href === '../auth/login.html' && authOrAppPaths.indexOf(current) !== -1) {
       return './login.html';
+    }
+
+    if (href === '../auth/register.html' && authOrAppPaths.indexOf(current) !== -1) {
+      return './register.html';
     }
 
     return href;

@@ -1,4 +1,8 @@
 (function () {
+  // Java移行時メモ:
+  // 詳細ページは単一テンプレート + query string のワイヤ実装です。
+  // 本実装では `/gate/{id}` `/okatte/{id}` のようなURLや、詳細APIに置き換える形も考えやすそうです。
+  // 関連提案だけ軽量一覧で返すと、ページ全体の負荷を抑えやすそうです。
   var shared = window.FURUTABI_SHARED_UI;
   var proposals = window.FURUTABI_PROPOSALS;
   var mapImage = './assets/images/凪咲町.svg';

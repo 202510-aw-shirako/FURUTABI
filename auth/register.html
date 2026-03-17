@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>新規登録 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="auth_login"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container authPage" aria-label="新規登録">
+    <!-- 新規登録時は本人確認書類不要 -->
+    <!-- SMS認証は必須 -->
+    <!-- 実名・住所・電話番号などは管理者のみ閲覧 -->
+    <!-- 性別は必須だが「回答しない」を選べる -->
+    <!-- 性別と年齢層は、必要に応じて架け橋さん / おかって受け入れ側に共有されることがある -->
+    <!-- ニックネーム利用は可 -->
+    <!-- ニックネームに実名を書くのは禁止 -->
+    <!-- 登録後にゆっくり書く項目を分ける -->
+    <!-- 追加本人確認は通常非表示、必要時のみ外部本人確認APIを起動する -->
+    <section class="authFlowShell">
+      <div class="authFlowIntro">
+        <p class="eyebrow">SIGN UP</p>
+        <h1 class="authFlowTitle">新規登録</h1>
+        <p class="authFlowLead">安心して関われるように、最初に必要な情報だけをお預かりします。</p>
+      </div>
+
+      <ol class="authStepList" aria-label="登録ステップ">
+        <li class="is-current"><span>1</span><strong>登録情報入力</strong></li>
+        <li><span>2</span><strong>初期設定</strong></li>
+        <li><span>3</span><strong>完了</strong></li>
+      </ol>
+
+      <section class="authCard" aria-label="登録フォーム">
+        <div class="authCardSection">
+          <h2 class="authCardTitle">登録情報を入力する</h2>
+          <p class="authCardLead">登録時には実名が必要です。公開の場ではニックネームを使います。</p>
+        </div>
+
+        <form class="authForm" action="./register-profile.html">
+          <div class="authField">
+            <label for="register-name">実名</label>
+            <input id="register-name" name="name" type="text" placeholder="例）古旅 花子" required />
+          </div>
+
+          <div class="authField">
+            <label for="register-name-kana">氏名カナ</label>
+            <input id="register-name-kana" name="name_kana" type="text" placeholder="例）フルタビ ハナコ" required />
+          </div>
+
+          <div class="authField">
+            <label for="register-birthday">生年月日</label>
+            <input id="register-birthday" name="birthday" type="date" required />
+          </div>
+
+          <fieldset class="authField authFieldset">
+            <legend>性別</legend>
+            <div class="authChoiceList authChoiceList--row">
+              <label><input type="radio" name="gender" value="male" required />男性</label>
+              <label><input type="radio" name="gender" value="female" />女性</label>
+              <label><input type="radio" name="gender" value="no-answer" />回答しない</label>
+            </div>
+          </fieldset>
+
+          <div class="authField">
+            <label for="register-email">メールアドレス</label>
+            <input id="register-email" name="email" type="email" placeholder="name@example.com" required />
+          </div>
+
+          <div class="authField">
+            <label for="register-phone">電話番号</label>
+            <input id="register-phone" name="phone" type="tel" placeholder="090-1234-5678" required />
+          </div>
+
+          <div class="authField">
+            <label for="register-address">住所</label>
+            <input id="register-address" name="address" type="text" placeholder="都道府県・市区町村・番地" required />
+          </div>
+
+          <div class="authField">
+            <label for="register-nickname">ニックネーム</label>
+            <input id="register-nickname" name="nickname" type="text" placeholder="公開の場で使う名前" required />
+            <p class="authError" id="register-nickname-error" hidden aria-live="polite">ニックネームに実名は使えません。別の表示名を入力してください。</p>
+          </div>
+
+          <div class="authField">
+            <label for="register-password">パスワード</label>
+            <input id="register-password" name="password" type="password" placeholder="8文字以上" required />
+          </div>
+
+          <div class="authField">
+            <label for="register-password-confirm">パスワード確認</label>
+            <input id="register-password-confirm" name="password_confirm" type="password" placeholder="もう一度入力" required />
+          </div>
+
+          <section class="authInlinePanel" aria-label="SMS認証">
+            <div class="authInlinePanelText">
+              <h3>SMS認証</h3>
+              <p>SMS認証は必須です。仮登録後に確認へ進む設計にも切り替えやすい構造にしています。</p>
+            </div>
+            <div class="authInlineActions">
+              <a class="btn ghost" href="#">SMS認証を確認する</a>
+            </div>
+          </section>
+
+          <div class="authInfoList">
+            <p>実名・住所・電話番号などの個人情報は、管理者のみが確認します。</p>
+            <p>性別と年齢層は、必要に応じて架け橋さんや、ちいきのおかっての受け入れ側が確認することがあります。</p>
+            <p>一般公開の場では、困りごとや改善点ではなく、残しておきたい関わりを中心に扱います。</p>
+          </div>
+
+          <fieldset class="authField authFieldset">
+            <legend>確認事項</legend>
+            <div class="authChoiceList">
+              <label><input type="checkbox" required />利用規約に同意する</label>
+              <label><input type="checkbox" required />プライバシーポリシーに同意する</label>
+              <label><input type="checkbox" required />必要時に追加確認をお願いすることがある点を確認した</label>
+            </div>
+          </fieldset>
+
+          <div class="authFormActions">
+            <button class="btn primary" type="submit">つぎへ</button>
+          </div>
+        </form>
+      </section>
+
+      <div class="authUtilityLinks" aria-label="登録補助導線">
+        <a href="./login.html">すでに登録済みの方はこちら</a>
+        <a href="../public/terms.html">利用規約</a>
+        <a href="../public/privacy.html">プライバシーポリシー</a>
+        <a href="../public/faq.html">FAQ</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script>
+    (() => {
+      // Java移行時メモ:
+      // この画面では、User の仮登録を作り、SMS認証待ちの状態で持つ形が考えやすそうです。
+      // 保存する項目の目印: 実名, 氏名カナ, 生年月日, 性別, メールアドレス, 電話番号, 住所, ニックネーム, パスワードハッシュ。
+      // ここで扱う個人情報は管理者のみ閲覧、公開名として使うのは nickname のみ、という整理を意識しています。
+      // registrationStatus=REGISTERING, smsVerificationStatus=PENDING のような持ち方も分かりやすそうです。
+      // 性別は必須だが no-answer を許可し、年齢層は birthday からサーバー側で導出する形でもよさそうです。
+      // ニックネームの実名禁止は、最終的にサーバー側でも再検証して、クライアント判定だけに寄せすぎない方が安全そうです。
+      // SMS 認証は外部API連携を前提にしつつ、送信トークンや認証コードはサーバー側で持つイメージです。
+      // 利用規約 / プライバシーポリシー同意は、同意時刻と規約バージョンを残せると後で追いやすそうです。
+      const form = document.querySelector('.authForm');
+      const nameInput = document.getElementById('register-name');
+      const nicknameInput = document.getElementById('register-nickname');
+      const error = document.getElementById('register-nickname-error');
+      if (!form || !nameInput || !nicknameInput || !error) return;
+
+      function normalize(value) {
+        return (value || '').replace(/\s+/g, '').toLowerCase();
+      }
+
+      function buildNameParts(value) {
+        const raw = (value || '').trim();
+        if (!raw) return [];
+        const parts = raw.split(/\s+/).map(normalize).filter(Boolean);
+        const joined = normalize(raw);
+        return Array.from(new Set([joined].concat(parts)));
+      }
+
+      function validateNickname() {
+        // Java移行時メモ:
+        // 実運用では NG ワード、既存 nickname 重複、全角半角ゆれも含めてサーバー側でも見ると安心そうです。
+        const nickname = normalize(nicknameInput.value);
+        const nameParts = buildNameParts(nameInput.value);
+        const invalid = nickname && nameParts.some((part) => part && nickname.includes(part));
+        nicknameInput.setCustomValidity(invalid ? 'ニックネームに実名は使えません。' : '');
+        error.hidden = !invalid;
+        return !invalid;
+      }
+
+      nicknameInput.addEventListener('input', validateNickname);
+      nameInput.addEventListener('input', validateNickname);
+      form.addEventListener('submit', (event) => {
+        if (!validateNickname()) {
+          event.preventDefault();
+          nicknameInput.focus();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

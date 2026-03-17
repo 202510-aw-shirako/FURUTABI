@@ -1,4 +1,7 @@
 (function () {
+  // Java移行時メモ:
+  // FAQ は「読むページ」、安心と連絡は「書くページ」という役割分離の目印です。
+  // FAQ本文は将来 CMS 化しても、traveler / local のタブ構造は残しておくと分かりやすそうです。
   function switchTab(nextKey) {
     document.querySelectorAll('[data-faq-tab]').forEach(function (button) {
       var isActive = button.getAttribute('data-faq-tab') === nextKey;

@@ -1,4 +1,8 @@
 (function () {
+  // Java移行時メモ:
+  // ちいきの入り口 / ちいきのおかって / 人物モーダルの仮データです。
+  // 将来は ProposalSummary, ProposalDetail, PersonProfile のように分けて取得する形も考えやすそうです。
+  // personId をキーに人物情報を引く形は、本実装でも関係を保ちやすい目印になります。
   var MODAL_ID = 'proposalPersonModal';
 
   function escapeHtml(value) {

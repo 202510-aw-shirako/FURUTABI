@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>登録完了 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="auth_login"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container authPage authPage--centered" aria-label="登録完了">
+    <section class="authCompleteCard">
+      <div class="authCompleteMark" aria-hidden="true">✓</div>
+      <p class="eyebrow">COMPLETE</p>
+      <h1 class="authFlowTitle">登録が完了しました</h1>
+      <p class="authFlowLead">これから、無理のない入口から少しずつ関わりを始められます。</p>
+
+      <div class="authCompleteGrid">
+        <section class="authCompletePanel">
+          <h2>完了したこと</h2>
+          <ul class="authList">
+            <li>登録情報の入力が完了しました</li>
+            <li>SMS認証が完了した想定です</li>
+          </ul>
+        </section>
+        <section class="authCompletePanel">
+          <h2>最初にできること</h2>
+          <ul class="authList">
+            <li>ちいきの入り口を見る</li>
+            <li>ごひいきさんの足あとを読む</li>
+            <li>FAQを見る</li>
+          </ul>
+        </section>
+        <section class="authCompletePanel">
+          <h2>あとでできること</h2>
+          <ul class="authList">
+            <li>プロフィールを整える</li>
+            <li>わたしの地図を使い始める</li>
+            <li>ちいきのおかってに進む</li>
+          </ul>
+        </section>
+      </div>
+
+      <div class="authFormActions authFormActions--center">
+        <a class="btn primary" href="../app/home.html">ホームへ</a>
+      </div>
+
+      <div class="authUtilityLinks authUtilityLinks--center" aria-label="完了後の補助導線">
+        <a href="../public/gate.html">ちいきの入り口へ</a>
+        <a href="../public/faq.html">FAQを見る</a>
+        <a href="./register-profile.html">プロフィールを編集する</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script>
+    // Java移行時メモ:
+    // この画面は registrationStatus=ACTIVE かつ smsVerificationStatus=VERIFIED のような条件で見せると整理しやすそうです。
+    // 初回ログイン直後のホーム導線と、登録完了直後の導線は将来的に出し分けてもよさそうです。
+    // 「最初にできること / あとでできること」は、権限や状態で差し替えられると柔らかく運用しやすそうです。
+    // 未完了の追加本人確認がある場合は、この画面ではなく register-verify 側へ案内する流れも考えやすいです。
+  </script>
+</body>
+</html>

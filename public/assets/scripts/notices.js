@@ -1,4 +1,7 @@
 (function () {
+  // Java移行時メモ:
+  // notices は仮データです。将来は notices テーブルや CMS API レスポンスへ置き換える形が考えやすそうです。
+  // topicsEnabled / topicsStartAt / topicsEndAt / status は、将来の保持項目としてそのまま寄せやすい目です。
   var ONE_MONTH_FALLBACK_DAYS = 31;
   var shared = window.FURUTABI_SHARED_UI;
 
