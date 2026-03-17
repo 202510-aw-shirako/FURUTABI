@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>プロフィール編集 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar"><div class="container"><div class="inner"><div class="brand">FURUTABI｜郷旅</div><nav data-site-nav="app_home"></nav></div></div></header>
+  <main class="container mypagePage" aria-label="プロフィール編集">
+    <!-- 個人情報とプロフィールは分ける -->
+    <!-- ニックネームに実名を書くのは禁止 -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション"><div class="mypageSidebarInner"><h2 class="mypageSidebarTitle">アカウント</h2><nav class="mypageNav"><a class="mypageNavLink" href="./mypage.html">マイページ</a><a class="mypageNavLink" href="./account.html">アカウント情報</a><a class="mypageNavLink is-current" href="./profile.html" aria-current="page">プロフィール編集</a><a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a><a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a><a class="mypageNavLink" href="./history.html">関わりの履歴</a><a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a><a class="mypageNavLink" href="./support.html">安心とサポート</a></nav></div></aside>
+      <section class="mypageMain">
+        <div class="mypageHead"><h1 class="h1">プロフィール編集</h1><p class="lead">ここに書いた内容は、あとから変更できます。無理のない範囲で、少しずつ整えていけます。</p></div>
+        <form class="mypageForm">
+          <section class="mypageSection"><h2 class="h2">自分について</h2><div class="mypageFormGrid">
+            <label class="mypageField mypageField--full"><span>アイコン画像</span><div class="mypageUploadRow"><div class="ph ph--thumb mypageAvatar" aria-hidden="true"></div><a class="btn ghost" href="#">画像を選ぶ</a></div></label>
+            <label class="mypageField mypageField--full"><span>自己紹介</span><textarea rows="5">海辺を歩く時間が好きです。無理のない入口から、地域の空気に少しずつ触れていきたいと思っています。</textarea></label>
+            <label class="mypageField"><span>興味のある地域</span><input type="text" value="海辺、港町、梅林地区" /></label>
+            <label class="mypageField"><span>過去の訪問歴</span><input type="text" value="凪咲町には3回訪問" /></label>
+            <label class="mypageField"><span>子ども連れかどうか</span><select><option selected>ひとりで行くことが多い</option><option>子ども連れ</option></select></label>
+            <label class="mypageField"><span>食事制限 / アレルギー</span><input type="text" value="甲殻類アレルギーあり" /></label>
+            <label class="mypageField mypageField--full"><span>配慮してほしいこと</span><textarea rows="4">人が多い場より、少人数で落ち着いて話せる方が入りやすいです。</textarea></label>
+            <label class="mypageField mypageField--full"><span>関わり方のメモ</span><textarea rows="4">まずは短時間の入口から、その地域にどう入れるかを見ていきたいです。</textarea></label>
+          </div></section>
+          <div class="mypageActions"><button class="btn primary" type="submit">保存する</button></div>
+        </form>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

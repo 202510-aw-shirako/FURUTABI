@@ -3399,6 +3399,275 @@ html { scroll-behavior: smooth; }
   font-size: 13px;
   line-height: 1.75;
 }
+
+.mypagePage {
+  padding-top: 36px;
+  padding-bottom: 72px;
+}
+.mypagePage--narrow {
+  max-width: 760px;
+}
+.mypageShell {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.mypageSidebar {
+  position: sticky;
+  top: 92px;
+}
+.mypageSidebarInner {
+  display: grid;
+  gap: 14px;
+  padding: 20px 18px;
+  border: 1px solid rgba(34,34,34,.07);
+  border-radius: 22px;
+  background: #fbf8f2;
+}
+.mypageSidebarTitle {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: .04em;
+  color: #6c6258;
+}
+.mypageNav {
+  display: grid;
+  gap: 6px;
+}
+.mypageNavLink {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 14px;
+  color: #534a41;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.mypageNavLink:hover,
+.mypageNavLink.is-current {
+  background: #fff;
+  color: #231f1b;
+}
+.mypageMain {
+  display: grid;
+  gap: 22px;
+}
+.mypageHead {
+  display: grid;
+  gap: 8px;
+}
+.mypageProfileCard,
+.mypageNoticeBox,
+.mypageStatusCard,
+.mypageLinkCard,
+.mypageTimelineItem,
+.mypageSettingCard {
+  border: 1px solid rgba(34,34,34,.07);
+  border-radius: 24px;
+  background: #fff;
+}
+.mypageProfileCard {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px;
+}
+.mypageAvatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+}
+.mypageProfileBody {
+  display: grid;
+  gap: 8px;
+  align-content: center;
+}
+.mypageEyebrow,
+.mypageStatusLabel {
+  margin: 0;
+  font-size: 12px;
+  color: #7c7165;
+  letter-spacing: .04em;
+}
+.mypageText {
+  margin: 0;
+  font-size: 14px;
+  color: #534a41;
+  line-height: 1.8;
+}
+.mypageSection {
+  display: grid;
+  gap: 14px;
+}
+.mypageStatusGrid,
+.mypageLinkGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.mypageStatusCard,
+.mypageLinkCard,
+.mypageSettingCard {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+.mypageStatusValue {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.pill--soft {
+  background: #eef2eb;
+  color: #274222;
+}
+.mypageLinkCard {
+  text-decoration: none;
+  color: inherit;
+}
+.mypageLinkCard:hover {
+  border-color: rgba(34,34,34,.14);
+}
+.mypageNoticeBox {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  background: #fcfaf5;
+}
+.mypageNoticeBox p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #5d554d;
+}
+.mypageForm {
+  display: grid;
+  gap: 18px;
+}
+.mypageFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 18px;
+}
+.mypageField {
+  display: grid;
+  gap: 8px;
+}
+.mypageField > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.mypageField > span small {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  font-weight: 400;
+  color: #7e7368;
+}
+.mypageField input,
+.mypageField select,
+.mypageField textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid #d9d4cd;
+  border-radius: 14px;
+  background: #fff;
+  color: #222;
+  font: inherit;
+}
+.mypageField textarea {
+  min-height: 112px;
+  resize: vertical;
+}
+.mypageField input:focus,
+.mypageField select:focus,
+.mypageField textarea:focus {
+  outline: none;
+  border-color: #948271;
+  box-shadow: 0 0 0 3px rgba(148,130,113,.12);
+}
+.mypageField--full {
+  grid-column: 1 / -1;
+}
+.mypageFieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.mypageChoiceList,
+.mypageCheckStack {
+  display: grid;
+  gap: 10px;
+}
+.mypageChoiceList label,
+.mypageCheckStack label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: #4b433b;
+  font-size: 13px;
+}
+.mypageUploadRow {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.mypageSubLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+.mypageSubLinks a {
+  color: #675d54;
+  font-size: 13px;
+}
+.mypageActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+.mypageActions--center {
+  justify-content: center;
+}
+.mypageSubflowCard,
+.mypageCompleteCard {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid rgba(34,34,34,.07);
+  border-radius: 26px;
+  background: #fff;
+}
+.mypageCompleteCard {
+  justify-items: center;
+  text-align: center;
+}
+.mypageTabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mypageTimeline {
+  display: grid;
+  gap: 12px;
+}
+.mypageTimelineItem {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
+}
+.mypageTimelineMeta {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
 @media (max-width: 820px) {
   .authStepList {
     grid-template-columns: 1fr;
@@ -3422,5 +3691,20 @@ html { scroll-behavior: smooth; }
   }
   .authFlowShell {
     gap: 18px;
+  }
+  .mypageShell {
+    grid-template-columns: 1fr;
+  }
+  .mypageSidebar {
+    position: static;
+  }
+  .mypageStatusGrid,
+  .mypageLinkGrid,
+  .mypageFormGrid,
+  .mypageTimelineItem {
+    grid-template-columns: 1fr;
+  }
+  .mypageProfileCard {
+    grid-template-columns: 1fr;
   }
 }

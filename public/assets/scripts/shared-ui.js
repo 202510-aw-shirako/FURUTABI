@@ -137,7 +137,7 @@
         { href: '../public/bridge.html', label: 'ブリッジ' }
       ],
       action: [
-        { href: '#', label: 'アカウント' }
+        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html'] }
       ]
     },
     app_local: {
@@ -155,7 +155,7 @@
         { href: '../public/bridge.html', label: 'ブリッジ' }
       ],
       action: [
-        { href: '#', label: 'アカウント' }
+        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html'] }
       ]
     }
   };

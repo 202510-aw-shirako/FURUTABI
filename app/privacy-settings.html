@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>公開範囲とプライバシー | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar"><div class="container"><div class="inner"><div class="brand">FURUTABI｜郷旅</div><nav data-site-nav="app_home"></nav></div></div></header>
+  <main class="container mypagePage" aria-label="公開範囲とプライバシー">
+    <!-- わたしの地図は本人のみを初期値にする -->
+    <!-- 困りごとや改善点は非公開導線へ送る -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション"><div class="mypageSidebarInner"><h2 class="mypageSidebarTitle">アカウント</h2><nav class="mypageNav"><a class="mypageNavLink" href="./mypage.html">マイページ</a><a class="mypageNavLink" href="./account.html">アカウント情報</a><a class="mypageNavLink" href="./profile.html">プロフィール編集</a><a class="mypageNavLink is-current" href="./privacy-settings.html" aria-current="page">公開範囲とプライバシー</a><a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a><a class="mypageNavLink" href="./history.html">関わりの履歴</a><a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a><a class="mypageNavLink" href="./support.html">安心とサポート</a></nav></div></aside>
+      <section class="mypageMain">
+        <div class="mypageHead"><h1 class="h1">公開範囲とプライバシー</h1><p class="lead">その土地の暮らしや関係を傷つけないために、公開範囲を分けています。</p></div>
+        <div class="mypageNoticeBox">
+          <p>わたしの地図は本人のみを初期値にしています。</p>
+          <p>公開範囲はあとから変更できます。位置は必要以上に細かく見せません。</p>
+          <p>公開してよいか迷う情報は載せないことを基本にしています。</p>
+        </div>
+        <form class="mypageForm">
+          <div class="mypageFormGrid">
+            <label class="mypageField"><span>わたしの地図のデフォルト公開範囲</span><select><option selected>本人のみ</option><option>限られた範囲</option><option>全体公開</option></select></label>
+            <label class="mypageField"><span>投稿のデフォルト公開範囲</span><select><option selected>公開前に確認する</option><option>限られた範囲</option><option>全体公開</option></select></label>
+            <label class="mypageField"><span>位置情報の表示粒度</span><select><option selected>エリア単位</option><option>大まかな地点</option></select></label>
+            <div class="mypageField mypageField--full"><span>写真や個人情報の公開注意</span><div class="mypageCheckStack"><label><input type="checkbox" checked />暮らしに近い写真は公開前に確認する</label><label><input type="checkbox" checked />名前や連絡先が写る画像は公開しない</label><label><input type="checkbox" checked />迷う投稿は安心と連絡ページで相談する</label></div></div>
+          </div>
+          <div class="mypageSubLinks"><a href="./support.html">ブロック / 非表示 / 通報の導線を見る</a><a href="./history.html">公開範囲変更の対象を見る</a></div>
+          <div class="mypageActions"><button class="btn primary" type="submit">保存する</button></div>
+        </form>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

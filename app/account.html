@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>アカウント情報 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar"><div class="container"><div class="inner"><div class="brand">FURUTABI｜郷旅</div><nav data-site-nav="app_home"></nav></div></div></header>
+  <main class="container mypagePage" aria-label="アカウント情報">
+    <!-- 個人情報とプロフィールは分ける -->
+    <!-- 実名・住所・電話番号などは管理者のみ閲覧 -->
+    <!-- 性別は必須項目で、「回答しない」を選べる -->
+    <!-- 性別と年齢層は、必要に応じて架け橋さん / ちいきのおかって受け入れ側が確認することがある -->
+    <!-- 地域の方、旅人の方の双方が安心して関われるようにするために、必要な範囲で情報を扱う -->
+    <!-- ニックネームに実名を書くのは禁止 -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション"><div class="mypageSidebarInner"><h2 class="mypageSidebarTitle">アカウント</h2><nav class="mypageNav"><a class="mypageNavLink" href="./mypage.html">マイページ</a><a class="mypageNavLink is-current" href="./account.html" aria-current="page">アカウント情報</a><a class="mypageNavLink" href="./profile.html">プロフィール編集</a><a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a><a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a><a class="mypageNavLink" href="./history.html">関わりの履歴</a><a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a><a class="mypageNavLink" href="./support.html">安心とサポート</a></nav></div></aside>
+      <section class="mypageMain">
+        <div class="mypageHead">
+          <h1 class="h1">アカウント情報</h1>
+          <p class="lead">管理情報と公開名を分けて扱い、必要な範囲だけ確認できるようにしています。</p>
+        </div>
+        <div class="mypageNoticeBox">
+          <p>実名・住所・電話番号などの個人情報は管理者のみが確認します。</p>
+          <p>性別と年齢層は、必要に応じて架け橋さんや、ちいきのおかっての受け入れ側が確認することがあります。</p>
+          <p>地域の方、旅人の方の双方が安心して関われるようにするために、必要な範囲で情報を扱っています。</p>
+          <p>ニックネームに実名を書くことは禁止です。</p>
+        </div>
+        <form class="mypageForm">
+          <div class="mypageFormGrid">
+            <label class="mypageField"><span>実名 <small>管理者のみ閲覧</small></span><input type="text" value="古旅 花子" /></label>
+            <label class="mypageField"><span>氏名カナ <small>管理者のみ閲覧</small></span><input type="text" value="フルタビ ハナコ" /></label>
+            <label class="mypageField"><span>生年月日 <small>管理者のみ閲覧</small></span><input type="date" value="1992-06-12" /></label>
+            <fieldset class="mypageField mypageFieldset"><span>性別 <small>必要に応じて共有されることがあります</small></span><div class="mypageChoiceList"><label><input type="radio" name="gender" checked />女性</label><label><input type="radio" name="gender" />男性</label><label><input type="radio" name="gender" />回答しない</label></div></fieldset>
+            <label class="mypageField"><span>メールアドレス <small>管理者のみ閲覧</small></span><input type="email" value="hanako@example.com" /></label>
+            <label class="mypageField"><span>電話番号 <small>管理者のみ閲覧</small></span><input type="tel" value="090-1234-5678" /></label>
+            <label class="mypageField mypageField--full"><span>住所 <small>管理者のみ閲覧</small></span><input type="text" value="東京都千代田区..." /></label>
+            <label class="mypageField"><span>ニックネーム <small>一般公開</small></span><input type="text" value="なぎさの旅人" /></label>
+            <label class="mypageField"><span>年齢層 <small>必要に応じて共有されることがあります</small></span><select><option selected>30代</option><option>20代</option><option>40代</option></select></label>
+            <label class="mypageField"><span>居住地の大まかな地域 <small>必要に応じて共有されることがあります</small></span><input type="text" value="関東" /></label>
+          </div>
+          <div class="mypageActions"><button class="btn primary" type="submit">保存する</button></div>
+        </form>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>
