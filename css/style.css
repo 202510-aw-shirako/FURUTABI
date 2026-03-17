@@ -96,6 +96,164 @@ a.link { text-decoration: underline; color: #666; }
   margin-left: 6px;
   gap: 10px;
 }
+.siteHeaderNotice {
+  position: relative;
+}
+.siteHeaderNoticeButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid rgba(34,34,34,.12);
+  border-radius: 999px;
+  background: #fff;
+  color: #2f2a26;
+  cursor: pointer;
+}
+.siteHeaderNoticeButton:hover,
+.siteHeaderNoticeButton[aria-expanded="true"] {
+  border-color: rgba(34,34,34,.24);
+  background: #f5f1eb;
+}
+.siteHeaderNoticeIcon {
+  font-size: 15px;
+  line-height: 1;
+}
+.siteHeaderNoticeBadge {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #2f2a26;
+  color: #fff;
+  font-size: 10px;
+  line-height: 18px;
+  text-align: center;
+}
+.siteHeaderNoticeDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(360px, calc(100vw - 32px));
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(34,34,34,.08);
+  border-radius: 20px;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 20px 36px rgba(34,34,34,.08);
+  z-index: 30;
+}
+.siteHeaderNoticeDropdown[hidden] {
+  display: none !important;
+}
+.siteHeaderNoticeHead,
+.siteHeaderNoticeMeta,
+.siteHeaderNoticeFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.siteHeaderNoticeHead h2 {
+  margin: 0;
+  font-size: 15px;
+}
+.siteHeaderNoticeList {
+  display: grid;
+  gap: 8px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+.siteHeaderNoticeItem {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  background: #faf7f2;
+  border: 1px solid rgba(34,34,34,.05);
+}
+.siteHeaderNoticeItem.is-unread {
+  background: #f5f0e6;
+  border-color: rgba(34,34,34,.09);
+}
+.siteHeaderNoticeMeta time,
+.siteHeaderNoticeFoot a,
+.siteHeaderNoticeEmpty {
+  font-size: 12px;
+  color: #756b60;
+}
+.siteHeaderNoticeTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.siteHeaderNoticeText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.65;
+  color: #5d554d;
+}
+.siteHeaderImportantNotice {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(520px, calc(100vw - 32px));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid rgba(34,34,34,.08);
+  border-radius: 20px;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 20px 36px rgba(34,34,34,.08);
+  z-index: 35;
+}
+.siteHeaderImportantNoticeBody {
+  display: grid;
+  gap: 8px;
+}
+.siteHeaderImportantNoticeMeta,
+.siteHeaderImportantNoticeActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.siteHeaderImportantNoticeMeta time,
+.siteHeaderImportantNoticeActions a {
+  font-size: 12px;
+  color: #756b60;
+}
+.siteHeaderImportantNoticeTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.siteHeaderImportantNoticeText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #5d554d;
+}
+.siteHeaderImportantNoticeClose {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: #f2ede5;
+  color: #433c35;
+  cursor: pointer;
+}
 .siteHeaderLink,
 .siteHeaderUtilityLink,
 .siteHeaderAction {
@@ -3668,6 +3826,50 @@ html { scroll-behavior: smooth; }
   gap: 10px;
   align-content: start;
 }
+.notificationToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.notificationList {
+  display: grid;
+  gap: 12px;
+}
+.notificationRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+  padding: 18px;
+  border: 1px solid rgba(34,34,34,.07);
+  border-radius: 22px;
+  background: #fff;
+}
+.notificationRow.is-unread {
+  background: #fbf8f2;
+}
+.notificationRowMain {
+  display: grid;
+  gap: 8px;
+}
+.notificationRowMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.notificationState {
+  font-size: 12px;
+  color: #756b60;
+}
+.notificationRowActions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 @media (max-width: 820px) {
   .authStepList {
     grid-template-columns: 1fr;
@@ -3676,6 +3878,12 @@ html { scroll-behavior: smooth; }
     grid-template-columns: 1fr;
   }
   .authFormActions--split {
+    justify-content: flex-start;
+  }
+  .notificationRow {
+    grid-template-columns: 1fr;
+  }
+  .notificationRowActions {
     justify-content: flex-start;
   }
 }
@@ -3706,5 +3914,16 @@ html { scroll-behavior: smooth; }
   }
   .mypageProfileCard {
     grid-template-columns: 1fr;
+  }
+  .siteHeaderNoticeDropdown {
+    right: -8px;
+    width: min(340px, calc(100vw - 24px));
+  }
+  .siteHeaderImportantNotice {
+    left: auto;
+    right: 0;
+    transform: none;
+    width: min(340px, calc(100vw - 24px));
+    grid-template-columns: 1fr auto;
   }
 }

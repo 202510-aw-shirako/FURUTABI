@@ -41,6 +41,106 @@
     ]
   };
 
+  var notificationItems = [
+    {
+      notification_id: 'n-1001',
+      user_id: 'wire-user-1',
+      type: 'proposal-approved',
+      kindLabel: '提案・申請',
+      title: 'おかっての申請が承認されました',
+      body: '郷土料理をみんなで作る午後の申請が承認されました。詳細をご確認ください。',
+      related_entity_type: 'proposal',
+      related_entity_id: 'okatte-1',
+      related_url: '../public/okatte-entry.html?proposal=okatte-1',
+      is_read: false,
+      created_at: '2026-03-17 09:20',
+      read_at: null,
+      sender_name: '架け橋さん',
+      sender_role: '橋渡し',
+      action_label: '提案を見る'
+    },
+    {
+      notification_id: 'n-1002',
+      user_id: 'wire-user-1',
+      type: 'message-bridge',
+      kindLabel: '連絡',
+      title: '架け橋さんから連絡が来ました',
+      body: '次に合いそうな入口について、短い連絡が届いています。',
+      related_entity_type: 'chat',
+      related_entity_id: 'chat-bridge-1',
+      related_url: '../app/support.html',
+      is_read: false,
+      created_at: '2026-03-17 08:10',
+      read_at: null,
+      sender_name: '長谷川 虹翔さん',
+      sender_role: '架け橋さん',
+      action_label: '連絡を見る'
+    },
+    {
+      notification_id: 'n-1003',
+      user_id: 'wire-user-1',
+      type: 'reaction-thanks',
+      kindLabel: '反応',
+      title: 'ありがとうが届きました',
+      body: '海辺の朝の足あとに、ありがとうが届いています。',
+      related_entity_type: 'story',
+      related_entity_id: 'story-1',
+      related_url: '../public/story.html?story=1',
+      is_read: false,
+      created_at: '2026-03-16 21:32',
+      read_at: null,
+      sender_name: '地域の方',
+      sender_role: '地域',
+      action_label: '記事を見る'
+    },
+    {
+      notification_id: 'n-1004',
+      user_id: 'wire-user-1',
+      type: 'safety-guide',
+      kindLabel: '確認',
+      title: '公開範囲の見直し案内',
+      body: '位置情報の表示粒度について、公開範囲の見直し案内があります。',
+      related_entity_type: 'privacy',
+      related_entity_id: 'privacy-1',
+      related_url: '../app/privacy-settings.html',
+      is_read: true,
+      created_at: '2026-03-15 18:05',
+      read_at: '2026-03-15 19:00',
+      action_label: '設定を見る'
+    },
+    {
+      notification_id: 'n-1005',
+      user_id: 'wire-user-1',
+      type: 'identity-required',
+      kindLabel: '重要',
+      title: '追加本人確認が必要です',
+      body: '安心して関われる場を守るため、追加の本人確認をお願いしています。',
+      related_entity_type: 'verify',
+      related_entity_id: 'verify-1',
+      related_url: '../auth/register-verify.html',
+      is_read: false,
+      created_at: '2026-03-14 11:48',
+      read_at: null,
+      severity: 'important',
+      action_label: '確認する'
+    },
+    {
+      notification_id: 'n-1006',
+      user_id: 'wire-user-1',
+      type: 'notice',
+      kindLabel: 'お知らせ',
+      title: '運営からのお知らせがあります',
+      body: '今月の運営方針と、公開の場の扱いについて更新があります。',
+      related_entity_type: 'notice',
+      related_entity_id: 'notice-1',
+      related_url: '../public/notice.html?slug=announcement-spring',
+      is_read: true,
+      created_at: '2026-03-12 15:15',
+      read_at: '2026-03-12 15:30',
+      action_label: 'お知らせを見る'
+    }
+  ];
+
   var navConfigs = {
     public_main: {
       variant: 'public',
@@ -136,8 +236,9 @@
       utilityLinks: [
         { href: '../public/bridge.html', label: 'ブリッジ' }
       ],
+      notificationsHref: '../app/notification-center.html',
       action: [
-        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html'] }
+        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
       ]
     },
     app_local: {
@@ -154,8 +255,9 @@
       utilityLinks: [
         { href: '../public/bridge.html', label: 'ブリッジ' }
       ],
+      notificationsHref: '../app/notification-center.html',
       action: [
-        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html'] }
+        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
       ]
     }
   };
@@ -218,6 +320,162 @@
     }).join('');
   }
 
+  function getUnreadNotificationsCount() {
+    return notificationItems.filter(function (item) { return !item.is_read; }).length;
+  }
+
+  function renderNotificationBell(config) {
+    if (config.variant !== 'app') {
+      return '';
+    }
+
+    var unreadCount = getUnreadNotificationsCount();
+    var badge = '';
+    if (unreadCount > 0) {
+      badge = '<span class="siteHeaderNoticeBadge" aria-label="未読通知 ' + escapeHtml(unreadCount > 99 ? '99+' : String(unreadCount)) + '件">' + escapeHtml(unreadCount > 99 ? '99+' : String(unreadCount)) + '</span>';
+    }
+
+    return '' +
+      '<div class="siteHeaderNotice" data-header-notice>' +
+        '<!-- 通知は「やり取りの場」ではなく「起きたことに気づく場」 -->' +
+        '<!-- ベルアイコンはログイン後ヘッダーに置く -->' +
+        '<!-- 未読時はバッジ表示 -->' +
+        '<!-- ドロップダウンでは最新数件だけ表示 -->' +
+        '<!-- 「すべて見る」で通知一覧ページへ遷移 -->' +
+        '<!-- 詳細な会話や調整は通知内で完結させず、提案詳細 / 申請詳細 / チャット / 記事ページ等へ遷移させる -->' +
+        '<button class="siteHeaderNoticeButton" type="button" aria-expanded="false" aria-haspopup="dialog" aria-label="通知を開く">' +
+          '<span class="siteHeaderNoticeIcon" aria-hidden="true">🔔</span>' +
+          badge +
+        '</button>' +
+        '<div class="siteHeaderNoticeDropdown" hidden data-header-notice-panel>' +
+          '<div class="siteHeaderNoticeHead">' +
+            '<h2>通知</h2>' +
+            (unreadCount > 0 ? '<span class="pill pill--soft">' + escapeHtml(unreadCount > 99 ? '99+' : String(unreadCount)) + '件の未読</span>' : '') +
+          '</div>' +
+          '<div class="siteHeaderNoticeList" data-header-notice-list></div>' +
+          '<div class="siteHeaderNoticeFoot">' +
+            '<a href="' + escapeHtml(config.notificationsHref || '../app/notification-center.html') + '">すべて見る</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderImportantNotification(config) {
+    if (config.variant !== 'app') {
+      return '';
+    }
+
+    var importantItem = notificationItems.find(function (item) {
+      return item.severity === 'important' && !item.is_read;
+    });
+
+    if (!importantItem) {
+      return '';
+    }
+
+    return '' +
+      '<div class="siteHeaderImportantNotice" data-important-notice>' +
+        '<div class="siteHeaderImportantNoticeBody">' +
+          '<div class="siteHeaderImportantNoticeMeta">' +
+            '<span class="pill">大事なお知らせ</span>' +
+            '<time>' + escapeHtml(importantItem.created_at) + '</time>' +
+          '</div>' +
+          '<div class="siteHeaderImportantNoticeTitle">' + escapeHtml(importantItem.title) + '</div>' +
+          '<p class="siteHeaderImportantNoticeText">' + escapeHtml(importantItem.body) + '</p>' +
+          '<div class="siteHeaderImportantNoticeActions">' +
+            '<a href="' + escapeHtml(importantItem.related_url) + '">' + escapeHtml(importantItem.action_label || '確認する') + '</a>' +
+          '</div>' +
+        '</div>' +
+        '<button class="siteHeaderImportantNoticeClose" type="button" aria-label="通知を閉じる">×</button>' +
+      '</div>';
+  }
+
+  function formatNotificationItem(item, className) {
+    return '' +
+      '<a class="' + className + (item.is_read ? '' : ' is-unread') + '" href="' + escapeHtml(item.related_url) + '" data-notification-id="' + escapeHtml(item.notification_id) + '">' +
+        '<div class="siteHeaderNoticeMeta">' +
+          '<span class="pill">' + escapeHtml(item.kindLabel) + '</span>' +
+          '<time>' + escapeHtml(item.created_at) + '</time>' +
+        '</div>' +
+        '<div class="siteHeaderNoticeTitle">' + escapeHtml(item.title) + '</div>' +
+        '<p class="siteHeaderNoticeText">' + escapeHtml(item.body) + '</p>' +
+      '</a>';
+  }
+
+  function hydrateHeaderNotifications(root, config) {
+    if (config.variant !== 'app') {
+      return;
+    }
+
+    var noticeRoot = root.querySelector('[data-header-notice]');
+    if (!noticeRoot) {
+      return;
+    }
+
+    var button = noticeRoot.querySelector('.siteHeaderNoticeButton');
+    var panel = noticeRoot.querySelector('[data-header-notice-panel]');
+    var list = noticeRoot.querySelector('[data-header-notice-list]');
+    if (!button || !panel || !list) {
+      return;
+    }
+
+    var latestItems = notificationItems.slice(0, 5);
+    list.innerHTML = latestItems.length
+      ? latestItems.map(function (item) { return formatNotificationItem(item, 'siteHeaderNoticeItem'); }).join('')
+      : '<p class="siteHeaderNoticeEmpty">通知がまだありません。新しい提案ややり取りがあると、ここに表示されます。</p>';
+
+    function closePanel() {
+      button.setAttribute('aria-expanded', 'false');
+      panel.hidden = true;
+    }
+
+    function openPanel() {
+      button.setAttribute('aria-expanded', 'true');
+      panel.hidden = false;
+    }
+
+    button.addEventListener('click', function () {
+      var expanded = button.getAttribute('aria-expanded') === 'true';
+      if (expanded) {
+        closePanel();
+      } else {
+        openPanel();
+      }
+    });
+
+    document.addEventListener('click', function (event) {
+      if (!noticeRoot.contains(event.target)) {
+        closePanel();
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        closePanel();
+      }
+    });
+  }
+
+  function hydrateImportantNotification(root, config) {
+    if (config.variant !== 'app') {
+      return;
+    }
+
+    var notice = root.querySelector('[data-important-notice]');
+    if (!notice) {
+      return;
+    }
+
+    var closeButton = notice.querySelector('.siteHeaderImportantNoticeClose');
+    function closeNotice() {
+      notice.remove();
+    }
+
+    if (closeButton) {
+      closeButton.addEventListener('click', closeNotice);
+    }
+  }
+
   function renderNav(root) {
     var key = root.getAttribute('data-site-nav');
     var config = navConfigs[key];
@@ -247,10 +505,11 @@
       '<button class="siteHeaderToggle" type="button" aria-expanded="false" aria-label="メニューを開く">' +
         '<span></span><span></span><span></span>' +
       '</button>' +
+      renderImportantNotification(config) +
       '<div class="siteHeaderMenu">' +
         '<div class="siteHeaderUtility">' + renderNavLinks(config.utilityLinks, 'siteHeaderUtilityLink') + '</div>' +
         '<div class="siteHeaderPrimary">' + renderNavLinks(config.mainLinks, 'siteHeaderLink') + '</div>' +
-        '<div class="siteHeaderActionWrap">' + renderNavLinks(config.action, 'siteHeaderAction') + '</div>' +
+        '<div class="siteHeaderActionWrap">' + renderNotificationBell(config) + renderNavLinks(config.action, 'siteHeaderAction') + '</div>' +
       '</div>';
 
     var toggle = root.querySelector('.siteHeaderToggle');
@@ -262,6 +521,9 @@
         menu.classList.toggle('is-open', !expanded);
       });
     }
+
+    hydrateHeaderNotifications(root, config);
+    hydrateImportantNotification(root, config);
   }
 
   function withBasePrefix(href) {
@@ -405,6 +667,7 @@
     entryCards: entryCards,
     buildEntryDetailHref: buildEntryDetailHref,
     ruleLists: ruleLists,
+    notificationItems: notificationItems,
     navConfigs: navConfigs,
     readQueryParam: readQueryParam,
     setPageTitle: setPageTitle,
