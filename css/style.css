@@ -938,6 +938,444 @@ body.hasProposalModal {
   padding-top: 8px;
 }
 
+.safetyPage {
+  display: grid;
+  gap: 0;
+}
+.safetyIntroSection,
+.safetyContactSection {
+  border-bottom: 0;
+}
+.safetyIntroLayout {
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 32px;
+  align-items: start;
+}
+.safetyIntro {
+  width: 100%;
+  margin: 0;
+  padding-top: 28px;
+  text-align: left;
+}
+.safetyTitle {
+  margin: 0 0 16px;
+  font-size: clamp(30px, 4vw, 40px);
+  line-height: 1.1;
+}
+.safetyLead {
+  margin: 0;
+  color: #554f48;
+  font-size: 15px;
+  line-height: 1.95;
+}
+.safetySectionHead {
+  width: min(100%, 860px);
+  margin: 0 auto 18px;
+  display: grid;
+  gap: 10px;
+}
+.safetyAssistPanel {
+  width: 100%;
+  margin: 8px 0 0;
+  padding: 18px;
+  border-radius: 20px;
+  background: #faf7f1;
+  border: 1px solid rgba(34,34,34,.06);
+  display: grid;
+  gap: 12px;
+}
+.safetyAssistTitle {
+  margin: 0;
+  color: #4f4942;
+  font-size: 13px;
+  font-weight: 600;
+}
+.safetyFaqLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(34,34,34,.08);
+  color: #2e2a26;
+  text-decoration: none;
+  font-size: 15px;
+}
+.safetyFeatureLinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.safetyFeatureLink {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(34,34,34,.06);
+  color: #4b453f;
+  text-decoration: none;
+  line-height: 1.45;
+  font-size: 13px;
+}
+.safetyWhatGrid {
+  width: min(100%, 1040px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.safetyWhatSection {
+  padding-top: 10px;
+}
+.safetyWhatCard {
+  padding: 20px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid rgba(34,34,34,.07);
+}
+.safetyWhatCard .h2,
+.safetyFormCard .h2 {
+  font-size: 22px;
+}
+.safetyFormSection {
+  background: #fcfbf8;
+  border-top: 1px solid rgba(34,34,34,.04);
+  border-bottom: 1px solid rgba(34,34,34,.04);
+}
+.safetyFormCard {
+  width: min(100%, 840px);
+  margin: 0 auto;
+  padding: 28px;
+  border-radius: 26px;
+  background: #fff;
+  border: 1px solid rgba(34,34,34,.07);
+  display: grid;
+  gap: 22px;
+}
+.safetyField,
+.safetyFieldset {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+.safetyFieldset {
+  padding: 0;
+  border: 0;
+}
+.safetyLegend,
+.safetyLabel {
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.safetyChoice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  color: #4d463f;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.safetyChoice input {
+  margin-top: 3px;
+}
+.safetyReplyChoices {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.safetyHint {
+  margin: -2px 0 0;
+  color: #7a7065;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.safetyInput,
+.safetyTextarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #dcd6ce;
+  border-radius: 12px;
+  background: #fff;
+  color: #2d2926;
+  font: inherit;
+  font-size: 15px;
+}
+.safetyInput:focus,
+.safetyTextarea:focus {
+  outline: 0;
+  border-color: #9b8f81;
+}
+.safetyTextarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.8;
+}
+.safetyPrivateNote {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f7f4ee;
+  color: #544d46;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.safetySubmitArea {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+.safetySubmitButton {
+  min-width: 180px;
+}
+.safetyContactCard {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 24px;
+  background: #faf7f1;
+  border: 1px solid rgba(34,34,34,.06);
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+.safetyClosing {
+  width: min(100%, 700px);
+  margin: 24px auto 0;
+  color: #6a6158;
+  text-align: center;
+  line-height: 1.85;
+  font-size: 13px;
+}
+.safetyCompletePage {
+  min-height: calc(100vh - 72px);
+  display: grid;
+}
+.safetyCompleteSection {
+  display: grid;
+  place-items: center;
+}
+.safetyCompleteCard {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: 34px 28px;
+  border-radius: 28px;
+  background: #fff;
+  border: 1px solid rgba(34,34,34,.07);
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  text-align: center;
+}
+.safetyCompleteIcon {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #f1ede5;
+  color: #4a433c;
+  font-size: 26px;
+}
+.safetyCompleteTitle {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 42px);
+  line-height: 1.15;
+}
+.safetyCompleteText {
+  margin: 0;
+  color: #554f48;
+  line-height: 1.9;
+}
+.safetyCompleteButton {
+  min-width: 220px;
+}
+.safetyCompleteLinks {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.safetyCompleteLinks a {
+  color: #6a6158;
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+.faqPage {
+  display: grid;
+  gap: 0;
+}
+.faqIntroSection,
+.faqTopLinkSection,
+.faqBottomLinkSection,
+.faqRelatedSection {
+  border-bottom: 0;
+}
+.faqIntro {
+  width: min(100%, 800px);
+  margin: 0 auto;
+  padding-top: 28px;
+  text-align: center;
+}
+.faqTitle {
+  margin: 0 0 14px;
+  font-size: clamp(30px, 4vw, 40px);
+  line-height: 1.08;
+}
+.faqLead {
+  margin: 0;
+  color: #5d544b;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.faqTopLinkCard,
+.faqBottomLinkCard {
+  width: min(100%, 960px);
+  margin: 0 auto;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: #faf7f1;
+  border: 1px solid rgba(34,34,34,.06);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+}
+.faqTopLinkCard p {
+  margin: 0;
+  color: #554d45;
+  font-size: 14px;
+}
+.faqTabsSection {
+  display: grid;
+  gap: 22px;
+}
+.faqTabButtons {
+  width: min(100%, 560px);
+  margin: 0 auto;
+  padding: 6px;
+  border-radius: 999px;
+  background: #f6f2ec;
+  border: 1px solid rgba(34,34,34,.06);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.faqTabButton {
+  min-height: 52px;
+  border: 1px solid rgba(34,34,34,.1);
+  border-radius: 999px;
+  background: #fff;
+  color: #4d463e;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.faqTabButton.is-active {
+  background: #2f2a26;
+  color: #fff;
+  border-color: #2f2a26;
+}
+.faqPanel {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  display: grid;
+  gap: 34px;
+}
+.faqPanel[hidden] {
+  display: none !important;
+}
+.faqJumpBar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.faqJumpBar a {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(34,34,34,.08);
+  background: #fff;
+  color: #5a534a;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.faqCategory {
+  display: grid;
+  gap: 16px;
+  scroll-margin-top: 24px;
+}
+.faqCategoryTitle {
+  margin: 0;
+  font-size: 22px;
+}
+.faqAccordion {
+  border-top: 1px solid rgba(34,34,34,.08);
+}
+.faqItem {
+  border-bottom: 1px solid rgba(34,34,34,.08);
+}
+.faqQuestion {
+  width: 100%;
+  padding: 20px 0;
+  border: 0;
+  background: transparent;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  text-align: left;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.55;
+  color: #272321;
+  cursor: pointer;
+}
+.faqIcon {
+  min-width: 24px;
+  color: #85796d;
+  font-size: 22px;
+  line-height: 1;
+}
+.faqAnswer {
+  padding: 0 0 20px;
+  color: #584f47;
+  font-size: 15px;
+  line-height: 1.9;
+}
+.faqAnswer p {
+  margin: 0 0 12px;
+}
+.faqAnswer p:last-child {
+  margin-bottom: 0;
+}
+.faqAnswerLink a {
+  color: #5d5348;
+}
+.faqRelated {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  display: flex;
+  gap: 16px 22px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.faqRelated a {
+  color: #675d52;
+  text-decoration: none;
+  font-size: 14px;
+}
+
 .tourPage {
   display: grid;
   gap: 0;
@@ -1801,8 +2239,11 @@ body.hasProposalModal {
   /* On small screens, pins become stacked cards under map */
   .mapPin { position: static; width: auto; }
   .mapStage { display: grid; gap: 12px; }
+  .safetyIntroLayout,
   .localHero,
   .localSplitHero,
+  .safetyFeatureLinks,
+  .safetyWhatGrid,
   .tourTeaserCard,
   .localRoleGrid,
   .localExampleGrid,
@@ -1825,6 +2266,36 @@ body.hasProposalModal {
   .tourHero,
   .tourHeroContent {
     min-height: 560px;
+  }
+  .safetyReplyChoices,
+  .faqTopLinkCard,
+  .faqBottomLinkCard,
+  .safetyContactCard {
+    display: grid;
+  }
+  .safetyIntro,
+  .faqIntro,
+  .faqPanel,
+  .faqTopLinkCard,
+  .faqBottomLinkCard,
+  .faqRelated,
+  .safetySectionHead,
+  .safetyAssistPanel,
+  .safetyFormCard,
+  .safetyContactCard,
+  .safetyCompleteCard {
+    width: 100%;
+  }
+  .safetyIntro {
+    padding-top: 12px;
+  }
+  .faqJumpBar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+  .faqQuestion {
+    font-size: 16px;
   }
   .tourHeroContent {
     padding: 28px 22px;

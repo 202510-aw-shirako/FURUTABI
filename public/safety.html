@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FURUTABI Wire | Safety</title>
+  <title>FURUTABI Wire | 安心と連絡</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -16,34 +16,106 @@
     </div>
   </header>
 
-  <main class="container" aria-label="安心と連絡">
-    <section class="section section--hero" aria-label="ヒーローイメージ">
-      <div class="fullbleed">
-        <div class="ph ph--pageHero" aria-hidden="true"></div>
+  <main class="container safetyPage" aria-label="安心と連絡">
+    <section class="section safetyIntroSection" aria-label="導入と確認導線">
+      <div class="safetyIntroLayout">
+        <div class="safetyIntro">
+          <h1 class="safetyTitle">困ったときは</h1>
+          <p class="safetyLead">公開の場には、その土地で見つけた好きや感謝を。<br>困ったことや気になること、迷うことがあったときは、こちらから知らせてください。<br>FURUTABIでは、場の空気を守りながら、必要なことをきちんと受け止められるようにしています。</p>
+        </div>
+        <div class="safetyAssistPanel" aria-label="まず確認したいこと">
+          <p class="safetyAssistTitle">まず確認したいこと</p>
+          <a class="safetyFaqLink" href="faq.html">よくある質問を見る</a>
+          <div class="safetyFeatureLinks">
+            <a class="safetyFeatureLink" href="about.html#feature-footprints">ごひいきさんの足あとについて</a>
+            <a class="safetyFeatureLink" href="about.html#feature-map">わたしの地図について</a>
+            <a class="safetyFeatureLink" href="about.html#feature-gate">ちいきの入り口について</a>
+            <a class="safetyFeatureLink" href="about.html#feature-okatte">ちいきのおかってについて</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section class="section fv">
-      <h1 class="h1">安心と連絡</h1>
-      <p class="lead">公開の場は空気を守る。困りごと・改善提案は非公開で届く。</p>
+    <section class="section safetyWhatSection" aria-label="このページでできること">
+      <div class="safetySectionHead">
+        <h2 class="h2">このページでできること</h2>
+      </div>
+      <div class="safetyWhatGrid">
+        <article class="safetyWhatCard">
+          <h3 class="h2">困ったことを伝える</h3>
+          <p class="note">地域で困ったこと、改善してほしいこと、公開の場には書きにくい違和感があったときに知らせられます。</p>
+        </article>
+        <article class="safetyWhatCard">
+          <h3 class="h2">通報・削除を依頼する</h3>
+          <p class="note">不適切な投稿やコメント、やり取りがあった場合に知らせられます。</p>
+        </article>
+        <article class="safetyWhatCard">
+          <h3 class="h2">迷ったときは相談する</h3>
+          <p class="note">公開してよいか迷うこと、相手との距離感で悩むこと、どうしたらよいかわからないことを相談できます。</p>
+        </article>
+      </div>
     </section>
 
-    <section class="section">
-      <div class="grid2">
-        <div class="card">
-          <div class="h2">非公開で連絡</div>
-          <div class="ph ph--line w-90"></div>
-          <div class="ph ph--line w-80"></div>
-          <div class="ph ph--line w-70"></div>
-          <a class="btn primary" href="#">送信（ワイヤ）</a>
+    <section class="section safetyFormSection" aria-label="投稿フォーム">
+      <form class="safetyFormCard" action="safety-complete.html" method="get">
+        <div class="safetySectionHead">
+          <h2 class="h2">こちらからお知らせください</h2>
+          <p class="note">使い方や、よくある困りごとはFAQにもまとめています。<a class="link" href="faq.html">FAQを見る</a></p>
         </div>
-        <div class="card">
-          <div class="h2">通報・削除</div>
-          <div class="ph ph--line w-90"></div>
-          <div class="ph ph--line w-60"></div>
-          <div class="ph ph--line w-80"></div>
+
+        <fieldset class="safetyFieldset">
+          <legend class="safetyLegend">投稿の種類</legend>
+          <label class="safetyChoice"><input type="radio" name="type" value="trouble" checked /> 困ったことを伝えたい</label>
+          <label class="safetyChoice"><input type="radio" name="type" value="report" /> 不適切な投稿ややり取りを通報したい</label>
+          <label class="safetyChoice"><input type="radio" name="type" value="consult" /> どうしたらよいか相談したい</label>
+          <label class="safetyChoice"><input type="radio" name="type" value="help" /> 使い方について問い合わせたい</label>
+          <label class="safetyChoice"><input type="radio" name="type" value="other" /> その他</label>
+        </fieldset>
+
+        <div class="safetyField">
+          <label class="safetyLabel" for="safety-feature">関係する機能</label>
+          <select class="safetyInput" id="safety-feature" name="feature">
+            <option>ごひいきさんの足あと</option>
+            <option>わたしの地図</option>
+            <option>ちいきの入り口</option>
+            <option>ちいきのおかって</option>
+            <option>ごひいきさんツアー</option>
+            <option>地域の方向けページ</option>
+            <option>その他 / わからない</option>
+          </select>
         </div>
-      </div>
+
+        <div class="safetyField">
+          <label class="safetyLabel" for="safety-target">気になる投稿やページがあれば教えてください</label>
+          <p class="safetyHint">投稿URL、相手の名前、ページ名など、わかる範囲で構いません。</p>
+          <input class="safetyInput" id="safety-target" name="target" type="text" placeholder="例）〇〇さんの投稿、〇〇ページ、URL など" />
+        </div>
+
+        <div class="safetyField">
+          <label class="safetyLabel" for="safety-body">内容</label>
+          <textarea class="safetyTextarea" id="safety-body" name="body" rows="8" placeholder="何があったか、気になったこと、困っていることを、わかる範囲で書いてください。&#10;公開の場に書きにくいことでも大丈夫です。"></textarea>
+        </div>
+
+        <fieldset class="safetyFieldset">
+          <legend class="safetyLegend">返信について</legend>
+          <div class="safetyReplyChoices">
+            <label class="safetyChoice"><input type="radio" name="reply" value="yes" checked /> 返信がほしい</label>
+            <label class="safetyChoice"><input type="radio" name="reply" value="no" /> 返信は不要</label>
+            <label class="safetyChoice"><input type="radio" name="reply" value="either" /> どちらでもよい</label>
+          </div>
+        </fieldset>
+
+        <p class="safetyPrivateNote">ここに書いた内容は公開されません。運営が確認し、必要に応じて対応します。</p>
+
+        <div class="safetySubmitArea">
+          <button class="btn primary safetySubmitButton" type="submit">送信する</button>
+          <p class="note">内容を確認のうえ、必要に応じて対応します。</p>
+        </div>
+      </form>
+    </section>
+
+    <section class="section safetyContactSection" aria-label="補足">
+      <p class="safetyClosing">感謝や好きな気持ちは、公開の場で。<br>困りごとや繊細なことは、こちらから。<br>FURUTABIでは、その使い分けを大切にしています。</p>
     </section>
   </main>
   <script src="./assets/scripts/shared-ui.js"></script>
