@@ -27,21 +27,126 @@ a.link { text-decoration: underline; color: #666; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(250,250,250,.92);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid #e6e6e6;
+  background: rgba(250,248,244,.94);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(34,34,34,.08);
 }
 .topbar .inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 14px 0;
+  gap: 22px;
+  padding: 16px 0;
 }
-.topbar .brand { font-size: 12px; color: #666; letter-spacing: .02em; }
-.topbar nav { display: flex; gap: 14px; flex-wrap: wrap; }
-.topbar nav a { font-size: 13px; color: #666; text-decoration: none; }
-.topbar nav a:hover { text-decoration: underline; }
+.topbar .brand {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: #4e473f;
+  letter-spacing: .08em;
+}
+.siteHeaderNav {
+  flex: 0 1 auto;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+.siteHeaderToggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(34,34,34,.1);
+  border-radius: 999px;
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+.siteHeaderToggle span {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: #3b352f;
+  border-radius: 999px;
+}
+.siteHeaderMenu {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  width: auto;
+}
+.siteHeaderPrimary,
+.siteHeaderUtility,
+.siteHeaderActionWrap {
+  display: flex;
+  align-items: center;
+}
+.siteHeaderPrimary {
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.siteHeaderUtility {
+  gap: 10px;
+}
+.siteHeaderActionWrap {
+  margin-left: 6px;
+}
+.siteHeaderLink,
+.siteHeaderUtilityLink,
+.siteHeaderAction {
+  text-decoration: none;
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+.siteHeaderLink {
+  position: relative;
+  color: #4e473f;
+  font-size: 14px;
+  line-height: 1.2;
+  padding: 6px 0;
+}
+.siteHeaderLink:hover,
+.siteHeaderLink.is-current {
+  color: #171513;
+}
+.siteHeaderLink.is-current::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -11px;
+  height: 2px;
+  background: #2f2a26;
+  border-radius: 999px;
+}
+.siteHeaderUtilityLink {
+  color: #8a7d71;
+  font-size: 12px;
+  padding: 4px 0;
+}
+.siteHeaderUtilityLink:hover,
+.siteHeaderUtilityLink.is-current {
+  color: #5d544b;
+}
+.siteHeaderAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(34,34,34,.12);
+  border-radius: 999px;
+  background: #fff;
+  color: #312c27;
+  font-size: 13px;
+}
+.siteHeaderAction:hover,
+.siteHeaderAction.is-current {
+  border-color: rgba(34,34,34,.24);
+  background: #f5f1eb;
+}
 
 .section {
   padding: 30px 0;
@@ -2236,6 +2341,58 @@ body.hasProposalModal {
 .pin--c { left: 28%; top: 58%; }
 
 @media (max-width: 980px) {
+  .topbar .inner {
+    gap: 12px;
+    padding: 12px 0;
+  }
+  .topbar .brand {
+    font-size: 12px;
+    letter-spacing: .05em;
+  }
+  .siteHeaderNav {
+    flex: 0 0 auto;
+  }
+  .siteHeaderToggle {
+    display: inline-flex;
+  }
+  .siteHeaderMenu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 28px;
+    left: 28px;
+    width: auto;
+    padding: 18px;
+    border: 1px solid rgba(34,34,34,.08);
+    border-radius: 22px;
+    background: rgba(255,255,255,.98);
+    box-shadow: 0 18px 40px rgba(34,34,34,.08);
+    display: none;
+    gap: 14px;
+  }
+  .siteHeaderMenu.is-open {
+    display: grid;
+  }
+  .siteHeaderPrimary,
+  .siteHeaderUtility,
+  .siteHeaderActionWrap {
+    display: grid;
+    gap: 10px;
+    margin-left: 0;
+  }
+  .siteHeaderLink,
+  .siteHeaderAction {
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid rgba(34,34,34,.08);
+    border-radius: 14px;
+    background: #fff;
+  }
+  .siteHeaderLink.is-current::after {
+    display: none;
+  }
+  .siteHeaderUtilityLink {
+    padding: 4px 2px;
+  }
   /* On small screens, pins become stacked cards under map */
   .mapPin { position: static; width: auto; }
   .mapStage { display: grid; gap: 12px; }

@@ -1,102 +1,161 @@
 (function () {
-  // Wire段階の共通UIデータ。
-  // Java化ではこのファイルを「固定文言 / 固定ナビ設定」だけに縮小し、
-  // 可変データは API かテンプレート側へ移す想定。
   var entryCards = [
-    {
-      id: 'gate-1',
-      duration: '30分',
-      title: '生まれ育った店先の話を聞く',
-      note: '声をかけ暮らしに触れる'
-    },
-    {
-      id: 'gate-2',
-      duration: '10分',
-      title: '路地で交わす短い会話',
-      note: '短時間ではじめて近づく'
-    },
-    {
-      id: 'gate-3',
-      duration: '60分',
-      title: '地域の流れを少し教わる',
-      note: '肩肘張らずにつながる'
-    },
-    {
-      id: 'gate-4',
-      duration: '20分',
-      title: '好きな場所で最近をたずねる',
-      note: '近況からひとつ深掘り'
-    },
-    {
-      id: 'gate-5',
-      duration: '45分',
-      title: '町の気配を一緒に歩く',
-      note: '暮らしぶりを静かに知る'
-    }
+    { id: 'gate-1', duration: '30分', title: '海まで歩いて景色の話を聞く', note: '海を見ながら、この土地の好きな時間をたどる入口です。' },
+    { id: 'gate-2', duration: '20分', title: 'ハウスの前で野菜を見る', note: '育てているものを見ながら、地域の挑戦を少し聞きます。' },
+    { id: 'gate-3', duration: '60分', title: '港のそばを歩いて過ごす', note: '仕事場の近くで、地域の手ざわりを静かに感じます。' },
+    { id: 'gate-4', duration: '20分', title: '木漏れ日の道を一緒に歩く', note: '人見知りでも入りやすい、小さな入口です。' },
+    { id: 'gate-5', duration: '45分', title: '丘の上から季節の景色を見る', note: 'その時期ならではの風景を、無理なく味わいます。' }
   ];
 
   var ruleLists = {
     okatte: [
-      '提案は、すぐに実行するためだけの依頼ではなく、地域の人の暮らしや都合をたずねる入口として扱います。',
-      '受け取った側が無理なく返せるよう、返事の強制や即答を求めない前提を置きます。',
-      '内容に迷いがあるときは、まず短く相談し、公開の場ではなく非公開の連絡へ回せるようにします。'
+      '無理をして開くのではなく、その時の余力に合わせて考えます。',
+      '難しい提案は急がず、見送る・別の形にする判断もできます。',
+      'ここで決めた内容は公開されず、必要な範囲で調整していきます。'
     ],
     my_map: [
-      '公開前の地図なので、むやみに広げず、自分があとで見返せる記録として使います。',
-      '公開するときは、場所や人への配慮が足りているかを見直してから出せる前提にします。',
-      '写真や文章に迷いがある場合は、まず下書きで置いておき、あとから整えられるようにします。'
+      '公開範囲を選びながら、自分の記録として残せます。',
+      '人に見せる記録と、自分だけの記録を分けて扱えます。',
+      '生活に近い場所は出しすぎないよう慎重に扱います。'
     ],
     footprints: [
-      '一方的に切り取るのではなく、「その場所で受け取った時間」を静かに返す書き方を大切にします。',
-      '写真枚数や文字数は多すぎなくてかまいません。読んでほしいのは情報量より、その場所で見つけた感じ方です。',
-      '終わりごとのポストは公開の場ではなく、公開後に静かに読めるかたちに留めます。',
-      '音声や現場での強い呼び込みではなく、気になった人が自分の速度で読める程度の熱量にします。'
+      '公開の場には、感謝や好きだったことを残す前提です。',
+      '困りごとや改善点は、非公開の連絡導線で受け止めます。',
+      '場所や人に負担がかかる書き方は避けてください。',
+      '誰かを採点するためではなく、その土地との関わりを残す場です。'
     ],
     gate: [
-      '登録後すぐに深い関係を求めず、どんな関わり方が合いそうかを選ぶ入口として扱います。',
-      '実際に地域の人と会ってから、架け橋さんが登録した場合にだけ通常のログイン後ホームへ進みます。',
-      'まだ入口に迷いがある段階では、ここが最初の入口ページです。'
+      '最初から深く入るのではなく、短時間・低負担の入口から始めます。',
+      'その日の体調や相性によって、別の入口に変えることもできます。',
+      '入口カードは将来 API の一覧データへ置き換える想定です。'
     ],
     gate_public: [
-      '入口カードは、地域との関わり方を強く説明するためではなく、最初に空気を感じるために置きます。',
-      '表示する内容は短く保ち、関係や人脈の詳しい説明に寄りすぎないようにします。',
-      '興味が湧いたときは、実際のカードや登録後の流れへ進める前提にします。',
-      'ここで大きく説明しすぎないこと自体が、最初の一歩を上品に見せるための設計です。'
+      '公開されるのは、地域とどう関われそうかの入口の空気です。',
+      '詳しい事情や個別のやり取りは、ログイン後や相談導線で扱います。',
+      'まずは見てみるための入口であり、無理に奥へ進めるページではありません。',
+      'あとから関係や相性を見ながら、開き方を調整する前提です。'
     ]
   };
 
   var navConfigs = {
-    public_main: [
-      { href: 'bridge.html', label: 'ブリッジ' },
-      { href: '#top-footprints', label: 'ごひいきさんの足あと' },
-      { href: 'about.html', label: 'わたしたちの目指すもの' },
-      { href: 'safety.html', label: '安心と連絡' },
-      { href: 'local.html', label: '地域の方へ' },
-      { href: '../auth/login.html', label: 'ログイン' },
-      { href: '../app/home.html', label: 'ログイン後' }
-    ],
-    public_secondary: [
-      { href: 'index.html', label: 'トップ' },
-      { href: 'about.html', label: 'わたしたちの目指すもの' },
-      { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと' },
-      { href: '../auth/login.html', label: 'ログイン' }
-    ],
-    public_gate: [
-      { href: 'index.html', label: 'トップ' },
-      { href: 'about.html#feature-gate', label: 'ちいきの入り口とは' },
-      { href: 'safety.html', label: '安心と連絡' },
-      { href: '../auth/login.html', label: 'ログインへ' }
-    ],
-    auth_login: [
-      { href: '../public/bridge.html', label: 'ブリッジ' },
-      { href: '../public/index.html', label: '公開トップ' },
-      { href: '../public/safety.html', label: '安心と連絡' }
-    ],
-    app_home: [
-      { href: '../public/index.html', label: '公開トップ' },
-      { href: '../public/index.html#top-footprints', label: '公開ごひいきさんの足あと' },
-      { href: '../public/safety.html', label: '安心と連絡' }
-    ]
+    public_main: {
+      variant: 'public',
+      brandHref: 'index.html',
+      mainLinks: [
+        { href: 'gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: 'about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: 'local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: 'faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: 'safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: 'bridge.html', label: 'ブリッジ' },
+        { href: '../app/home.html', label: 'ログイン後' }
+      ],
+      action: [
+        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+      ]
+    },
+    public_secondary: {
+      variant: 'public',
+      brandHref: 'index.html',
+      mainLinks: [
+        { href: 'gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: 'about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: 'local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: 'faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: 'safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: 'bridge.html', label: 'ブリッジ' },
+        { href: '../app/home.html', label: 'ログイン後' }
+      ],
+      action: [
+        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+      ]
+    },
+    public_gate: {
+      variant: 'public',
+      brandHref: 'index.html',
+      mainLinks: [
+        { href: 'gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: 'about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: 'local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: 'faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: 'safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: 'bridge.html', label: 'ブリッジ' },
+        { href: '../app/home.html', label: 'ログイン後' }
+      ],
+      action: [
+        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+      ]
+    },
+    auth_login: {
+      variant: 'public',
+      brandHref: '../public/index.html',
+      mainLinks: [
+        { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '../public/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '../public/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: '../public/bridge.html', label: 'ブリッジ' },
+        { href: '../app/home.html', label: 'ログイン後' }
+      ],
+      action: [
+        { href: '../auth/login.html', label: '新規登録' },
+        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+      ]
+    },
+    app_home: {
+      variant: 'app',
+      brandHref: '../app/home.html',
+      mainLinks: [
+        { href: '../app/home.html', label: 'ホーム', currentMatchers: ['home.html'] },
+        { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
+        { href: '../public/okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
+        { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: '../public/bridge.html', label: 'ブリッジ' }
+      ],
+      action: [
+        { href: '#', label: 'アカウント' }
+      ]
+    },
+    app_local: {
+      variant: 'app',
+      brandHref: '../app/local-home.html',
+      mainLinks: [
+        { href: '../app/local-home.html', label: 'ホーム', currentMatchers: ['local-home.html'] },
+        { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
+        { href: '../public/okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
+        { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: '../public/bridge.html', label: 'ブリッジ' }
+      ],
+      action: [
+        { href: '#', label: 'アカウント' }
+      ]
+    }
   };
 
   function escapeHtml(value) {
@@ -108,18 +167,83 @@
       .replace(/'/g, '&#39;');
   }
 
+  function getCurrentPathname() {
+    return window.location.pathname.split('/').pop() || 'index.html';
+  }
+
+  function getHrefPathname(href) {
+    if (!href || href.charAt(0) === '#') {
+      return getCurrentPathname();
+    }
+    return href.split('#')[0].split('?')[0].split('/').pop();
+  }
+
+  function isCurrentLink(link) {
+    var current = getCurrentPathname();
+    var target = getHrefPathname(link.href);
+
+    if (link.currentMatchers && link.currentMatchers.indexOf(current) !== -1) {
+      return true;
+    }
+
+    return current === target;
+  }
+
+  function renderNavLinks(links, className) {
+    return (links || []).map(function (link) {
+      var current = isCurrentLink(link);
+      return '<a class="' + className + (current ? ' is-current' : '') + '" href="' + escapeHtml(link.href) + '"' + (current ? ' aria-current="page"' : '') + '>' + escapeHtml(link.label) + '</a>';
+    }).join('');
+  }
+
   function renderNav(root) {
     var key = root.getAttribute('data-site-nav');
-    var links = navConfigs[key] || [];
+    var config = navConfigs[key];
 
-    root.innerHTML = links.map(function (link) {
-      return '<a href="' + escapeHtml(link.href) + '">' + escapeHtml(link.label) + '</a>';
-    }).join('');
+    if (!config) {
+      root.innerHTML = '';
+      return;
+    }
+
+    var brand = root.closest('.inner');
+    if (brand) {
+      var brandNode = brand.querySelector('.brand');
+      if (brandNode && brandNode.tagName !== 'A') {
+        brandNode.outerHTML = '<a class="brand" href="' + escapeHtml(config.brandHref) + '">FURUTABI｜郷旅</a>';
+      } else if (brandNode) {
+        brandNode.setAttribute('href', config.brandHref);
+      }
+    }
+
+    root.classList.add('siteHeaderNav');
+    root.innerHTML = '' +
+      '<!-- 公開側ヘッダーとログイン後ヘッダーは分ける -->' +
+      '<!-- ログイン後の先頭ラベルは「ホーム」 -->' +
+      '<!-- 「詳しくは」は使わず「私たちの目指すもの」 -->' +
+      '<!-- FAQ と お問い合わせ は独立ページ導線 -->' +
+      '<!-- 公開側の「足あと」は短縮表示。正式名称は「ごひいきさんの足あと」 -->' +
+      '<button class="siteHeaderToggle" type="button" aria-expanded="false" aria-label="メニューを開く">' +
+        '<span></span><span></span><span></span>' +
+      '</button>' +
+      '<div class="siteHeaderMenu">' +
+        '<div class="siteHeaderUtility">' + renderNavLinks(config.utilityLinks, 'siteHeaderUtilityLink') + '</div>' +
+        '<div class="siteHeaderPrimary">' + renderNavLinks(config.mainLinks, 'siteHeaderLink') + '</div>' +
+        '<div class="siteHeaderActionWrap">' + renderNavLinks(config.action, 'siteHeaderAction') + '</div>' +
+      '</div>';
+
+    var toggle = root.querySelector('.siteHeaderToggle');
+    var menu = root.querySelector('.siteHeaderMenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function () {
+        var expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        menu.classList.toggle('is-open', !expanded);
+      });
+    }
   }
 
   function getEntryButton(root) {
     var context = root.getAttribute('data-entry-context') || 'public';
-
     return { context: context, label: '詳しく見る', buttonClass: 'ghost' };
   }
 
@@ -127,13 +251,11 @@
     var context = contextOverride || root.getAttribute('data-entry-context') || 'public';
     var basePath = context === 'app' ? '../public/' : '';
 
-    // Java化では `entry id` を path variable または slug に置き換える想定。
+    // TODO: Java 実装時は entry id / slug を API 経由の詳細URLへ置き換える。
     return basePath + 'gate-entry.html?entry=' + encodeURIComponent(entryId) + '&context=' + encodeURIComponent(context);
   }
 
   function renderEntryCards(root) {
-    // 入口カード自体は共通だが、遷移先だけはページ文脈ごとに変える。
-    // Java化では context をサーバー描画か API レスポンスで渡してもよい。
     var button = getEntryButton(root);
 
     root.innerHTML = entryCards.map(function (card) {
@@ -152,8 +274,6 @@
   }
 
   function renderRuleList(root) {
-    // 運用ルール文言は複数ページで重複しやすいためここに集約している。
-    // Java化では CMS 管理にするか、定数テーブル化する候補。
     var key = root.getAttribute('data-rule-list');
     var items = ruleLists[key] || [];
 
@@ -182,8 +302,6 @@
   }
 
   function init() {
-    // data-* をフックにしているので、Javaテンプレート化しても
-    // HTML構造を大きく変えずに同じ初期化を流用できる。
     document.querySelectorAll('[data-site-nav]').forEach(renderNav);
     document.querySelectorAll('[data-entry-list]').forEach(renderEntryCards);
     document.querySelectorAll('[data-rule-list]').forEach(renderRuleList);
