@@ -905,6 +905,9 @@ a.link { text-decoration: underline; color: #666; }
   line-height: 1.9;
   color: #534d47;
 }
+.proposalDetailHeroAction {
+  margin: 2px 0 0;
+}
 .proposalDetailTextSection {
   border-bottom: 0;
 }
@@ -3870,6 +3873,144 @@ html { scroll-behavior: smooth; }
   flex-wrap: wrap;
   justify-content: flex-end;
 }
+.messageListToolbar {
+  display: grid;
+  gap: 16px;
+}
+.messageSearchField {
+  max-width: 360px;
+}
+.messageList {
+  display: grid;
+  gap: 12px;
+}
+.messageThreadRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding: 18px;
+  border: 1px solid rgba(34,34,34,.07);
+  border-radius: 22px;
+  background: #fff;
+  text-decoration: none;
+  color: inherit;
+}
+.messageThreadRow.is-unread {
+  background: #fbf8f2;
+}
+.messageThreadMain {
+  display: grid;
+  gap: 8px;
+}
+.messageThreadMeta,
+.messageThreadHead,
+.messageBackLinks,
+.chatThreadActions,
+.chatComposerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+.messageThreadHead h2,
+.messageThreadTitle {
+  margin: 0;
+}
+.messageThreadHead time,
+.messageThreadReadState {
+  font-size: 12px;
+  color: #786f65;
+}
+.messageThreadTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.messageUnreadBadge {
+  display: inline-flex;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #2f2a26;
+  color: #fff;
+  font-size: 11px;
+}
+.chatShell {
+  width: min(100%, 920px);
+  margin: 0 auto;
+}
+.chatMain {
+  display: grid;
+  gap: 18px;
+}
+.chatThreadHeader,
+.chatAlert,
+.chatComposer {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid rgba(34,34,34,.07);
+  border-radius: 24px;
+  background: #fff;
+}
+.chatThreadMeta {
+  justify-content: flex-start;
+}
+.chatThreadTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2f2a26;
+}
+.chatMessages {
+  display: grid;
+  gap: 12px;
+}
+.chatMessage {
+  max-width: 78%;
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: #f6f2eb;
+  border: 1px solid rgba(34,34,34,.05);
+}
+.chatMessage.is-mine {
+  margin-left: auto;
+  background: #fff;
+}
+.chatMessageMeta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #7a7065;
+}
+.chatMessageBody {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #463f38;
+}
+.chatSystemMessage {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #fcfaf5;
+  border: 1px dashed rgba(34,34,34,.12);
+  text-align: center;
+}
+.chatSystemMessage p,
+.chatSystemMessage time {
+  margin: 0;
+  color: #6f665d;
+  font-size: 13px;
+}
 @media (max-width: 820px) {
   .authStepList {
     grid-template-columns: 1fr;
@@ -3885,6 +4026,12 @@ html { scroll-behavior: smooth; }
   }
   .notificationRowActions {
     justify-content: flex-start;
+  }
+  .messageThreadRow {
+    grid-template-columns: 1fr;
+  }
+  .chatMessage {
+    max-width: 100%;
   }
 }
 @media (max-width: 640px) {
@@ -3925,5 +4072,13 @@ html { scroll-behavior: smooth; }
     transform: none;
     width: min(340px, calc(100vw - 24px));
     grid-template-columns: 1fr auto;
+  }
+  .messageThreadMeta,
+  .messageThreadHead,
+  .messageBackLinks,
+  .chatThreadActions,
+  .chatComposerActions {
+    align-items: flex-start;
+    justify-content: flex-start;
   }
 }

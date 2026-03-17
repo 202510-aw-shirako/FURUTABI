@@ -68,7 +68,7 @@
       body: '次に合いそうな入口について、短い連絡が届いています。',
       related_entity_type: 'chat',
       related_entity_id: 'chat-bridge-1',
-      related_url: '../app/support.html',
+      related_url: '../app/chat.html?thread=thread-bridge-1',
       is_read: false,
       created_at: '2026-03-17 08:10',
       read_at: null,
@@ -229,7 +229,7 @@
         { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
-        { href: '../public/okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
+        { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
         { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
       ],
@@ -248,7 +248,7 @@
         { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
-        { href: '../public/okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
+        { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
         { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
       ],
@@ -478,6 +478,14 @@
 
   function renderNav(root) {
     var key = root.getAttribute('data-site-nav');
+    var pathname = getCurrentPathname();
+    var context = readQueryParam('context');
+
+    // ワイヤでは公開側の詳細ページをログイン後からも共用しているため、
+    // context=app のときだけログイン後ナビに読み替える。
+    if ((pathname === 'okatte-entry.html' || pathname === 'gate-entry.html') && context === 'app') {
+      key = 'app_home';
+    }
     var config = navConfigs[key];
 
     if (!config) {

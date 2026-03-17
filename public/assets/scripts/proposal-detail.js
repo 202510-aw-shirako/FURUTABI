@@ -29,6 +29,13 @@
 
   function getAction(type, context) {
     if (context === 'app') {
+      if (type === 'okatte') {
+        return {
+          href: '../app/messages.html',
+          label: '申し込む',
+          buttonClass: 'primary'
+        };
+      }
       return {
         href: '../app/home.html',
         label: 'ログイン後ホームへ戻る',
@@ -44,7 +51,7 @@
     }
     return {
       href: '../auth/login.html',
-      label: type === 'okatte' ? 'ログインして提案を受け取る' : '登録 / ログインして入口を選ぶ',
+      label: type === 'okatte' ? 'ログインして申し込む' : '登録 / ログインして入口を選ぶ',
       buttonClass: 'primary'
     };
   }
@@ -267,6 +274,7 @@
           '<div class="proposalDetailHeroCopy">' +
             '<span class="pill">' + proposals.escapeHtml(pageLabel) + '</span>' +
             '<h1 class="h1 proposalDetailTitle">' + proposals.escapeHtml(item.title) + '</h1>' +
+            (type === 'okatte' ? '<div class="proposalDetailHeroAction"><a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a></div>' : '') +
             '<div class="proposalDetailMeta"><span class="proposalDuration">' + proposals.escapeHtml(item.duration) + '</span></div>' +
             renderTagRow(item.tags) +
             '<p class="proposalDetailIntro">' + proposals.escapeHtml(item.intro) + '</p>' +
@@ -327,7 +335,9 @@
             '<div class="h2">次へ進む</div>' +
             '<p class="note">詳細を見たあとも、無理なく次の扉に移れるようにしています。</p>' +
           '</div>' +
-          '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>' +
+          (type === 'okatte'
+            ? '<a class="btn ghost" href="../app/messages.html">連絡を見る</a>'
+            : '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>') +
         '</div>' +
       '</section>';
 

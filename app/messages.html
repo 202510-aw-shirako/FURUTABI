@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>連絡 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mypagePage" aria-label="連絡一覧" data-message-list-page>
+    <!-- 連絡一覧 / チャットは、一般的な雑談チャットではない -->
+    <!-- 通知は「起きたことに気づく場」、こちらは「実際にやり取りする場」 -->
+    <!-- チャットには必ず件名または紐づく対象を表示する -->
+    <!-- 状態（申請中 / 承認 / 見送り など）が必ず見えるようにする -->
+    <!-- 困りごとや改善点は公開ではなく、非公開導線へ送る -->
+    <!-- 必要時は運営への相談導線を出す -->
+    <!-- 追加確認が必要なときは、その状態を表示できるようにする -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="連絡ナビゲーション">
+        <div class="mypageSidebarInner">
+          <h2 class="mypageSidebarTitle">連絡</h2>
+          <nav class="mypageNav">
+            <a class="mypageNavLink is-current" href="./messages.html" aria-current="page">連絡一覧</a>
+            <a class="mypageNavLink" href="./notification-center.html">通知</a>
+            <a class="mypageNavLink" href="./support.html">安心とサポート</a>
+            <a class="mypageNavLink" href="./mypage.html">マイページ</a>
+          </nav>
+        </div>
+      </aside>
+
+      <section class="mypageMain">
+        <div class="mypageHead">
+          <h1 class="h1">連絡</h1>
+          <p class="lead">提案や申請、非公開の相談に関するやり取りをここで確認できます。</p>
+        </div>
+
+        <div class="messageListToolbar">
+          <label class="mypageField messageSearchField">
+            <span>検索</span>
+            <input type="search" placeholder="相手名や件名で探す" data-message-search />
+          </label>
+          <div class="mypageTabs" role="tablist" aria-label="連絡フィルター">
+            <button class="pill is-on" type="button" role="tab" aria-selected="true" data-message-filter="all">すべて</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-message-filter="unread">未読</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-message-filter="proposal">提案・申請に関する連絡</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-message-filter="bridge">架け橋さん</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-message-filter="local">地域の方</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-message-filter="ops">運営</button>
+          </div>
+        </div>
+
+        <div class="messageList" data-message-list></div>
+        <p class="note" data-message-empty hidden>まだ連絡はありません。提案や申請、非公開の相談があると、ここに表示されます。</p>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script src="../public/assets/scripts/messages.js"></script>
+</body>
+</html>
