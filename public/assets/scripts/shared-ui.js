@@ -158,6 +158,26 @@
     }
   };
 
+  var footerConfig = {
+    about: [
+      { href: 'about.html', label: 'FURUTABI' },
+      { href: 'about.html', label: '私たちの目指すもの' },
+      { href: 'faq.html', label: 'FAQ' },
+      { href: 'safety.html', label: 'お問い合わせ' }
+    ],
+    usage: [
+      { href: 'gate.html', label: 'ちいきの入り口' },
+      { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと' },
+      { href: 'about.html#feature-map', label: 'わたしの地図' },
+      { href: 'okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって' }
+    ],
+    legal: [
+      { href: 'terms.html', label: '利用規約' },
+      { href: 'privacy.html', label: 'プライバシーポリシー' },
+      { href: '../auth/login.html', label: 'ログイン' }
+    ]
+  };
+
   function escapeHtml(value) {
     return String(value)
       .replace(/&/g, '&amp;')
@@ -242,6 +262,73 @@
     }
   }
 
+  function withBasePrefix(href) {
+    var current = getCurrentPathname();
+    var appPaths = ['home.html', 'local-home.html', 'login.html'];
+
+    if (href === '#') {
+      return href;
+    }
+
+    if (appPaths.indexOf(current) !== -1 && href.indexOf('../') !== 0) {
+      return '../public/' + href;
+    }
+
+    if (current === 'login.html' && href === '../auth/login.html') {
+      return './login.html';
+    }
+
+    return href;
+  }
+
+  function renderFooterLinks(links) {
+    return links.map(function (link) {
+      return '<a href="' + escapeHtml(withBasePrefix(link.href)) + '">' + escapeHtml(link.label) + '</a>';
+    }).join('');
+  }
+
+  function ensureFooter() {
+    var footer = document.querySelector('[data-site-footer]') || document.querySelector('.siteFooter');
+    if (!footer) {
+      footer = document.createElement('footer');
+      footer.className = 'siteFooter';
+      footer.setAttribute('data-site-footer', '');
+      var main = document.querySelector('main');
+      if (main && main.parentNode) {
+        main.parentNode.insertBefore(footer, main.nextSibling);
+      } else {
+        document.body.appendChild(footer);
+      }
+    }
+
+    footer.innerHTML = '' +
+      '<div class="container siteFooterInner">' +
+        '<!-- 地域の方へは独立カラムにしない -->' +
+        '<!-- フッターは旅人の方にも分かりやすい構造を優先 -->' +
+        '<!-- フッターでは正式名称を使う -->' +
+        '<!-- FAQ と お問い合わせ は独立ページ導線 -->' +
+        '<!-- 利用規約とプライバシーポリシーは必須 -->' +
+        '<div class="siteFooterGrid">' +
+          '<section class="siteFooterCol">' +
+            '<h2>FURUTABIについて</h2>' +
+            '<div class="siteFooterLinks">' + renderFooterLinks(footerConfig.about) + '</div>' +
+          '</section>' +
+          '<section class="siteFooterCol">' +
+            '<h2>使い方</h2>' +
+            '<div class="siteFooterLinks">' + renderFooterLinks(footerConfig.usage) + '</div>' +
+          '</section>' +
+          '<section class="siteFooterCol">' +
+            '<h2>ご利用にあたって</h2>' +
+            '<div class="siteFooterLinks">' + renderFooterLinks(footerConfig.legal) + '</div>' +
+          '</section>' +
+        '</div>' +
+        '<div class="siteFooterBottom">' +
+          '<span>© FURUTABI</span>' +
+          '<span>見物から、関係の旅へ。</span>' +
+        '</div>' +
+      '</div>';
+  }
+
   function getEntryButton(root) {
     var context = root.getAttribute('data-entry-context') || 'public';
     return { context: context, label: '詳しく見る', buttonClass: 'ghost' };
@@ -305,6 +392,7 @@
     document.querySelectorAll('[data-site-nav]').forEach(renderNav);
     document.querySelectorAll('[data-entry-list]').forEach(renderEntryCards);
     document.querySelectorAll('[data-rule-list]').forEach(renderRuleList);
+    ensureFooter();
   }
 
   window.FURUTABI_SHARED_UI = {
