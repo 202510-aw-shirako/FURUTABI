@@ -126,7 +126,6 @@
       variant: 'app',
       brandHref: '../app/home.html',
       mainLinks: [
-        { href: '../app/home.html', label: 'ホーム', currentMatchers: ['home.html'] },
         { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
@@ -145,7 +144,6 @@
       variant: 'app',
       brandHref: '../app/local-home.html',
       mainLinks: [
-        { href: '../app/local-home.html', label: 'ホーム', currentMatchers: ['local-home.html'] },
         { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
@@ -242,7 +240,7 @@
     root.classList.add('siteHeaderNav');
     root.innerHTML = '' +
       '<!-- 公開側ヘッダーとログイン後ヘッダーは分ける -->' +
-      '<!-- ログイン後の先頭ラベルは「ホーム」 -->' +
+        '<!-- ログイン後はロゴからホームへ戻れるため、主ナビにホームは置かない -->' +
       '<!-- 「詳しくは」は使わず「私たちの目指すもの」 -->' +
       '<!-- FAQ と お問い合わせ は独立ページ導線 -->' +
       '<!-- 公開側の「足あと」は短縮表示。正式名称は「ごひいきさんの足あと」 -->' +

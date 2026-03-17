@@ -45,24 +45,37 @@
           <p class="authCardLead">登録時には実名が必要です。公開の場ではニックネームを使います。</p>
         </div>
 
-        <form class="authForm" action="./register-profile.html">
+        <form class="authForm" action="./register-profile.html" novalidate>
+          <div class="authErrorSummary" id="register-error-summary" hidden aria-live="polite"></div>
           <div class="authField">
-            <label for="register-name">実名</label>
+            <div class="authFieldHead">
+              <label for="register-name">氏名</label>
+              <span class="authFieldError" id="register-name-error" hidden></span>
+            </div>
             <input id="register-name" name="name" type="text" placeholder="例）古旅 花子" required />
           </div>
 
           <div class="authField">
-            <label for="register-name-kana">氏名カナ</label>
+            <div class="authFieldHead">
+              <label for="register-name-kana">ふりがな</label>
+              <span class="authFieldError" id="register-name-kana-error" hidden></span>
+            </div>
             <input id="register-name-kana" name="name_kana" type="text" placeholder="例）フルタビ ハナコ" required />
           </div>
 
           <div class="authField">
-            <label for="register-birthday">生年月日</label>
+            <div class="authFieldHead">
+              <label for="register-birthday">生年月日</label>
+              <span class="authFieldError" id="register-birthday-error" hidden></span>
+            </div>
             <input id="register-birthday" name="birthday" type="date" required />
           </div>
 
           <fieldset class="authField authFieldset">
-            <legend>性別</legend>
+            <div class="authFieldHead">
+              <legend>性別</legend>
+              <span class="authFieldError" id="register-gender-error" hidden></span>
+            </div>
             <div class="authChoiceList authChoiceList--row">
               <label><input type="radio" name="gender" value="male" required />男性</label>
               <label><input type="radio" name="gender" value="female" />女性</label>
@@ -71,33 +84,51 @@
           </fieldset>
 
           <div class="authField">
-            <label for="register-email">メールアドレス</label>
+            <div class="authFieldHead">
+              <label for="register-email">メールアドレス</label>
+              <span class="authFieldError" id="register-email-error" hidden></span>
+            </div>
             <input id="register-email" name="email" type="email" placeholder="name@example.com" required />
           </div>
 
           <div class="authField">
-            <label for="register-phone">電話番号</label>
+            <div class="authFieldHead">
+              <label for="register-phone">電話番号</label>
+              <span class="authFieldError" id="register-phone-error" hidden></span>
+            </div>
             <input id="register-phone" name="phone" type="tel" placeholder="090-1234-5678" required />
           </div>
 
           <div class="authField">
-            <label for="register-address">住所</label>
+            <div class="authFieldHead">
+              <label for="register-address">住所</label>
+              <span class="authFieldError" id="register-address-error" hidden></span>
+            </div>
             <input id="register-address" name="address" type="text" placeholder="都道府県・市区町村・番地" required />
           </div>
 
           <div class="authField">
-            <label for="register-nickname">ニックネーム</label>
+            <div class="authFieldHead">
+              <label for="register-nickname">ニックネーム</label>
+              <span class="authFieldError" id="register-nickname-inline-error" hidden></span>
+            </div>
             <input id="register-nickname" name="nickname" type="text" placeholder="公開の場で使う名前" required />
             <p class="authError" id="register-nickname-error" hidden aria-live="polite">ニックネームに実名は使えません。別の表示名を入力してください。</p>
           </div>
 
           <div class="authField">
-            <label for="register-password">パスワード</label>
+            <div class="authFieldHead">
+              <label for="register-password">パスワード</label>
+              <span class="authFieldError" id="register-password-error" hidden></span>
+            </div>
             <input id="register-password" name="password" type="password" placeholder="8文字以上" required />
           </div>
 
           <div class="authField">
-            <label for="register-password-confirm">パスワード確認</label>
+            <div class="authFieldHead">
+              <label for="register-password-confirm">パスワード確認</label>
+              <span class="authFieldError" id="register-password-confirm-error" hidden></span>
+            </div>
             <input id="register-password-confirm" name="password_confirm" type="password" placeholder="もう一度入力" required />
           </div>
 
@@ -118,7 +149,10 @@
           </div>
 
           <fieldset class="authField authFieldset">
-            <legend>確認事項</legend>
+            <div class="authFieldHead">
+              <legend>確認事項</legend>
+              <span class="authFieldError" id="register-agreement-error" hidden></span>
+            </div>
             <div class="authChoiceList">
               <label><input type="checkbox" required />利用規約に同意する</label>
               <label><input type="checkbox" required />プライバシーポリシーに同意する</label>
@@ -128,6 +162,7 @@
 
           <div class="authFormActions">
             <button class="btn primary" type="submit">つぎへ</button>
+            <a class="btn ghost" href="./register-profile.html" aria-label="ワイヤー確認用で次の画面へ進む">ワイヤー用で次へ</a>
           </div>
         </form>
       </section>
@@ -182,12 +217,69 @@
         return !invalid;
       }
 
+      function findFieldError(field) {
+        if (!field) return null;
+        if (field.name === 'gender') return document.getElementById('register-gender-error');
+        if (field.type === 'checkbox') return document.getElementById('register-agreement-error');
+        return document.getElementById(`${field.id}-error`);
+      }
+
+      function showFieldError(field, message) {
+        const target = findFieldError(field);
+        if (!target) return;
+        target.textContent = message;
+        target.hidden = false;
+      }
+
+      function clearFieldError(field) {
+        const target = findFieldError(field);
+        if (!target) return;
+        target.textContent = '';
+        target.hidden = true;
+      }
+
+      function clearAllErrors() {
+        form.querySelectorAll('.authFieldError').forEach((node) => {
+          node.hidden = true;
+          node.textContent = '';
+        });
+      }
+
+      function getMessage(field) {
+        if (!field) return '入力内容を確認してください。';
+        if (field.validity.valueMissing) {
+          if (field.type === 'radio') return '性別を選択してください。';
+          if (field.type === 'checkbox') return '確認事項に同意してください。';
+          return '未入力の項目があります。';
+        }
+        if (field.validity.typeMismatch && field.type === 'email') {
+          return 'メールアドレスの形式を確認してください。';
+        }
+        if (field.validity.customError) {
+          return field.validationMessage;
+        }
+        return '入力内容を確認してください。';
+      }
+
       nicknameInput.addEventListener('input', validateNickname);
       nameInput.addEventListener('input', validateNickname);
+      form.querySelectorAll('input').forEach((field) => {
+        const eventName = field.type === 'radio' || field.type === 'checkbox' ? 'change' : 'input';
+        field.addEventListener(eventName, () => {
+          clearFieldError(field);
+          if (field !== nicknameInput) return;
+          clearFieldError(nicknameInput);
+        });
+      });
       form.addEventListener('submit', (event) => {
-        if (!validateNickname()) {
+        clearAllErrors();
+        const nicknameValid = validateNickname();
+        const firstInvalid = form.querySelector(':invalid');
+        if (!nicknameValid || firstInvalid) {
           event.preventDefault();
-          nicknameInput.focus();
+          const target = firstInvalid || nicknameInput;
+          showFieldError(target, getMessage(target));
+          target.focus();
         }
       });
     })();
