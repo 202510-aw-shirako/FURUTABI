@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SMS認証 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="auth_login"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container authPage authPage--centered" aria-label="SMS認証">
+    <section class="authFlowShell authFlowShell--narrow">
+      <div class="authFlowIntro">
+        <p class="eyebrow">SMS VERIFY</p>
+        <h1 class="authFlowTitle">SMS認証</h1>
+        <p class="authFlowLead">登録した電話番号に認証コードを送り、連絡先を確認します。</p>
+      </div>
+
+      <ol class="authStepList" aria-label="登録ステップ">
+        <li class="is-done"><span>1</span><strong>登録情報入力</strong></li>
+        <li class="is-current"><span>2</span><strong>SMS認証</strong></li>
+        <li><span>3</span><strong>初期設定</strong></li>
+      </ol>
+
+      <section class="authCard">
+        <div class="authCardSection">
+          <h2 class="authCardTitle">認証する電話番号</h2>
+          <p class="authCardLead" id="register-sms-phone-text">電話番号を読み込んでいます。</p>
+        </div>
+
+        <div class="authInlinePanel">
+          <div class="authInlinePanelText">
+            <h3>認証コード</h3>
+            <p>まず認証コードを送り、その後に届いた数字を入力します。</p>
+          </div>
+          <div class="authInlineActions">
+            <button class="btn ghost" id="register-sms-send" type="button">認証コードを送る</button>
+          </div>
+        </div>
+
+        <form class="authForm" id="register-sms-form" action="./register.html">
+          <div class="authField">
+            <div class="authFieldHead">
+              <label for="register-sms-code">認証コード</label>
+              <span class="authFieldError" id="register-sms-code-error" hidden></span>
+            </div>
+            <input id="register-sms-code" name="sms_code" type="text" inputmode="numeric" placeholder="例）123456" />
+          </div>
+
+          <div class="authInfoList">
+            <p>コードが届かないときは、時間を置いてから再送してください。</p>
+            <p>電話番号を変えたい場合は、前の画面に戻って修正できます。</p>
+          </div>
+
+          <div class="authFormActions">
+            <button class="btn primary" type="submit">認証して次へ</button>
+            <button class="btn ghost" id="register-sms-resend" type="button">コードを再送する</button>
+          </div>
+        </form>
+
+        <div class="authUtilityLinks authUtilityLinks--center">
+          <a id="register-sms-back" href="./register.html">電話番号を修正する</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script>
+    (() => {
+      // Java実装時の目印:
+      // ここで SmsService を呼び、コード送信・照合を行う想定です。
+      // 認証コードの生成、有効期限、再送回数制御はサーバー側に寄せておくのがおすすめです。
+      // この画面では provisional user の id を持ち回し、SMS 成功後に smsVerificationStatus=VERIFIED へ更新するイメージです。
+      const params = new URLSearchParams(window.location.search);
+      const phone = params.get('phone') || '';
+      const phoneText = document.getElementById('register-sms-phone-text');
+      const codeInput = document.getElementById('register-sms-code');
+      const codeError = document.getElementById('register-sms-code-error');
+      const sendButton = document.getElementById('register-sms-send');
+      const resendButton = document.getElementById('register-sms-resend');
+      const backLink = document.getElementById('register-sms-back');
+      const form = document.getElementById('register-sms-form');
+      if (!phoneText || !codeInput || !codeError || !sendButton || !resendButton || !backLink || !form) return;
+
+      function buildUrl(path, markVerified) {
+        const next = new URLSearchParams(params.toString());
+        if (markVerified) {
+          next.set('sms_verified', '1');
+        }
+        return `${path}?${next.toString()}`;
+      }
+
+      phoneText.textContent = phone ? `${phone} に認証コードを送ります。` : '電話番号が未設定です。前の画面に戻って確認してください。';
+      backLink.href = buildUrl('./register.html', false);
+      form.action = buildUrl('./register.html', true);
+
+      function showCodeError(message) {
+        codeError.textContent = message;
+        codeError.hidden = false;
+      }
+
+      function clearCodeError() {
+        codeError.textContent = '';
+        codeError.hidden = true;
+      }
+
+      sendButton.addEventListener('click', () => {
+        clearCodeError();
+        sendButton.textContent = '送信済み';
+        sendButton.disabled = true;
+      });
+
+      resendButton.addEventListener('click', () => {
+        clearCodeError();
+        resendButton.textContent = '再送しました';
+      });
+
+      codeInput.addEventListener('input', clearCodeError);
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        clearCodeError();
+        if (!codeInput.value.trim()) {
+          showCodeError('認証コードを入力してください。');
+          codeInput.focus();
+          return;
+        }
+        window.location.href = form.action;
+      });
+    })();
+  </script>
+</body>
+</html>

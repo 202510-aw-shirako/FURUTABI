@@ -10,7 +10,7 @@
   <header class="topbar">
     <div class="container">
       <div class="inner">
-        <div class="brand">FURUTABI｜郷旅</div>
+        <div class="brand">FURUTABI</div>
         <nav data-site-nav="auth_login"></nav>
       </div>
     </div>
@@ -42,10 +42,10 @@
       <section class="authCard" aria-label="登録フォーム">
         <div class="authCardSection">
           <h2 class="authCardTitle">登録情報を入力する</h2>
-          <p class="authCardLead">登録時には実名が必要です。公開の場ではニックネームを使います。</p>
+          <p class="authCardLead">登録時には実名と連絡先をお預かりし、公開の場ではニックネームを使います。</p>
         </div>
 
-        <form class="authForm" action="./register-profile.html" novalidate>
+        <form class="authForm" action="./register-sms.html" novalidate>
           <div class="authField">
             <div class="authFieldHead">
               <label for="register-name">氏名</label>
@@ -59,7 +59,7 @@
               <label for="register-name-kana">ふりがな</label>
               <span class="authFieldError" id="register-name-kana-error" hidden></span>
             </div>
-            <input id="register-name-kana" name="name_kana" type="text" placeholder="例）フルタビ ハナコ" required />
+            <input id="register-name-kana" name="name_kana" type="text" placeholder="例）ふるたび はなこ" required />
           </div>
 
           <div class="authField">
@@ -98,12 +98,22 @@
             <input id="register-phone" name="phone" type="tel" placeholder="090-1234-5678" required />
           </div>
 
+          <section class="authInlinePanel" aria-label="SMS認証">
+            <div class="authInlinePanelText">
+              <h3>SMS認証</h3>
+              <p id="register-sms-status-text">この電話番号で SMS 認証へ進みます。次の画面で認証コードを確認します。</p>
+            </div>
+            <div class="authInlineActions">
+              <a class="btn ghost" id="register-sms-link" href="./register-sms.html">この番号でSMS認証する</a>
+            </div>
+          </section>
+
           <div class="authField">
             <div class="authFieldHead">
               <label for="register-address">住所</label>
               <span class="authFieldError" id="register-address-error" hidden></span>
             </div>
-            <input id="register-address" name="address" type="text" placeholder="都道府県・市区町村・番地" required />
+            <input id="register-address" name="address" type="text" placeholder="例）東京都○○区..." required />
           </div>
 
           <div class="authField">
@@ -112,7 +122,7 @@
               <span class="authFieldError" id="register-nickname-inline-error" hidden></span>
             </div>
             <input id="register-nickname" name="nickname" type="text" placeholder="公開の場で使う名前" required />
-            <p class="authError" id="register-nickname-error" hidden aria-live="polite">ニックネームに実名は使えません。別の表示名を入力してください。</p>
+            <p class="authError" id="register-nickname-error" hidden aria-live="polite">ニックネームに実名は使えません。公開の場では別の名前を入力してください。</p>
           </div>
 
           <div class="authField">
@@ -128,20 +138,11 @@
               <label for="register-password-confirm">パスワード確認</label>
               <span class="authFieldError" id="register-password-confirm-error" hidden></span>
             </div>
-            <input id="register-password-confirm" name="password_confirm" type="password" placeholder="もう一度入力" required />
+            <input id="register-password-confirm" name="password_confirm" type="password" placeholder="同じものを入力" required />
           </div>
 
-          <section class="authInlinePanel" aria-label="SMS認証">
-            <div class="authInlinePanelText">
-              <h3>SMS認証</h3>
-              <p>SMS認証は必須です。仮登録後に確認へ進む設計にも切り替えやすい構造にしています。</p>
-            </div>
-            <div class="authInlineActions">
-              <a class="btn ghost" href="#">SMS認証を確認する</a>
-            </div>
-          </section>
-
           <div class="authInfoList">
+            <p>登録時には実名が必要です。公開の場ではニックネームを使います。</p>
             <p>実名・住所・電話番号などの個人情報は、管理者のみが確認します。</p>
             <p>性別と年齢層は、必要に応じて架け橋さんや、ちいきのおかっての受け入れ側が確認することがあります。</p>
             <p>一般公開の場では、困りごとや改善点ではなく、残しておきたい関わりを中心に扱います。</p>
@@ -166,7 +167,7 @@
         </form>
       </section>
 
-      <div class="authUtilityLinks" aria-label="登録補助導線">
+      <div class="authUtilityLinks" aria-label="登録関連リンク">
         <a href="./login.html">すでに登録済みの方はこちら</a>
         <a href="../public/terms.html">利用規約</a>
         <a href="../public/privacy.html">プライバシーポリシー</a>
@@ -178,20 +179,19 @@
   <script src="../public/assets/scripts/shared-ui.js"></script>
   <script>
     (() => {
-      // Java移行時メモ:
-      // この画面では、User の仮登録を作り、SMS認証待ちの状態で持つ形が考えやすそうです。
-      // 保存する項目の目印: 実名, 氏名カナ, 生年月日, 性別, メールアドレス, 電話番号, 住所, ニックネーム, パスワードハッシュ。
-      // ここで扱う個人情報は管理者のみ閲覧、公開名として使うのは nickname のみ、という整理を意識しています。
-      // registrationStatus=REGISTERING, smsVerificationStatus=PENDING のような持ち方も分かりやすそうです。
-      // 性別は必須だが no-answer を許可し、年齢層は birthday からサーバー側で導出する形でもよさそうです。
-      // ニックネームの実名禁止は、最終的にサーバー側でも再検証して、クライアント判定だけに寄せすぎない方が安全そうです。
-      // SMS 認証は外部API連携を前提にしつつ、送信トークンや認証コードはサーバー側で持つイメージです。
-      // 利用規約 / プライバシーポリシー同意は、同意時刻と規約バージョンを残せると後で追いやすそうです。
+      // Java実装時の目印:
+      // ここでは登録情報を仮登録として保存し、SMS認証前の状態で止めておくイメージです。
+      // registrationStatus=REGISTERING, smsVerificationStatus=PENDING のような持ち方にしておくと整理しやすそうです。
+      // ニックネームの実名チェックは、クライアント側だけでなくサーバー側でも必須にしておくのがおすすめです。
+      // SMS認証ページへ渡す値は、今は query parameter ですが、本実装ではサーバー側の仮登録IDに寄せる方が安全です。
       const form = document.querySelector('.authForm');
       const nameInput = document.getElementById('register-name');
       const nicknameInput = document.getElementById('register-nickname');
-      const error = document.getElementById('register-nickname-error');
-      if (!form || !nameInput || !nicknameInput || !error) return;
+      const phoneInput = document.getElementById('register-phone');
+      const smsLink = document.getElementById('register-sms-link');
+      const smsStatusText = document.getElementById('register-sms-status-text');
+      const nicknameError = document.getElementById('register-nickname-error');
+      if (!form || !nameInput || !nicknameInput || !phoneInput || !smsLink || !smsStatusText || !nicknameError) return;
 
       function normalize(value) {
         return (value || '').replace(/\s+/g, '').toLowerCase();
@@ -206,13 +206,11 @@
       }
 
       function validateNickname() {
-        // Java移行時メモ:
-        // 実運用では NG ワード、既存 nickname 重複、全角半角ゆれも含めてサーバー側でも見ると安心そうです。
         const nickname = normalize(nicknameInput.value);
         const nameParts = buildNameParts(nameInput.value);
         const invalid = nickname && nameParts.some((part) => part && nickname.includes(part));
         nicknameInput.setCustomValidity(invalid ? 'ニックネームに実名は使えません。' : '');
-        error.hidden = !invalid;
+        nicknameError.hidden = !invalid;
         return !invalid;
       }
 
@@ -254,33 +252,156 @@
         if (field.validity.typeMismatch && field.type === 'email') {
           return 'メールアドレスの形式を確認してください。';
         }
-        if (field.validity.customError) {
-          return field.validationMessage;
-        }
+        if (field.validity.customError) return field.validationMessage;
         return '入力内容を確認してください。';
+      }
+
+      function buildSmsUrl() {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+          if (typeof value === 'string' && value !== '') params.set(key, value);
+        });
+        return `./register-sms.html?${params.toString()}`;
+      }
+
+      function buildVerifiedRegisterUrl() {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+          if (typeof value === 'string' && value !== '') params.set(key, value);
+        });
+        params.set('sms_verified', '1');
+        return `./register.html?${params.toString()}`;
+      }
+
+      function buildProfileUrl() {
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+        formData.forEach((value, key) => {
+          if (typeof value === 'string' && value !== '') params.set(key, value);
+        });
+        params.set('sms_verified', '1');
+        return `./register-profile.html?${params.toString()}`;
+      }
+
+      function populateFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        ['name', 'name_kana', 'birthday', 'email', 'phone', 'address', 'nickname', 'password', 'password_confirm'].forEach((key) => {
+          const field = form.elements.namedItem(key);
+          const value = params.get(key);
+          if (field && typeof value === 'string') field.value = value;
+        });
+        const gender = params.get('gender');
+        if (gender) {
+          const selected = form.querySelector(`input[name="gender"][value="${gender}"]`);
+          if (selected) selected.checked = true;
+        }
+        const smsVerified = params.get('sms_verified') === '1';
+        if (smsVerified) {
+          smsStatusText.textContent = 'SMS認証済みです。このまま次へ進めます。';
+          smsLink.textContent = '認証済み';
+          smsLink.classList.add('disabled');
+          smsLink.setAttribute('aria-disabled', 'true');
+          smsLink.href = buildVerifiedRegisterUrl();
+        } else {
+          smsStatusText.textContent = 'この電話番号で SMS 認証へ進みます。次の画面で認証コードを確認します。';
+          smsLink.textContent = 'この番号でSMS認証する';
+          smsLink.classList.remove('disabled');
+          smsLink.removeAttribute('aria-disabled');
+        }
+      }
+
+      function validateForm() {
+        clearAllErrors();
+        validateNickname();
+
+        let firstInvalid = null;
+        const fields = Array.from(form.elements).filter((element) => {
+          if (!(element instanceof HTMLElement)) return false;
+          if (!element.name) return false;
+          if (element.type === 'submit' || element.type === 'button') return false;
+          return true;
+        });
+
+        fields.forEach((field) => {
+          clearFieldError(field);
+        });
+
+        fields.forEach((field) => {
+          if (field.type === 'radio') {
+            if (field.required && !form.querySelector(`input[name="${field.name}"]:checked`)) {
+              if (!firstInvalid) firstInvalid = field;
+              showFieldError(field, getMessage(field));
+            }
+            return;
+          }
+          if (field.type === 'checkbox') {
+            if (field.required && !field.checked) {
+              if (!firstInvalid) firstInvalid = field;
+              showFieldError(field, getMessage(field));
+            }
+            return;
+          }
+          if (!field.checkValidity()) {
+            if (!firstInvalid) firstInvalid = field;
+            showFieldError(field, getMessage(field));
+          }
+        });
+
+        if (!validateNickname() && !firstInvalid) firstInvalid = nicknameInput;
+
+        const params = new URLSearchParams(window.location.search);
+        const smsVerified = params.get('sms_verified') === '1';
+        if (!smsVerified) {
+          if (!firstInvalid) firstInvalid = phoneInput;
+          showFieldError(phoneInput, '先にSMS認証を完了してください。');
+        }
+
+        if (firstInvalid) {
+          firstInvalid.focus();
+          return false;
+        }
+        return true;
       }
 
       nicknameInput.addEventListener('input', validateNickname);
       nameInput.addEventListener('input', validateNickname);
-      form.querySelectorAll('input').forEach((field) => {
-        const eventName = field.type === 'radio' || field.type === 'checkbox' ? 'change' : 'input';
-        field.addEventListener(eventName, () => {
-          clearFieldError(field);
-          if (field !== nicknameInput) return;
-          clearFieldError(nicknameInput);
-        });
-      });
-      form.addEventListener('submit', (event) => {
-        clearAllErrors();
-        const nicknameValid = validateNickname();
-        const firstInvalid = form.querySelector(':invalid');
-        if (!nicknameValid || firstInvalid) {
-          event.preventDefault();
-          const target = firstInvalid || nicknameInput;
-          showFieldError(target, getMessage(target));
-          target.focus();
+
+      phoneInput.addEventListener('input', () => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('sms_verified') === '1') {
+          params.delete('sms_verified');
+          history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+          smsStatusText.textContent = '電話番号が変わったため、もう一度 SMS 認証をお願いします。';
+          smsLink.textContent = 'この番号でSMS認証する';
+          smsLink.classList.remove('disabled');
+          smsLink.removeAttribute('aria-disabled');
         }
       });
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!validateForm()) return;
+        window.location.href = buildProfileUrl();
+      });
+
+      smsLink.addEventListener('click', (event) => {
+        if (smsLink.classList.contains('disabled')) {
+          event.preventDefault();
+          return;
+        }
+        clearFieldError(phoneInput);
+        if (!phoneInput.value.trim()) {
+          event.preventDefault();
+          showFieldError(phoneInput, '電話番号を入力してください。');
+          phoneInput.focus();
+          return;
+        }
+        smsLink.href = buildSmsUrl();
+      });
+
+      populateFromQuery();
     })();
   </script>
 </body>

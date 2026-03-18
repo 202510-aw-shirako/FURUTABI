@@ -10,13 +10,13 @@
   <header class="topbar">
     <div class="container">
       <div class="inner">
-        <div class="brand">FURUTABI｜郷旅</div>
+        <div class="brand">FURUTABI</div>
         <nav data-site-nav="auth_login"></nav>
       </div>
     </div>
   </header>
 
-  <main class="container authPage authPage--centered" aria-label="追加本人確認">
+  <main class="container authPage authPage--centered" aria-label="追加の本人確認">
     <!-- 追加本人確認は通常非表示、必要時のみ外部本人確認APIを起動する -->
     <section class="authCompleteCard authCompleteCard--verify">
       <p class="eyebrow">ADDITIONAL VERIFY</p>
@@ -36,11 +36,11 @@
         </section>
         <section class="authCompletePanel">
           <h2>提出期限</h2>
-          <p class="authParagraph">依頼から 7 日以内を目安にお願いします。期限内の提出が難しい場合は、運営へお知らせください。</p>
+          <p class="authParagraph">案内から 7 日以内を目安にお願いしています。事情がある場合は、先にご連絡ください。</p>
         </section>
         <section class="authCompletePanel">
           <h2>提出方法</h2>
-          <p class="authParagraph">外部本人確認サービスへ移動し、画面の案内に沿って確認書類と顔写真を提出します。</p>
+          <p class="authParagraph">外部の本人確認サービスへ移動し、画面の案内に沿って確認を進めます。</p>
         </section>
         <section class="authCompletePanel">
           <h2>注意事項</h2>
@@ -56,12 +56,10 @@
 
   <script src="../public/assets/scripts/shared-ui.js"></script>
   <script>
-    // Java移行時メモ:
-    // この画面は通常は非表示で、admin 側フラグ verifyRequired=true のようなときだけ見せる形が考えやすそうです。
-    // 追加本人確認ステータスは UNREQUESTED / REQUESTED / SUBMITTED / REVIEWING / APPROVED / RETURNED / REJECTED のように持てると追いやすそうです。
-    // 本人確認書類は外部本人確認 API へ直接送り、管理者は生画像を扱わない構成を優先したい、という目印です。
-    // サーバー側では外部APIの申請ID、結果ステータス、期限、差し戻し理由だけを持つ形も整理しやすそうです。
-    // おかって利用前や安全上の懸念時など、要求理由を enum 的に残して監査ログへつなぐ考え方も役立ちそうです。
+    // Java実装時の目印:
+    // この画面は通常は表示せず、Admin 側フラグで verifyRequired=true になったときだけ見せる形が整理しやすそうです。
+    // 追加本人確認ステータスは UNREQUESTED / REQUESTED / SUBMITTED / REVIEWING / APPROVED / RETURNED / REJECTED のように持てると扱いやすそうです。
+    // 本人確認開始ボタンは、外部本人確認APIの申請IDを発行して遷移するイメージです。
   </script>
 </body>
 </html>

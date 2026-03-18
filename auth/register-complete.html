@@ -10,7 +10,7 @@
   <header class="topbar">
     <div class="container">
       <div class="inner">
-        <div class="brand">FURUTABI｜郷旅</div>
+        <div class="brand">FURUTABI</div>
         <nav data-site-nav="auth_login"></nav>
       </div>
     </div>
@@ -28,7 +28,7 @@
           <h2>完了したこと</h2>
           <ul class="authList">
             <li>登録情報の入力が完了しました</li>
-            <li>SMS認証が完了した想定です</li>
+            <li>SMS認証の確認が完了した想定です</li>
           </ul>
         </section>
         <section class="authCompletePanel">
@@ -53,7 +53,7 @@
         <a class="btn primary" href="../app/home.html">ホームへ</a>
       </div>
 
-      <div class="authUtilityLinks authUtilityLinks--center" aria-label="完了後の補助導線">
+      <div class="authUtilityLinks authUtilityLinks--center" aria-label="登録完了後の関連リンク">
         <a href="../public/gate.html">ちいきの入り口へ</a>
         <a href="../public/faq.html">FAQを見る</a>
         <a href="./register-profile.html">プロフィールを編集する</a>
@@ -63,11 +63,10 @@
 
   <script src="../public/assets/scripts/shared-ui.js"></script>
   <script>
-    // Java移行時メモ:
-    // この画面は registrationStatus=ACTIVE かつ smsVerificationStatus=VERIFIED のような条件で見せると整理しやすそうです。
-    // 初回ログイン直後のホーム導線と、登録完了直後の導線は将来的に出し分けてもよさそうです。
-    // 「最初にできること / あとでできること」は、権限や状態で差し替えられると柔らかく運用しやすそうです。
-    // 未完了の追加本人確認がある場合は、この画面ではなく register-verify 側へ案内する流れも考えやすいです。
+    // Java実装時の目印:
+    // registrationStatus は、SMS認証の成功を確認したあとで ACTIVE へ進める形が自然です。
+    // smsVerificationStatus=VERIFIED は、外部SMS認証の結果を確認してから更新するのがおすすめです。
+    // 追加本人確認は別の条件で発火し、この完了画面とは分けて扱う前提にしておくと整理しやすそうです。
   </script>
 </body>
 </html>
