@@ -1,0 +1,135 @@
+.h1 { margin: 0; font-size: 26px; letter-spacing: .01em; }
+.h2 { margin: 0; font-size: 18px; }
+
+.sectionTitleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sectionTitleLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 12px;
+  @include pill-frame($color-line-dark-14, $color-white);
+  color: #666;
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  &:hover {
+    color: $color-text;
+    border-color: $color-line-dark-28;
+  }
+}
+
+.lead { margin: 10px 0 0; color: #666; font-size: 13px; }
+.note { margin: 10px 0 0; color: #666; font-size: 13px; }
+.small { font-size: 12px; color: #666; }
+
+.btn {
+  display: inline-block;
+  padding: 11px 16px;
+  @include pill-frame($color-line-soft, $color-white, $radius-soft);
+  text-decoration: none;
+  font-size: 14px;
+
+  &.primary {
+    background: $color-text;
+    border-color: $color-text;
+    color: $color-white;
+  }
+
+  &.ghost {
+    background: transparent;
+  }
+}
+
+.grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 18px; }
+.grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+
+@media (max-width: 980px) {
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+  .noticePromoCard { grid-template-columns: 1fr; }
+  .entryCarouselStage {
+    grid-template-columns: 28px minmax(0, 1fr) 28px;
+    gap: 8px;
+  }
+  .entryCarouselArrow {
+    min-width: 28px;
+    min-height: 28px;
+  }
+  .entryCarouselArrow::before {
+    border-top-width: 5px;
+    border-bottom-width: 5px;
+  }
+  .entryCarouselArrow--prev::before {
+    border-right-width: 7px;
+  }
+  .entryCarouselArrow--next::before {
+    border-left-width: 7px;
+  }
+  .entryCarouselViewport {
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+  }
+  .entryCarouselTrack {
+    grid-auto-columns: minmax(240px, 78vw);
+    transition: none;
+  }
+  .entryCarouselCard {
+    scroll-snap-align: start;
+  }
+}
+
+.card {
+  @include surface-card();
+  display: grid;
+  gap: 12px;
+}
+
+.ph {
+  background: #e9e9e9;
+  border: 1px solid $color-line-soft;
+  border-radius: $radius-card;
+  position: relative;
+}
+
+.ph--hero { aspect-ratio: 21/9; border-radius: 0; }
+.ph--pageHero { min-height: 50vh; border-radius: 0; }
+.ph--map { aspect-ratio: 16/9; }
+
+.appMapImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+  border: 0;
+}
+
+.ph--thumb { aspect-ratio: 4/3; border-radius: 14px; }
+.ph--avatar { width: 72px; height: 72px; border-radius: $radius-pill; }
+.ph--pinThumb { width: 92px; height: 72px; border-radius: 12px; border: 1px solid $color-line-soft; background: #e9e9e9; }
+
+.ph--line {
+  height: 12px;
+  border-radius: $radius-pill;
+  background: #dcdcdc;
+}
+
+.w-30{width:30%} .w-40{width:40%} .w-50{width:50%} .w-60{width:60%}
+.w-70{width:70%} .w-80{width:80%} .w-90{width:90%}
+
+.pill {
+  display: inline-block;
+  padding: 6px 10px;
+  @include pill-frame($color-line-soft, $color-white);
+  font-size: 12px;
+  color: #666;
+}

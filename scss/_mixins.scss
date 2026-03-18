@@ -1,0 +1,29 @@
+@mixin pill-frame($border-color: $color-line-dark-12, $background: $color-white, $radius: $radius-pill) {
+  border: 1px solid $border-color;
+  border-radius: $radius;
+  background: $background;
+}
+
+@mixin surface-card($padding: 16px, $radius: $radius-card, $border-color: $color-line-soft) {
+  background: $color-white;
+  border: 1px solid $border-color;
+  border-radius: $radius;
+  padding: $padding;
+}
+
+@mixin form-field-surface($min-height: 44px, $padding: 12px 14px) {
+  width: 100%;
+  min-height: $min-height;
+  padding: $padding;
+  border: 1px solid $color-field-border;
+  border-radius: $radius-soft;
+  background: $color-white;
+  color: $color-text;
+  font: inherit;
+}
+
+@mixin focus-ring {
+  outline: none;
+  border-color: $color-focus-ring;
+  box-shadow: 0 0 0 3px $color-focus-shadow;
+}

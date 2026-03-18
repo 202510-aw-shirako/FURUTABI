@@ -1,0 +1,46 @@
+﻿/* css/style.css (generated equivalent of scss/style.scss) */
+$color-bg-page: #fafafa;
+$color-text: #222;
+$color-white: #fff;
+$color-line-soft: #e6e6e6;
+$color-line-dark-08: rgba(34,34,34,.08);
+$color-line-dark-10: rgba(34,34,34,.1);
+$color-line-dark-12: rgba(34,34,34,.12);
+$color-line-dark-14: rgba(34,34,34,.14);
+$color-line-dark-24: rgba(34,34,34,.24);
+$color-line-dark-28: rgba(34,34,34,.28);
+$color-brand: #4e473f;
+$color-ink-strong: #2f2a26;
+$color-ink-body: #312c27;
+$color-ink-soft: #5d554d;
+$color-ink-muted: #756b60;
+$color-ui-warm: #f5f1eb;
+$color-ui-warm-soft: #faf7f2;
+$color-ui-warm-strong: #f5f0e6;
+$color-ui-chip: #f2ede5;
+$radius-pill: 999px;
+$radius-card: 16px;
+$radius-panel: 18px;
+$radius-soft: 14px;
+$color-field-border: #d9d4cd;
+$color-focus-ring: #948271;
+$color-focus-shadow: rgba(148,130,113,.12);
+$shadow-float: 0 20px 36px rgba(34,34,34,.08);
+
+// Typography guide:
+// - display: 見せる側のページ。少しゆったり、大きめ
+// - utility: 実務側のページ。少し引き締めて読みやすく
+$font-display-title: clamp(30px, 4vw, 40px);
+$font-display-lead: 15px;
+$font-display-section: 20px;
+$font-display-body: 14px;
+$font-display-note: 13px;
+
+$font-utility-title: clamp(28px, 4vw, 40px);
+$font-utility-lead: 15px;
+$font-utility-section: 18px;
+$font-utility-body: 13px;
+$font-utility-label: 13px;
+$font-utility-note: 12px;
+$font-utility-micro: 11px;
+
