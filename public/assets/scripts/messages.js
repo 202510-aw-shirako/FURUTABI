@@ -1,4 +1,8 @@
 (function () {
+  // 目印:
+  // ここは「連絡一覧」と「チャット」のワイヤ用データ置き場です。
+  // Java 実装時は API / DB に置き換えても、thread 単位で件名や関連先を持つ考え方を保つと整理しやすそうです。
+
   var threads = [
     {
       thread_id: 'thread-bridge-1',
@@ -159,6 +163,9 @@
     var root = document.querySelector('[data-message-list-page]');
     if (!root) return;
 
+    // おすすめ:
+    // 一覧では「誰と」「何の件で」「今どの状態か」が先に見えると、雑談チャット化しにくくなります。
+
     var state = {
       filter: 'all',
       query: ''
@@ -223,6 +230,10 @@
   function initChatPage() {
     var root = document.querySelector('[data-chat-page]');
     if (!root) return;
+
+    // いざない:
+    // チャットは thread_id で提案 / 申請 / 相談にひもづくイメージです。
+    // 本実装でも、上部に件名・相手・状態を固定しておくと安心感を保ちやすそうです。
 
     var threadId = getQueryParam('thread') || 'thread-bridge-1';
     var thread = threads.find(function (item) { return item.thread_id === threadId; }) || threads[0];

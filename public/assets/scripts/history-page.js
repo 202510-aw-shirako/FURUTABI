@@ -1,4 +1,8 @@
 (function () {
+  // 目印:
+  // 関わりの履歴は、設定一覧ではなく「あとから関わりを見返す」ためのページです。
+  // そのため、時系列・コメント・反応を分けて、見返しやすさを優先しています。
+
   var interactions = window.FURUTABI_INTERACTIONS;
   var footprints = window.FURUTABI_FOOTPRINTS;
 
@@ -7,6 +11,8 @@
   }
 
   function resolveTarget(type, id) {
+    // おすすめ:
+    // 履歴では必要最小限の要約だけ持ち、詳しい本文は元ページに戻って読む設計にしています。
     var stories;
     var mapRecords;
     if (type === 'story_post' && footprints) {
@@ -72,6 +78,8 @@
   }
 
   function initTabs() {
+    // いざない:
+    // タブは増やしすぎない方が、履歴ページが設定画面っぽくなりすぎずに済みます。
     var tabs = Array.prototype.slice.call(document.querySelectorAll('[data-history-tab]'));
     var panels = Array.prototype.slice.call(document.querySelectorAll('[data-history-panel]'));
     tabs.forEach(function (button) {

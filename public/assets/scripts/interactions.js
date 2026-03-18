@@ -1,4 +1,8 @@
 (function () {
+  // 目印:
+  // コメントと反応は、わたしの地図 / ごひいきさんの足あと の共通機能として寄せています。
+  // target_type と target_id を軸にしておくと、Java 実装時も拡張しやすそうです。
+
   var STORAGE_KEY = 'furutabi_interactions_state';
   var MAP_RECORDS_KEY = 'furutabi_map_records_state';
   var memoryState = null;
@@ -66,6 +70,8 @@
   }
 
   function getMapRecords() {
+    // いざない:
+    // 履歴ページから元の記録へ戻りやすくするため、地図記録もここで参照できるようにしています。
     if (!memoryMapRecords) {
       memoryMapRecords = readStorage(MAP_RECORDS_KEY, []);
     }
@@ -169,6 +175,9 @@
   }
 
   function getCommentHistory(resolveTarget) {
+    // おすすめ:
+    // ここは「自分が残した関わり」を見返すための履歴です。
+    // モデレーション用途とは分けておくと、責務が混ざりにくくなります。
     var state = getState();
     var results = [];
 
@@ -219,6 +228,9 @@
   }
 
   window.FURUTABI_INTERACTIONS = {
+    // 目印:
+    // ここに出している関数が、各画面から使う最小インターフェースのイメージです。
+    // 保存先が変わっても、この入口を保つと差し替えやすそうです。
     getComments: getComments,
     addComment: addComment,
     removeComment: removeComment,

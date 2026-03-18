@@ -1,4 +1,8 @@
 (function () {
+  // 目印:
+  // 通知は「起きたことに気づく場」のイメージです。
+  // 詳しい調整は連絡 / 提案詳細 / 記事ページに渡し、ここでは要約に留めています。
+
   function getItems() {
     if (!window.FURUTABI_SHARED_UI || !window.FURUTABI_SHARED_UI.notificationItems) {
       return [];
@@ -38,6 +42,10 @@
   function init() {
     var root = document.querySelector('[data-notification-page]');
     if (!root) return;
+
+    // おすすめ:
+    // フィルターは一覧を軽くするためのもの。
+    // Java 実装時はサーバー側絞り込みでもフロント側絞り込みでも、同じ見え方を保ちやすい構造です。
 
     var state = {
       items: getItems(),
