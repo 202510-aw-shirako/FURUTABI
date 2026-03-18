@@ -470,6 +470,27 @@
           return myMapPinsData.find(function (pin) { return pin.id === id; }) || null;
         }
 
+        function discardDraftPin(id) {
+          var targetId = id || myMapSelectedId;
+          var draftPin = getMyMapPin(targetId);
+
+          if (!draftPin || draftPin.registered) {
+            return;
+          }
+
+          myMapPinsData = myMapPinsData.filter(function (pin) {
+            return pin.id !== targetId;
+          });
+
+          if (myMapSelectedId === targetId) {
+            myMapSelectedId = null;
+          }
+          if (myMapEditingId === targetId) {
+            myMapEditingId = null;
+          }
+          renderMyMapPins();
+        }
+
         function closeMyMapMenu() {
           if (myMapMenu) {
             myMapMenu.hidden = true;
@@ -479,6 +500,8 @@
               myMapMenuSummary.hidden = true;
             }
           }
+
+          discardDraftPin();
         }
 
         function renderMyMapRecordList() {
@@ -628,6 +651,14 @@
           if (myMapEdit) myMapEdit.hidden = !editVisible;
           if (myMapDelete) myMapDelete.hidden = !editVisible;
           if (myMapMenuSummary) myMapMenuSummary.hidden = !editVisible;
+          if (!editVisible) {
+            if (myMapMenuTitle) myMapMenuTitle.textContent = '記録のタイトル';
+            if (myMapMenuVisibility) {
+              myMapMenuVisibility.textContent = '本人のみ';
+              myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--private';
+            }
+            if (myMapMenuDate) myMapMenuDate.textContent = '';
+          }
           if (editVisible) {
             visibility = getVisibilityMeta(pin.visibility);
             if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
@@ -656,9 +687,16 @@
           setSelectedVisibility(pin.visibility || myMapDefaultVisibility);
         }
 
-        function closeMyMapSheet() {
+        function closeMyMapSheet(shouldDiscardDraft) {
+          var draftId = myMapEditingId;
+
           if (myMapSheetWrap) {
             myMapSheetWrap.hidden = true;
+          }
+          myMapEditingId = null;
+
+          if (shouldDiscardDraft) {
+            discardDraftPin(draftId);
           }
         }
 
@@ -732,6 +770,8 @@
             var y;
             var pin;
 
+            event.stopPropagation();
+
             if (event.target !== myMapStage && !event.target.classList.contains('topMapCanvasImage') && event.target !== myMapPinsLayer) {
               return;
             }
@@ -765,8 +805,8 @@
 
             myMapPinsData.push(pin);
             myMapSelectedId = pin.id;
-            persistMyMapPins();
             renderMyMapPins();
+            openMyMapMenu(pin);
           });
         }
 
@@ -803,21 +843,37 @@
             pin.recordedAt = pin.recordedAt || getTodayDateString();
             pin.season = getSeasonFromDateString(pin.recordedAt);
             persistMyMapPins();
-            closeMyMapSheet();
+            closeMyMapSheet(false);
             renderMyMapPins();
-            openMyMapMenu(pin);
+            closeMyMapMenu();
           });
         }
 
         if (myMapDraft) {
           myMapDraft.addEventListener('click', function () {
-            closeMyMapSheet();
+            var pin = getMyMapPin(myMapEditingId);
+            if (pin) {
+              pin.title = myMapTitleInput ? myMapTitleInput.value : '';
+              pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
+              pin.body = myMapBodyInput ? myMapBodyInput.value : '';
+              pin.visibility = getSelectedVisibility();
+              pin.visibilityUpdatedAt = getTodayDateString();
+              pin.recordedAt = pin.recordedAt || getTodayDateString();
+              pin.season = getSeasonFromDateString(pin.recordedAt);
+              pin.registered = true;
+              persistMyMapPins();
+              closeMyMapSheet(false);
+              renderMyMapPins();
+              closeMyMapMenu();
+              return;
+            }
+            closeMyMapSheet(true);
           });
         }
 
         if (myMapClose) {
           myMapClose.addEventListener('click', function () {
-            closeMyMapSheet();
+            closeMyMapSheet(true);
           });
         }
 
@@ -880,7 +936,13 @@
             return;
           }
 
-          if (myMapMenu && !myMapMenu.hidden && !myMapMenu.contains(event.target) && !event.target.closest('[data-my-map-pin-id]')) {
+          if (
+            myMapMenu &&
+            !myMapMenu.hidden &&
+            !myMapMenu.contains(event.target) &&
+            !(myMapSheetWrap && myMapSheetWrap.contains(event.target)) &&
+            !event.target.closest('[data-my-map-pin-id]')
+          ) {
             closeMyMapMenu();
           }
         });
