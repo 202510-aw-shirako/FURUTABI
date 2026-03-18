@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    root: info
+    com.furutabi: info
+
+app:
+  file-storage:
+    base-dir: ${FILE_STORAGE_BASE_DIR}
+  sms:
+    enabled: ${SMS_ENABLED:false}
+  identity-verification:
+    enabled: ${IDENTITY_VERIFICATION_ENABLED:false}
