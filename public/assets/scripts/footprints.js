@@ -14,6 +14,8 @@
       summary: '大きく説明するのではなく、時間の混ざり方が伝わるような足あとです。',
       recordedAt: '2026-03-12',
       season: 'spring',
+      year: '2026',
+      category: 'food',
       body: [
         '境内のベンチに座っていると、時々サーっと風が渡ってきます。',
         '木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。',
@@ -27,6 +29,8 @@
       summary: '声をかけるだけでなく、そこで流れている時間ごと受け取る足あとです。',
       recordedAt: '2026-07-12',
       season: 'summer',
+      year: '2026',
+      category: 'experience',
       body: [
         '通りの角にある小さな店先で、季節の話を少しだけ聞かせてもらいました。',
         '何かを買うことよりも、まずその場にある空気を受け取ることが大事なのだと感じました。店の人の言葉は短かったけれど、暮らしに根ざした重みがありました。',
@@ -40,6 +44,8 @@
       summary: '場所だけでなく、そこに流れる関係や気配を持ち帰る足あとです。',
       recordedAt: '2026-11-12',
       season: 'autumn',
+      year: '2026',
+      category: 'people',
       body: [
         '朝の入口を歩いていると、急いでいない人たちのやりとりが自然に目に入ってきました。',
         '誰かが何かをしてあげているというより、その場で当たり前に支え合っている感じがありました。旅先として見るより先に、生活の輪郭を受け取った気がしました。',
@@ -47,6 +53,52 @@
       ]
     }
   };
+
+  function getSeasonLabel(value) {
+    if (value === 'spring') return '春';
+    if (value === 'summer') return '夏';
+    if (value === 'autumn') return '秋';
+    if (value === 'winter') return '冬';
+    return '季節をまたぐ';
+  }
+
+  function getCategoryLabel(value) {
+    if (value === 'food') return '食';
+    if (value === 'scenery') return '景色';
+    if (value === 'event') return '行事';
+    if (value === 'people') return '人との関わり';
+    return '体験';
+  }
+
+  function getFacetText(story) {
+    var parts = [];
+
+    if (!story) {
+      return '';
+    }
+
+    if (story.year) {
+      parts.push(story.year + '年');
+    }
+    if (story.season) {
+      parts.push(getSeasonLabel(story.season));
+    }
+    if (story.category) {
+      parts.push(getCategoryLabel(story.category));
+    }
+
+    return parts.join(' / ');
+  }
+
+  function buildFilterOptions(storyData, extractor, formatter) {
+    return Object.keys(storyData).map(function (id) {
+      return extractor(storyData[id]);
+    }).filter(function (value, index, array) {
+      return value && array.indexOf(value) === index;
+    }).sort().map(function (value) {
+      return '<option value="' + value + '">' + formatter(value) + '</option>';
+    }).join('');
+  }
 
   function withBasePath(basePath) {
     // 画面ごとに public / app で相対パスが違うため、リンクだけここで吸収する。
@@ -60,6 +112,8 @@
         summary: story.summary,
         recordedAt: story.recordedAt,
         season: story.season,
+        year: story.year,
+        category: story.category,
         body: story.body.slice(),
         link: (basePath || '') + 'story.html?story=' + story.id,
         aria: defaultLabel + ' ' + story.id
@@ -80,6 +134,7 @@
     var commentWrap;
     var labelNode;
     var linkNode;
+    var metaNode;
 
     if (!card || !story) {
       return;
@@ -100,6 +155,16 @@
     }
     if (card.querySelector('[data-top-map-title]')) {
       card.querySelector('[data-top-map-title]').textContent = story.title;
+    }
+    metaNode = card.querySelector('[data-top-map-meta]');
+    if (!metaNode && card.querySelector('[data-top-map-comment]')) {
+      metaNode = document.createElement('p');
+      metaNode.className = 'topMapMetaLine';
+      metaNode.setAttribute('data-top-map-meta', '');
+      card.querySelector('[data-top-map-comment]').insertBefore(metaNode, card.querySelector('[data-top-map-comment-body]'));
+    }
+    if (metaNode) {
+      metaNode.textContent = getFacetText(story);
     }
     linkNode = card.querySelector('[data-top-map-link]') || card.querySelector('[data-top-map-link-anchor]');
     if (linkNode) {
@@ -148,9 +213,112 @@
     var panStartX = 0;
     var panStartY = 0;
     var pointerId = null;
+    var filterWrap;
+    var filterYear;
+    var filterSeason;
+    var filterCategory;
+    var filterNote;
 
     if (!root || !card || !storyData) {
       return null;
+    }
+
+    filterWrap = root.parentNode ? root.parentNode.querySelector('[data-top-map-filters]') : null;
+    if (!filterWrap) {
+      filterWrap = document.createElement('div');
+      filterWrap.className = 'topMapFilters';
+      filterWrap.setAttribute('data-top-map-filters', '');
+      filterWrap.innerHTML =
+        '<label class="topMapFilterField"><span>年</span><select data-top-map-filter-year><option value="">すべて</option>' +
+        buildFilterOptions(storyData, function (story) { return story.year || ''; }, function (value) { return value + '年'; }) +
+        '</select></label>' +
+        '<label class="topMapFilterField"><span>季節</span><select data-top-map-filter-season><option value="">すべて</option><option value="spring">春</option><option value="summer">夏</option><option value="autumn">秋</option><option value="winter">冬</option></select></label>' +
+        '<label class="topMapFilterField"><span>記録タイプ</span><select data-top-map-filter-category><option value="">すべて</option>' +
+        buildFilterOptions(storyData, function (story) { return story.category || ''; }, getCategoryLabel) +
+        '</select></label>';
+      root.parentNode.insertBefore(filterWrap, root);
+    }
+
+    filterWrap.innerHTML =
+      '<label class="topMapFilterField"><span>\u5e74</span><select data-top-map-filter-year><option value="">\u3059\u3079\u3066</option>' +
+      buildFilterOptions(storyData, function (story) { return story.year || ''; }, function (value) { return value + '\u5e74'; }) +
+      '</select></label>' +
+      '<label class="topMapFilterField"><span>\u5b63\u7bc0</span><select data-top-map-filter-season><option value="">\u3059\u3079\u3066</option><option value="spring">\u6625</option><option value="summer">\u590f</option><option value="autumn">\u79cb</option><option value="winter">\u51ac</option></select></label>' +
+      '<label class="topMapFilterField"><span>\u8a18\u9332\u30bf\u30a4\u30d7</span><select data-top-map-filter-category><option value="">\u3059\u3079\u3066</option>' +
+      buildFilterOptions(storyData, function (story) { return story.category || ''; }, getCategoryLabel) +
+      '</select></label>';
+
+    filterYear = filterWrap.querySelector('[data-top-map-filter-year]');
+    filterSeason = filterWrap.querySelector('[data-top-map-filter-season]');
+    filterCategory = filterWrap.querySelector('[data-top-map-filter-category]');
+    filterNote = root.parentNode.querySelector('[data-top-map-filter-note]');
+    if (!filterNote) {
+      filterNote = document.createElement('p');
+      filterNote.className = 'topMapFilterNote';
+      filterNote.setAttribute('data-top-map-filter-note', '');
+      filterNote.hidden = true;
+      root.parentNode.insertBefore(filterNote, root);
+    }
+
+    function getFilteredStories() {
+      var year = filterYear ? filterYear.value : '';
+      var season = filterSeason ? filterSeason.value : '';
+      var category = filterCategory ? filterCategory.value : '';
+
+      return Object.keys(storyData).map(function (id) {
+        return storyData[id];
+      }).filter(function (story) {
+        if (year && String(story.year || '') !== year) {
+          return false;
+        }
+        if (season && String(story.season || '') !== season) {
+          return false;
+        }
+        if (category && String(story.category || '') !== category) {
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function syncFilteredPins(visibleStories) {
+      pins.forEach(function (pin) {
+        var id = pin.dataset ? pin.dataset.topMapPin : pin.getAttribute('data-top-map-pin');
+        var isMatched = visibleStories.some(function (item) { return item.id === id; });
+        pin.hidden = !isMatched;
+        pin.style.display = isMatched ? '' : 'none';
+        if (!isMatched) {
+          pin.classList.remove('is-active');
+        }
+      });
+    }
+
+    function renderEmptyCard() {
+      var titleNode = card.querySelector('[data-top-map-title]');
+      var bodyNode = card.querySelector('[data-top-map-comment-body]');
+      var markerNode = card.querySelector('[data-top-map-marker]');
+      var metaNode = card.querySelector('[data-top-map-meta]');
+      var linkNode = card.querySelector('[data-top-map-link]') || card.querySelector('[data-top-map-link-anchor]');
+
+      if (titleNode) {
+        titleNode.textContent = '条件に合う足あとはまだありません';
+      }
+      if (bodyNode) {
+        bodyNode.innerHTML = '<p class="topMapCommentText">選択した条件に合う足あとがあると、ここに表示されます。</p>';
+      }
+      if (markerNode) {
+        markerNode.textContent = '—';
+      }
+      if (metaNode) {
+        metaNode.textContent = '';
+      }
+      if (linkNode) {
+        linkNode.setAttribute('href', '#');
+      }
+      pins.forEach(function (pin) {
+        pin.hidden = true;
+        pin.classList.remove('is-active');
+      });
     }
 
     function syncCard() {
@@ -166,6 +334,81 @@
       if (options && typeof options.onSync === 'function') {
         options.onSync(story, card, pins);
       }
+    }
+
+    function syncFilteredCard() {
+      var visibleStories = getFilteredStories();
+
+      if (!visibleStories.length) {
+        syncFilteredPins([]);
+        if (filterNote) {
+          filterNote.hidden = false;
+          filterNote.textContent = '条件に合うピンはまだありません。';
+        }
+        return;
+      }
+
+      if (filterNote) {
+        filterNote.hidden = true;
+        filterNote.textContent = '';
+      }
+
+      syncFilteredPins(visibleStories);
+
+      if (visibleStories.some(function (item) { return item.id === selectedId; })) {
+        syncCard();
+      }
+    }
+
+    function getLatestVisibleStory(visibleStories) {
+      return visibleStories.slice().sort(function (left, right) {
+        var leftTime = new Date(left.recordedAt || '').getTime();
+        var rightTime = new Date(right.recordedAt || '').getTime();
+
+        if (Number.isNaN(leftTime) && Number.isNaN(rightTime)) {
+          return 0;
+        }
+        if (Number.isNaN(leftTime)) {
+          return 1;
+        }
+        if (Number.isNaN(rightTime)) {
+          return -1;
+        }
+        return rightTime - leftTime;
+      })[0] || null;
+    }
+
+    function syncFilteredCard(options) {
+      var visibleStories = getFilteredStories();
+      var shouldPreferLatest = !!(options && options.preferLatest);
+      var latestStory;
+
+      if (!visibleStories.length) {
+        syncFilteredPins([]);
+        if (filterNote) {
+          filterNote.hidden = false;
+          filterNote.textContent = '\u6761\u4ef6\u306b\u5408\u3046\u30d4\u30f3\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002';
+        }
+        return;
+      }
+
+      if (filterNote) {
+        filterNote.hidden = true;
+        filterNote.textContent = '';
+      }
+
+      if (
+        shouldPreferLatest ||
+        visibleStories.every(function (item) { return item.id !== selectedId; })
+      ) {
+        latestStory = getLatestVisibleStory(visibleStories);
+        if (latestStory) {
+          selectedId = latestStory.id;
+        }
+      }
+
+      syncFilteredPins(visibleStories);
+      syncCard();
     }
 
     function syncZoom() {
@@ -260,7 +503,7 @@
           return;
         }
         selectedId = id;
-        syncCard();
+        syncFilteredCard();
       });
     });
 
@@ -297,11 +540,20 @@
       });
     }
 
+    [filterYear, filterSeason, filterCategory].forEach(function (input) {
+      if (!input) {
+        return;
+      }
+      input.addEventListener('change', function () {
+        syncFilteredCard({ preferLatest: true });
+      });
+    });
+
     document.addEventListener('pointermove', moveDrag);
     document.addEventListener('pointerup', endDrag);
     document.addEventListener('pointercancel', endDrag);
 
-    syncCard();
+    syncFilteredCard();
     syncZoom();
 
     return {
@@ -312,6 +564,7 @@
 
   window.FURUTABI_FOOTPRINTS = {
     stories: stories,
+    getFacetText: getFacetText,
     withBasePath: withBasePath,
     renderPreviewBody: renderPreviewBody,
     renderPreviewCard: renderPreviewCard,

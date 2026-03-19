@@ -92,6 +92,37 @@
       <!-- 私の地図 -->
       <div id="sub-my" style="margin-top:16px;">
         <div class="topMapLayout appTopMapLayout" data-my-map>
+          <div class="topMapFilters" data-my-map-filters>
+            <label class="topMapFilterField">
+              <span>年</span>
+              <select data-my-map-filter-year>
+                <option value="">すべて</option>
+              </select>
+            </label>
+            <label class="topMapFilterField">
+              <span>季節</span>
+              <select data-my-map-filter-season>
+                <option value="">すべて</option>
+                <option value="spring">春</option>
+                <option value="summer">夏</option>
+                <option value="autumn">秋</option>
+                <option value="winter">冬</option>
+                <option value="all">季節をまたぐ</option>
+              </select>
+            </label>
+            <label class="topMapFilterField">
+              <span>記録タイプ</span>
+              <select data-my-map-filter-type>
+                <option value="">すべて</option>
+                <option value="stop">立ち寄り</option>
+                <option value="meal">食事</option>
+                <option value="scenery">景色</option>
+                <option value="stay">宿泊</option>
+                <option value="experience">体験</option>
+                <option value="memo">メモ</option>
+              </select>
+            </label>
+          </div>
           <div class="myMapMain">
             <div class="myMapRegisterPrompt" hidden data-my-map-menu>
               <!-- わたしの地図の公開範囲は機能の中核 -->
@@ -105,6 +136,7 @@
                 <div class="myMapMenuTitle" data-my-map-menu-title>記録のタイトル</div>
                 <div class="myMapMenuMeta">
                   <span class="myMapVisibilityBadge" data-my-map-menu-visibility>本人のみ</span>
+                  <span class="myMapMenuFacet" data-my-map-menu-facets></span>
                   <span class="myMapMenuDate" data-my-map-menu-date></span>
                 </div>
               </div>
@@ -163,6 +195,30 @@
                 <label class="myMapField">
                   <span>記事</span>
                   <textarea rows="7" placeholder="ここに記事を書きます" data-my-map-body-input></textarea>
+                </label>
+                <div class="myMapField">
+                  <span>記録の分類</span>
+                  <label class="myMapField">
+                    <span>季節</span>
+                    <select data-my-map-season-input>
+                      <option value="spring">春</option>
+                      <option value="summer">夏</option>
+                      <option value="autumn">秋</option>
+                      <option value="winter">冬</option>
+                      <option value="all">季節をまたぐ</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="myMapField">
+                  <span>記録タイプ</span>
+                  <select data-my-map-type-input>
+                    <option value="stop">立ち寄り</option>
+                    <option value="meal">食事</option>
+                    <option value="scenery">景色</option>
+                    <option value="stay">宿泊</option>
+                    <option value="experience">体験</option>
+                    <option value="memo">メモ</option>
+                  </select>
                 </label>
                 <div class="myMapField">
                   <span>公開範囲</span>
@@ -398,6 +454,8 @@
         var myMapTitleInput = document.querySelector('[data-my-map-title-input]');
         var myMapPhotoInput = document.querySelector('[data-my-map-photo-input]');
         var myMapBodyInput = document.querySelector('[data-my-map-body-input]');
+        var myMapSeasonInput = document.querySelector('[data-my-map-season-input]');
+        var myMapTypeInput = document.querySelector('[data-my-map-type-input]');
         var myMapVisibilityInputs = Array.prototype.slice.call(document.querySelectorAll('[data-my-map-visibility-input]'));
         var myMapSheetTitle = document.querySelector('[data-my-map-sheet-title]');
         var myMapConfirmWrap = document.querySelector('[data-my-map-confirm-wrap]');
@@ -406,8 +464,12 @@
         var myMapMenuSummary = myMap.querySelector('[data-my-map-menu-summary]');
         var myMapMenuTitle = myMap.querySelector('[data-my-map-menu-title]');
         var myMapMenuVisibility = myMap.querySelector('[data-my-map-menu-visibility]');
+        var myMapMenuFacets = myMap.querySelector('[data-my-map-menu-facets]');
         var myMapMenuDate = myMap.querySelector('[data-my-map-menu-date]');
         var myMapRecordList = document.querySelector('[data-my-map-record-list]');
+        var myMapFilterYear = myMap.querySelector('[data-my-map-filter-year]');
+        var myMapFilterSeason = myMap.querySelector('[data-my-map-filter-season]');
+        var myMapFilterType = myMap.querySelector('[data-my-map-filter-type]');
         var myMapViewport = myMap.querySelector('[data-my-map-viewport]');
         var myMapImage = myMap.querySelector('[data-my-map-image]');
         var myMapZoomIn = myMap.querySelector('[data-my-map-zoom-in]');
@@ -429,6 +491,114 @@
         var myMapPanStartX = 0;
         var myMapPanStartY = 0;
         var myMapDefaultVisibility = 'private';
+        var myMapTypeLabels = {
+          stop: '立ち寄り',
+          meal: '食事',
+          scenery: '景色',
+          stay: '宿泊',
+          experience: '体験',
+          memo: 'メモ'
+        };
+        var myMapSeasonLabels = {
+          spring: '春',
+          summer: '夏',
+          autumn: '秋',
+          winter: '冬',
+          all: '季節をまたぐ'
+        };
+
+        function getRecordedYear(dateString) {
+          var date = new Date(dateString);
+
+          if (!dateString || Number.isNaN(date.getTime())) {
+            return String(new Date().getFullYear());
+          }
+
+          return String(date.getFullYear());
+        }
+
+        function getMyMapTypeLabel(value) {
+          return myMapTypeLabels[value] || myMapTypeLabels.stop;
+        }
+
+        function getMyMapSeasonLabel(value) {
+          return myMapSeasonLabels[value] || myMapSeasonLabels.all;
+        }
+
+        function getMyMapFacetText(pin) {
+          var parts = [];
+
+          if (pin.recordedYear) {
+            parts.push(pin.recordedYear === 'earlier' ? 'それ以前' : pin.recordedYear + '年');
+          }
+          parts.push(getMyMapSeasonLabel(pin.season));
+          parts.push(getMyMapTypeLabel(pin.recordType));
+
+          return parts.join(' / ');
+        }
+
+        function normalizeMyMapPin(pin) {
+          pin.recordedAt = pin.recordedAt || getTodayDateString();
+          pin.recordedYear = pin.recordedYear || getRecordedYear(pin.recordedAt);
+          pin.season = pin.season || getSeasonFromDateString(pin.recordedAt);
+          pin.recordType = pin.recordType || 'stop';
+          return pin;
+        }
+
+        function getMyMapFilters() {
+          return {
+            year: myMapFilterYear ? myMapFilterYear.value : '',
+            season: myMapFilterSeason ? myMapFilterSeason.value : '',
+            recordType: myMapFilterType ? myMapFilterType.value : ''
+          };
+        }
+
+        function matchesMyMapFilters(pin) {
+          var filters = getMyMapFilters();
+
+          if (!pin) {
+            return false;
+          }
+          if (filters.year && String(pin.recordedYear || getRecordedYear(pin.recordedAt)) !== filters.year) {
+            return false;
+          }
+          if (filters.season && (pin.season || getSeasonFromDateString(pin.recordedAt)) !== filters.season) {
+            return false;
+          }
+          if (filters.recordType && (pin.recordType || 'stop') !== filters.recordType) {
+            return false;
+          }
+          return true;
+        }
+
+        function populateMyMapFilterYears() {
+          var currentValue;
+          var years;
+
+          if (!myMapFilterYear) {
+            return;
+          }
+
+          currentValue = myMapFilterYear.value;
+
+          years = myMapPinsData
+            .map(function (pin) { return String(pin.recordedYear || getRecordedYear(pin.recordedAt)); })
+            .filter(function (value, index, array) { return array.indexOf(value) === index; })
+            .sort()
+            .reverse();
+
+          if (years.indexOf(String(new Date().getFullYear())) === -1) {
+            years.unshift(String(new Date().getFullYear()));
+          }
+
+          myMapFilterYear.innerHTML = '<option value=\"\">すべて</option>' + years.map(function (year) {
+            return '<option value=\"' + year + '\">' + year + '年</option>';
+          }).join('');
+          myMapFilterYear.value = years.indexOf(currentValue) !== -1 ? currentValue : '';
+        }
+
+        myMapPinsData = myMapPinsData.map(normalizeMyMapPin);
+        populateMyMapFilterYears();
 
         function getVisibilityMeta(value) {
           if (value === 'limited') {
@@ -511,16 +681,19 @@
             return;
           }
 
-          registeredPins = myMapPinsData.filter(function (pin) { return pin.registered; });
+          registeredPins = myMapPinsData.filter(function (pin) {
+            return pin.registered && matchesMyMapFilters(pin);
+          });
 
           if (!registeredPins.length) {
-            myMapRecordList.innerHTML = '<p class="note">まだ記録はありません。地図上を押して新しい記録を残せます。</p>';
+            myMapRecordList.innerHTML = '<p class="note">条件に合う記録はまだありません。地図上を押して新しい記録を残せます。</p>';
             return;
           }
 
           myMapRecordList.innerHTML = registeredPins.map(function (pin, index) {
             var visibility = getVisibilityMeta(pin.visibility);
             var dateText = pin.visibilityUpdatedAt ? '更新: ' + pin.visibilityUpdatedAt : '';
+            var facets = getMyMapFacetText(pin);
             var reactions = interactions ? interactions.getReactionSummary('map_record', pin.id) : {
               like: { count: 0, isActive: false },
               thank_you: { count: 0, isActive: false }
@@ -534,6 +707,7 @@
                     '<span class="myMapVisibilityBadge myMapVisibilityBadge--' + pin.visibility + '">' + visibility.label + '</span>' +
                   '</div>' +
                   '<div class="myMapRecordTitle">' + escapeMyMapText(pin.title || 'タイトル未設定') + '</div>' +
+                  '<div class="myMapRecordFacets"><span class="myMapFacetBadge">' + escapeMyMapText(facets) + '</span></div>' +
                   '<p class="myMapRecordBody">' + escapeMyMapText(pin.body || 'まだ本文は入っていません。') + '</p>' +
                   '<p class="myMapRecordHelp">' + visibility.hint + ' 迷う内容は、まずは本人のみで残せます。' + (dateText ? ' ' + dateText : '') + '</p>' +
                   '<div class="interactionBar interactionBar--compact">' +
@@ -606,15 +780,19 @@
           }
 
           myMapPinsLayer.innerHTML = '';
-          myMapPinsData.forEach(function (pin, index) {
+          myMapPinsData.filter(function (pin) {
+            return matchesMyMapFilters(pin);
+          }).forEach(function (pin, index) {
             var button = document.createElement('button');
             var inner = document.createElement('span');
 
             button.type = 'button';
             button.className = 'topMapPin myMapPin' + (myMapSelectedId === pin.id ? ' is-active' : '');
+            button.className += ' myMapPin--' + (pin.recordType || 'stop');
             button.setAttribute('data-my-map-pin-id', pin.id);
             button.dataset.recordedAt = pin.recordedAt || '';
             button.dataset.season = pin.season || getSeasonFromDateString(pin.recordedAt);
+            button.dataset.recordType = pin.recordType || 'stop';
             button.setAttribute('aria-label', 'わたしの地図のピン ' + (index + 1));
             button.style.left = pin.x + '%';
             button.style.top = pin.y + '%';
@@ -657,6 +835,7 @@
               myMapMenuVisibility.textContent = '本人のみ';
               myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--private';
             }
+            if (myMapMenuFacets) myMapMenuFacets.textContent = '今年 / 春 / 立ち寄り';
             if (myMapMenuDate) myMapMenuDate.textContent = '';
           }
           if (editVisible) {
@@ -666,6 +845,7 @@
               myMapMenuVisibility.textContent = visibility.label;
               myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--' + pin.visibility;
             }
+            if (myMapMenuFacets) myMapMenuFacets.textContent = getMyMapFacetText(pin);
             if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
           }
         }
@@ -684,6 +864,8 @@
           if (myMapTitleInput) myMapTitleInput.value = pin.title || '';
           if (myMapPhotoInput) myMapPhotoInput.value = pin.photoNote || '';
           if (myMapBodyInput) myMapBodyInput.value = pin.body || '';
+          if (myMapSeasonInput) myMapSeasonInput.value = pin.season || getSeasonFromDateString(pin.recordedAt);
+          if (myMapTypeInput) myMapTypeInput.value = pin.recordType || 'stop';
           setSelectedVisibility(pin.visibility || myMapDefaultVisibility);
         }
 
@@ -801,7 +983,9 @@
             };
 
             pin.recordedAt = getTodayDateString();
+            pin.recordedYear = getRecordedYear(pin.recordedAt);
             pin.season = getSeasonFromDateString(pin.recordedAt);
+            pin.recordType = 'stop';
 
             myMapPinsData.push(pin);
             myMapSelectedId = pin.id;
@@ -841,8 +1025,11 @@
             pin.visibility = getSelectedVisibility();
             pin.visibilityUpdatedAt = getTodayDateString();
             pin.recordedAt = pin.recordedAt || getTodayDateString();
-            pin.season = getSeasonFromDateString(pin.recordedAt);
+            pin.recordedYear = getRecordedYear(pin.recordedAt);
+            pin.season = myMapSeasonInput ? myMapSeasonInput.value : getSeasonFromDateString(pin.recordedAt);
+            pin.recordType = myMapTypeInput ? myMapTypeInput.value : 'stop';
             persistMyMapPins();
+            populateMyMapFilterYears();
             closeMyMapSheet(false);
             renderMyMapPins();
             closeMyMapMenu();
@@ -859,9 +1046,12 @@
               pin.visibility = getSelectedVisibility();
               pin.visibilityUpdatedAt = getTodayDateString();
               pin.recordedAt = pin.recordedAt || getTodayDateString();
-              pin.season = getSeasonFromDateString(pin.recordedAt);
+              pin.recordedYear = getRecordedYear(pin.recordedAt);
+              pin.season = myMapSeasonInput ? myMapSeasonInput.value : getSeasonFromDateString(pin.recordedAt);
+              pin.recordType = myMapTypeInput ? myMapTypeInput.value : 'stop';
               pin.registered = true;
               persistMyMapPins();
+              populateMyMapFilterYears();
               closeMyMapSheet(false);
               renderMyMapPins();
               closeMyMapMenu();
@@ -890,6 +1080,7 @@
             });
             myMapSelectedId = null;
             persistMyMapPins();
+            populateMyMapFilterYears();
             closeMyMapConfirm();
             closeMyMapMenu();
             renderMyMapPins();
@@ -913,6 +1104,20 @@
             syncMyMapZoom();
           });
         }
+
+        [myMapFilterYear, myMapFilterSeason, myMapFilterType].forEach(function (input) {
+          if (!input) {
+            return;
+          }
+          input.addEventListener('change', function () {
+            var selectedPin = getMyMapPin(myMapSelectedId);
+            if (selectedPin && selectedPin.registered && !matchesMyMapFilters(selectedPin)) {
+              closeMyMapMenu();
+              myMapSelectedId = null;
+            }
+            renderMyMapPins();
+          });
+        });
 
         if (myMapStage) {
           myMapStage.addEventListener('mousedown', function (event) {
@@ -955,33 +1160,39 @@
         return;
       }
 
-      mapTabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-          var targetId = tab.getAttribute('data-map-tab');
+      function activateMapTab(targetId) {
+        mapTabs.forEach(function (otherTab) {
+          var panelId = otherTab.getAttribute('data-map-tab');
+          var panel = document.getElementById(panelId);
+          var isActive = panelId === targetId;
 
-          mapTabs.forEach(function (otherTab) {
-            var panelId = otherTab.getAttribute('data-map-tab');
-            var panel = document.getElementById(panelId);
-            var isActive = otherTab === tab;
+          otherTab.classList.toggle('is-on', isActive);
+          otherTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
 
-            otherTab.classList.toggle('is-on', isActive);
-            otherTab.setAttribute('aria-selected', isActive ? 'true' : 'false');
-
-            if (panel) {
-              panel.hidden = !isActive;
-            }
-          });
-
-          if (mapDetailLink) {
-            mapDetailLink.setAttribute(
-              'href',
-              targetId === 'sub-footprints'
-                ? '../public/about.html#feature-footprints'
-                : '../public/about.html#feature-map'
-            );
+          if (panel) {
+            panel.hidden = !isActive;
           }
         });
+
+        if (mapDetailLink) {
+          mapDetailLink.setAttribute(
+            'href',
+            targetId === 'sub-footprints'
+              ? '../public/about.html#feature-footprints'
+              : '../public/about.html#feature-map'
+          );
+        }
+      }
+
+      mapTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          activateMapTab(tab.getAttribute('data-map-tab'));
+        });
       });
+
+      if (window.location.hash === '#sub-footprints') {
+        activateMapTab('sub-footprints');
+      }
     }());
   </script>
 </body>

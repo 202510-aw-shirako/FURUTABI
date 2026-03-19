@@ -207,12 +207,12 @@
       variant: 'public',
       brandHref: '../public/index.html',
       mainLinks: [
-        { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../app/home.html#sub-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
         { href: '../public/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
         { href: '../public/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
-        { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '../public/safety.html?context=app', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
       ],
       utilityLinks: [
         { href: '../public/bridge.html', label: 'ブリッジ' },
@@ -227,12 +227,12 @@
       variant: 'app',
       brandHref: '../app/home.html',
       mainLinks: [
-        { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../app/home.html#sub-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
         { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
         { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
-        { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '../public/safety.html?context=app', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
       ],
       utilityLinks: [
         { href: '../public/bridge.html', label: 'ブリッジ' }
@@ -484,7 +484,14 @@
 
     // ワイヤでは公開側の詳細ページをログイン後からも共用しているため、
     // context=app のときだけログイン後ナビに読み替える。
-    if ((pathname === 'okatte-entry.html' || pathname === 'gate-entry.html') && context === 'app') {
+    if ((pathname === 'okatte-entry.html'
+      || pathname === 'gate-entry.html'
+      || pathname === 'gate.html'
+      || pathname === 'index.html'
+      || pathname === 'story.html'
+      || pathname === 'faq.html'
+      || pathname === 'safety.html'
+      || pathname === 'safety-complete.html') && context === 'app') {
       key = 'app_home';
     }
     var config = navConfigs[key];

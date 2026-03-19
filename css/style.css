@@ -2648,8 +2648,8 @@ body.hasProposalModal {
 
 .topMapCards {
   position: absolute;
-  top: 20px;
-  left: 0;
+  top: -10px;
+  left: -20px;
   width: min(396px, 100% - 40px);
   z-index: 4;
 }
@@ -2660,6 +2660,42 @@ body.hasProposalModal {
   color: inherit;
   display: grid;
   gap: 11px;
+}
+
+.topMapFilters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 180px));
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.appTopMapLayout[data-my-map] .topMapFilters {
+  grid-column: 1/-1;
+}
+
+.topMapFilterField {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b6258;
+}
+
+.topMapFilterField select {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid rgba(34, 34, 34, 0.08);
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+  color: #2f2a26;
+}
+
+.topMapFilterNote {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #766c61;
 }
 
 .topMapCardBody {
@@ -2730,6 +2766,14 @@ body.hasProposalModal {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+}
+
+.topMapMetaLine,
+.storyFacetLine {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #766c61;
 }
 
 .topMapActions {
@@ -2831,6 +2875,10 @@ body.hasProposalModal {
   transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
+.topMapPin[hidden] {
+  display: none !important;
+}
+
 .myMapPinsLayer .topMapPin {
   pointer-events: auto;
 }
@@ -2875,6 +2923,30 @@ body.hasProposalModal {
   pointer-events: auto;
 }
 
+.myMapPin--stop {
+  background: #222;
+}
+
+.myMapPin--meal {
+  background: #855b34;
+}
+
+.myMapPin--scenery {
+  background: #466b87;
+}
+
+.myMapPin--stay {
+  background: #6e5b85;
+}
+
+.myMapPin--experience {
+  background: #4f7a5e;
+}
+
+.myMapPin--memo {
+  background: #6c675f;
+}
+
 .myMapRegisterPrompt {
   position: absolute;
   top: 0;
@@ -2913,6 +2985,11 @@ body.hasProposalModal {
 }
 
 .myMapMenuDate {
+  font-size: 11px;
+  color: #7b7064;
+}
+
+.myMapMenuFacet {
   font-size: 11px;
   color: #7b7064;
 }
@@ -3041,7 +3118,8 @@ body.hasProposalModal {
 }
 
 .myMapField input,
-.myMapField textarea {
+.myMapField textarea,
+.myMapField select {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #ddd;
@@ -3049,6 +3127,12 @@ body.hasProposalModal {
   background: #fff;
   font: inherit;
   color: #222;
+}
+
+.myMapFieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .myMapVisibilityChoice {
@@ -3162,6 +3246,24 @@ body.hasProposalModal {
   font-size: 14px;
   font-weight: 600;
   color: #2f2a26;
+}
+
+.myMapRecordFacets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.myMapFacetBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #f6f2eb;
+  color: #6d6256;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .myMapRecordBody {
@@ -3434,6 +3536,9 @@ body.hasProposalModal {
     width: 100%;
     margin-bottom: 18px;
   }
+  .topMapFilters {
+    grid-template-columns: 1fr;
+  }
   .topMapCard {
     min-height: 0;
   }
@@ -3474,6 +3579,9 @@ body.hasProposalModal {
     flex-direction: row;
   }
   .myMapSheetBody {
+    grid-template-columns: 1fr;
+  }
+  .myMapFieldGrid {
     grid-template-columns: 1fr;
   }
   .myMapRecordRow {

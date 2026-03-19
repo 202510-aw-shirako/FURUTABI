@@ -162,6 +162,7 @@
       var title = document.querySelector('[data-story-title]');
       var summary = document.querySelector('[data-story-summary]');
       var meta = document.querySelector('[data-story-meta]');
+      var facets = document.querySelector('[data-story-facets]');
       var body = document.querySelector('[data-story-body]');
       var map = document.querySelector('[data-story-map]');
       var interactionRoot = document.querySelector('[data-story-interaction-root]');
@@ -172,7 +173,18 @@
 
       if (title) title.textContent = currentStory.title;
       if (summary) summary.textContent = currentStory.summary;
-      if (meta) meta.textContent = currentStory.meta;
+      if (meta) {
+        meta.textContent = currentStory.meta;
+        if (!facets && footprints && typeof footprints.getFacetText === 'function') {
+          facets = document.createElement('p');
+          facets.className = 'storyFacetLine';
+          facets.setAttribute('data-story-facets', '');
+          meta.insertAdjacentElement('afterend', facets);
+        }
+      }
+      if (facets && footprints && typeof footprints.getFacetText === 'function') {
+        facets.textContent = footprints.getFacetText(currentStory);
+      }
       if (body && shared) {
         shared.renderParagraphs(body, currentStory.body || []);
       }
