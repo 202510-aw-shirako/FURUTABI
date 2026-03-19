@@ -86,15 +86,33 @@
   }
 
   function buildMapCard(item, type, basePath, context, isActive) {
-    return proposals.buildCard(type, item, basePath, { active: isActive, carousel: true, context: context });
+    return proposals.buildCard(type, item, basePath, {
+      active: isActive,
+      carousel: true,
+      context: context,
+      marker: item.__carouselMarker
+    });
+  }
+
+  function orderMapCards(type, activeId) {
+    var ordered = proposals.getCollection(type).slice();
+    var index = ordered.findIndex(function (item) { return item.id === activeId; });
+    var activeOffset;
+
+    if (index < 0 || !ordered.length) {
+      return ordered;
+    }
+
+    activeOffset = Math.min(2, ordered.length - 1);
+    index = (index - activeOffset + ordered.length) % ordered.length;
+    return ordered.slice(index).concat(ordered.slice(0, index));
   }
 
   function renderMapCards(track, type, activeId, basePath, context) {
-    var ordered = proposals.getCollection(type).slice();
-    var index = ordered.findIndex(function (item) { return item.id === activeId; });
-    if (index > 0) {
-      ordered = ordered.slice(index).concat(ordered.slice(0, index));
-    }
+    var ordered = orderMapCards(type, activeId);
+    ordered.forEach(function (item, index) {
+      item.__carouselMarker = index + 1;
+    });
     track.innerHTML = ordered.map(function (item) {
       return buildMapCard(item, type, basePath, context, item.id === activeId);
     }).join('');
@@ -126,7 +144,71 @@
       });
     }
 
+    function getImageFrame() {
+      var image = root.querySelector('.topMapCanvasImage');
+      var stageWidth;
+      var stageHeight;
+      var naturalWidth;
+      var naturalHeight;
+      var imageRatio;
+      var stageRatio;
+      var width;
+      var height;
+      var left;
+      var top;
+
+      if (!stage || !viewport || !pinsLayer || !image) {
+        return null;
+      }
+
+      stageWidth = stage.clientWidth;
+      stageHeight = stage.clientHeight;
+      naturalWidth = image.naturalWidth || image.clientWidth || stageWidth;
+      naturalHeight = image.naturalHeight || image.clientHeight || stageHeight;
+
+      if (!stageWidth || !stageHeight || !naturalWidth || !naturalHeight) {
+        return null;
+      }
+
+      imageRatio = naturalWidth / naturalHeight;
+      stageRatio = stageWidth / stageHeight;
+
+      if (imageRatio > stageRatio) {
+        width = stageWidth;
+        height = width / imageRatio;
+        left = 0;
+        top = (stageHeight - height) / 2;
+      } else {
+        height = stageHeight;
+        width = height * imageRatio;
+        top = 0;
+        left = (stageWidth - width) / 2;
+      }
+
+      return {
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      };
+    }
+
+    function syncPinsLayerFrame() {
+      var frame = getImageFrame();
+
+      if (!pinsLayer || !frame) {
+        return;
+      }
+
+      pinsLayer.style.inset = 'auto';
+      pinsLayer.style.left = frame.left + 'px';
+      pinsLayer.style.top = frame.top + 'px';
+      pinsLayer.style.width = frame.width + 'px';
+      pinsLayer.style.height = frame.height + 'px';
+    }
+
     function syncZoom() {
+      syncPinsLayerFrame();
       viewport.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + zoom + ')';
       if (zoomIn) zoomIn.disabled = zoom >= 1.8;
       if (zoomOut) zoomOut.disabled = zoom <= 1;
@@ -180,7 +262,7 @@
         }
         selectedId = id;
         syncPins();
-        onSelect(id);
+        onSelect(id, true);
       });
     });
 
@@ -204,6 +286,10 @@
     }, { passive: false });
     if (zoomIn) zoomIn.addEventListener('click', function () { updateZoom(zoom + 0.1); });
     if (zoomOut) zoomOut.addEventListener('click', function () { updateZoom(zoom - 0.1); });
+    window.addEventListener('resize', syncPinsLayerFrame);
+    if (root.querySelector('.topMapCanvasImage')) {
+      root.querySelector('.topMapCanvasImage').addEventListener('load', syncPinsLayerFrame);
+    }
 
     syncPins();
     syncZoom();
@@ -218,16 +304,30 @@
 
   function initCarousel(root, type, activeId, basePath, context, mapController) {
     var track = root.querySelector('[data-proposal-map-cards]');
+    var viewport = root.querySelector('.entryCarouselViewport');
     var prev = root.querySelector('[data-proposal-map-prev]');
     var next = root.querySelector('[data-proposal-map-next]');
     var currentId = activeId;
     var list = proposals.getCollection(type);
 
-    function sync(id) {
+    function sync(id, fromPin) {
+      var activeCard;
+
       currentId = id;
       renderMapCards(track, type, currentId, basePath, context);
       if (mapController) {
         mapController.select(currentId);
+      }
+      if (fromPin && viewport) {
+        viewport.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      activeCard = track.querySelector('[data-proposal-id="' + currentId + '"]');
+      if (activeCard) {
+        activeCard.scrollIntoView({
+          behavior: fromPin ? 'smooth' : 'auto',
+          block: 'nearest',
+          inline: 'end'
+        });
       }
     }
 
@@ -248,9 +348,8 @@
     });
 
     return {
-      setCurrent: function (id) {
-        currentId = id;
-        renderMapCards(track, type, currentId, basePath, context);
+      setCurrent: function (id, fromPin) {
+        sync(id, fromPin);
       }
     };
   }
@@ -344,8 +443,8 @@
     var mapRoot = root.querySelector('[data-proposal-detail-map]');
     var track = root.querySelector('[data-proposal-map-cards]');
     renderMapCards(track, type, item.id, basePath, context);
-    var mapController = initMap(mapRoot, type, item.id, basePath, function (id) {
-      carousel.setCurrent(id);
+    var mapController = initMap(mapRoot, type, item.id, basePath, function (id, fromPin) {
+      carousel.setCurrent(id, fromPin);
     });
     var carousel = initCarousel(root, type, item.id, basePath, context, mapController);
     carousel.setCurrent(item.id);

@@ -9,6 +9,7 @@
   var stories = {
     '1': {
       id: '1',
+      pinClass: 'topMapPin--a',
       title: '境内の風と、OOさんのおはぎ',
       meta: '生まれ育った町を静かに見返す人',
       summary: '大きく説明するのではなく、時間の混ざり方が伝わるような足あとです。',
@@ -24,6 +25,7 @@
     },
     '2': {
       id: '2',
+      pinClass: 'topMapPin--b',
       title: '小さな店先で、ひとこと教わる',
       meta: '暮らしの声をやわらかく受け取る人',
       summary: '声をかけるだけでなく、そこで流れている時間ごと受け取る足あとです。',
@@ -39,6 +41,7 @@
     },
     '3': {
       id: '3',
+      pinClass: 'topMapPin--c',
       title: '朝の入り口で見つけた、町のやさしさ',
       meta: '朝の気配を静かに受け取った人',
       summary: '場所だけでなく、そこに流れる関係や気配を持ち帰る足あとです。',
@@ -64,10 +67,101 @@
 
   function getCategoryLabel(value) {
     if (value === 'food') return '食';
+    if (value === 'meal') return '食事';
     if (value === 'scenery') return '景色';
     if (value === 'event') return '行事';
     if (value === 'people') return '人との関わり';
+    if (value === 'stop') return '立ち寄り';
+    if (value === 'stay') return '宿泊';
+    if (value === 'memo') return 'メモ';
     return '体験';
+  }
+
+  function getSeasonFromDateString(dateString) {
+    var date = new Date(dateString);
+    var month;
+
+    if (!dateString || Number.isNaN(date.getTime())) {
+      return 'all';
+    }
+
+    month = date.getMonth() + 1;
+
+    if (month >= 3 && month <= 5) return 'spring';
+    if (month >= 6 && month <= 8) return 'summer';
+    if (month >= 9 && month <= 11) return 'autumn';
+    return 'winter';
+  }
+
+  function getYearFromDateString(dateString) {
+    var date = new Date(dateString);
+
+    if (!dateString || Number.isNaN(date.getTime())) {
+      return String(new Date().getFullYear());
+    }
+
+    return String(date.getFullYear());
+  }
+
+  function summarizeMapRecord(pin) {
+    var value = pin ? (pin.body || pin.photoNote || '') : '';
+    var body = String(value || '').trim();
+
+    if (!body) {
+      return 'わたしの地図に残された記録です。';
+    }
+
+    return body;
+  }
+
+  function buildSharedMapStories(basePath, options) {
+    var interactions = window.FURUTABI_INTERACTIONS;
+    var visibilityValues = options && options.visibility
+      ? (Array.isArray(options.visibility) ? options.visibility : [options.visibility])
+      : ['public'];
+    var label = options && options.meta ? options.meta : '— わたしの地図';
+    var records;
+
+    if (!interactions || typeof interactions.getMapRecords !== 'function') {
+      return {};
+    }
+
+    records = interactions.getMapRecords().filter(function (pin) {
+      return pin && pin.registered && visibilityValues.indexOf(pin.visibility) !== -1;
+    });
+
+    return records.reduce(function (acc, pin) {
+      var recordedAt = pin.recordedAt || '';
+      var id = 'map-' + String(pin.id || '');
+      acc[id] = {
+        id: id,
+        title: pin.title || 'わたしの地図の記録',
+        meta: label,
+        summary: summarizeMapRecord(pin),
+        recordedAt: recordedAt,
+        season: pin.season || getSeasonFromDateString(recordedAt),
+        year: pin.recordedYear || getYearFromDateString(recordedAt),
+        category: pin.recordType || 'memo',
+        body: [summarizeMapRecord(pin)],
+        link: basePath || '#',
+        aria: 'わたしの地図の記録',
+        x: Number(pin.x),
+        y: Number(pin.y)
+      };
+      return acc;
+    }, {});
+  }
+
+  function mergeStories() {
+    var merged = {};
+
+    Array.prototype.slice.call(arguments).forEach(function (source) {
+      Object.keys(source || {}).forEach(function (id) {
+        merged[id] = source[id];
+      });
+    });
+
+    return merged;
   }
 
   function getFacetText(story) {
@@ -114,6 +208,7 @@
         season: story.season,
         year: story.year,
         category: story.category,
+        pinClass: story.pinClass,
         body: story.body.slice(),
         link: (basePath || '') + 'story.html?story=' + story.id,
         aria: defaultLabel + ' ' + story.id
@@ -196,7 +291,7 @@
     // Top / 記事詳細 / ログイン後ホームの「ごひいきさんの足あと」は
     // すべてこの初期化関数を通す。ページごとの差分は options に閉じ込める。
     var card = root ? root.querySelector('[data-top-map-card]') : null;
-    var pins = root ? Array.prototype.slice.call(root.querySelectorAll('[data-top-map-pin]')) : [];
+    var pins = [];
     var stage = root ? root.querySelector('[data-top-map-stage]') : null;
     var viewport = root ? root.querySelector('[data-top-map-viewport]') : null;
     var pinsLayer = root ? root.querySelector('[data-top-map-pins-layer]') : null;
@@ -221,6 +316,63 @@
 
     if (!root || !card || !storyData) {
       return null;
+    }
+
+    function getStoriesInDisplayOrder() {
+      return Object.keys(storyData).map(function (id) {
+        return storyData[id];
+      }).sort(function (left, right) {
+        var leftTime = new Date(left.recordedAt || '').getTime();
+        var rightTime = new Date(right.recordedAt || '').getTime();
+
+        if (left.pinClass && right.pinClass && left.pinClass !== right.pinClass) {
+          return String(left.id).localeCompare(String(right.id), 'ja');
+        }
+        if (Number.isNaN(leftTime) && Number.isNaN(rightTime)) {
+          return String(left.id).localeCompare(String(right.id), 'ja');
+        }
+        if (Number.isNaN(leftTime)) {
+          return 1;
+        }
+        if (Number.isNaN(rightTime)) {
+          return -1;
+        }
+        return rightTime - leftTime;
+      });
+    }
+
+    function renderPins() {
+      var orderedStories;
+
+      if (!pinsLayer) {
+        return;
+      }
+
+      orderedStories = getStoriesInDisplayOrder();
+      pinsLayer.innerHTML = '';
+
+      orderedStories.forEach(function (story, index) {
+        var pin = document.createElement('a');
+        var inner = document.createElement('span');
+
+        pin.className = 'topMapPin' + (story.pinClass ? ' ' + story.pinClass : '') + (story.id === selectedId ? ' is-active' : '');
+        pin.href = story.link || '#';
+        pin.setAttribute('data-top-map-pin', story.id);
+        pin.setAttribute('aria-label', (story.aria || defaultLabel) + ' ' + (index + 1) + ' の場所');
+        pin.dataset.recordedAt = story.recordedAt || '';
+        pin.dataset.season = story.season || '';
+
+        if (Number.isFinite(story.x) && Number.isFinite(story.y)) {
+          pin.style.left = story.x + '%';
+          pin.style.top = story.y + '%';
+        }
+
+        inner.textContent = String(index + 1);
+        pin.appendChild(inner);
+        pinsLayer.appendChild(pin);
+      });
+
+      pins = Array.prototype.slice.call(root.querySelectorAll('[data-top-map-pin]'));
     }
 
     filterWrap = root.parentNode ? root.parentNode.querySelector('[data-top-map-filters]') : null;
@@ -252,13 +404,76 @@
     filterSeason = filterWrap.querySelector('[data-top-map-filter-season]');
     filterCategory = filterWrap.querySelector('[data-top-map-filter-category]');
     filterNote = root.parentNode.querySelector('[data-top-map-filter-note]');
-    if (!filterNote) {
-      filterNote = document.createElement('p');
-      filterNote.className = 'topMapFilterNote';
-      filterNote.setAttribute('data-top-map-filter-note', '');
-      filterNote.hidden = true;
-      root.parentNode.insertBefore(filterNote, root);
-    }
+      if (!filterNote) {
+        filterNote = document.createElement('p');
+        filterNote.className = 'topMapFilterNote';
+        filterNote.setAttribute('data-top-map-filter-note', '');
+        filterNote.hidden = true;
+        root.parentNode.insertBefore(filterNote, root);
+      }
+
+      function getImageFrame() {
+        var image = root.querySelector('.topMapCanvasImage');
+        var stageWidth;
+        var stageHeight;
+        var naturalWidth;
+        var naturalHeight;
+        var imageRatio;
+        var stageRatio;
+        var width;
+        var height;
+        var left;
+        var top;
+
+        if (!stage || !viewport || !pinsLayer || !image) {
+          return null;
+        }
+
+        stageWidth = stage.clientWidth;
+        stageHeight = stage.clientHeight;
+        naturalWidth = image.naturalWidth || image.clientWidth || stageWidth;
+        naturalHeight = image.naturalHeight || image.clientHeight || stageHeight;
+
+        if (!stageWidth || !stageHeight || !naturalWidth || !naturalHeight) {
+          return null;
+        }
+
+        imageRatio = naturalWidth / naturalHeight;
+        stageRatio = stageWidth / stageHeight;
+
+        if (imageRatio > stageRatio) {
+          width = stageWidth;
+          height = width / imageRatio;
+          left = 0;
+          top = (stageHeight - height) / 2;
+        } else {
+          height = stageHeight;
+          width = height * imageRatio;
+          top = 0;
+          left = (stageWidth - width) / 2;
+        }
+
+        return {
+          left: left,
+          top: top,
+          width: width,
+          height: height
+        };
+      }
+
+      function syncPinsLayerFrame() {
+        var frame = getImageFrame();
+
+        if (!pinsLayer || !frame) {
+          return;
+        }
+
+        pinsLayer.style.inset = 'auto';
+        pinsLayer.style.left = frame.left + 'px';
+        pinsLayer.style.top = frame.top + 'px';
+        pinsLayer.style.width = frame.width + 'px';
+        pinsLayer.style.height = frame.height + 'px';
+      }
 
     function getFilteredStories() {
       var year = filterYear ? filterYear.value : '';
@@ -412,6 +627,7 @@
     }
 
     function syncZoom() {
+      syncPinsLayerFrame();
       if (viewport) {
         viewport.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + zoom + ')';
       }
@@ -489,23 +705,9 @@
       syncZoom();
     }
 
-    // ピン押下では遷移せず、その場でカードだけ差し替える。
+    // ピンは storyData から都度描画する。
     // 実詳細への遷移はカード側のリンクで行う設計。
-    pins.forEach(function (pin) {
-      pin.addEventListener('click', function (event) {
-        var id = pin.getAttribute('data-top-map-pin');
-        event.preventDefault();
-        if (dragged) {
-          dragged = false;
-          return;
-        }
-        if (!id) {
-          return;
-        }
-        selectedId = id;
-        syncFilteredCard();
-      });
-    });
+    renderPins();
 
     if (stage) {
       stage.addEventListener('pointerdown', function (event) {
@@ -519,6 +721,29 @@
           return;
         }
         startDrag(event);
+      });
+
+      stage.addEventListener('click', function (event) {
+        var pinTarget = event.target.closest('[data-top-map-pin]');
+        var id;
+
+        if (!pinTarget) {
+          return;
+        }
+
+        event.preventDefault();
+        if (dragged) {
+          dragged = false;
+          return;
+        }
+
+        id = pinTarget.getAttribute('data-top-map-pin');
+        if (!id) {
+          return;
+        }
+
+        selectedId = id;
+        syncFilteredCard();
       });
 
       stage.addEventListener('wheel', function (event) {
@@ -552,6 +777,10 @@
     document.addEventListener('pointermove', moveDrag);
     document.addEventListener('pointerup', endDrag);
     document.addEventListener('pointercancel', endDrag);
+    window.addEventListener('resize', syncPinsLayerFrame);
+    if (root.querySelector('.topMapCanvasImage')) {
+      root.querySelector('.topMapCanvasImage').addEventListener('load', syncPinsLayerFrame);
+    }
 
     syncFilteredCard();
     syncZoom();
@@ -566,6 +795,8 @@
     stories: stories,
     getFacetText: getFacetText,
     withBasePath: withBasePath,
+    buildSharedMapStories: buildSharedMapStories,
+    mergeStories: mergeStories,
     renderPreviewBody: renderPreviewBody,
     renderPreviewCard: renderPreviewCard,
     syncPreviewPins: syncPreviewPins,

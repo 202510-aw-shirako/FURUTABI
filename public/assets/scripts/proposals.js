@@ -298,6 +298,7 @@
     var person = people[item.personId];
     var href = buildDetailHref('gate', item.id, basePath, options && options.context);
     var classes = 'card proposalCard proposalCard--gate entryCarouselCard';
+    var marker = options && options.marker ? String(options.marker) : '';
     if (options && options.active) {
       classes += ' is-active';
     }
@@ -308,6 +309,7 @@
           '<img src="' + escapeHtml(resolveImage(basePath, item.image)) + '" alt="' + escapeHtml(person.name) + '" />' +
         '</figure>' +
         '<div class="proposalCardMeta">' +
+          (marker ? '<span class="topMapMarker proposalCardMarker"><span>' + escapeHtml(marker) + '</span></span>' : '') +
           '<span class="proposalDuration">' + escapeHtml(item.duration) + '</span>' +
           '<span class="proposalPersonMini">' + escapeHtml(person.name) + '</span>' +
         '</div>' +
@@ -324,6 +326,7 @@
     var person = people[item.personId];
     var href = buildDetailHref('okatte', item.id, basePath, options && options.context);
     var classes = 'card proposalCard proposalCard--okatte';
+    var marker = options && options.marker ? String(options.marker) : '';
     if (options && options.carousel) {
       classes += ' entryCarouselCard';
     }
@@ -340,6 +343,7 @@
           '</span>' +
         '</figure>' +
         '<div class="proposalCardMeta">' +
+          (marker ? '<span class="topMapMarker proposalCardMarker"><span>' + escapeHtml(marker) + '</span></span>' : '') +
           '<span class="proposalDuration">' + escapeHtml(item.duration) + '</span>' +
           '<span class="proposalPersonMini">' + escapeHtml(person.name) + '</span>' +
         '</div>' +

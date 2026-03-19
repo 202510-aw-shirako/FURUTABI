@@ -200,7 +200,10 @@
       const topMap = document.querySelector('[data-top-map]');
       const footprints = window.FURUTABI_FOOTPRINTS;
       if (!topMap || !footprints) return;
-      const storyData = footprints.withBasePath('');
+      const storyData = footprints.mergeStories(
+        footprints.withBasePath(''),
+        footprints.buildSharedMapStories('#top-footprints', { visibility: 'public' })
+      );
 
       footprints.initPreviewMap(topMap, storyData, {
         label: 'ごひいきさんの足あと',

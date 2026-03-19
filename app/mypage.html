@@ -122,6 +122,11 @@
               <h3 class="h2">安心とサポート</h3>
               <p class="note">FAQ、非公開の相談導線、規約類をまとめて見られます。</p>
             </a>
+            <!-- Java移行時メモ: ここはワイヤでは login.html に戻すだけですが、本実装では Spring Security の logout 処理へ差し替える想定です。 -->
+            <a class="mypageLinkCard" href="../auth/login.html">
+              <h3 class="h2">ログアウト</h3>
+              <p class="note">いったんログイン画面へ戻ります。本実装ではここでセッションを終了します。</p>
+            </a>
           </div>
         </section>
       </section>

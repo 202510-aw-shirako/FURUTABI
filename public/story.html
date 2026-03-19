@@ -157,7 +157,12 @@
       var footprints = window.FURUTABI_FOOTPRINTS;
       var interactions = window.FURUTABI_INTERACTIONS;
       // Wireでは共通JSから読むが、Java化ではここを API / サーバー注入データに差し替える。
-      var storyData = footprints ? footprints.withBasePath('') : {};
+      var storyData = footprints
+        ? footprints.mergeStories(
+            footprints.withBasePath(''),
+            footprints.buildSharedMapStories('#', { visibility: 'public' })
+          )
+        : {};
       var currentStory = storyData[storyId] || storyData['1'];
       var title = document.querySelector('[data-story-title]');
       var summary = document.querySelector('[data-story-summary]');

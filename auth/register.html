@@ -180,10 +180,10 @@
   <script>
     (() => {
       // Java実装時の目印:
-      // ここでは登録情報を仮登録として保存し、SMS認証前の状態で止めておくイメージです。
-      // registrationStatus=REGISTERING, smsVerificationStatus=PENDING のような持ち方にしておくと整理しやすそうです。
+      // ここでは users に仮登録ユーザーを保存し、sms_verified=false の状態で止めておく想定です。
+      // SMSコード本体や有効期限、再送回数は users ではなく sms_verifications に分ける前提です。
       // ニックネームの実名チェックは、クライアント側だけでなくサーバー側でも必須にしておくのがおすすめです。
-      // SMS認証ページへ渡す値は、今は query parameter ですが、本実装ではサーバー側の仮登録IDに寄せる方が安全です。
+      // SMS認証ページへ渡す値は、今は query parameter ですが、本実装では provisional user id などサーバー側の状態に寄せる方が安全です。
       const form = document.querySelector('.authForm');
       const nameInput = document.getElementById('register-name');
       const nicknameInput = document.getElementById('register-nickname');

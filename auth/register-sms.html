@@ -78,8 +78,8 @@
     (() => {
       // Java実装時の目印:
       // ここで SmsService を呼び、コード送信・照合を行う想定です。
-      // 認証コードの生成、有効期限、再送回数制御はサーバー側に寄せておくのがおすすめです。
-      // この画面では provisional user の id を持ち回し、SMS 成功後に smsVerificationStatus=VERIFIED へ更新するイメージです。
+      // 認証コードの生成、有効期限、再送回数制御は sms_verifications テーブルで持つ前提です。
+      // この画面では provisional user の id を持ち回し、SMS 成功後に users.sms_verified=true へ更新するイメージです。
       const params = new URLSearchParams(window.location.search);
       const phone = params.get('phone') || '';
       const phoneText = document.getElementById('register-sms-phone-text');

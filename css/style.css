@@ -58,6 +58,19 @@ a.link {
   color: #4e473f;
   letter-spacing: 0.08em;
 }
+.topbar .brandTag {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid rgba(34, 34, 34, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #4e473f;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
 
 .siteHeaderNav {
   flex: 0 1 auto;
@@ -1229,11 +1242,29 @@ a.link {
 
 .topMapLayout.proposalDetailMapLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1210px) auto;
   gap: 12px;
   align-items: start;
+  justify-content: center;
   aspect-ratio: auto;
   min-height: 0;
+}
+
+.proposalDetailMapLayout .topMapStage {
+  aspect-ratio: 6 / 5;
+  width: min(100%, 672px);
+  margin-inline: auto;
+  height: auto;
+  overflow-x: visible;
+  overflow-y: hidden;
+}
+
+.proposalDetailMapLayout .myMapMain {
+  width: min(100%, 1210px);
+}
+
+.proposalCardMarker {
+  margin-right: 4px;
 }
 
 .proposalDetailMapTrack {
@@ -2914,6 +2945,10 @@ body.hasProposalModal {
   align-items: start;
 }
 
+.appTopMapLayout[data-top-map] .myMapMain {
+  width: min(100%, 760px);
+}
+
 .myMapMain {
   position: relative;
 }
@@ -2947,28 +2982,42 @@ body.hasProposalModal {
   background: #6c675f;
 }
 
-.myMapRegisterPrompt {
+.myMapOverlayCards {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 4;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-  transform: translate(18px, -50%);
+  pointer-events: none;
+}
+
+.myMapOverlayCard {
+  width: min(100%, 360px);
+  pointer-events: auto;
+}
+
+.myMapDraftPrompt {
+  position: absolute;
+  z-index: 4;
+  pointer-events: auto;
+}
+
+.myMapDraftPrompt[hidden] {
+  display: none !important;
+}
+
+.myMapPromptActions {
+  display: grid;
+  gap: 8px;
+}
+
+.myMapPromptBtn {
+  width: 100%;
+  justify-content: flex-start;
 }
 
 .myMapMenuSummary {
   display: grid;
   gap: 6px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid rgba(34, 34, 34, 0.08);
-  margin-bottom: 4px;
 }
 
 .myMapMenuTitle {
@@ -2994,7 +3043,7 @@ body.hasProposalModal {
   color: #7b7064;
 }
 
-.myMapRegisterPrompt[hidden] {
+.myMapOverlayCard[hidden] {
   display: none !important;
 }
 
@@ -3003,6 +3052,21 @@ body.hasProposalModal {
   padding: 0 16px;
   border-radius: 999px;
   background: #fff;
+}
+
+.myMapMenuFooter {
+  grid-template-columns: 1fr;
+}
+
+.myMapMenuActions {
+  justify-content: flex-start;
+}
+
+.myMapActionIcon {
+  width: 38px;
+  min-width: 38px;
+  padding: 0;
+  justify-content: center;
 }
 
 .myMapZoomControls {

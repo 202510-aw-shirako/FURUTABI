@@ -19,6 +19,7 @@
   <main class="container" aria-label="ログイン">
     <!-- Java移行時メモ: 一般の方 / 地域の方 / 管理者で認証後の遷移先と権限を分けると整理しやすそうです。 -->
     <!-- 新規登録は別フローへ切り出し、ログイン画面は既存アカウントの入口として保つイメージです。 -->
+    <!-- Java移行時メモ: 地域の方のログイン先は public/local.html ではなく、登録済み地域ユーザー向けの local-member-home です。 -->
     <section class="section section--hero" aria-label="ヒーローイメージ">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -62,7 +63,7 @@
           <div class="h2">地域の方</div>
           <p class="note">協力したい方、ちいきのおかってをひらきたい方、場に手を貸したい方向けの入口です。</p>
           <div style="display:grid; gap:10px; margin-top:12px;">
-            <a class="btn ghost" href="../app/local-home.html">地域アカウントでログイン（ワイヤ）</a>
+            <a class="btn ghost" href="../app/local-member-home.html">地域アカウントでログイン（ワイヤ）</a>
             <a class="btn ghost" href="#">地域アカウント登録（ワイヤ）</a>
           </div>
           <div class="denseBox" style="margin-top:16px;">
@@ -70,7 +71,7 @@
               <div class="h2">ログイン後に見られるもの</div>
               <p class="note">詳しい募集内容、提案フォーム、関わり方の設計相談。</p>
             </div>
-            <a class="btn primary" href="../app/local-home.html">地域アカウントへ（ワイヤ）</a>
+            <a class="btn primary" href="../app/local-member-home.html">地域アカウントへ（ワイヤ）</a>
           </div>
         </div>
 

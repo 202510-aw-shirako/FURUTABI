@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FURUTABI Wire | App</title>
+  <title>FURUTABI Wire | Local Member App</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -11,14 +11,16 @@
     <div class="container">
       <div class="inner">
         <div class="brand">FURUTABI｜郷旅</div>
-        <nav data-site-nav="app_home"></nav>
+        <nav data-site-nav="app_local_member"></nav>
       </div>
     </div>
   </header>
 
-  <main class="container" aria-label="ログイン後ホーム">
-    <!-- Java移行時メモ: これは一般ユーザー向けホーム、という整理の目印です。 -->
+  <main class="container" aria-label="地域登録ユーザー向けログイン後ホーム">
+    <!-- Java移行時メモ: これは地域登録ユーザー向けホーム、という整理の目印です。 -->
     <!-- わたしの地図はログイン後専用機能として維持し、公開側とは責務を分けると分かりやすそうです。 -->
+    <!-- Java移行時メモ: 公開の「地域の方へ」ページとは別で、登録済み地域ユーザーだけが入るログイン後ホームの想定です。 -->
+    <!-- 将来は LOCAL ロールのホームとして使い、一般ユーザーの home と中身を分けて育てられるようにしてあります。 -->
     <section class="section section--hero" aria-label="ヒーローイメージ">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -124,50 +126,25 @@
             </label>
           </div>
           <div class="myMapMain">
-            <div class="topMapCards myMapOverlayCards">
-              <article class="card topMapCard myMapOverlayCard" hidden data-my-map-menu aria-label="選択中のわたしの地図の記録">
-                <!-- わたしの地図の公開範囲は機能の中核 -->
-                <!-- 初期値は必ず「本人のみ」 -->
-                <!-- 公開範囲は記録ごとに選べる -->
-                <!-- あとから公開範囲を変更できる -->
-                <!-- 一覧や地図上で現在の公開状態が分かるようにする -->
-                <!-- 位置は必要以上に細かく見せない -->
-                <!-- 公開してよいか迷う情報は、まずは本人のみで残せるようにする -->
-                <div class="topMapCardBody">
-                  <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
-                  <div class="topMapCardText">
-                    <div class="topMapCardHead">
-                      <span class="pill">わたしの地図</span>
-                      <span class="topMapMarker"><span data-my-map-menu-marker>1</span></span>
-                    </div>
-                    <div class="myMapMenuSummary" data-my-map-menu-summary>
-                      <div class="myMapMenuTitle" data-my-map-menu-title>記録のタイトル</div>
-                      <div class="myMapMenuMeta">
-                        <span class="myMapVisibilityBadge" data-my-map-menu-visibility>本人のみ</span>
-                        <span class="myMapMenuFacet" data-my-map-menu-facets></span>
-                        <span class="myMapMenuDate" data-my-map-menu-date></span>
-                      </div>
-                      <div class="topMapComment" data-my-map-menu-comment>
-                        <p class="topMapCommentText topMapCommentText--clamp" data-my-map-menu-body>地図上のピンを選ぶと、ここで内容を見ながら記録できます。</p>
-                      </div>
-                    </div>
-                    <div class="topMapFooter myMapMenuFooter">
-                      <div class="topMapActions myMapMenuActions">
-                        <button class="topMapActionBtn myMapRegisterBtn" type="button" data-my-map-create>＋ 新規作成</button>
-                        <button class="topMapActionBtn myMapRegisterBtn myMapActionIcon" type="button" data-my-map-edit hidden aria-label="編集">✎</button>
-                        <button class="topMapActionBtn myMapRegisterBtn myMapActionIcon" type="button" data-my-map-delete hidden aria-label="削除">×</button>
-                      </div>
-                    </div>
-                  </div>
+            <div class="myMapRegisterPrompt" hidden data-my-map-menu>
+              <!-- わたしの地図の公開範囲は機能の中核 -->
+              <!-- 初期値は必ず「本人のみ」 -->
+              <!-- 公開範囲は記録ごとに選べる -->
+              <!-- あとから公開範囲を変更できる -->
+              <!-- 一覧や地図上で現在の公開状態が分かるようにする -->
+              <!-- 位置は必要以上に細かく見せない -->
+              <!-- 公開してよいか迷う情報は、まずは本人のみで残せるようにする -->
+              <div class="myMapMenuSummary" data-my-map-menu-summary hidden>
+                <div class="myMapMenuTitle" data-my-map-menu-title>記録のタイトル</div>
+                <div class="myMapMenuMeta">
+                  <span class="myMapVisibilityBadge" data-my-map-menu-visibility>本人のみ</span>
+                  <span class="myMapMenuFacet" data-my-map-menu-facets></span>
+                  <span class="myMapMenuDate" data-my-map-menu-date></span>
                 </div>
-              </article>
-            </div>
-            <div class="myMapDraftPrompt" hidden data-my-map-create-prompt>
-              <div class="myMapPromptActions">
-                <button class="topMapActionBtn myMapRegisterBtn myMapPromptBtn" type="button" data-my-map-create-prompt-btn>新規作成</button>
-                <button class="topMapActionBtn myMapRegisterBtn myMapPromptBtn" type="button" data-my-map-edit-prompt hidden>編集</button>
-                <button class="topMapActionBtn myMapRegisterBtn myMapPromptBtn" type="button" data-my-map-delete-prompt hidden>削除</button>
               </div>
+              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-create>新規登録</button>
+              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-edit hidden>編集</button>
+              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-delete hidden>削除</button>
             </div>
             <div class="topMapStage" aria-label="わたしの地図">
               <div class="myMapViewport" data-my-map-viewport>
@@ -394,7 +371,7 @@
       var footprintStories = footprints
         ? footprints.mergeStories(
             footprints.withBasePath('../public/'),
-            footprints.buildSharedMapStories('#sub-my', { visibility: 'public' })
+            footprints.buildSharedMapStories('#sub-footprints', { visibility: ['limited', 'public'] })
           )
         : null;
 
@@ -477,10 +454,6 @@
         var myMapCreate = myMap.querySelector('[data-my-map-create]');
         var myMapEdit = myMap.querySelector('[data-my-map-edit]');
         var myMapDelete = myMap.querySelector('[data-my-map-delete]');
-        var myMapCreatePrompt = myMap.querySelector('[data-my-map-create-prompt]');
-        var myMapCreatePromptBtn = myMap.querySelector('[data-my-map-create-prompt-btn]');
-        var myMapEditPrompt = myMap.querySelector('[data-my-map-edit-prompt]');
-        var myMapDeletePrompt = myMap.querySelector('[data-my-map-delete-prompt]');
         var myMapSheetWrap = document.querySelector('[data-my-map-sheet-wrap]');
         var myMapClose = document.querySelector('[data-my-map-close]');
         var myMapSubmit = document.querySelector('[data-my-map-submit]');
@@ -500,8 +473,6 @@
         var myMapMenuVisibility = myMap.querySelector('[data-my-map-menu-visibility]');
         var myMapMenuFacets = myMap.querySelector('[data-my-map-menu-facets]');
         var myMapMenuDate = myMap.querySelector('[data-my-map-menu-date]');
-        var myMapMenuBody = myMap.querySelector('[data-my-map-menu-body]');
-        var myMapMenuMarker = myMap.querySelector('[data-my-map-menu-marker]');
         var myMapRecordList = document.querySelector('[data-my-map-record-list]');
         var myMapFilterYear = myMap.querySelector('[data-my-map-filter-year]');
         var myMapFilterSeason = myMap.querySelector('[data-my-map-filter-season]');
@@ -510,7 +481,8 @@
         var myMapImage = myMap.querySelector('[data-my-map-image]');
         var myMapZoomIn = myMap.querySelector('[data-my-map-zoom-in]');
         var myMapZoomOut = myMap.querySelector('[data-my-map-zoom-out]');
-        var myMapPinsData = interactions ? interactions.getMapRecords() : [];
+        var myMapPinsData = [];
+        var isLocalMemberSharedMapView = true;
         var myMapSelectedId = null;
         var myMapEditingId = null;
         var myMapIdSeed = myMapPinsData.reduce(function (max, pin) {
@@ -669,6 +641,10 @@
           return true;
         }
 
+        function isVisibleOnLocalMemberMap() {
+          return false;
+        }
+
         function populateMyMapFilterYears() {
           var currentValue;
           var years;
@@ -738,31 +714,6 @@
           return myMapPinsData.find(function (pin) { return pin.id === id; }) || null;
         }
 
-        function getVisibleMyMapPins() {
-          return myMapPinsData.filter(function (pin) {
-            return matchesMyMapFilters(pin);
-          });
-        }
-
-        function getLatestRegisteredMyMapPin() {
-          return myMapPinsData
-            .filter(function (pin) {
-              return pin.registered && matchesMyMapFilters(pin);
-            })
-            .sort(function (a, b) {
-              return new Date(b.recordedAt || 0).getTime() - new Date(a.recordedAt || 0).getTime();
-            })[0] || null;
-        }
-
-        function getMyMapMenuMarkerText(pin) {
-          var visiblePins = getVisibleMyMapPins();
-          var index = visiblePins.findIndex(function (item) {
-            return item.id === pin.id;
-          });
-
-          return String(index >= 0 ? index + 1 : 1);
-        }
-
         function discardDraftPin(id) {
           var targetId = id || myMapSelectedId;
           var draftPin = getMyMapPin(targetId);
@@ -784,69 +735,16 @@
           renderMyMapPins();
         }
 
-        function createDraftPin(x, y) {
-          var pin = {
-            id: 'pin-' + myMapIdSeed++,
-            x: Math.max(3, Math.min(97, x)),
-            y: Math.max(5, Math.min(95, y)),
-            registered: false,
-            title: '',
-            photoNote: '',
-            body: '',
-            visibility: myMapDefaultVisibility,
-            visibilityUpdatedAt: getTodayDateString()
-          };
-
-          pin.recordedAt = getTodayDateString();
-          pin.recordedYear = getRecordedYear(pin.recordedAt);
-          pin.season = getSeasonFromDateString(pin.recordedAt);
-          pin.recordType = 'stop';
-
-          myMapPinsData.push(pin);
-          myMapSelectedId = pin.id;
-          renderMyMapPins();
-
-          return pin;
-        }
-
-        function closeMyMapCreatePrompt() {
-          if (!myMapCreatePrompt) {
-            return;
-          }
-
-          myMapCreatePrompt.hidden = true;
-          myMapCreatePrompt.style.left = '';
-          myMapCreatePrompt.style.top = '';
-        }
-
-        function openMyMapCreatePrompt(pin) {
-          if (!myMapCreatePrompt || !pin) {
-            return;
-          }
-
-          myMapCreatePrompt.hidden = false;
-          myMapCreatePrompt.style.left = 'calc(' + pin.x + '% + 14px)';
-          myMapCreatePrompt.style.top = 'calc(' + pin.y + '% - 12px)';
-          if (myMapEditPrompt) myMapEditPrompt.hidden = !pin.registered;
-          if (myMapDeletePrompt) myMapDeletePrompt.hidden = !pin.registered;
-        }
-
-        function startMyMapCreateFromSelection() {
-          var selectedPin = getMyMapPin(myMapSelectedId);
-
-          if (selectedPin && selectedPin.registered) {
-            closeMyMapMenu();
-            createDraftPin(selectedPin.x, selectedPin.y);
-          }
-          openMyMapSheet('create');
-        }
-
         function closeMyMapMenu() {
           if (myMapMenu) {
             myMapMenu.hidden = true;
+            myMapMenu.style.left = '';
+            myMapMenu.style.top = '';
+            if (myMapMenuSummary) {
+              myMapMenuSummary.hidden = true;
+            }
           }
 
-          closeMyMapCreatePrompt();
           discardDraftPin();
         }
 
@@ -858,11 +756,11 @@
           }
 
           registeredPins = myMapPinsData.filter(function (pin) {
-            return pin.registered && matchesMyMapFilters(pin);
+            return isVisibleOnLocalMemberMap(pin) && matchesMyMapFilters(pin);
           });
 
           if (!registeredPins.length) {
-            myMapRecordList.innerHTML = '<p class="note">条件に合う記録はまだありません。地図上を押して新しい記録を残せます。</p>';
+            myMapRecordList.innerHTML = '<p class="note">地域の方に共有された記録は、ごひいきさんの足あとタブで見られます。</p>';
             return;
           }
 
@@ -908,7 +806,6 @@
                     '</div>' +
                   '</div>' +
                 '</div>' +
-                '<button class="btn ghost" type="button" data-my-map-record-edit="' + pin.id + '">公開範囲を変更</button>' +
               '</article>';
           }).join('');
 
@@ -956,7 +853,9 @@
           }
 
           myMapPinsLayer.innerHTML = '';
-          getVisibleMyMapPins().forEach(function (pin, index) {
+          myMapPinsData.filter(function (pin) {
+            return isVisibleOnLocalMemberMap(pin) && matchesMyMapFilters(pin);
+          }).forEach(function (pin, index) {
             var button = document.createElement('button');
             var inner = document.createElement('span');
 
@@ -978,12 +877,7 @@
               event.stopPropagation();
               myMapSelectedId = pin.id;
               renderMyMapPins();
-              if (pin.registered) {
-                openMyMapMenu(pin);
-                openMyMapCreatePrompt(pin);
-                return;
-              }
-              openMyMapCreatePrompt(pin);
+              openMyMapMenu(pin);
             });
 
             myMapPinsLayer.appendChild(button);
@@ -993,27 +887,41 @@
         }
 
         function openMyMapMenu(pin) {
+          var createVisible = !isLocalMemberSharedMapView && !!pin && !pin.registered;
+          var editVisible = !isLocalMemberSharedMapView && !!pin && pin.registered;
+          var summaryVisible = !!pin && (pin.registered || isVisibleOnLocalMemberMap(pin));
           var visibility;
 
-          if (!myMapMenu || !pin || !pin.registered) {
+          if (!myMapMenu || !pin) {
             return;
           }
 
-          closeMyMapCreatePrompt();
           myMapMenu.hidden = false;
-          if (myMapCreate) myMapCreate.hidden = false;
-          if (myMapEdit) myMapEdit.hidden = false;
-          if (myMapDelete) myMapDelete.hidden = false;
-          if (myMapMenuMarker) myMapMenuMarker.textContent = getMyMapMenuMarkerText(pin);
-          visibility = getVisibilityMeta(pin.visibility);
-          if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
-          if (myMapMenuVisibility) {
-            myMapMenuVisibility.textContent = visibility.label;
-            myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--' + pin.visibility;
+          myMapMenu.style.left = pin.x + '%';
+          myMapMenu.style.top = pin.y + '%';
+          if (myMapCreate) myMapCreate.hidden = !createVisible;
+          if (myMapEdit) myMapEdit.hidden = !editVisible;
+          if (myMapDelete) myMapDelete.hidden = !editVisible;
+          if (myMapMenuSummary) myMapMenuSummary.hidden = !summaryVisible;
+          if (!editVisible) {
+            if (myMapMenuTitle) myMapMenuTitle.textContent = '記録のタイトル';
+            if (myMapMenuVisibility) {
+              myMapMenuVisibility.textContent = '本人のみ';
+              myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--private';
+            }
+            if (myMapMenuFacets) myMapMenuFacets.textContent = '今年 / 春 / 立ち寄り';
+            if (myMapMenuDate) myMapMenuDate.textContent = '';
           }
-          if (myMapMenuFacets) myMapMenuFacets.textContent = getMyMapFacetText(pin);
-          if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
-          if (myMapMenuBody) myMapMenuBody.textContent = pin.body || 'まだ本文は入っていません。';
+          if (editVisible) {
+            visibility = getVisibilityMeta(pin.visibility);
+            if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
+            if (myMapMenuVisibility) {
+              myMapMenuVisibility.textContent = visibility.label;
+              myMapMenuVisibility.className = 'myMapVisibilityBadge myMapVisibilityBadge--' + pin.visibility;
+            }
+            if (myMapMenuFacets) myMapMenuFacets.textContent = getMyMapFacetText(pin);
+            if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
+          }
         }
 
         function openMyMapSheet(mode) {
@@ -1122,6 +1030,10 @@
 
             event.stopPropagation();
 
+            if (isLocalMemberSharedMapView) {
+              return;
+            }
+
             if (event.target !== myMapStage && !event.target.classList.contains('topMapCanvasImage') && event.target !== myMapPinsLayer) {
               return;
             }
@@ -1146,32 +1058,33 @@
               return item.registered;
             });
 
-            pin = createDraftPin(x, y);
-            openMyMapCreatePrompt(pin);
+            pin = {
+              id: 'pin-' + myMapIdSeed++,
+              x: Math.max(3, Math.min(97, x)),
+              y: Math.max(5, Math.min(95, y)),
+              registered: false,
+              title: '',
+              photoNote: '',
+              body: '',
+              visibility: myMapDefaultVisibility,
+              visibilityUpdatedAt: getTodayDateString()
+            };
+
+            pin.recordedAt = getTodayDateString();
+            pin.recordedYear = getRecordedYear(pin.recordedAt);
+            pin.season = getSeasonFromDateString(pin.recordedAt);
+            pin.recordType = 'stop';
+
+            myMapPinsData.push(pin);
+            myMapSelectedId = pin.id;
+            renderMyMapPins();
+            openMyMapMenu(pin);
           });
         }
 
         if (myMapCreate) {
           myMapCreate.addEventListener('click', function () {
-            startMyMapCreateFromSelection();
-          });
-        }
-
-        if (myMapCreatePromptBtn) {
-          myMapCreatePromptBtn.addEventListener('click', function () {
-            startMyMapCreateFromSelection();
-          });
-        }
-
-        if (myMapEditPrompt) {
-          myMapEditPrompt.addEventListener('click', function () {
-            openMyMapSheet('edit');
-          });
-        }
-
-        if (myMapDeletePrompt) {
-          myMapDeletePrompt.addEventListener('click', function () {
-            openMyMapConfirm();
+            openMyMapSheet('create');
           });
         }
 
@@ -1207,7 +1120,7 @@
             populateMyMapFilterYears();
             closeMyMapSheet(false);
             renderMyMapPins();
-            openMyMapMenu(pin);
+            closeMyMapMenu();
           });
         }
 
@@ -1229,7 +1142,7 @@
               populateMyMapFilterYears();
               closeMyMapSheet(false);
               renderMyMapPins();
-              openMyMapMenu(pin);
+              closeMyMapMenu();
               return;
             }
             closeMyMapSheet(true);
@@ -1291,14 +1204,6 @@
               myMapSelectedId = null;
             }
             renderMyMapPins();
-            if (!myMapSelectedId) {
-              selectedPin = getLatestRegisteredMyMapPin();
-              if (selectedPin) {
-                myMapSelectedId = selectedPin.id;
-                renderMyMapPins();
-                openMyMapMenu(selectedPin);
-              }
-            }
           });
         });
 
@@ -1340,17 +1245,6 @@
         });
 
         renderMyMapPins();
-        if (!myMapSelectedId) {
-          (function () {
-            var latestPin = getLatestRegisteredMyMapPin();
-            if (!latestPin) {
-              return;
-            }
-            myMapSelectedId = latestPin.id;
-            renderMyMapPins();
-            openMyMapMenu(latestPin);
-          }());
-        }
         syncMyMapZoom();
       }
 

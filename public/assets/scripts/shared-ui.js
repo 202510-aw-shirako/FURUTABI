@@ -156,7 +156,8 @@
       ],
       utilityLinks: [
         { href: 'bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' }
+        { href: '../app/home.html', label: 'ログイン後' },
+        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -176,7 +177,8 @@
       ],
       utilityLinks: [
         { href: 'bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' }
+        { href: '../app/home.html', label: 'ログイン後' },
+        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -196,7 +198,8 @@
       ],
       utilityLinks: [
         { href: 'bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' }
+        { href: '../app/home.html', label: 'ログイン後' },
+        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -208,7 +211,7 @@
       brandHref: '../public/index.html',
       mainLinks: [
         { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../app/home.html#sub-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
+        { href: '../app/home.html#tab-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
         { href: '../public/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
         { href: '../public/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
         { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
@@ -216,7 +219,8 @@
       ],
       utilityLinks: [
         { href: '../public/bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' }
+        { href: '../app/home.html', label: 'ログイン後' },
+        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -228,8 +232,8 @@
       brandHref: '../app/home.html',
       mainLinks: [
         { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../app/home.html#sub-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
-        { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
+        { href: '../app/home.html#tab-map', label: 'わたしの地図', currentMatchers: ['home.html'] },
+        { href: '../app/home.html#tab-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
         { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
         { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '../public/safety.html?context=app', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
@@ -247,8 +251,8 @@
       brandHref: '../app/local-home.html',
       mainLinks: [
         { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../app/home.html#tab-map', label: 'わたしの地図', currentMatchers: ['home.html'] },
         { href: '../public/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { href: '../app/home.html#my-map-panel', label: 'わたしの地図', currentMatchers: ['home.html'] },
         { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
         { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
@@ -259,6 +263,28 @@
       notificationsHref: '../app/notification-center.html',
       action: [
         { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
+      ]
+    },
+    app_local_member: {
+      variant: 'app',
+      brandHref: '../app/local-member-home.html',
+      brandTag: '\u5730\u57df',
+      // Java移行時メモ: app_local_member は登録済み地域ユーザー向けヘッダーです。
+      // 公開の local.html と混ぜず、LOCAL ロールのログイン後導線として分ける前提です。
+      mainLinks: [
+        { href: '../public/gate.html?context=app', label: '\u3061\u3044\u304d\u306e\u5165\u308a\u53e3', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '../app/local-member-home.html#tab-map', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['local-member-home.html'] },
+        { href: '../app/local-member-home.html#tab-footprints', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home.html', 'index.html', 'story.html'] },
+        { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: '\u3061\u3044\u304d\u306e\u304a\u304b\u3063\u3066', currentMatchers: ['okatte-entry.html'] },
+        { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '../public/safety.html?context=app', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['safety.html', 'safety-complete.html'] }
+      ],
+      utilityLinks: [
+        { href: '../public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' }
+      ],
+      notificationsHref: '../app/notification-center.html',
+      action: [
+        { href: '../app/mypage.html', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
       ]
     }
   };
@@ -509,6 +535,17 @@
       } else if (brandNode) {
         brandNode.setAttribute('href', config.brandHref);
       }
+      var activeBrandNode = brand.querySelector('.brand');
+      var existingBrandTag = brand.querySelector('.brandTag');
+      if (config.brandTag && activeBrandNode) {
+        if (!existingBrandTag) {
+          activeBrandNode.insertAdjacentHTML('afterend', '<span class="brandTag">' + escapeHtml(config.brandTag) + '</span>');
+        } else {
+          existingBrandTag.textContent = config.brandTag;
+        }
+      } else if (existingBrandTag) {
+        existingBrandTag.remove();
+      }
     }
 
     root.classList.add('siteHeaderNav');
@@ -544,7 +581,7 @@
 
   function withBasePrefix(href) {
     var current = getCurrentPathname();
-    var authOrAppPaths = ['home.html', 'local-home.html', 'login.html', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'];
+    var authOrAppPaths = ['home.html', 'local-home.html', 'local-member-home.html', 'login.html', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'];
 
     if (href === '#') {
       return href;
