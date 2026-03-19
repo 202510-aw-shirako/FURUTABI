@@ -1927,9 +1927,6 @@ body.hasProposalModal {
   gap: 14px;
   align-items: start;
 }
-.appTopMapLayout[data-top-map] .myMapMain {
-  width: min(100%, 760px);
-}
 .myMapMain {
   position: relative;
 }
@@ -3670,6 +3667,10 @@ html { scroll-behavior: smooth; }
 }
 .messageThreadRow.is-unread {
   background: #fbf8f2;
+}
+.messageThreadRow.is-current {
+  border-color: rgba(200, 84, 61, .28);
+  box-shadow: 0 0 0 1px rgba(200, 84, 61, .12);
 }
 .messageThreadMain {
   display: grid;

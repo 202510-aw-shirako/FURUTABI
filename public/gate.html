@@ -26,9 +26,9 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきの入り口</h1>
-        <a class="sectionTitleLink" href="about.html#feature-gate">ご説明</a>
+        <a class="sectionTitleLink" href="about.html#feature-gate">詳しく見る</a>
       </div>
-      <p class="lead">登録後はまずここで、実際にどんな関わり方が合いそうかを静かに選びます。</p>
+      <p class="lead">旅人のはじめに、地域にどんな関わり方があるのかを穏やかに選ぶページです。</p>
     </section>
 
     <section class="section">
@@ -42,20 +42,11 @@
       <div class="sectionTitleRow">
         <h2 class="h2">入口カード</h2>
       </div>
-      <p class="lead">気になる入口を見つけたら、ここから先の関わり方を決めていきます。</p>
-
-      <div class="entryCarousel" aria-label="入口カード" data-entry-carousel style="margin-top:16px;">
-        <div class="entryCarouselStage">
-          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
-          <div class="entryCarouselViewport">
-            <div class="entryCarouselTrack" data-entry-track data-proposal-list="gate" data-proposal-base="./" data-proposal-context="gate"></div>
-          </div>
-          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
-        </div>
-      </div>
+      <p class="lead">下のカードと結びつく地図も見ながら、どの関わり方が自分に合うかを見られるようにしています。</p>
+      <div data-gate-map-root data-proposal-base="./" data-proposal-context="gate" style="margin-top:16px;"></div>
     </section>
 
-    <section class="section">
+    <section class="section" data-gate-public-guide>
       <div class="denseBox">
         <div>
           <div class="h2">架け橋さんの登録後</div>
@@ -69,5 +60,14 @@
   <script src="./assets/scripts/shared-ui.js"></script>
   <script src="./assets/scripts/proposals.js"></script>
   <script src="./assets/scripts/entry-carousel.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var guide = document.querySelector('[data-gate-public-guide]');
+      if (params.get('context') === 'app' && guide) {
+        guide.hidden = true;
+      }
+    }());
+  </script>
 </body>
 </html>

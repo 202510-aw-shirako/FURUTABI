@@ -77,7 +77,7 @@
       </div>
     </section>
 
-    <!-- 地図（サブタブ：私 / 断片） -->
+    <!-- 地図（サブタブ：わたしの地図 / ごひいきさんの足あと） -->
     <section class="section" id="tab-map" aria-label="わたしの地図">
       <div class="sectionTitleRow">
         <div class="tabs appMapTabs appMapTabs--title" role="tablist" aria-label="地図の切り替え">
@@ -89,7 +89,7 @@
       </div>
       <p class="lead">表示を切り替えて見ます。</p>
 
-      <!-- 私の地図 -->
+      <!-- わたしの地図 -->
       <div id="sub-my" style="margin-top:16px;">
         <div class="topMapLayout appTopMapLayout" data-my-map>
           <div class="topMapFilters" data-my-map-filters>
@@ -1382,23 +1382,33 @@
         }
       }
 
-      function syncMapTabFromHash() {
-        var hash = window.location.hash;
-        var mapSection = document.getElementById('tab-map');
-
-        if (hash === '#tab-footprints' || hash === '#sub-footprints') {
-          activateMapTab('sub-footprints');
-          if (mapSection) {
-            mapSection.scrollIntoView({ block: 'start' });
-          }
+      function scrollToMapSection(mapSection) {
+        if (!mapSection) {
           return;
         }
 
-        if (hash === '#tab-map' || hash === '#sub-my') {
-          activateMapTab('sub-my');
-          if (mapSection) {
+        window.requestAnimationFrame(function () {
+          window.requestAnimationFrame(function () {
             mapSection.scrollIntoView({ block: 'start' });
-          }
+          });
+        });
+      }
+
+      function syncMapTabFromHash() {
+        var hash = window.location.hash;
+        var params = new URLSearchParams(window.location.search);
+        var requestedTab = params.get('tab');
+        var mapSection = document.getElementById('tab-map');
+
+        if (requestedTab === 'footprints' || hash === '#tab-footprints' || hash === '#sub-footprints') {
+          activateMapTab('sub-footprints');
+          scrollToMapSection(mapSection);
+          return;
+        }
+
+        if (requestedTab === 'map' || hash === '#tab-map' || hash === '#sub-my') {
+          activateMapTab('sub-my');
+          scrollToMapSection(mapSection);
         }
       }
 
@@ -1413,6 +1423,7 @@
 
       syncMapTabFromHash();
       window.addEventListener('hashchange', syncMapTabFromHash);
+      window.addEventListener('load', syncMapTabFromHash);
     }());
   </script>
 </body>

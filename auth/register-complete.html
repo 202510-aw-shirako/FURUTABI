@@ -64,9 +64,9 @@
   <script src="../public/assets/scripts/shared-ui.js"></script>
   <script>
     // Java実装時の目印:
-    // registrationStatus は、SMS認証の成功を確認したあとで ACTIVE へ進める形が自然です。
-    // smsVerificationStatus=VERIFIED は、外部SMS認証の結果を確認してから更新するのがおすすめです。
-    // 追加本人確認は別の条件で発火し、この完了画面とは分けて扱う前提にしておくと整理しやすそうです。
+    // この完了画面に来る前に users.sms_verified=true、users.registration_completed=true まで進んでいる前提です。
+    // 認証コードの状態管理は users ではなく sms_verifications 側で持ち、成功時は status=VERIFIED / used_at 設定で閉じる想定です。
+    // 追加本人確認は別条件で発火し、この完了画面とは分けて扱う前提にしておくと整理しやすそうです。
   </script>
 </body>
 </html>

@@ -139,7 +139,7 @@
 
   function renderThreadRow(thread) {
     return '' +
-      '<a class="messageThreadRow' + (thread.unread_count > 0 ? ' is-unread' : '') + '" href="./chat.html?thread=' + encodeURIComponent(thread.thread_id) + '">' +
+      '<a class="messageThreadRow' + (thread.unread_count > 0 ? ' is-unread' : '') + '" href="./messages.html?thread=' + encodeURIComponent(thread.thread_id) + '">' +
         '<div class="messageThreadMain">' +
           '<div class="messageThreadMeta">' +
             '<span class="pill">' + thread.counterpart_role + '</span>' +
@@ -159,6 +159,43 @@
       '</a>';
   }
 
+  function applyThreadPreview(root, thread) {
+    var preview = root.querySelector('[data-message-thread-preview]');
+    var messages = messagesByThread[thread.thread_id] || [];
+    var nameNode = root.querySelector('[data-message-thread-counterpart]');
+    var roleNode = root.querySelector('[data-message-thread-role]');
+    var titleNode = root.querySelector('[data-message-thread-title]');
+    var statusNode = root.querySelector('[data-message-thread-status]');
+    var detailLink = root.querySelector('[data-message-thread-related-link]');
+    var openLink = root.querySelector('[data-message-thread-open-link]');
+    var list = root.querySelector('[data-message-thread-messages]');
+    var closed = root.querySelector('[data-message-thread-closed]');
+    var verify = root.querySelector('[data-message-thread-verify]');
+    var composer = root.querySelector('[data-message-thread-composer]');
+    var isClosed;
+    var requiresVerify;
+
+    if (!preview || !thread) {
+      return;
+    }
+
+    if (nameNode) nameNode.textContent = thread.counterpart_name;
+    if (roleNode) roleNode.textContent = thread.counterpart_role;
+    if (titleNode) titleNode.textContent = thread.title;
+    if (statusNode) statusNode.textContent = thread.status;
+    if (detailLink) detailLink.setAttribute('href', thread.related_url);
+    if (openLink) openLink.setAttribute('href', './chat.html?thread=' + encodeURIComponent(thread.thread_id));
+    if (list) list.innerHTML = messages.map(renderMessageBubble).join('');
+
+    isClosed = thread.status === '見送り' || thread.status === '終了';
+    requiresVerify = thread.status === '追加確認が必要';
+
+    if (closed) closed.hidden = !isClosed;
+    if (verify) verify.hidden = !requiresVerify;
+    if (composer) composer.hidden = isClosed || requiresVerify;
+    preview.hidden = false;
+  }
+
   function initMessageListPage() {
     var root = document.querySelector('[data-message-list-page]');
     if (!root) return;
@@ -175,6 +212,10 @@
     var empty = root.querySelector('[data-message-empty]');
     var search = root.querySelector('[data-message-search]');
     var filters = root.querySelectorAll('[data-message-filter]');
+    var currentThreadId = getQueryParam('thread');
+    var currentThread = threads.find(function (thread) {
+      return thread.thread_id === currentThreadId;
+    }) || null;
 
     function render() {
       var filtered = threads.filter(function (thread) {
@@ -187,6 +228,12 @@
       });
       list.innerHTML = filtered.map(renderThreadRow).join('');
       empty.hidden = filtered.length > 0;
+      if (currentThread) {
+        var activeLink = list.querySelector('[href="./messages.html?thread=' + currentThread.thread_id + '"]');
+        if (activeLink) {
+          activeLink.classList.add('is-current');
+        }
+      }
     }
 
     filters.forEach(function (button) {
@@ -204,6 +251,9 @@
     }
 
     render();
+    if (currentThread) {
+      applyThreadPreview(root, currentThread);
+    }
   }
 
   function renderMessageBubble(message) {

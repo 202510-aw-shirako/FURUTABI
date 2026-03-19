@@ -27,31 +27,35 @@
     return href + '&context=' + encodeURIComponent(context);
   }
 
-  function getAction(type, context) {
-    if (context === 'app') {
-      if (type === 'okatte') {
-        return {
-          href: '../app/messages.html',
-          label: '申し込む',
-          buttonClass: 'primary'
-        };
-      }
-      return {
-        href: '../app/home.html',
-        label: 'ログイン後ホームへ戻る',
-        buttonClass: 'ghost'
-      };
+  function buildThreadId(type, proposalId) {
+    if (type === 'okatte') {
+      return 'thread-bridge-1';
     }
-    if (context === 'gate' && type === 'gate') {
+    if (type === 'gate') {
+      return 'thread-local-1';
+    }
+    return 'thread-bridge-1';
+  }
+
+  function buildMessagesHref(type, proposalId) {
+    return '../app/messages.html?thread=' + encodeURIComponent(buildThreadId(type, proposalId));
+  }
+
+  function buildLoginHref(type, proposalId) {
+    return '../auth/login.html?returnTo=' + encodeURIComponent(buildMessagesHref(type, proposalId));
+  }
+
+  function getAction(type, context, proposalId) {
+    if (context === 'app') {
       return {
-        href: '../app/home.html',
-        label: 'この入口から進む',
+        href: buildMessagesHref(type, proposalId),
+        label: '申し込む',
         buttonClass: 'primary'
       };
     }
     return {
-      href: '../auth/login.html',
-      label: type === 'okatte' ? 'ログインして申し込む' : '登録 / ログインして入口を選ぶ',
+      href: buildLoginHref(type, proposalId),
+      label: 'ログインして申し込む',
       buttonClass: 'primary'
     };
   }
@@ -322,9 +326,9 @@
         viewport.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
       activeCard = track.querySelector('[data-proposal-id="' + currentId + '"]');
-      if (activeCard) {
+      if (fromPin && activeCard) {
         activeCard.scrollIntoView({
-          behavior: fromPin ? 'smooth' : 'auto',
+          behavior: 'smooth',
           block: 'nearest',
           inline: 'end'
         });
@@ -359,7 +363,8 @@
     var basePath = root.getAttribute('data-proposal-base') || './';
     var context = getContext();
     var item = proposals.getProposal(type, readProposalId(root, type));
-    var action = getAction(type, context);
+    var action = getAction(type, context, item.id);
+    var consultHref = context === 'app' ? buildMessagesHref(type, item.id) : buildLoginHref(type, item.id);
     var pageLabel = type === 'okatte' ? 'ちいきのおかって' : 'ちいきの入り口';
 
     shared.setPageTitle('FURUTABI Wire | ', item.title);
@@ -373,7 +378,12 @@
           '<div class="proposalDetailHeroCopy">' +
             '<span class="pill">' + proposals.escapeHtml(pageLabel) + '</span>' +
             '<h1 class="h1 proposalDetailTitle">' + proposals.escapeHtml(item.title) + '</h1>' +
-            (type === 'okatte' ? '<div class="proposalDetailHeroAction"><a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a></div>' : '') +
+            ((type === 'okatte' || type === 'gate')
+              ? '<div class="proposalDetailHeroAction">'
+                  + '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>'
+                  + '<a class="btn ghost" href="' + proposals.escapeHtml(consultHref) + '">' + proposals.escapeHtml(context === 'app' ? '架け橋さんに相談する' : 'ログインして相談する') + '</a>'
+                + '</div>'
+              : '') +
             '<div class="proposalDetailMeta"><span class="proposalDuration">' + proposals.escapeHtml(item.duration) + '</span></div>' +
             renderTagRow(item.tags) +
             '<p class="proposalDetailIntro">' + proposals.escapeHtml(item.intro) + '</p>' +
@@ -434,9 +444,10 @@
             '<div class="h2">次へ進む</div>' +
             '<p class="note">詳細を見たあとも、無理なく次の扉に移れるようにしています。</p>' +
           '</div>' +
-          (type === 'okatte'
-            ? '<a class="btn ghost" href="../app/messages.html">連絡を見る</a>'
-            : '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>') +
+          '<div class="proposalDetailHeroAction">' +
+            '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>' +
+            '<a class="btn ghost" href="' + proposals.escapeHtml(consultHref) + '">' + proposals.escapeHtml(context === 'app' ? '架け橋さんに相談する' : 'ログインして相談する') + '</a>' +
+          '</div>' +
         '</div>' +
       '</section>';
 

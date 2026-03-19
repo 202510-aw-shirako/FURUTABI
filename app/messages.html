@@ -62,6 +62,50 @@
 
         <div class="messageList" data-message-list></div>
         <p class="note" data-message-empty hidden>まだ連絡はありません。提案や申請、非公開の相談があると、ここに表示されます。</p>
+
+        <section class="chatMain" data-message-thread-preview hidden>
+          <div class="mypageHead">
+            <h2 class="h2">この件のやり取り</h2>
+            <p class="note">申し込みや相談の続きは、この欄から見返せます。</p>
+          </div>
+
+          <section class="chatThreadHeader">
+            <div class="chatThreadMeta">
+              <span class="pill" data-message-thread-role>架け橋さん</span>
+              <span class="pill pill--soft" data-message-thread-status>申請中</span>
+            </div>
+            <h3 class="h2" data-message-thread-counterpart>伊藤 朗士さん</h3>
+            <div class="chatThreadTitle" data-message-thread-title>海まで歩いて景色の話を聞く</div>
+            <div class="chatThreadActions">
+              <a class="btn ghost" href="#" data-message-thread-related-link>この件の詳細を見る</a>
+              <a class="btn ghost" href="./chat.html" data-message-thread-open-link>チャット画面で開く</a>
+            </div>
+          </section>
+
+          <div class="chatAlert" hidden data-message-thread-closed>
+            <div class="h2">このやり取りは終了しました</div>
+            <p class="note">必要がある場合は、運営への相談導線から非公開で知らせられます。</p>
+          </div>
+
+          <div class="chatAlert" hidden data-message-thread-verify>
+            <div class="h2">追加確認が必要です</div>
+            <p class="note">本人確認ページに進んだあと、必要に応じてこのやり取りを再開できます。</p>
+            <a class="btn ghost" href="../auth/register-verify.html">本人確認ページへ</a>
+          </div>
+
+          <section class="chatMessages" data-message-thread-messages></section>
+
+          <section class="chatComposer" data-message-thread-composer>
+            <label class="mypageField">
+              <span>メッセージ</span>
+              <textarea rows="4" placeholder="この件について、必要なことだけを落ち着いて送れます。"></textarea>
+            </label>
+            <div class="chatComposerActions">
+              <a class="btn ghost" href="../public/safety.html">困ったときは運営に相談</a>
+              <button class="btn primary" type="button">送信する</button>
+            </div>
+          </section>
+        </section>
       </section>
     </section>
   </main>

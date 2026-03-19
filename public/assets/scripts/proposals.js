@@ -363,10 +363,21 @@
     return buildGateCard(item, basePath, options);
   }
 
+  function resolveCardContext(rawContext) {
+    var params;
+
+    if (rawContext !== 'gate') {
+      return rawContext;
+    }
+
+    params = new URLSearchParams(window.location.search);
+    return params.get('context') || '';
+  }
+
   function renderList(root) {
     var type = root.getAttribute('data-proposal-list');
     var basePath = root.getAttribute('data-proposal-base') || './';
-    var context = root.getAttribute('data-proposal-context') || '';
+    var context = resolveCardContext(root.getAttribute('data-proposal-context') || '');
     root.innerHTML = getCollection(type).map(function (item) {
       return buildCard(type, item, basePath, { carousel: true, context: context });
     }).join('');
@@ -375,10 +386,318 @@
   function renderGrid(root) {
     var type = root.getAttribute('data-proposal-grid');
     var basePath = root.getAttribute('data-proposal-base') || './';
-    var context = root.getAttribute('data-proposal-context') || '';
+    var context = resolveCardContext(root.getAttribute('data-proposal-context') || '');
     root.innerHTML = getCollection(type).map(function (item) {
       return buildCard(type, item, basePath, { context: context });
     }).join('');
+  }
+
+  function buildOverviewMapMarkup(type, basePath, context, activeId) {
+    var items = getCollection(type);
+    var mapImage = basePath + 'assets/images/凪咲町.svg';
+
+    return '' +
+      '<div class="topMapLayout appTopMapLayout proposalDetailMapLayout" data-proposal-overview-map>' +
+        '<div class="myMapMain">' +
+          '<div class="topMapStage" aria-label="一覧の地図" data-proposal-overview-stage>' +
+            '<div class="myMapViewport" data-proposal-overview-viewport>' +
+              '<img class="topMapCanvas topMapCanvasImage" src="' + escapeHtml(mapImage) + '" alt="一覧の地図" data-proposal-overview-image />' +
+              '<div class="myMapPinsLayer" aria-hidden="false" data-proposal-overview-pins-layer>' +
+                items.map(function (item, index) {
+                  return '<a class="topMapPin ' + escapeHtml(item.pinClass) + (item.id === activeId ? ' is-active' : '') + '" href="' + escapeHtml(buildDetailHref(type, item.id, basePath, context)) + '" data-proposal-overview-pin="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(item.placeName) + '"><span>' + String(index + 1) + '</span></a>';
+                }).join('') +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="myMapZoomControls" aria-label="地図の拡大縮小">' +
+          '<button class="btn ghost myMapZoomBtn" type="button" data-proposal-overview-zoom-in>＋</button>' +
+          '<button class="btn ghost myMapZoomBtn" type="button" data-proposal-overview-zoom-out>−</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="entryCarousel proposalDetailMapCarousel">' +
+        '<div class="entryCarouselStage">' +
+          '<button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-proposal-overview-prev aria-label="前の入口"></button>' +
+          '<div class="entryCarouselViewport">' +
+            '<div class="entryCarouselTrack proposalDetailMapTrack" data-proposal-overview-cards>' +
+              items.map(function (item, index) {
+                return buildCard(type, item, basePath, {
+                  carousel: true,
+                  context: context,
+                  marker: index + 1,
+                  active: item.id === activeId
+                });
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-proposal-overview-next aria-label="次の入口"></button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function initOverviewMap(root) {
+    var type = 'gate';
+    var basePath = root.getAttribute('data-proposal-base') || './';
+    var context = resolveCardContext(root.getAttribute('data-proposal-context') || '');
+    var items = getCollection(type);
+    var requestedId = shared && shared.readQueryParam ? shared.readQueryParam('proposal') : '';
+    var activeId = (requestedId && getProposal(type, requestedId).id) || (items[0] && items[0].id);
+    var stage;
+    var viewport;
+    var pinsLayer;
+    var image;
+    var pins;
+    var track;
+    var prev;
+    var next;
+    var zoomIn;
+    var zoomOut;
+    var zoom = 1;
+    var panX = 0;
+    var panY = 0;
+    var dragging = false;
+    var dragged = false;
+    var dragStartX = 0;
+    var dragStartY = 0;
+    var panStartX = 0;
+    var panStartY = 0;
+
+    if (!items.length) {
+      return;
+    }
+
+    root.innerHTML = buildOverviewMapMarkup(type, basePath, context, activeId);
+
+    stage = root.querySelector('[data-proposal-overview-stage]');
+    viewport = root.querySelector('[data-proposal-overview-viewport]');
+    pinsLayer = root.querySelector('[data-proposal-overview-pins-layer]');
+    image = root.querySelector('[data-proposal-overview-image]');
+    pins = Array.prototype.slice.call(root.querySelectorAll('[data-proposal-overview-pin]'));
+    track = root.querySelector('[data-proposal-overview-cards]');
+    prev = root.querySelector('[data-proposal-overview-prev]');
+    next = root.querySelector('[data-proposal-overview-next]');
+    zoomIn = root.querySelector('[data-proposal-overview-zoom-in]');
+    zoomOut = root.querySelector('[data-proposal-overview-zoom-out]');
+
+    function getImageFrame() {
+      var stageWidth;
+      var stageHeight;
+      var naturalWidth;
+      var naturalHeight;
+      var imageRatio;
+      var stageRatio;
+      var width;
+      var height;
+      var left;
+      var top;
+
+      if (!stage || !image || !pinsLayer) {
+        return null;
+      }
+
+      stageWidth = stage.clientWidth;
+      stageHeight = stage.clientHeight;
+      naturalWidth = image.naturalWidth || image.clientWidth || stageWidth;
+      naturalHeight = image.naturalHeight || image.clientHeight || stageHeight;
+
+      if (!stageWidth || !stageHeight || !naturalWidth || !naturalHeight) {
+        return null;
+      }
+
+      imageRatio = naturalWidth / naturalHeight;
+      stageRatio = stageWidth / stageHeight;
+
+      if (imageRatio > stageRatio) {
+        width = stageWidth;
+        height = width / imageRatio;
+        left = 0;
+        top = (stageHeight - height) / 2;
+      } else {
+        height = stageHeight;
+        width = height * imageRatio;
+        top = 0;
+        left = (stageWidth - width) / 2;
+      }
+
+      return {
+        left: left,
+        top: top,
+        width: width,
+        height: height
+      };
+    }
+
+    function syncPinsLayerFrame() {
+      var frame = getImageFrame();
+
+      if (!frame || !pinsLayer) {
+        return;
+      }
+
+      pinsLayer.style.inset = 'auto';
+      pinsLayer.style.left = frame.left + 'px';
+      pinsLayer.style.top = frame.top + 'px';
+      pinsLayer.style.width = frame.width + 'px';
+      pinsLayer.style.height = frame.height + 'px';
+    }
+
+    function syncZoom() {
+      syncPinsLayerFrame();
+      if (viewport) {
+        viewport.style.transform = 'translate(' + panX + 'px, ' + panY + 'px) scale(' + zoom + ')';
+      }
+      if (zoomIn) {
+        zoomIn.disabled = zoom >= 1.8;
+      }
+      if (zoomOut) {
+        zoomOut.disabled = zoom <= 1;
+      }
+      if (stage) {
+        stage.classList.toggle('is-draggable', zoom > 1);
+      }
+    }
+
+    function setCurrent(id, shouldScroll) {
+      activeId = id;
+
+      pins.forEach(function (pin) {
+        pin.classList.toggle('is-active', pin.getAttribute('data-proposal-overview-pin') === activeId);
+      });
+
+      Array.prototype.slice.call(track.querySelectorAll('[data-proposal-id]')).forEach(function (card) {
+        var isActive = card.getAttribute('data-proposal-id') === activeId;
+        card.classList.toggle('is-active', isActive);
+        if (isActive && shouldScroll) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    }
+
+    function moveBy(step) {
+      var index = items.findIndex(function (item) { return item.id === activeId; });
+      var nextIndex = (index + step + items.length) % items.length;
+      setCurrent(items[nextIndex].id, true);
+    }
+
+    function startDrag(event) {
+      if (zoom <= 1 || !stage) {
+        return;
+      }
+      event.preventDefault();
+      dragging = true;
+      dragged = false;
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+      panStartX = panX;
+      panStartY = panY;
+      stage.classList.add('is-dragging');
+    }
+
+    function moveDrag(event) {
+      if (!dragging) {
+        return;
+      }
+      if (Math.abs(event.clientX - dragStartX) > 3 || Math.abs(event.clientY - dragStartY) > 3) {
+        dragged = true;
+      }
+      panX = panStartX + (event.clientX - dragStartX);
+      panY = panStartY + (event.clientY - dragStartY);
+      syncZoom();
+    }
+
+    function endDrag() {
+      if (!dragging) {
+        return;
+      }
+      dragging = false;
+      if (stage) {
+        stage.classList.remove('is-dragging');
+      }
+    }
+
+    pins.forEach(function (pin) {
+      pin.addEventListener('click', function (event) {
+        event.preventDefault();
+        if (dragged) {
+          dragged = false;
+          return;
+        }
+        setCurrent(pin.getAttribute('data-proposal-overview-pin'), true);
+      });
+    });
+
+    track.addEventListener('click', function (event) {
+      var card = event.target.closest('[data-proposal-id]');
+      if (!card || event.target.closest('a')) {
+        return;
+      }
+      setCurrent(card.getAttribute('data-proposal-id'), false);
+    });
+
+    if (prev) {
+      prev.addEventListener('click', function () {
+        moveBy(-1);
+      });
+    }
+
+    if (next) {
+      next.addEventListener('click', function () {
+        moveBy(1);
+      });
+    }
+
+    if (stage) {
+      stage.addEventListener('mousedown', function (event) {
+        if (
+          event.target !== stage &&
+          event.target !== pinsLayer &&
+          !event.target.classList.contains('topMapCanvasImage') &&
+          !event.target.closest('[data-proposal-overview-pin]')
+        ) {
+          return;
+        }
+        startDrag(event);
+      });
+
+      stage.addEventListener('wheel', function (event) {
+        event.preventDefault();
+        zoom = Math.max(1, Math.min(1.8, zoom + (event.deltaY < 0 ? 0.1 : -0.1)));
+        if (zoom === 1) {
+          panX = 0;
+          panY = 0;
+        }
+        syncZoom();
+      }, { passive: false });
+    }
+
+    document.addEventListener('mousemove', moveDrag);
+    document.addEventListener('mouseup', endDrag);
+
+    if (zoomIn) {
+      zoomIn.addEventListener('click', function () {
+        zoom = Math.min(1.8, zoom + 0.1);
+        syncZoom();
+      });
+    }
+
+    if (zoomOut) {
+      zoomOut.addEventListener('click', function () {
+        zoom = Math.max(1, zoom - 0.1);
+        if (zoom === 1) {
+          panX = 0;
+          panY = 0;
+        }
+        syncZoom();
+      });
+    }
+
+    window.addEventListener('resize', syncPinsLayerFrame);
+    if (image) {
+      image.addEventListener('load', syncPinsLayerFrame);
+    }
+
+    setCurrent(activeId, false);
+    syncZoom();
   }
 
   function buildPersonModal(personId, basePath) {
@@ -480,6 +799,7 @@
   function init() {
     document.querySelectorAll('[data-proposal-list]').forEach(renderList);
     document.querySelectorAll('[data-proposal-grid]').forEach(renderGrid);
+    document.querySelectorAll('[data-gate-map-root]').forEach(initOverviewMap);
     ensureModalShell();
     initModalBindings();
   }

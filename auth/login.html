@@ -47,7 +47,7 @@
             </div>
           </div>
           <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn primary" href="../app/home.html">ログイン（ワイヤ）</a>
+            <a class="btn primary" href="../app/home.html" data-login-wire-link>ログイン（ワイヤ）</a>
             <a class="btn ghost" href="#">パスワードを忘れた（ワイヤ）</a>
           </div>
           <div class="denseBox" style="margin-top:16px;">
@@ -63,7 +63,7 @@
           <div class="h2">地域の方</div>
           <p class="note">協力したい方、ちいきのおかってをひらきたい方、場に手を貸したい方向けの入口です。</p>
           <div style="display:grid; gap:10px; margin-top:12px;">
-            <a class="btn ghost" href="../app/local-member-home.html">地域アカウントでログイン（ワイヤ）</a>
+            <a class="btn ghost" href="../app/local-member-home.html" data-login-local-link>地域アカウントでログイン（ワイヤ）</a>
             <a class="btn ghost" href="#">地域アカウント登録（ワイヤ）</a>
           </div>
           <div class="denseBox" style="margin-top:16px;">
@@ -95,5 +95,15 @@
 
   </main>
   <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var returnTo = params.get('returnTo');
+      var userLink = document.querySelector('[data-login-wire-link]');
+      if (returnTo && userLink) {
+        userLink.setAttribute('href', returnTo);
+      }
+    })();
+  </script>
 </body>
 </html>
