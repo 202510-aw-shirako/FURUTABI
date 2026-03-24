@@ -97,6 +97,7 @@
   <script src="/assets/scripts/shared-ui.js"></script>
   <script>
     (function () {
+      // Preview-only wire adjustment. This does not mean backend returnTo handling is implemented.
       var params = new URLSearchParams(window.location.search);
       var returnTo = params.get('returnTo');
       var userLink = document.querySelector('[data-login-wire-link]');
