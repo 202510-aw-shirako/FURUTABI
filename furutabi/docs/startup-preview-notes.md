@@ -27,6 +27,9 @@ If port `8080` is already in use on the machine, run on another port:
 ## Preview URLs
 
 - `http://localhost:8080/preview/login`
+- `http://localhost:8080/preview/auth/login.html`
+- `http://localhost:8080/preview/public/bridge.html`
+- `http://localhost:8080/preview/public/index.html`
 - `http://localhost:8080/css/style.css`
 - `http://localhost:8080/assets/scripts/shared-ui.js`
 - `http://localhost:8080/h2-console`

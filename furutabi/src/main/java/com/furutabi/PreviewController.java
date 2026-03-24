@@ -10,4 +10,19 @@ public class PreviewController {
     public String previewLogin() {
         return "auth/login";
     }
+
+    @GetMapping("/preview/public/bridge.html")
+    public String previewBridge() {
+        return "public/bridge";
+    }
+
+    @GetMapping("/preview/public/index.html")
+    public String previewPublicIndex() {
+        return "public/index";
+    }
+
+    @GetMapping("/preview/auth/login.html")
+    public String previewAuthLogin() {
+        return "auth/login";
+    }
 }
