@@ -1,0 +1,109 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FURUTABI Wire | Login</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="auth_login"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="ログイン">
+    <!-- Java移行時メモ: 一般の方 / 地域の方 / 管理者で認証後の遷移先と権限を分けると整理しやすそうです。 -->
+    <!-- 新規登録は別フローへ切り出し、ログイン画面は既存アカウントの入口として保つイメージです。 -->
+    <!-- Java移行時メモ: 地域の方のログイン先は public/local.html ではなく、登録済み地域ユーザー向けの local-member-home です。 -->
+    <section class="section section--hero" aria-label="ヒーローイメージ">
+      <div class="fullbleed">
+        <div class="ph ph--pageHero" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="section fv">
+      <h1 class="h1">ログイン</h1>
+      <p class="lead">一般の方、地域の方、管理者で入口を分けています。</p>
+    </section>
+
+    <section class="section">
+      <div class="grid3 loginRoleGrid">
+        <div class="card">
+          <div class="h2">一般の方</div>
+          <p class="note">ごひいきさんとして地域に入る方のログインです。</p>
+          <div style="display:grid; gap:12px; margin-top:12px;">
+            <div>
+              <div class="small">メール</div>
+              <div class="ph ph--line w-90" style="height:42px; border-radius:12px;"></div>
+            </div>
+            <div>
+              <div class="small">パスワード</div>
+              <div class="ph ph--line w-80" style="height:42px; border-radius:12px;"></div>
+            </div>
+          </div>
+          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <a class="btn primary" href="../app/home.html" data-login-wire-link>ログイン（ワイヤ）</a>
+            <a class="btn ghost" href="#">パスワードを忘れた（ワイヤ）</a>
+          </div>
+          <div class="denseBox" style="margin-top:16px;">
+            <div>
+              <div class="h2">はじめての方</div>
+              <p class="note">まだ登録していない方は、こちらから新規登録へ進めます。</p>
+            </div>
+            <a class="btn ghost" href="./register.html">新規登録へ</a>
+          </div>
+        </div>
+
+        <div class="card" id="login-local">
+          <div class="h2">地域の方</div>
+          <p class="note">協力したい方、ちいきのおかってをひらきたい方、場に手を貸したい方向けの入口です。</p>
+          <div style="display:grid; gap:10px; margin-top:12px;">
+            <a class="btn ghost" href="../app/local-member-home.html" data-login-local-link>地域アカウントでログイン（ワイヤ）</a>
+            <a class="btn ghost" href="#">地域アカウント登録（ワイヤ）</a>
+          </div>
+          <div class="denseBox" style="margin-top:16px;">
+            <div>
+              <div class="h2">ログイン後に見られるもの</div>
+              <p class="note">詳しい募集内容、提案フォーム、関わり方の設計相談。</p>
+            </div>
+            <a class="btn primary" href="../app/local-member-home.html">地域アカウントへ（ワイヤ）</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="h2">管理者</div>
+          <p class="note">観光協会や運営側の管理用ログインです。</p>
+          <div style="display:grid; gap:10px; margin-top:12px;">
+            <a class="btn ghost" href="#">管理画面へ（ワイヤ）</a>
+            <a class="btn ghost" href="#">SSOで続行（ワイヤ）</a>
+          </div>
+          <div class="denseBox" style="margin-top:16px;">
+            <div>
+              <div class="h2">管理項目</div>
+              <p class="note">架け橋さん、提案、地域アカウント、相談導線の管理。</p>
+            </div>
+            <a class="btn ghost" href="#">確認する</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var returnTo = params.get('returnTo');
+      var userLink = document.querySelector('[data-login-wire-link]');
+      if (returnTo && userLink) {
+        userLink.setAttribute('href', returnTo);
+      }
+    })();
+  </script>
+</body>
+</html>

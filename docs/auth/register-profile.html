@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>プロフィールを整える | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="auth_login"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container authPage" aria-label="プロフィールを整える">
+    <!-- 登録後にゆっくり書く項目を分ける -->
+    <section class="authFlowShell">
+      <div class="authFlowIntro">
+        <p class="eyebrow">PROFILE</p>
+        <h1 class="authFlowTitle">プロフィールを整える</h1>
+        <p class="authFlowLead">あとから変更できるので、今わかる範囲だけで大丈夫です。</p>
+      </div>
+
+      <ol class="authStepList" aria-label="登録ステップ">
+        <li class="is-done"><span>1</span><strong>登録情報入力</strong></li>
+        <li class="is-current"><span>2</span><strong>初期設定</strong></li>
+        <li><span>3</span><strong>完了</strong></li>
+      </ol>
+
+      <div class="authFlowTopAction">
+        <a class="btn ghost" href="./register-complete.html">あとで設定する</a>
+      </div>
+
+      <section class="authCard">
+        <div class="authBadgeRow">
+          <span class="pill">任意</span>
+          <span class="pill">あとで変更できます</span>
+        </div>
+
+        <form class="authForm" action="./register-complete.html">
+          <section class="authCardSection">
+            <h2 class="authCardTitle">自分について</h2>
+            <p class="authCardLead">入力しなくても始められます。必要になったときに、あとから記入できます。</p>
+          </section>
+
+          <div class="authField">
+            <label for="profile-bio">自己紹介</label>
+            <textarea id="profile-bio" name="bio" rows="5" placeholder="好きな過ごし方や、この土地との関わり方を無理のない範囲で書けます。"></textarea>
+          </div>
+
+          <div class="authField">
+            <label for="profile-icon">アイコン画像</label>
+            <input id="profile-icon" name="icon" type="file" />
+          </div>
+
+          <div class="authField">
+            <label for="profile-region">居住地の大まかな地域</label>
+            <input id="profile-region" name="region" type="text" placeholder="例）東京都 / 関東 / 九州" />
+          </div>
+
+          <div class="authField">
+            <label for="profile-interest-region">興味のある地域</label>
+            <input id="profile-interest-region" name="interest_region" type="text" placeholder="例）海辺の地域 / 梅のある地域" />
+          </div>
+
+          <div class="authField">
+            <label for="profile-history">過去の訪問歴</label>
+            <textarea id="profile-history" name="visit_history" rows="3" placeholder="訪れたことのある地域や、印象に残っている時間があれば書けます。"></textarea>
+          </div>
+
+          <div class="authField">
+            <label for="profile-care">配慮してほしいこと</label>
+            <textarea id="profile-care" name="care" rows="3" placeholder="移動、会話、体調など、気になることがあれば書けます。"></textarea>
+          </div>
+
+          <div class="authField">
+            <label for="profile-with-children">子ども連れかどうか</label>
+            <select id="profile-with-children" name="with_children">
+              <option value="">選択してください</option>
+              <option>子ども連れ</option>
+              <option>子ども連れではない</option>
+              <option>状況によって変わる</option>
+            </select>
+          </div>
+
+          <div class="authField">
+            <label for="profile-food">食事制限 / アレルギーなど</label>
+            <textarea id="profile-food" name="food" rows="3" placeholder="食べられないものや、先に伝えておきたいことがあれば書けます。"></textarea>
+          </div>
+
+          <div class="authField">
+            <label for="profile-note">関わり方のメモ</label>
+            <textarea id="profile-note" name="note" rows="3" placeholder="ゆっくり話したい、景色を見たい、少人数が安心など。"></textarea>
+          </div>
+
+          <section class="authCardSection">
+            <h2 class="authCardTitle">関わり方について</h2>
+            <p class="authCardLead">通知設定ではなく、連絡を受けるかどうかの初期設定です。あとから変更できます。</p>
+          </section>
+
+          <fieldset class="authField authFieldset">
+            <legend>連絡の受け取り方</legend>
+            <div class="authChoiceList">
+              <label><input type="checkbox" checked />運営からのお知らせを受け取る</label>
+              <label><input type="checkbox" checked />架け橋さん経由の連絡を受け取る</label>
+              <label><input type="checkbox" />地域の方からの連絡を受け取る</label>
+            </div>
+          </fieldset>
+
+          <div class="authFormActions authFormActions--center">
+            <button class="btn primary" type="submit">はじめる</button>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script>
+    // Java実装時の目印:
+    // ここは仮登録とは分けて保存する任意プロフィール / 初期設定の画面です。
+    // UserProfile と ContactPreference を分けると、あとから変更しやすくなりそうです。
+    // 入力なしでも完了できる前提なので、null / empty をそのまま許容できる設計がおすすめです。
+  </script>
+  <!-- Current handoff note:
+       The rough home-region field is now treated as provisional wire content and is a candidate to remove in backend-facing implementation.
+       Keep the profile focus on interest_region, visit_history, care, with_children, food, note, and gender with "prefer not to say" retained. -->
+</body>
+</html>

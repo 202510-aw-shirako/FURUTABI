@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FURUTABI Wire | Story</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="public_secondary"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="ごひいきさんの足あと詳細">
+    <section class="section section--hero" aria-label="ヒーローイメージ">
+      <div class="fullbleed">
+        <div class="ph ph--pageHero" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="section fv">
+      <div class="fullbleed">
+        <div class="ph ph--hero"></div>
+      </div>
+      <p class="small" style="margin-top:10px;" data-story-meta>生まれ育った町を静かに見返す人</p>
+    </section>
+
+    <section class="section">
+      <!-- 本文エリアは単一テンプレート。
+           Java化では query の story を path variable / slug に置き換え、
+           詳細データだけサーバーまたは API から注入する想定。 -->
+      <h1 class="h1" data-story-title>境内の風と、OOさんのおはぎ</h1>
+      <p class="lead" data-story-summary>大きく説明するのではなく、時間の混ざり方が伝わるような足あとです。</p>
+      <div class="card noticeArticle" style="margin-top:18px;" data-story-body>
+        <p>境内のベンチに座っていると、時々サーっと風が渡ってきます。</p>
+        <p>木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。</p>
+        <p>その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。</p>
+      </div>
+      <section class="storyInteractionSection" aria-label="反応とコメント" data-story-interaction-root style="margin-top:18px;">
+        <!-- コメント機能は、長い議論や自由掲示板のためではない -->
+        <!-- 公開コメントには、残しておきたい気持ちや言葉を中心に置く -->
+        <!-- 困りごとや改善点は公開コメントではなく非公開導線に送る -->
+        <!-- ありがとう / いいね は、公開の場に好意を積み上げる軽い反応 -->
+        <!-- コメントしたもの一覧と、反応したもの一覧を見返せるようにする -->
+        <!-- 対象は「わたしの地図」と「ごひいきさんの足あと」 -->
+        <div class="card interactionCard">
+          <div class="interactionBar" data-story-reactions></div>
+          <div class="commentSection">
+            <div class="sectionTitleRow">
+              <h2 class="h2">コメント</h2>
+              <span class="note" data-story-comment-count>0件</span>
+            </div>
+            <p class="note">残しておきたい気持ちや言葉を書いてください。困りごとや改善点は、公開コメントではなく非公開でお知らせください。</p>
+            <div class="commentList" data-story-comment-list></div>
+            <div class="commentComposer">
+              <label class="myMapField">
+                <span>コメントを書く</span>
+                <textarea rows="3" placeholder="気持ちや返しておきたい言葉を、短く書いてください。" data-story-comment-input></textarea>
+              </label>
+              <div class="commentComposerActions">
+                <button class="btn primary" type="button" data-story-comment-submit>コメントする</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="section" aria-label="ごひいきさんの足あとの運用ルール">
+      <div class="card">
+        <div class="h2">運用ルール</div>
+        <ul class="aboutFeatureList" data-rule-list="footprints"></ul>
+      </div>
+    </section>
+
+    <section class="section topMapSection" aria-label="ほかのごひいきさんの足あと">
+      <div class="sectionTitleRow">
+        <h2 class="h2">ほかのごひいきさんの足あと</h2>
+        <a class="sectionTitleLink" href="index.html">トップへ</a>
+      </div>
+      <p class="lead">地図から別の足あとを選び、その場でカードを切り替えて読めます。</p>
+
+      <div class="topMapLayout appTopMapLayout" style="margin-top:18px;" data-story-map data-top-map data-top-map-kind="footprints">
+        <!-- 記事下の地図は「別記事へ回遊するための軽量 preview」。
+             Java化でも詳細本文とは別に、関連数件だけ返す設計が向いている。 -->
+        <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
+          <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
+            <div class="topMapCardBody">
+              <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
+              <div class="topMapCardText">
+                <div class="topMapCardHead">
+                  <span class="pill" data-top-map-label>ごひいきさんの足あと</span>
+                  <span class="topMapMarker"><span data-top-map-marker>1</span></span>
+                </div>
+                <div class="topMapComment" data-top-map-comment="1">
+                  <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                  <div data-top-map-comment-body>
+                    <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="topMapFooter">
+              <div class="topMapActions" aria-label="反応">
+                <button class="topMapActionBtn" type="button">いいね <span>12</span></button>
+                <button class="topMapActionBtn topMapActionBtn--thanks" type="button">ありがとう <span>4</span></button>
+              </div>
+              <a class="btn ghost topMapMore" href="story.html?story=1" data-top-map-link>この足あとを読む</a>
+            </div>
+          </article>
+        </div>
+
+        <div class="myMapMain">
+          <div class="topMapStage" aria-label="ごひいきさんの足あと地図" data-top-map-stage>
+            <div class="myMapViewport" data-top-map-viewport>
+              <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" />
+              <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
+                <a class="topMapPin topMapPin--a is-active" href="story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+                <a class="topMapPin topMapPin--b" href="story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+                <a class="topMapPin topMapPin--c" href="story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="myMapZoomControls" aria-label="地図の拡大縮小">
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-in>＋</button>
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-out>−</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="denseBox">
+        <div>
+          <div class="h2">関わる入口を開く</div>
+          <p class="note">入口の詳細や登録はログイン/登録後に進みます。</p>
+        </div>
+        <a class="btn primary" href="../auth/login.html">ログインへ</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/scripts/shared-ui.js"></script>
+  <script src="./assets/scripts/footprints.js"></script>
+  <script src="./assets/scripts/interactions.js"></script>
+  <script>
+    (function () {
+      var shared = window.FURUTABI_SHARED_UI;
+      var params = new URLSearchParams(window.location.search);
+      var storyId = params.get('story') || '1';
+      var footprints = window.FURUTABI_FOOTPRINTS;
+      var interactions = window.FURUTABI_INTERACTIONS;
+      // Wireでは共通JSから読むが、Java化ではここを API / サーバー注入データに差し替える。
+      var storyData = footprints
+        ? footprints.mergeStories(
+            footprints.withBasePath(''),
+            footprints.buildSharedMapStories('#', { visibility: 'public' })
+          )
+        : {};
+      var currentStory = storyData[storyId] || storyData['1'];
+      var title = document.querySelector('[data-story-title]');
+      var summary = document.querySelector('[data-story-summary]');
+      var meta = document.querySelector('[data-story-meta]');
+      var facets = document.querySelector('[data-story-facets]');
+      var body = document.querySelector('[data-story-body]');
+      var map = document.querySelector('[data-story-map]');
+      var interactionRoot = document.querySelector('[data-story-interaction-root]');
+
+      if (!currentStory) {
+        return;
+      }
+
+      if (title) title.textContent = currentStory.title;
+      if (summary) summary.textContent = currentStory.summary;
+      if (meta) {
+        meta.textContent = currentStory.meta;
+        if (!facets && footprints && typeof footprints.getFacetText === 'function') {
+          facets = document.createElement('p');
+          facets.className = 'storyFacetLine';
+          facets.setAttribute('data-story-facets', '');
+          meta.insertAdjacentElement('afterend', facets);
+        }
+      }
+      if (facets && footprints && typeof footprints.getFacetText === 'function') {
+        facets.textContent = footprints.getFacetText(currentStory);
+      }
+      if (body && shared) {
+        shared.renderParagraphs(body, currentStory.body || []);
+      }
+      if (shared) {
+        shared.setPageTitle('FURUTABI Wire | ', currentStory.title);
+      } else {
+        document.title = 'FURUTABI Wire | ' + currentStory.title;
+      }
+
+      if (map && footprints) {
+        // preview 地図は共通ロジックで回し、ページごとの差分は初期選択IDだけにする。
+        footprints.initPreviewMap(map, storyData, {
+          label: 'ごひいきさんの足あと',
+          initialStoryId: currentStory.id
+        });
+      }
+
+      function escapeText(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function renderInteractions() {
+        var reactions;
+        var comments;
+        var reactionsRoot;
+        var commentCount;
+        var commentList;
+        if (!interactionRoot || !interactions) {
+          return;
+        }
+
+        reactions = interactions.getReactionSummary('story_post', currentStory.id);
+        comments = interactions.getComments('story_post', currentStory.id);
+        reactionsRoot = interactionRoot.querySelector('[data-story-reactions]');
+        commentCount = interactionRoot.querySelector('[data-story-comment-count]');
+        commentList = interactionRoot.querySelector('[data-story-comment-list]');
+
+        reactionsRoot.innerHTML =
+          '<button class="topMapActionBtn' + (reactions.like.isActive ? ' is-on' : '') + '" type="button" data-story-reaction="like">いいね <span>' + reactions.like.count + '</span></button>' +
+          '<button class="topMapActionBtn topMapActionBtn--thanks' + (reactions.thank_you.isActive ? ' is-on' : '') + '" type="button" data-story-reaction="thank_you">ありがとう <span>' + reactions.thank_you.count + '</span></button>';
+        commentCount.textContent = comments.length + '件';
+        commentList.innerHTML = comments.length
+          ? comments.map(function (comment) {
+              return '' +
+                '<article class="commentItem">' +
+                  '<div class="commentMeta"><span class="commentAuthor">' + escapeText(comment.nickname) + '</span><time>' + escapeText(comment.created_at) + '</time>' + (comment.user_id === 'wire-user-1' ? '<button class="commentDeleteBtn" type="button" data-story-comment-delete="' + escapeText(comment.comment_id) + '">削除</button>' : '') + '</div>' +
+                  '<p class="commentBody">' + escapeText(comment.body) + '</p>' +
+                '</article>';
+            }).join('')
+          : '<p class="note">まだコメントはありません。</p>';
+
+        Array.prototype.slice.call(interactionRoot.querySelectorAll('[data-story-reaction]')).forEach(function (button) {
+          button.addEventListener('click', function () {
+            interactions.toggleReaction('story_post', currentStory.id, button.getAttribute('data-story-reaction'));
+            renderInteractions();
+          });
+        });
+
+        Array.prototype.slice.call(interactionRoot.querySelectorAll('[data-story-comment-delete]')).forEach(function (button) {
+          button.addEventListener('click', function () {
+            interactions.removeComment('story_post', currentStory.id, button.getAttribute('data-story-comment-delete'));
+            renderInteractions();
+          });
+        });
+      }
+
+      if (interactionRoot && interactions) {
+        interactionRoot.querySelector('[data-story-comment-submit]').addEventListener('click', function () {
+          var input = interactionRoot.querySelector('[data-story-comment-input]');
+          var value = input.value.trim();
+          if (!value) {
+            return;
+          }
+          interactions.addComment('story_post', currentStory.id, value);
+          input.value = '';
+          renderInteractions();
+        });
+        renderInteractions();
+      }
+    })();
+  </script>
+</body>
+</html>

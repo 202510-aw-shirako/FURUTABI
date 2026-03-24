@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>関わりの履歴 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <!-- 目印: 関わりの履歴は、設定一覧ではなく「あとから関わりを見返す」ための場所 -->
+  <!-- おすすめ: 時系列・コメント・反応を分けておくと、Java 実装時も責務が混ざりにくい -->
+  <header class="topbar"><div class="container"><div class="inner"><div class="brand">FURUTABI｜郷旅</div><nav data-site-nav="app_home"></nav></div></div></header>
+  <main class="container mypagePage" aria-label="関わりの履歴">
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション"><div class="mypageSidebarInner"><h2 class="mypageSidebarTitle">アカウント</h2><nav class="mypageNav"><a class="mypageNavLink" href="./mypage.html">マイページ</a><a class="mypageNavLink" href="./account.html">アカウント情報</a><a class="mypageNavLink" href="./profile.html">プロフィール編集</a><a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a><a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a><a class="mypageNavLink is-current" href="./history.html" aria-current="page">関わりの履歴</a><a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a><a class="mypageNavLink" href="./support.html">安心とサポート</a></nav></div></aside>
+      <section class="mypageMain">
+        <div class="mypageHead"><h1 class="h1">関わりの履歴</h1><p class="lead">これまでの関わりを、あとから見返せます。</p></div>
+        <!-- Current handoff note:
+             history is "records of involvement", split into timeline / commented / reacted, and the timeline can include proposals, okatte, and private check-ins. -->
+        <div class="mypageTabs" data-history-tabs>
+          <button class="pill is-on" type="button" data-history-tab="timeline">時系列</button>
+          <button class="pill" type="button" data-history-tab="comments">コメントしたもの</button>
+          <button class="pill" type="button" data-history-tab="reactions">反応したもの</button>
+        </div>
+        <div class="mypageTimeline" data-history-panel="timeline">
+          <article class="mypageTimelineItem"><div class="mypageTimelineMeta"><span class="small">2026.03.10</span><span class="pill">公開中</span></div><div><h2 class="h2">ごひいきさんの足あと</h2><p class="note">「海辺の朝の光と、小さな港の気配」を公開しました。</p></div></article>
+          <article class="mypageTimelineItem"><div class="mypageTimelineMeta"><span class="small">2026.03.04</span><span class="pill pill--soft">本人のみ</span></div><div><h2 class="h2">わたしの地図</h2><p class="note">新しい地図メモを登録しました。公開範囲は本人のみです。</p></div></article>
+          <article class="mypageTimelineItem"><div class="mypageTimelineMeta"><span class="small">2026.02.21</span><span class="pill">利用済み</span></div><div><h2 class="h2">ちいきの入り口</h2><p class="note">海まで歩いて景色の話を聞く入口を利用しました。</p></div></article>
+          <article class="mypageTimelineItem"><div class="mypageTimelineMeta"><span class="small">2026.02.12</span><span class="pill">申請中</span></div><div><h2 class="h2">ちいきのおかって</h2><p class="note">郷土料理をみんなで作る午後の提案に進みたい旨を送っています。</p></div></article>
+          <article class="mypageTimelineItem"><div class="mypageTimelineMeta"><span class="small">2026.01.28</span><span class="pill pill--soft">非公開</span></div><div><h2 class="h2">非公開チェックイン</h2><p class="note">凪咲町での短い滞在記録を非公開で残しました。</p></div></article>
+        </div>
+        <section class="historyList" data-history-panel="comments" hidden>
+          <div class="sectionTitleRow">
+            <h2 class="h2">コメントしたもの</h2>
+            <span class="note">公開コメントは、残しておきたい気持ちや言葉を中心にしています。</span>
+          </div>
+          <div class="mypageTabs mypageTabs--sub" data-history-filter="comments">
+            <button class="pill is-on" type="button" data-history-kind="all">すべて</button>
+            <button class="pill" type="button" data-history-kind="map_record">わたしの地図</button>
+            <button class="pill" type="button" data-history-kind="story_post">ごひいきさんの足あと</button>
+          </div>
+          <div data-history-comments-list></div>
+        </section>
+        <section class="historyList" data-history-panel="reactions" hidden>
+          <div class="sectionTitleRow">
+            <h2 class="h2">反応したもの</h2>
+            <span class="note">ありがとう / いいね は、公開の場に好意を積み上げる軽い反応です。</span>
+          </div>
+          <div class="mypageTabs mypageTabs--sub" data-history-filter="reactions">
+            <button class="pill is-on" type="button" data-history-kind="all">すべて</button>
+            <button class="pill" type="button" data-history-kind="map_record">わたしの地図</button>
+            <button class="pill" type="button" data-history-kind="story_post">ごひいきさんの足あと</button>
+          </div>
+          <div data-history-reactions-list></div>
+        </section>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script src="../public/assets/scripts/footprints.js"></script>
+  <script src="../public/assets/scripts/interactions.js"></script>
+  <script src="../public/assets/scripts/history-page.js"></script>
+</body>
+</html>

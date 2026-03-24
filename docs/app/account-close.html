@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>退会手続き | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar"><div class="container"><div class="inner"><div class="brand">FURUTABI｜郷旅</div><nav data-site-nav="app_home"></nav></div></div></header>
+  <main class="container mypagePage" aria-label="退会手続き">
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション"><div class="mypageSidebarInner"><h2 class="mypageSidebarTitle">アカウント</h2><nav class="mypageNav"><a class="mypageNavLink" href="./mypage.html">マイページ</a><a class="mypageNavLink" href="./account.html">アカウント情報</a><a class="mypageNavLink" href="./profile.html">プロフィール編集</a><a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a><a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a><a class="mypageNavLink" href="./history.html">関わりの履歴</a><a class="mypageNavLink is-current" href="./security.html" aria-current="page">ログインとセキュリティ</a><a class="mypageNavLink" href="./support.html">安心とサポート</a></nav></div></aside>
+      <section class="mypageMain">
+        <div class="mypageHead">
+          <h1 class="h1">退会手続き</h1>
+          <p class="lead">よくある形に寄せて、確認事項を見たうえで退会を受け付ける画面です。</p>
+        </div>
+        <section class="mypageSubflowCard">
+          <div class="mypageNoticeBox">
+            <p>退会すると、ログイン中の利用は止まり、公開設定や連絡設定も見直し対象になります。</p>
+            <p>公開中の記録や履歴の扱いは、運営確認後に順次整理されます。</p>
+          </div>
+          <form class="mypageForm" action="./account-close-complete.html">
+            <label class="mypageField">
+              <span>退会理由（任意）</span>
+              <select>
+                <option selected>選択してください</option>
+                <option>しばらく使う予定がない</option>
+                <option>使い方が合わなかった</option>
+                <option>安全面に不安がある</option>
+                <option>その他</option>
+              </select>
+            </label>
+            <label class="mypageField">
+              <span>パスワード</span>
+              <input type="password" placeholder="本人確認のため入力" required />
+            </label>
+            <label class="mypageField">
+              <span>確認のため「退会する」と入力してください</span>
+              <input type="text" placeholder="退会する" required />
+            </label>
+            <div class="mypageCheckStack">
+              <label><input type="checkbox" required />退会後は一部の情報がすぐに戻せないことを確認しました</label>
+              <label><input type="checkbox" required />困りごとがある場合は、退会前に安心とサポートから相談できることを確認しました</label>
+            </div>
+            <div class="mypageActions">
+              <button class="btn primary" type="submit">退会を受け付ける</button>
+              <a class="btn ghost" href="./security.html">戻る</a>
+            </div>
+          </form>
+        </section>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

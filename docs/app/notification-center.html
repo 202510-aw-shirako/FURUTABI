@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>通知 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <!-- 目印: 通知は「起きたことに気づく場」で、ここで詳しい調整まで完結させない -->
+  <!-- おすすめ: 最新数件の要約と一覧導線の二段構えを保つと、通知の役割がぶれにくい -->
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mypagePage" aria-label="通知一覧" data-notification-page>
+    <!-- 通知は「やり取りの場」ではなく「起きたことに気づく場」 -->
+    <!-- ベルアイコンはログイン後ヘッダーに置く -->
+    <!-- 未読時はバッジ表示 -->
+    <!-- ドロップダウンでは最新数件だけ表示 -->
+    <!-- 「すべて見る」で通知一覧ページへ遷移 -->
+    <!-- 詳細な会話や調整は通知内で完結させず、提案詳細 / 申請詳細 / チャット / 記事ページ等へ遷移させる -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション">
+        <div class="mypageSidebarInner">
+          <h2 class="mypageSidebarTitle">アカウント</h2>
+          <nav class="mypageNav">
+            <a class="mypageNavLink" href="./mypage.html">マイページ</a>
+            <a class="mypageNavLink" href="./account.html">アカウント情報</a>
+            <a class="mypageNavLink" href="./profile.html">プロフィール編集</a>
+            <a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a>
+            <a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a>
+            <a class="mypageNavLink" href="./history.html">関わりの履歴</a>
+            <a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a>
+            <a class="mypageNavLink" href="./support.html">安心とサポート</a>
+          </nav>
+        </div>
+      </aside>
+
+      <section class="mypageMain">
+        <div class="mypageHead">
+          <h1 class="h1">通知</h1>
+          <p class="lead">新しい提案ややり取り、コメント、確認事項などが表示されます。</p>
+        </div>
+
+        <div class="notificationToolbar">
+          <div class="mypageTabs" role="tablist" aria-label="通知フィルター">
+            <button class="pill is-on" type="button" role="tab" aria-selected="true" data-notification-filter="all">すべて</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-notification-filter="unread">未読</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-notification-filter="proposal">提案・申請</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-notification-filter="contact">連絡</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-notification-filter="reaction">反応</button>
+            <button class="pill" type="button" role="tab" aria-selected="false" data-notification-filter="notice">お知らせ</button>
+          </div>
+          <button class="btn ghost" type="button" data-mark-all-read>まとめて既読にする</button>
+        </div>
+
+        <div class="notificationList" data-notification-list></div>
+        <p class="note" data-notification-empty hidden>通知がまだありません。新しい提案ややり取りがあると、ここに表示されます。</p>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+  <script src="../public/assets/scripts/notifications-page.js"></script>
+</body>
+</html>

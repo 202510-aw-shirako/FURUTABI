@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>通知と連絡設定 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar"><div class="container"><div class="inner"><div class="brand">FURUTABI｜郷旅</div><nav data-site-nav="app_home"></nav></div></div></header>
+  <main class="container mypagePage" aria-label="通知と連絡設定">
+    <!-- 通知設定と、連絡を受ける許可は分ける -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション"><div class="mypageSidebarInner"><h2 class="mypageSidebarTitle">アカウント</h2><nav class="mypageNav"><a class="mypageNavLink" href="./mypage.html">マイページ</a><a class="mypageNavLink" href="./account.html">アカウント情報</a><a class="mypageNavLink" href="./profile.html">プロフィール編集</a><a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a><a class="mypageNavLink is-current" href="./notifications.html" aria-current="page">通知と連絡設定</a><a class="mypageNavLink" href="./history.html">関わりの履歴</a><a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a><a class="mypageNavLink" href="./support.html">安心とサポート</a></nav></div></aside>
+      <section class="mypageMain">
+        <div class="mypageHead"><h1 class="h1">通知と連絡設定</h1><p class="lead">「通知」と「連絡の許可」は別のものとして扱っています。</p></div>
+        <form class="mypageForm">
+          <section class="mypageSection">
+            <h2 class="h2">通知設定</h2>
+            <div class="mypageCheckStack">
+              <label><input type="checkbox" checked />運営からのお知らせを受け取る</label>
+              <label><input type="checkbox" checked />ログインや安全に関する通知を受け取る</label>
+              <label><input type="checkbox" checked />メール通知を受け取る</label>
+              <label><input type="checkbox" />SMS通知を受け取る</label>
+            </div>
+          </section>
+          <section class="mypageSection">
+            <h2 class="h2">連絡を受ける設定</h2>
+            <div class="mypageCheckStack">
+              <label><input type="checkbox" checked />架け橋さん経由の連絡を受け取る</label>
+              <label><input type="checkbox" />地域の方からの連絡を受け取る</label>
+            </div>
+          </section>
+          <div class="mypageActions"><button class="btn primary" type="submit">保存する</button></div>
+        </form>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

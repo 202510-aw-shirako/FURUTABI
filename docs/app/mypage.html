@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>マイページ | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container mypagePage" aria-label="マイページ">
+    <!-- 個人情報とプロフィールは分ける -->
+    <!-- 実名・住所・電話番号などは管理者のみ閲覧 -->
+    <!-- 性別は必須項目で、「回答しない」を選べる -->
+    <!-- 性別と年齢層は、必要に応じて架け橋さん / ちいきのおかって受け入れ側が確認することがある -->
+    <!-- 地域の方、旅人の方の双方が安心して関われるようにするために、必要な範囲で情報を扱う -->
+    <!-- ニックネームに実名を書くのは禁止 -->
+    <!-- わたしの地図は本人のみを初期値にする -->
+    <!-- 通知設定と、連絡を受ける許可は分ける -->
+    <!-- 困りごとや改善点は非公開導線へ送る -->
+    <!-- 追加本人確認は通常は休眠機能で、必要時のみ外部本人確認APIを使う -->
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション">
+        <div class="mypageSidebarInner">
+          <h2 class="mypageSidebarTitle">アカウント</h2>
+          <nav class="mypageNav">
+            <a class="mypageNavLink is-current" href="./mypage.html" aria-current="page">マイページ</a>
+            <a class="mypageNavLink" href="./account.html">アカウント情報</a>
+            <a class="mypageNavLink" href="./profile.html">プロフィール編集</a>
+            <a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a>
+            <a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a>
+            <a class="mypageNavLink" href="./history.html">関わりの履歴</a>
+            <a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a>
+            <a class="mypageNavLink" href="./support.html">安心とサポート</a>
+          </nav>
+        </div>
+      </aside>
+
+      <section class="mypageMain">
+        <div class="mypageHead">
+          <h1 class="h1">マイページ</h1>
+          <p class="lead">ここから、自分の情報や公開設定、関わりの履歴を確認できます。</p>
+        </div>
+
+        <section class="mypageProfileCard">
+          <div class="mypageProfileMedia">
+            <div class="ph ph--thumb mypageAvatar" aria-hidden="true"></div>
+          </div>
+          <div class="mypageProfileBody">
+            <p class="mypageEyebrow">公開名</p>
+            <h2 class="h2">なぎさの旅人</h2>
+            <p class="mypageText">海辺の光や、誰かと少し歩く時間が好きです。無理のない入口から、この地域との関わりをゆっくり育てています。</p>
+          </div>
+        </section>
+
+        <section class="mypageSection">
+          <div class="sectionTitleRow">
+            <h2 class="h2">現在の状態</h2>
+          </div>
+          <div class="mypageStatusGrid">
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">SMS認証状態</p>
+              <div class="mypageStatusValue"><span class="pill pill--soft">認証済み</span></div>
+              <p class="note">ログインの土台になる確認は完了しています。</p>
+            </article>
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">追加本人確認状態</p>
+              <div class="mypageStatusValue"><span class="pill">未要求</span></div>
+              <p class="note">通常は休眠状態です。必要時のみ追加確認に進みます。</p>
+            </article>
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">地図の公開設定</p>
+              <div class="mypageStatusValue"><span class="pill">本人のみ</span></div>
+              <p class="note">わたしの地図は、本人のみを初期値にしています。</p>
+            </article>
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">連絡許可設定</p>
+              <div class="mypageStatusValue"><span class="pill pill--soft">架け橋さんのみ</span></div>
+              <p class="note">地域の方からの直接連絡は現在オフです。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="mypageSection">
+          <div class="sectionTitleRow">
+            <h2 class="h2">設定と確認</h2>
+          </div>
+          <div class="mypageLinkGrid">
+            <a class="mypageLinkCard" href="./account.html">
+              <h3 class="h2">アカウント情報</h3>
+              <p class="note">管理情報と公開名、見える範囲を確認します。</p>
+            </a>
+            <a class="mypageLinkCard" href="./profile.html">
+              <h3 class="h2">プロフィール編集</h3>
+              <p class="note">公開名で見える自己紹介や、関わり方のメモを整えます。</p>
+            </a>
+            <a class="mypageLinkCard" href="./privacy-settings.html">
+              <h3 class="h2">公開範囲とプライバシー</h3>
+              <p class="note">公開 / 非公開の初期値や位置の見せ方を管理します。</p>
+            </a>
+            <a class="mypageLinkCard" href="./notifications.html">
+              <h3 class="h2">通知と連絡設定</h3>
+              <p class="note">通知と、連絡を受ける許可を分けて見直せます。</p>
+            </a>
+            <a class="mypageLinkCard" href="./history.html">
+              <h3 class="h2">関わりの履歴</h3>
+              <p class="note">これまでの積み上がりを、あとから静かに見返せます。</p>
+            </a>
+            <a class="mypageLinkCard" href="./security.html">
+              <h3 class="h2">ログインとセキュリティ</h3>
+              <p class="note">認証状態、ログイン履歴、追加本人確認の状態を確認します。</p>
+            </a>
+            <a class="mypageLinkCard" href="./support.html">
+              <h3 class="h2">安心とサポート</h3>
+              <p class="note">FAQ、非公開の相談導線、規約類をまとめて見られます。</p>
+            </a>
+            <!-- Java移行時メモ: ここはワイヤでは login.html に戻すだけですが、本実装では Spring Security の logout 処理へ差し替える想定です。 -->
+            <a class="mypageLinkCard" href="../auth/login.html">
+              <h3 class="h2">ログアウト</h3>
+              <p class="note">いったんログイン画面へ戻ります。本実装ではここでセッションを終了します。</p>
+            </a>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>
