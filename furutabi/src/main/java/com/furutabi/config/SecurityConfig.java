@@ -2,8 +2,9 @@ package com.furutabi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -13,8 +14,12 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
+                // Dev-only support for the embedded H2 console.
                 .requestMatchers("/h2-console/**").permitAll()
+                // Preview routes stay public until the real login / access design is implemented.
                 .requestMatchers("/preview/**").permitAll()
+                .requestMatchers("/login").permitAll()
+                // Preview pages depend on these static assets being readable without authentication.
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/assets/**").permitAll()
                 .anyRequest().authenticated()
             )
@@ -24,8 +29,25 @@ public class SecurityConfig {
             .headers(headers -> headers
                 .frameOptions(frame -> frame.sameOrigin())
             )
-            .formLogin(Customizer.withDefaults());
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                // Role-based post-login routing is intentionally deferred to the next phase.
+                .defaultSuccessUrl("/preview/public/index.html", true)
+                .failureUrl("/login?error")
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout")
+            );
 
         return http.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

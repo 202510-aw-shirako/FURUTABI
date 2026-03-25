@@ -21,7 +21,7 @@ class SecurityConfigBoundaryTests {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("未認証では app 配下へ直接入れずログインへリダイレクトされる")
+    @DisplayName("Unauthenticated app route redirects to login")
     void unauthenticatedAppRequestRedirectsToLogin() throws Exception {
         mockMvc.perform(get("/app/home"))
             .andExpect(status().is3xxRedirection())
@@ -29,14 +29,42 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
-    @DisplayName("認証済みなら app 配下の存在しない URL でもログインへは戻されない")
+    @DisplayName("Authenticated app route passes security before missing route handling")
     void authenticatedAppRequestPassesSecurityBeforeMissingRoute() throws Exception {
         mockMvc.perform(get("/app/home").with(user("user@example.com").roles("USER")))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("現状コードでは public 配下も未認証のままでは公開されずログインへリダイレクトされる")
+    @DisplayName("Preview public index is accessible without authentication")
+    void unauthenticatedPreviewPublicIndexIsAccessible() throws Exception {
+        mockMvc.perform(get("/preview/public/index.html"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Preview bridge is accessible without authentication")
+    void unauthenticatedPreviewBridgeIsAccessible() throws Exception {
+        mockMvc.perform(get("/preview/public/bridge.html"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Preview auth login page is accessible without authentication")
+    void unauthenticatedPreviewAuthLoginIsAccessible() throws Exception {
+        mockMvc.perform(get("/preview/auth/login.html"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Preview static JavaScript is accessible without authentication")
+    void previewStaticJavaScriptIsAccessibleWithoutAuthentication() throws Exception {
+        mockMvc.perform(get("/assets/scripts/proposals.js"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Non-preview public path still redirects to login in current code")
     void unauthenticatedPublicPathAlsoRedirectsToLoginInCurrentCode() throws Exception {
         mockMvc.perform(get("/public/index.html"))
             .andExpect(status().is3xxRedirection())
@@ -44,14 +72,14 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
-    @DisplayName("認証済み POST は H2 console 以外では CSRF 保護により拒否される")
+    @DisplayName("CSRF is still required outside H2 console")
     void csrfIsStillRequiredOutsideH2Console() throws Exception {
         mockMvc.perform(post("/app/home").with(user("user@example.com").roles("USER")))
             .andExpect(status().isForbidden());
     }
 
     @Test
-    @DisplayName("H2 console 配下は未認証かつ CSRF トークンなしでも SecurityConfig 上は拒否されない")
+    @DisplayName("H2 console is not blocked by authentication or CSRF in current security config")
     void h2ConsolePostIsNotBlockedByCsrfOrAuthentication() throws Exception {
         mockMvc.perform(post("/h2-console/login.do"))
             .andExpect(status().isNotFound());
