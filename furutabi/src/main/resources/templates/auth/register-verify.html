@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>追加本人確認の案内 | FURUTABI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="auth_login"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container authPage authPage--centered" aria-label="追加本人確認の案内">
+    <section class="authCompleteCard authCompleteCard--verify">
+      <p class="eyebrow">ADDITIONAL VERIFY</p>
+      <h1 class="authFlowTitle">登録はここまで完了しました</h1>
+      <p class="authFlowLead">
+        <span th:text="${email}">name@example.com</span>
+        で登録されました。追加本人確認は次段階の案内ページとして保持し、今回は詳細実装しません。
+      </p>
+
+      <div class="authVerifyGrid">
+        <section class="authCompletePanel">
+          <h2>今回できたこと</h2>
+          <ul class="authList">
+            <li>登録情報の保存</li>
+            <li>SMS 認証の完了</li>
+            <li>プロフィールと連絡設定の初期保存</li>
+          </ul>
+        </section>
+        <section class="authCompletePanel">
+          <h2>今回まだやっていないこと</h2>
+          <p class="authParagraph">追加本人確認の審査フロー本体、proposal / okatte / chat 導線、認可の詳細は次の工程で扱います。</p>
+        </section>
+      </div>
+
+      <div class="authFormActions authFormActions--center">
+        <a class="btn primary" href="/login">ログインへ進む</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/scripts/shared-ui.js"></script>
+</body>
+</html>
