@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginRedirectHelper {
 
-    private static final String DEFAULT_TARGET = "/preview/public/index.html";
-    private static final String LOCAL_TARGET = "/preview/public/bridge.html";
+    private static final String DEFAULT_TARGET = "/app/home";
+    private static final String LOCAL_TARGET = "/app/local-member-home";
 
     public Optional<String> sanitize(String returnTo) {
         if (returnTo == null || returnTo.isBlank()) {

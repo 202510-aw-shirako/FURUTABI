@@ -16,25 +16,97 @@
     </div>
   </header>
 
-  <main class="container authPage" aria-label="マイページ">
-    <section class="authFlowShell">
-      <div class="authFlowIntro">
-        <p class="eyebrow">MY PAGE</p>
-        <h1 class="authFlowTitle">プロフィールをあとから整える受け先です</h1>
-        <p class="authFlowLead">register の「あとで設定」導線は、ここへ着地する前提でつないでいます。プロフィールや設定の詳細ページは次段階で本実装します。</p>
-      </div>
-
-      <section class="authCard">
-        <div class="authForm">
-          <div class="authField">
-            <label>この段階で分かること</label>
-            <p>プロフィールを未入力のまま進んだ場合でも、あとで設定し直せる受け先は backend 側にあります。まだ account / profile / privacy-settings の詳細 route まではつないでいません。</p>
-          </div>
-          <div class="authFormActions">
-            <a class="btn primary" href="/app/home">ホームへ進む</a>
-            <a class="btn ghost" href="/login">ログイン画面へ戻る</a>
-          </div>
+  <main class="container mypagePage" aria-label="マイページ">
+    <section class="mypageShell">
+      <aside class="mypageSidebar" aria-label="マイページナビゲーション">
+        <div class="mypageSidebarInner">
+          <h2 class="mypageSidebarTitle">アカウント</h2>
+          <nav class="mypageNav">
+            <a class="mypageNavLink is-current" href="/app/mypage" aria-current="page">マイページ</a>
+            <a class="mypageNavLink" href="/app/account">アカウント情報</a>
+            <a class="mypageNavLink" href="/app/profile">プロフィール編集</a>
+            <a class="mypageNavLink" href="/app/privacy-settings">公開範囲とプライバシー</a>
+            <span class="mypageNavLink">通知と連絡設定（次段階）</span>
+          </nav>
         </div>
+      </aside>
+
+      <section class="mypageMain">
+        <div class="mypageHead">
+          <h1 class="h1">マイページ</h1>
+          <p class="lead">register 後の「あとで設定」導線を受けつつ、ログイン後に自分の情報を見直せる backend 側の入口です。</p>
+        </div>
+
+        <section class="mypageProfileCard">
+          <div class="mypageProfileMedia">
+            <div class="ph ph--thumb mypageAvatar" aria-hidden="true"></div>
+          </div>
+          <div class="mypageProfileBody">
+            <p class="mypageEyebrow">ログイン中のアカウント</p>
+            <h2 class="h2" th:text="${summary.nickname} ?: ${summary.name}">furutabi-user</h2>
+            <p class="mypageText">
+              メールアドレス:
+              <strong th:text="${summary.email}">user@example.com</strong>
+            </p>
+            <p class="mypageText">
+              興味のある地域:
+              <span th:text="${summary.interestRegion} ?: 'まだ未設定です'">まだ未設定です</span>
+            </p>
+          </div>
+        </section>
+
+        <section class="mypageSection">
+          <div class="sectionTitleRow">
+            <h2 class="h2">現在の状態</h2>
+          </div>
+          <div class="mypageStatusGrid">
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">SMS認証状態</p>
+              <div class="mypageStatusValue">
+                <span class="pill pill--soft" th:text="${summary.smsVerified} ? '認証済み' : '未認証'">認証済み</span>
+              </div>
+              <p class="note">register 開始時の認証状態を、そのまま account 画面でも確認できます。</p>
+            </article>
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">プロフィール入力</p>
+              <div class="mypageStatusValue">
+                <span class="pill" th:text="${summary.profileReady} ? '設定済み' : 'あとで設定可能'">あとで設定可能</span>
+              </div>
+              <p class="note">プロフィール編集は `/app/profile` で続きから整えられます。</p>
+            </article>
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">追加本人確認</p>
+              <div class="mypageStatusValue">
+                <span class="pill" th:text="${summary.additionalVerificationStatus}">UNREQUESTED</span>
+              </div>
+              <p class="note">この段階では状態表示のみです。追加本人確認の本体は次段階で扱います。</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="mypageSection">
+          <div class="sectionTitleRow">
+            <h2 class="h2">今すぐ整えられること</h2>
+          </div>
+          <div class="mypageLinkGrid">
+            <a class="mypageLinkCard" href="/app/account">
+              <h3 class="h2">アカウント情報</h3>
+              <p class="note">ニックネーム、氏名、連絡先など `users` の基礎情報を見直します。</p>
+            </a>
+            <a class="mypageLinkCard" href="/app/profile">
+              <h3 class="h2">プロフィール編集</h3>
+              <p class="note">地域や自己紹介など `user_profiles` を最小更新できます。</p>
+            </a>
+            <a class="mypageLinkCard" href="/app/privacy-settings">
+              <h3 class="h2">公開範囲とプライバシー</h3>
+              <p class="note">`contact_preferences` を使った最小設定を確認できます。</p>
+            </a>
+            <a class="mypageLinkCard" href="/logout">
+              <h3 class="h2">ログアウト</h3>
+              <p class="note">現在の最小 logout 実装へ進みます。</p>
+            </a>
+          </div>
+        </section>
       </section>
     </section>
   </main>

@@ -16,29 +16,53 @@
     </div>
   </header>
 
-  <main class="container authPage" aria-label="地域ユーザー向けホーム">
-    <section class="authFlowShell">
-      <div class="authFlowIntro">
-        <p class="eyebrow">LOCAL HOME</p>
-        <h1 class="authFlowTitle">地域ユーザー向けホームの受け先を置いています</h1>
-        <p class="authFlowLead">ここは LOCAL / BRIDGE 系の既定遷移を、preview 公開ページ以外にも受けられるようにするための最小 route です。本格的な中身は次段階で接続します。</p>
+  <main class="container" aria-label="地域ユーザー向けログイン後ホーム">
+    <section class="section section--hero" aria-label="ヒーローイメージ">
+      <div class="fullbleed">
+        <div class="ph ph--pageHero" aria-hidden="true"></div>
       </div>
+    </section>
 
-      <section class="authCard">
-        <div class="authForm">
-          <div class="authField">
-            <label>この段階で分かること</label>
-            <p>地域ユーザー向けの受け先 route は backend 側にあります。公開ページや認可の細部はまだ固定していません。</p>
-          </div>
-          <div class="authFormActions">
-            <a class="btn primary" href="/app/mypage">マイページを見る</a>
-            <a class="btn ghost" href="/preview/public/bridge.html">preview 地域ページへ戻る</a>
-          </div>
+    <section class="section topicsSection" aria-label="トピックス" data-notice-topics>
+      <div class="topicsPanelShell">
+        <div class="topicsPanelHead">
+          <h2 class="topicsPanelTitle">トピックス</h2>
+          <span class="topicsPanelLink">地域ユーザー向け最小接続</span>
         </div>
-      </section>
+        <div class="topicsPanel" data-notice-topics-items data-notice-base="../public/" data-notice-max="5"></div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="ちいきのおかって">
+      <div class="sectionTitleRow">
+        <h1 class="h1">ちいきのおかって</h1>
+        <a class="sectionTitleLink" href="/preview/public/bridge.html">preview 地域ページへ</a>
+      </div>
+      <p class="lead">地域ユーザー向けホームとして、公開側とは別の受け先を backend で持ちます。proposal と map の詳細実装は次段階に送っています。</p>
+      <div class="proposalGrid" style="margin-top:16px;" data-proposal-grid="okatte" data-proposal-base="../public/" data-proposal-context="app"></div>
+    </section>
+
+    <section class="section" aria-label="次に進める場所">
+      <div class="sectionTitleRow">
+        <h2 class="h2">次に進める場所</h2>
+      </div>
+      <div class="grid2" style="margin-top:16px;">
+        <div class="card">
+          <div class="h2">マイページ</div>
+          <p class="note">登録後のプロフィール補足や通知設定の入口として使います。詳細画面はまだ route 化していません。</p>
+          <a class="btn primary" href="/app/mypage">マイページを見る</a>
+        </div>
+        <div class="card">
+          <div class="h2">一般ユーザーホーム</div>
+          <p class="note">一般ユーザー向けホームとの差を、ここから先の作業で育てる前提です。</p>
+          <a class="btn ghost" href="/app/home">一般ホームを見る</a>
+        </div>
+      </div>
     </section>
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/notices.js"></script>
+  <script src="/assets/scripts/proposals.js"></script>
 </body>
 </html>

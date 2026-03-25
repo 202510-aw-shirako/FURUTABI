@@ -6,11 +6,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Instant;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
@@ -19,6 +25,50 @@ class SecurityConfigBoundaryTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setUpCurrentUserRow() {
+        Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
+
+        jdbcTemplate.update("DELETE FROM sms_verifications");
+        jdbcTemplate.update("DELETE FROM contact_preferences");
+        jdbcTemplate.update("DELETE FROM user_profiles");
+        jdbcTemplate.update("DELETE FROM user_roles");
+        jdbcTemplate.update("DELETE FROM users");
+
+        jdbcTemplate.update(
+            """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            1L,
+            "user@example.com",
+            "{noop}unused",
+            "user",
+            "User Example",
+            "ユーザー",
+            Date.valueOf("1990-01-01"),
+            "NO_ANSWER",
+            "000-0000-0000",
+            "Tokyo",
+            Boolean.TRUE,
+            "UNREQUESTED",
+            now,
+            now
+        );
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            1L,
+            "USER",
+            now
+        );
+    }
 
     @Test
     @DisplayName("Unauthenticated app route redirects to login")
@@ -32,6 +82,41 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated app route is available after passing security")
     void authenticatedAppRequestPassesSecurityBeforeMissingRoute() throws Exception {
         mockMvc.perform(get("/app/home").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated local member route is available after passing security")
+    void authenticatedLocalMemberRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/local-member-home").with(user("local@example.com").roles("LOCAL")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated mypage route is available after passing security")
+    void authenticatedMypageRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/mypage").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated account route is available after passing security")
+    void authenticatedAccountRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/account").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated profile route is available after passing security")
+    void authenticatedProfileRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/profile").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated privacy settings route is available after passing security")
+    void authenticatedPrivacySettingsRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/privacy-settings").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 

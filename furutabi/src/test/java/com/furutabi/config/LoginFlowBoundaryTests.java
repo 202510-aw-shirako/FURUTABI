@@ -117,7 +117,7 @@ class LoginFlowBoundaryTests {
     void userFallsBackToPublicIndex() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", "user@example.com").password("password", "password123"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/index.html"))
+            .andExpect(redirectedUrl("/app/home"))
             .andExpect(authenticated().withUsername("user@example.com"));
     }
 
@@ -126,7 +126,7 @@ class LoginFlowBoundaryTests {
     void localFallsBackToBridgePreview() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", "local@example.com").password("password", "password123"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/bridge.html"))
+            .andExpect(redirectedUrl("/app/local-member-home"))
             .andExpect(authenticated().withUsername("local@example.com"));
     }
 
@@ -135,7 +135,7 @@ class LoginFlowBoundaryTests {
     void adminFallsBackToPublicIndex() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", "admin@example.com").password("password", "password123"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/index.html"))
+            .andExpect(redirectedUrl("/app/home"))
             .andExpect(authenticated().withUsername("admin@example.com"));
     }
 
@@ -144,7 +144,7 @@ class LoginFlowBoundaryTests {
     void bridgeFallsBackToBridgePreview() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", "bridge@example.com").password("password", "password123"))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/bridge.html"))
+            .andExpect(redirectedUrl("/app/local-member-home"))
             .andExpect(authenticated().withUsername("bridge@example.com"));
     }
 
@@ -174,7 +174,7 @@ class LoginFlowBoundaryTests {
                     .param("returnTo", "https://example.com")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/bridge.html"))
+            .andExpect(redirectedUrl("/app/local-member-home"))
             .andExpect(authenticated().withUsername("local@example.com"));
     }
 
@@ -189,7 +189,7 @@ class LoginFlowBoundaryTests {
                     .param("returnTo", "//example.com")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/index.html"))
+            .andExpect(redirectedUrl("/app/home"))
             .andExpect(authenticated().withUsername("user@example.com"));
     }
 
