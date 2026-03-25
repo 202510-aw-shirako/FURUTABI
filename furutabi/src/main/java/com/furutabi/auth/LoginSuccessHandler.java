@@ -28,7 +28,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         HttpServletResponse response,
         Authentication authentication
     ) throws IOException, ServletException {
-        String targetUrl = loginRedirectHelper.resolveOrDefault(request.getParameter("returnTo"));
+        String targetUrl = loginRedirectHelper.resolveOrDefault(
+            request.getParameter("returnTo"),
+            authentication.getAuthorities()
+        );
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 }

@@ -41,12 +41,19 @@ class LoginFlowBoundaryTests {
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
-    void setUpUser() {
+    void setUpUsers() {
         Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
 
         jdbcTemplate.update("DELETE FROM user_roles");
         jdbcTemplate.update("DELETE FROM users");
 
+        insertUser(1L, "user@example.com", "USER", now);
+        insertUser(2L, "local@example.com", "LOCAL", now);
+        insertUser(3L, "admin@example.com", "ADMIN", now);
+        insertUser(4L, "bridge@example.com", "BRIDGE", now);
+    }
+
+    private void insertUser(long id, String email, String roleName, Timestamp now) {
         jdbcTemplate.update(
             """
                 INSERT INTO users (
@@ -56,12 +63,12 @@ class LoginFlowBoundaryTests {
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
-            1L,
-            "user@example.com",
+            id,
+            email,
             passwordEncoder.encode("password123"),
-            "sample-user",
-            "Sample User",
-            "sample-user-kana",
+            "sample-user-" + id,
+            "Sample User " + id,
+            "sample-user-kana-" + id,
             Date.valueOf("1990-01-01"),
             "NO_ANSWER",
             "000-0000-0000",
@@ -74,8 +81,8 @@ class LoginFlowBoundaryTests {
 
         jdbcTemplate.update(
             "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
-            1L,
-            "USER",
+            id,
+            roleName,
             now
         );
     }
@@ -106,8 +113,8 @@ class LoginFlowBoundaryTests {
     }
 
     @Test
-    @DisplayName("POST /login authenticates with email and password_hash")
-    void loginAuthenticatesAgainstUsersTable() throws Exception {
+    @DisplayName("POST /login uses USER fallback when returnTo is absent")
+    void userFallsBackToPublicIndex() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", "user@example.com").password("password", "password123"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/preview/public/index.html"))
@@ -115,37 +122,64 @@ class LoginFlowBoundaryTests {
     }
 
     @Test
-    @DisplayName("POST /login redirects to a safe internal returnTo")
+    @DisplayName("POST /login uses LOCAL fallback when returnTo is absent")
+    void localFallsBackToBridgePreview() throws Exception {
+        mockMvc.perform(formLogin("/login").user("email", "local@example.com").password("password", "password123"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/preview/public/bridge.html"))
+            .andExpect(authenticated().withUsername("local@example.com"));
+    }
+
+    @Test
+    @DisplayName("POST /login uses ADMIN fallback when returnTo is absent")
+    void adminFallsBackToPublicIndex() throws Exception {
+        mockMvc.perform(formLogin("/login").user("email", "admin@example.com").password("password", "password123"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/preview/public/index.html"))
+            .andExpect(authenticated().withUsername("admin@example.com"));
+    }
+
+    @Test
+    @DisplayName("POST /login uses BRIDGE fallback when returnTo is absent")
+    void bridgeFallsBackToBridgePreview() throws Exception {
+        mockMvc.perform(formLogin("/login").user("email", "bridge@example.com").password("password", "password123"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/preview/public/bridge.html"))
+            .andExpect(authenticated().withUsername("bridge@example.com"));
+    }
+
+    @Test
+    @DisplayName("POST /login redirects to a safe internal returnTo before role fallback")
     void loginUsesSafeInternalReturnTo() throws Exception {
         mockMvc.perform(
                 post("/login")
                     .with(csrf())
-                    .param("email", "user@example.com")
+                    .param("email", "local@example.com")
                     .param("password", "password123")
                     .param("returnTo", "/app/home")
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/app/home"))
-            .andExpect(authenticated().withUsername("user@example.com"));
+            .andExpect(authenticated().withUsername("local@example.com"));
     }
 
     @Test
-    @DisplayName("POST /login ignores external returnTo and falls back")
+    @DisplayName("POST /login ignores external returnTo and falls back by role")
     void loginIgnoresExternalReturnTo() throws Exception {
         mockMvc.perform(
                 post("/login")
                     .with(csrf())
-                    .param("email", "user@example.com")
+                    .param("email", "local@example.com")
                     .param("password", "password123")
                     .param("returnTo", "https://example.com")
             )
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/preview/public/index.html"))
-            .andExpect(authenticated().withUsername("user@example.com"));
+            .andExpect(redirectedUrl("/preview/public/bridge.html"))
+            .andExpect(authenticated().withUsername("local@example.com"));
     }
 
     @Test
-    @DisplayName("POST /login ignores protocol-relative returnTo and falls back")
+    @DisplayName("POST /login ignores protocol-relative returnTo and falls back by role")
     void loginIgnoresProtocolRelativeReturnTo() throws Exception {
         mockMvc.perform(
                 post("/login")
