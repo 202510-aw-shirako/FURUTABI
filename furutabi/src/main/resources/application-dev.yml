@@ -23,3 +23,5 @@ logging:
 app:
   file-storage:
     base-dir: ./uploads/dev
+  dev-seed:
+    enabled: true
