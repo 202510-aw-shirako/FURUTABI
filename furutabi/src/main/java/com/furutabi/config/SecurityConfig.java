@@ -1,5 +1,7 @@
 package com.furutabi.config;
 
+import com.furutabi.auth.LoginSuccessHandler;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, LoginSuccessHandler loginSuccessHandler) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 // Dev-only support for the embedded H2 console.
@@ -34,8 +36,8 @@ public class SecurityConfig {
                 .loginProcessingUrl("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                // Role-based post-login routing is intentionally deferred to the next phase.
-                .defaultSuccessUrl("/preview/public/index.html", true)
+                // returnTo is limited to safe internal paths; role-based routing stays deferred.
+                .successHandler(loginSuccessHandler)
                 .failureUrl("/login?error")
             )
             .logout(logout -> logout

@@ -2,11 +2,13 @@ package com.furutabi.config;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -59,7 +61,7 @@ class LoginFlowBoundaryTests {
             passwordEncoder.encode("password123"),
             "sample-user",
             "Sample User",
-            "サンプルユーザー",
+            "sample-user-kana",
             Date.valueOf("1990-01-01"),
             "NO_ANSWER",
             "000-0000-0000",
@@ -83,13 +85,22 @@ class LoginFlowBoundaryTests {
     void loginPageIsAccessibleWithoutAuthentication() throws Exception {
         mockMvc.perform(get("/login"))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("既存アカウントでログイン")));
+            .andExpect(content().string(containsString("name=\"email\"")));
     }
 
     @Test
-    @DisplayName("GET /login does not implement backend returnTo handling yet")
-    void loginPageDoesNotImplementReturnToYet() throws Exception {
+    @DisplayName("GET /login with safe returnTo keeps it in a hidden field")
+    void loginPageKeepsSafeReturnTo() throws Exception {
         mockMvc.perform(get("/login").queryParam("returnTo", "/app/home"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("name=\"returnTo\"")))
+            .andExpect(content().string(containsString("value=\"/app/home\"")));
+    }
+
+    @Test
+    @DisplayName("GET /login does not keep external returnTo")
+    void loginPageDoesNotKeepExternalReturnTo() throws Exception {
+        mockMvc.perform(get("/login").queryParam("returnTo", "https://example.com"))
             .andExpect(status().isOk())
             .andExpect(content().string(not(containsString("name=\"returnTo\""))));
     }
@@ -98,6 +109,51 @@ class LoginFlowBoundaryTests {
     @DisplayName("POST /login authenticates with email and password_hash")
     void loginAuthenticatesAgainstUsersTable() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", "user@example.com").password("password", "password123"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/preview/public/index.html"))
+            .andExpect(authenticated().withUsername("user@example.com"));
+    }
+
+    @Test
+    @DisplayName("POST /login redirects to a safe internal returnTo")
+    void loginUsesSafeInternalReturnTo() throws Exception {
+        mockMvc.perform(
+                post("/login")
+                    .with(csrf())
+                    .param("email", "user@example.com")
+                    .param("password", "password123")
+                    .param("returnTo", "/app/home")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/home"))
+            .andExpect(authenticated().withUsername("user@example.com"));
+    }
+
+    @Test
+    @DisplayName("POST /login ignores external returnTo and falls back")
+    void loginIgnoresExternalReturnTo() throws Exception {
+        mockMvc.perform(
+                post("/login")
+                    .with(csrf())
+                    .param("email", "user@example.com")
+                    .param("password", "password123")
+                    .param("returnTo", "https://example.com")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/preview/public/index.html"))
+            .andExpect(authenticated().withUsername("user@example.com"));
+    }
+
+    @Test
+    @DisplayName("POST /login ignores protocol-relative returnTo and falls back")
+    void loginIgnoresProtocolRelativeReturnTo() throws Exception {
+        mockMvc.perform(
+                post("/login")
+                    .with(csrf())
+                    .param("email", "user@example.com")
+                    .param("password", "password123")
+                    .param("returnTo", "//example.com")
+            )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/preview/public/index.html"))
             .andExpect(authenticated().withUsername("user@example.com"));

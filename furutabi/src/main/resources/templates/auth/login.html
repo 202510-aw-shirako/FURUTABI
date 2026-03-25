@@ -58,6 +58,7 @@
               <input id="password" name="password" type="password" class="input" autocomplete="current-password" required />
             </div>
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="returnTo" th:if="${returnTo != null}" th:value="${returnTo}" />
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
               <button class="btn primary" type="submit">ログイン</button>
               <a class="btn ghost" href="/preview/login">preview を見る</a>
@@ -76,7 +77,7 @@
         <div class="card">
           <div class="h2">まだ実装していないもの</div>
           <ul class="aboutFeatureList" style="margin-top:12px;">
-            <li><code>returnTo</code> の backend 実装</li>
+            <li><code>returnTo</code> の許可範囲の詳細調整</li>
             <li>ログイン成功後の role 別遷移</li>
             <li>地域の方 / 管理者向けの個別認証導線</li>
             <li>register / SMS / proposal / chat の本実装</li>
