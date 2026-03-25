@@ -141,6 +141,19 @@ public class RegistrationController {
 
         registrationService.saveProfile(state.getUserId(), form);
         state.setProfileCompleted(true);
+        state.setProfileSkipped(false);
+        return "redirect:/register/verify";
+    }
+
+    @PostMapping("/profile/skip")
+    public String skipProfile(HttpSession session) {
+        RegisterSessionState state = sessionState(session);
+        if (state == null || !state.isSmsVerified()) {
+            return "redirect:/register";
+        }
+
+        state.setProfileCompleted(true);
+        state.setProfileSkipped(true);
         return "redirect:/register/verify";
     }
 
@@ -152,6 +165,9 @@ public class RegistrationController {
         }
 
         model.addAttribute("email", state.getEmail());
+        model.addAttribute("profileSkipped", state.isProfileSkipped());
+        model.addAttribute("nextPath", state.isProfileSkipped() ? "/app/mypage" : "/app/home");
+        model.addAttribute("nextLabel", state.isProfileSkipped() ? "ログインしてマイページへ進む" : "ログインしてホームへ進む");
         return "auth/register-verify";
     }
 

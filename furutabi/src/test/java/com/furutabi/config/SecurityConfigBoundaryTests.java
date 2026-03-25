@@ -29,10 +29,10 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
-    @DisplayName("Authenticated app route passes security before missing route handling")
+    @DisplayName("Authenticated app route is available after passing security")
     void authenticatedAppRequestPassesSecurityBeforeMissingRoute() throws Exception {
         mockMvc.perform(get("/app/home").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk());
     }
 
     @Test

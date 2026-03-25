@@ -94,6 +94,12 @@
             <button class="btn primary" type="submit">登録を保存する</button>
           </div>
         </form>
+        <form class="authForm" th:action="@{/register/profile/skip}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div class="authFormActions">
+            <button class="btn ghost" type="submit">あとで設定する</button>
+          </div>
+        </form>
       </section>
     </section>
   </main>

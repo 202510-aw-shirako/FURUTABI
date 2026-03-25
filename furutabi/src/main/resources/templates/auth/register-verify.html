@@ -41,8 +41,10 @@
       </div>
 
       <div class="authFormActions authFormActions--center">
-        <a class="btn primary" href="/login">ログインへ進む</a>
+        <a class="btn primary" th:href="@{/login(returnTo=${nextPath})}" th:text="${nextLabel}">ログインしてホームへ進む</a>
+        <a class="btn ghost" href="/login">通常のログインへ</a>
       </div>
+      <p class="note" th:if="${profileSkipped}">プロフィールはあとで設定できます。今回はマイページへ戻る前提の最小導線でつないでいます。</p>
     </section>
   </main>
 

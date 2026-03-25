@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ホーム | FURUTABI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container authPage" aria-label="ログイン後ホーム">
+    <section class="authFlowShell">
+      <div class="authFlowIntro">
+        <p class="eyebrow">HOME</p>
+        <h1 class="authFlowTitle">ホームの受け先を先に用意しました</h1>
+        <p class="authFlowLead">ここは作業9で本格実装する一般ユーザー向けホームの受け先です。今は register 後導線と login 後導線を壊さずにつなぐための最小ページとして置いています。</p>
+      </div>
+
+      <section class="authCard">
+        <div class="authForm">
+          <div class="authField">
+            <label>この段階で分かること</label>
+            <p>ログイン後に一般ユーザーを受ける route は backend 側に作成済みです。proposal や chat などの本体はまだここでは実装していません。</p>
+          </div>
+          <div class="authFormActions">
+            <a class="btn primary" href="/app/mypage">マイページを見る</a>
+            <a class="btn ghost" href="/preview/public/index.html">preview 公開トップへ戻る</a>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

@@ -146,6 +146,10 @@ class RegistrationFlowBoundaryTests {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/register/verify"));
 
+        mockMvc.perform(get("/register/verify").session(session))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("/login?returnTo=/app/home")));
+
         Boolean smsVerified = jdbcTemplate.queryForObject("SELECT sms_verified FROM users WHERE id = ?", Boolean.class, state.getUserId());
         Long profileCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user_profiles WHERE user_id = ?", Long.class, state.getUserId());
         Long preferenceCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM contact_preferences WHERE user_id = ?", Long.class, state.getUserId());
@@ -153,6 +157,55 @@ class RegistrationFlowBoundaryTests {
         Assertions.assertEquals(Boolean.TRUE, smsVerified);
         Assertions.assertEquals(1L, profileCount);
         Assertions.assertEquals(1L, preferenceCount);
+    }
+
+    @Test
+    @DisplayName("profile skip keeps registration moving and points login to mypage")
+    void profileSkipRedirectsToVerifyWithMypageNextStep() throws Exception {
+        MvcResult registerResult = mockMvc.perform(post("/register")
+                .with(csrf())
+                .param("name", "Skip User")
+                .param("nameKana", "スキップユーザー")
+                .param("birthday", "1994-04-04")
+                .param("gender", "NO_ANSWER")
+                .param("email", "skip@example.com")
+                .param("phoneNumber", "090-7777-8888")
+                .param("address", "Nagoya")
+                .param("nickname", "skip-user")
+                .param("password", "password123")
+                .param("passwordConfirm", "password123")
+                .param("agreedToTerms", "true")
+                .param("agreedToPrivacyPolicy", "true")
+                .param("agreedToSmsNotice", "true"))
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
+
+        MockHttpSession session = (MockHttpSession) registerResult.getRequest().getSession(false);
+        RegisterSessionState state = (RegisterSessionState) session.getAttribute(RegistrationController.REGISTER_SESSION_KEY);
+
+        mockMvc.perform(post("/register/sms/verify")
+                .with(csrf())
+                .session(session)
+                .param("code", state.getLatestSmsCode()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/register/profile"));
+
+        mockMvc.perform(post("/register/profile/skip")
+                .with(csrf())
+                .session(session))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/register/verify"));
+
+        mockMvc.perform(get("/register/verify").session(session))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("/login?returnTo=/app/mypage")))
+            .andExpect(content().string(containsString("プロフィールはあとで設定できます。")));
+
+        Long profileCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM user_profiles WHERE user_id = ?", Long.class, state.getUserId());
+        Long preferenceCount = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM contact_preferences WHERE user_id = ?", Long.class, state.getUserId());
+
+        Assertions.assertEquals(0L, profileCount);
+        Assertions.assertEquals(0L, preferenceCount);
     }
 
     @Test

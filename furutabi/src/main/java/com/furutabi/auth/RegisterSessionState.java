@@ -11,6 +11,7 @@ public class RegisterSessionState implements Serializable {
     private final String phoneNumber;
     private boolean smsVerified;
     private boolean profileCompleted;
+    private boolean profileSkipped;
     private String latestSmsCode;
 
     public RegisterSessionState(long userId, String email, String phoneNumber, String latestSmsCode) {
@@ -27,6 +28,8 @@ public class RegisterSessionState implements Serializable {
     public void setSmsVerified(boolean smsVerified) { this.smsVerified = smsVerified; }
     public boolean isProfileCompleted() { return profileCompleted; }
     public void setProfileCompleted(boolean profileCompleted) { this.profileCompleted = profileCompleted; }
+    public boolean isProfileSkipped() { return profileSkipped; }
+    public void setProfileSkipped(boolean profileSkipped) { this.profileSkipped = profileSkipped; }
     public String getLatestSmsCode() { return latestSmsCode; }
     public void setLatestSmsCode(String latestSmsCode) { this.latestSmsCode = latestSmsCode; }
 }
