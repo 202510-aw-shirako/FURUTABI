@@ -33,6 +33,9 @@ class SecurityConfigBoundaryTests {
     void setUpCurrentUserRow() {
         Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
 
+        jdbcTemplate.update("DELETE FROM map_record_comments");
+        jdbcTemplate.update("DELETE FROM map_record_images");
+        jdbcTemplate.update("DELETE FROM map_records");
         jdbcTemplate.update("DELETE FROM sms_verifications");
         jdbcTemplate.update("DELETE FROM contact_preferences");
         jdbcTemplate.update("DELETE FROM user_profiles");
@@ -67,6 +70,28 @@ class SecurityConfigBoundaryTests {
             1L,
             "USER",
             now
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO map_records (
+                    id, user_id, title, body, visibility, location_name, latitude, longitude,
+                    location_precision_level, is_draft, created_at, updated_at, visibility_updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            10L,
+            1L,
+            "Boundary map",
+            "Boundary body",
+            "public",
+            "Tokyo",
+            null,
+            null,
+            "area",
+            false,
+            now,
+            now,
+            now,
+            null
         );
     }
 
@@ -117,6 +142,20 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated privacy settings route is available after passing security")
     void authenticatedPrivacySettingsRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/privacy-settings").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated map record list route is available after passing security")
+    void authenticatedMapRecordListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/map-records").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated map record detail route is available after passing security")
+    void authenticatedMapRecordDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/map-records/10").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 

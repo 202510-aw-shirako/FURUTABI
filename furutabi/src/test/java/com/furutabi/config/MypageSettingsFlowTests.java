@@ -37,6 +37,9 @@ class MypageSettingsFlowTests {
     void setUpUserData() {
         Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
 
+        jdbcTemplate.update("DELETE FROM map_record_comments");
+        jdbcTemplate.update("DELETE FROM map_record_images");
+        jdbcTemplate.update("DELETE FROM map_records");
         jdbcTemplate.update("DELETE FROM contact_preferences");
         jdbcTemplate.update("DELETE FROM user_profiles");
         jdbcTemplate.update("DELETE FROM user_roles");

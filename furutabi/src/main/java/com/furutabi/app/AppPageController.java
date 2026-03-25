@@ -1,21 +1,26 @@
 package com.furutabi.app;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.server.ResponseStatusException;
 
 @Controller
 @RequestMapping("/app")
 public class AppPageController {
 
     private final AppSettingsService appSettingsService;
+    private final MapRecordService mapRecordService;
 
-    public AppPageController(AppSettingsService appSettingsService) {
+    public AppPageController(AppSettingsService appSettingsService, MapRecordService mapRecordService) {
         this.appSettingsService = appSettingsService;
+        this.mapRecordService = mapRecordService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -79,5 +84,21 @@ public class AppPageController {
     ) {
         appSettingsService.savePrivacySettings(authentication.getName(), privacySettingsForm);
         return "redirect:/app/privacy-settings?saved";
+    }
+
+    @GetMapping({"/map-records", "/map-records.html"})
+    public String mapRecords(Authentication authentication, Model model) {
+        model.addAttribute("pageData", mapRecordService.loadOwnMapRecordList(authentication.getName()));
+        return "app/map-records";
+    }
+
+    @GetMapping("/map-records/{id}")
+    public String mapRecordDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordDetail(authentication.getName(), id));
+            return "app/map-record-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
     }
 }
