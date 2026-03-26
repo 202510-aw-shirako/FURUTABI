@@ -17,10 +17,16 @@ public class AppPageController {
 
     private final AppSettingsService appSettingsService;
     private final MapRecordService mapRecordService;
+    private final GateService gateService;
 
-    public AppPageController(AppSettingsService appSettingsService, MapRecordService mapRecordService) {
+    public AppPageController(
+        AppSettingsService appSettingsService,
+        MapRecordService mapRecordService,
+        GateService gateService
+    ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
+        this.gateService = gateService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -90,6 +96,22 @@ public class AppPageController {
     public String mapRecords(Authentication authentication, Model model) {
         model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordList(authentication.getName()));
         return "app/map-records";
+    }
+
+    @GetMapping({"/gate", "/gate.html"})
+    public String gateList(Authentication authentication, Model model) {
+        model.addAttribute("pageData", gateService.loadVisibleGateList(authentication.getName()));
+        return "app/gate-list";
+    }
+
+    @GetMapping("/gate/{id}")
+    public String gateDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", gateService.loadVisibleGateDetail(authentication.getName(), id));
+            return "app/gate-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gate proposal not found", ex);
+        }
     }
 
     @GetMapping("/map-records/new")

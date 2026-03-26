@@ -202,6 +202,17 @@
     return (basePath || '') + 'notices.html';
   }
 
+  function linksEnabled(root) {
+    var explicit = root.getAttribute('data-notice-link-enabled');
+    if (explicit === 'true') {
+      return true;
+    }
+    if (explicit === 'false') {
+      return false;
+    }
+    return !window.location.pathname.replace(/\\/g, '/').startsWith('/app/');
+  }
+
   function renderTopics(root) {
     // トップ / ログイン後ホームは同じトピックス描画を使う。
     // 差分は basePath と max 件数だけ data-* で渡す。
@@ -209,6 +220,7 @@
     var max = Number(root.getAttribute('data-notice-max') || '5');
     var items = getTopicsNotices({ max: max });
     var section = root.closest('[data-notice-topics]');
+    var linkable = linksEnabled(root);
 
     if (!items.length) {
       if (section) {
@@ -219,6 +231,16 @@
 
     root.innerHTML = items.map(function (notice) {
       var meta = notice.category || formatDateLabel(notice.publishedAt);
+      if (!linkable) {
+        return '' +
+          '<div class="topicItemLink is-disabled" aria-disabled="true">' +
+            '<span class="topicLine">' +
+              (meta ? '<span class="topicMetaText">' + escapeHtml(meta) + '</span>' : '') +
+              '<span class="topicTitle">' + escapeHtml(notice.title) + '</span>' +
+            '</span>' +
+            '<span class="topicCta" aria-hidden="true">次段階</span>' +
+          '</div>';
+      }
       return '' +
         '<a class="topicItemLink" href="' + escapeHtml(buildNoticeHref(basePath, notice.slug)) + '">' +
           '<span class="topicLine">' +

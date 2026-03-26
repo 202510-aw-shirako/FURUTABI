@@ -3,6 +3,8 @@
   // このファイルは公開側 / ログイン後の共通UIを仮描画する層です。
   // 本実装では、header / footer / 導線リンクはサーバー側テンプレートや設定APIで出し分ける形も考えやすそうです。
   // bridge と ログイン後 はワイヤ用補助導線として置いているため、本番では utilityLinks から外す整理もしやすいです。
+  // 特に app header から /preview/public/bridge.html へ飛ばす導線は、今は利便性優先の仮置きです。
+  // app 文脈から preview へ飛ばすリンクをどこまで許すかは、bridge の本実装時に整理対象として見直します。
   var entryCards = [
     { id: 'gate-1', duration: '30分', title: '海まで歩いて景色の話を聞く', note: '海を見ながら、この土地の好きな時間をたどる入口です。' },
     { id: 'gate-2', duration: '20分', title: 'ハウスの前で野菜を見る', note: '育てているものを見ながら、地域の挑戦を少し聞きます。' },
@@ -229,65 +231,71 @@
     },
     app_home: {
       variant: 'app',
-      brandHref: '../app/home.html',
+      brandHref: '/app/home',
       mainLinks: [
-        { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../app/home.html#tab-map', label: 'わたしの地図', currentMatchers: ['home.html'] },
-        { href: '../app/home.html?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
-        { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
-        { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: '../public/safety.html?context=app', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
+        { href: '/app/map-records', label: 'わたしの地図', currentMatchers: ['map-records'] },
+        { href: '/app/home', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
+        { label: 'ちいきのおかって（次段階）', disabled: true },
+        // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: 'お問い合わせ（次段階）', disabled: true }
       ],
       utilityLinks: [
-        { href: '../public/bridge.html', label: 'ブリッジ' }
+        { href: '/preview/public/bridge.html', label: 'ブリッジ' }
       ],
-      notificationsHref: '../app/notification-center.html',
+      notificationsHref: '/app/mypage',
       action: [
-        { href: '../app/messages.html', label: '連絡', currentMatchers: ['messages.html', 'chat.html'] },
-        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
+        { label: '連絡（次段階）', disabled: true },
+        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
     app_local: {
       variant: 'app',
-      brandHref: '../app/local-home.html',
+      brandHref: '/app/local-member-home',
       mainLinks: [
-        { href: '../public/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../app/home.html#tab-map', label: 'わたしの地図', currentMatchers: ['home.html'] },
-        { href: '../app/local-member-home.html?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home.html', 'index.html', 'story.html'] },
-        { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: 'ちいきのおかって', currentMatchers: ['okatte-entry.html'] },
-        { href: '../public/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: '../public/safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
+        { href: '/app/map-records', label: 'わたしの地図', currentMatchers: ['map-records'] },
+        { href: '/app/local-member-home', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
+        { label: 'ちいきのおかって（次段階）', disabled: true },
+        // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: 'お問い合わせ（次段階）', disabled: true }
       ],
       utilityLinks: [
-        { href: '../public/bridge.html', label: 'ブリッジ' }
+        { href: '/preview/public/bridge.html', label: 'ブリッジ' }
       ],
-      notificationsHref: '../app/notification-center.html',
+      notificationsHref: '/app/mypage',
       action: [
-        { href: '../app/messages.html', label: '連絡', currentMatchers: ['messages.html', 'chat.html'] },
-        { href: '../app/mypage.html', label: 'マイページ', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
+        { label: '連絡（次段階）', disabled: true },
+        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
     app_local_member: {
       variant: 'app',
-      brandHref: '../app/local-member-home.html',
+      brandHref: '/app/local-member-home',
       brandTag: '\u5730\u57df',
       // Java移行時メモ: app_local_member は登録済み地域ユーザー向けヘッダーです。
       // 公開の local.html と混ぜず、LOCAL ロールのログイン後導線として分ける前提です。
       mainLinks: [
-        { href: '../public/gate.html?context=app', label: '\u3061\u3044\u304d\u306e\u5165\u308a\u53e3', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../app/local-member-home.html#tab-map', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['local-member-home.html'] },
-        { href: '../app/local-member-home.html?tab=footprints', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home.html', 'index.html', 'story.html'] },
-        { href: '../public/okatte-entry.html?proposal=okatte-1&context=app', label: '\u3061\u3044\u304d\u306e\u304a\u304b\u3063\u3066', currentMatchers: ['okatte-entry.html'] },
-        { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: '../public/safety.html?context=app', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { href: '/app/gate', label: '\u3061\u3044\u304d\u306e\u5165\u308a\u53e3', currentMatchers: ['gate', 'gate.html'] },
+        { href: '/app/map-records', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['map-records'] },
+        { href: '/app/local-member-home', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home', 'local-member-home.html'] },
+        { label: '\u3061\u3044\u304d\u306e\u304a\u304b\u3063\u3066\uff08\u6b21\u6bb5\u968e\uff09', disabled: true },
+        // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: '\u304a\u554f\u3044\u5408\u308f\u305b\uff08\u6b21\u6bb5\u968e\uff09', disabled: true }
       ],
       utilityLinks: [
-        { href: '../public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' }
+        { href: '/preview/public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' }
       ],
-      notificationsHref: '../app/notification-center.html',
+      notificationsHref: '/app/mypage',
       action: [
-        { href: '../app/messages.html', label: '\u9023\u7d61', currentMatchers: ['messages.html', 'chat.html'] },
-        { href: '../app/mypage.html', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage.html', 'account.html', 'profile.html', 'privacy-settings.html', 'notifications.html', 'history.html', 'security.html', 'support.html', 'notification-center.html'] }
+        { label: '\u9023\u7d61\uff08\u6b21\u6bb5\u968e\uff09', disabled: true },
+        { href: '/app/mypage', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     }
   };
@@ -311,6 +319,36 @@
       { href: '../auth/login.html', label: 'ログイン' }
     ]
   };
+
+  function getFooterConfig() {
+    var path = window.location.pathname.replace(/\\/g, '/');
+    var inApp = /\/app\//.test(path);
+    var localApp = /\/app\/local-(member-)?home/.test(path);
+
+    if (!inApp) {
+      return footerConfig;
+    }
+
+    return {
+      about: [
+        { href: localApp ? '/app/local-member-home' : '/app/home', label: 'FURUTABI' },
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: 'お問い合わせ（次段階）', disabled: true }
+      ],
+      usage: [
+        { href: '/app/gate', label: 'ちいきの入り口' },
+        { href: localApp ? '/app/local-member-home' : '/app/home', label: 'ごひいきさんの足あと' },
+        { href: '/app/map-records', label: 'わたしの地図' },
+        { label: 'ちいきのおかって（次段階）', disabled: true }
+      ],
+      legal: [
+        { label: '利用規約（次段階）', disabled: true },
+        { label: 'プライバシーポリシー（次段階）', disabled: true },
+        { href: '/app/mypage', label: 'マイページ' }
+      ]
+    };
+  }
 
   function escapeHtml(value) {
     return String(value)
@@ -362,6 +400,13 @@
 
   function renderNavLinks(links, className) {
     return (links || []).map(function (link) {
+      if (link.disabled || !link.href) {
+        var disabledLabel = escapeHtml(link.label);
+        if (disabledLabel.indexOf('（次段階）') >= 0) {
+          disabledLabel = disabledLabel.replace('（次段階）', '<br><span class="navSubLabel">（次段階）</span>');
+        }
+        return '<span class="' + className + ' is-disabled" aria-disabled="true">' + disabledLabel + '</span>';
+      }
       var current = isCurrentLink(link);
       return '<a class="' + className + (current ? ' is-current' : '') + '" href="' + escapeHtml(link.href) + '"' + (current ? ' aria-current="page"' : '') + '>' + escapeHtml(link.label) + '</a>';
     }).join('');
@@ -609,10 +654,14 @@
     var resolvedHref = href;
     var pathname;
     var appContextTargets = ['about.html', 'gate.html', 'gate-entry.html', 'index.html', 'story.html', 'faq.html', 'safety.html', 'safety-complete.html', 'okatte-entry.html'];
-    var preferLocalMemberHome = /\/app\/local-(member-)?home\.html/.test(path);
+    var preferLocalMemberHome = /\/app\/local-(member-)?home(\.html)?/.test(path);
 
     if (href === '#') {
       return href;
+    }
+
+    if (/^(\/|https?:)/.test(resolvedHref)) {
+      return resolvedHref;
     }
 
     if (inAuthOrApp && resolvedHref.indexOf('../') !== 0) {
@@ -642,11 +691,15 @@
 
   function renderFooterLinks(links) {
     return links.map(function (link) {
+      if (link.disabled || !link.href) {
+        return '<span class="is-disabled" aria-disabled="true">' + escapeHtml(link.label) + '</span>';
+      }
       return '<a href="' + escapeHtml(withBasePrefix(link.href)) + '">' + escapeHtml(link.label) + '</a>';
     }).join('');
   }
 
   function ensureFooter() {
+    var activeFooterConfig = getFooterConfig();
     var footer = document.querySelector('[data-site-footer]') || document.querySelector('.siteFooter');
     if (!footer) {
       footer = document.createElement('footer');
@@ -670,15 +723,15 @@
         '<div class="siteFooterGrid">' +
           '<section class="siteFooterCol">' +
             '<h2>FURUTABIについて</h2>' +
-            '<div class="siteFooterLinks">' + renderFooterLinks(footerConfig.about) + '</div>' +
+            '<div class="siteFooterLinks">' + renderFooterLinks(activeFooterConfig.about) + '</div>' +
           '</section>' +
           '<section class="siteFooterCol">' +
             '<h2>使い方</h2>' +
-            '<div class="siteFooterLinks">' + renderFooterLinks(footerConfig.usage) + '</div>' +
+            '<div class="siteFooterLinks">' + renderFooterLinks(activeFooterConfig.usage) + '</div>' +
           '</section>' +
           '<section class="siteFooterCol">' +
             '<h2>ご利用にあたって</h2>' +
-            '<div class="siteFooterLinks">' + renderFooterLinks(footerConfig.legal) + '</div>' +
+            '<div class="siteFooterLinks">' + renderFooterLinks(activeFooterConfig.legal) + '</div>' +
           '</section>' +
         '</div>' +
         '<div class="siteFooterBottom">' +

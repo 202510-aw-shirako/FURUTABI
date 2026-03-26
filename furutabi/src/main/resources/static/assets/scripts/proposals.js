@@ -280,6 +280,14 @@
   }
 
   function buildDetailHref(type, id, basePath, context) {
+    if (context === 'app') {
+      if (type === 'gate') {
+        return '/app/gate';
+      }
+      if (type === 'okatte') {
+        return '';
+      }
+    }
     var file = type === 'okatte' ? 'okatte-entry.html' : 'gate-entry.html';
     var href = basePath + file + '?proposal=' + encodeURIComponent(id);
     if (context) {

@@ -17,7 +17,7 @@
   </header>
 
   <main class="container" aria-label="ログイン後ホーム">
-    <section class="section section--hero" aria-label="ヒーローイメージ">
+    <section class="section section--hero" aria-label="ヒーロー">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
       </div>
@@ -49,17 +49,22 @@
       <div class="grid2" style="margin-top:16px;">
         <div class="card">
           <div class="h2">マイページ</div>
-          <p class="note">登録後に「あとで設定」を選んだ場合も、ここからプロフィールや通知周辺の入口へ戻れます。</p>
+          <p class="note">公開後に「あわせて設定」を選んだ場合も、ここからプロフィールや各種設定へ進めます。</p>
           <a class="btn primary" href="/app/mypage">マイページを見る</a>
         </div>
         <div class="card">
           <div class="h2">わたしの地図の記録</div>
-          <p class="note">公開済みの map 記録を一覧と詳細で見返す入口です。投稿・編集・削除は次段階へ送っています。</p>
+          <p class="note">公開済みの map 記録を一覧と詳細で確認できます。投稿や表示制御の詳細は次段階へ送っています。</p>
           <a class="btn ghost" href="/app/map-records">記録一覧を見る</a>
         </div>
         <div class="card">
+          <div class="h2">ちいきの入り口</div>
+          <p class="note">gate の公開一覧と詳細だけを backend 側につないでいます。申請や受け入れ判断はまだ次段階です。</p>
+          <a class="btn ghost" href="/app/gate">入り口を見る</a>
+        </div>
+        <div class="card">
           <div class="h2">地域ユーザー向けホーム</div>
-          <p class="note">LOCAL / BRIDGE の既定遷移は別ホームへ分けています。細かい role 認可はまだここでは固定していません。</p>
+          <p class="note">LOCAL / BRIDGE の既存受け先です。役割ごとの詳細運用はまだこの段階では固定していません。</p>
           <a class="btn ghost" href="/app/local-member-home">地域ホームを見る</a>
         </div>
       </div>

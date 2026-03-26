@@ -33,6 +33,10 @@ class SecurityConfigBoundaryTests {
     void setUpCurrentUserRow() {
         Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
 
+        jdbcTemplate.update("DELETE FROM proposal_application_status_history");
+        jdbcTemplate.update("DELETE FROM proposal_applications");
+        jdbcTemplate.update("DELETE FROM proposal_tags");
+        jdbcTemplate.update("DELETE FROM proposals");
         jdbcTemplate.update("DELETE FROM map_record_comments");
         jdbcTemplate.update("DELETE FROM map_record_images");
         jdbcTemplate.update("DELETE FROM map_records");
@@ -89,6 +93,30 @@ class SecurityConfigBoundaryTests {
             "area",
             false,
             now,
+            now,
+            now,
+            null
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO proposals (
+                    id, proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                    duration_minutes, location_name, status, visibility_scope, cover_image_path,
+                    created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            20L,
+            "LOCAL_GUIDE",
+            null,
+            1L,
+            "Boundary gate",
+            "Boundary gate summary",
+            "Boundary gate body",
+            45,
+            "Tokyo",
+            "published",
+            "public",
+            null,
             now,
             now,
             null
@@ -170,6 +198,20 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated map record edit route is available after passing security")
     void authenticatedMapRecordEditRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/map-records/10/edit").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated gate list route is available after passing security")
+    void authenticatedGateListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/gate").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated gate detail route is available after passing security")
+    void authenticatedGateDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/gate/20").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 
