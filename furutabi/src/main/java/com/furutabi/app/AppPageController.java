@@ -19,17 +19,20 @@ public class AppPageController {
     private final MapRecordService mapRecordService;
     private final GateService gateService;
     private final ProposalApplicationService proposalApplicationService;
+    private final BridgeApplicationReviewService bridgeApplicationReviewService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
         MapRecordService mapRecordService,
         GateService gateService,
-        ProposalApplicationService proposalApplicationService
+        ProposalApplicationService proposalApplicationService,
+        BridgeApplicationReviewService bridgeApplicationReviewService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
         this.gateService = gateService;
         this.proposalApplicationService = proposalApplicationService;
+        this.bridgeApplicationReviewService = bridgeApplicationReviewService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -40,6 +43,46 @@ public class AppPageController {
     @GetMapping({"/local-member-home", "/local-member-home.html"})
     public String localMemberHome() {
         return "app/local-member-home";
+    }
+
+    @GetMapping({"/bridge-applications", "/bridge-applications.html"})
+    public String bridgeApplications(Authentication authentication, Model model) {
+        model.addAttribute("pageData", bridgeApplicationReviewService.loadPendingApplications(authentication.getName()));
+        return "app/bridge-application-list";
+    }
+
+    @GetMapping("/bridge-applications/{id}")
+    public String bridgeApplicationDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", bridgeApplicationReviewService.loadApplicationDetail(authentication.getName(), id));
+            return "app/bridge-application-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
+        }
+    }
+
+    @PostMapping("/bridge-applications/{id}/accept")
+    public String acceptBridgeApplication(@PathVariable long id, Authentication authentication) {
+        try {
+            bridgeApplicationReviewService.acceptApplication(authentication.getName(), id);
+            return "redirect:/app/bridge-applications/" + id + "?accepted";
+        } catch (BridgeApplicationReviewService.BridgeApplicationReviewConflictException ex) {
+            return "redirect:/app/bridge-applications/" + id + "?blocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
+        }
+    }
+
+    @PostMapping("/bridge-applications/{id}/reject")
+    public String rejectBridgeApplication(@PathVariable long id, Authentication authentication) {
+        try {
+            bridgeApplicationReviewService.rejectApplication(authentication.getName(), id);
+            return "redirect:/app/bridge-applications/" + id + "?rejected";
+        } catch (BridgeApplicationReviewService.BridgeApplicationReviewConflictException ex) {
+            return "redirect:/app/bridge-applications/" + id + "?blocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
+        }
     }
 
     @GetMapping({"/mypage", "/mypage.html"})

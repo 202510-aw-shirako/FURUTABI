@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>地域ユーザーホーム | FURUTABI</title>
+  <title>地域メンバーホーム | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <main class="container" aria-label="地域ユーザー向けログイン後ホーム">
+  <main class="container" aria-label="地域メンバー向けログイン後ホーム">
     <section class="section section--hero" aria-label="ヒーローイメージ">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -27,7 +27,7 @@
       <div class="topicsPanelShell">
         <div class="topicsPanelHead">
           <h2 class="topicsPanelTitle">トピックス</h2>
-          <span class="topicsPanelLink">地域ユーザー向け最小接続</span>
+          <span class="topicsPanelLink">地域メンバー向け最新情報</span>
         </div>
         <div class="topicsPanel" data-notice-topics-items data-notice-base="../public/" data-notice-max="5"></div>
       </div>
@@ -38,7 +38,7 @@
         <h1 class="h1">ちいきのおかって</h1>
         <a class="sectionTitleLink" href="/preview/public/bridge.html">preview 地域ページへ</a>
       </div>
-      <p class="lead">地域ユーザー向けホームとして、公開側とは別の受け先を backend で持ちます。proposal と map の詳細実装は次段階に送っています。</p>
+      <p class="lead">地域メンバー向けホームとして、足元の導線を backend で少しずつ整えています。proposal と map の詳細接続は次段階へ続きます。</p>
       <div class="proposalGrid" style="margin-top:16px;" data-proposal-grid="okatte" data-proposal-base="../public/" data-proposal-context="app"></div>
     </section>
 
@@ -48,13 +48,18 @@
       </div>
       <div class="grid2" style="margin-top:16px;">
         <div class="card">
+          <div class="h2">申請確認</div>
+          <p class="note">架け橋さんに届いた pending 申請を見て、受諾または拒否を行います。chat 開通はまだ次段階です。</p>
+          <a class="btn primary" href="/app/bridge-applications">申請を確認する</a>
+        </div>
+        <div class="card">
           <div class="h2">マイページ</div>
-          <p class="note">登録後のプロフィール補足や通知設定の入口として使います。詳細画面はまだ route 化していません。</p>
+          <p class="note">活動後のプロフィール確認や公開設定の見直しはマイページから行います。詳細画面はまだ route 化していません。</p>
           <a class="btn primary" href="/app/mypage">マイページを見る</a>
         </div>
         <div class="card">
-          <div class="h2">一般ユーザーホーム</div>
-          <p class="note">一般ユーザー向けホームとの差を、ここから先の作業で育てる前提です。</p>
+          <div class="h2">ごひいきさんの足あと</div>
+          <p class="note">一般ユーザー向けホームとの違いを、ここから後の作業で広げていく想定です。</p>
           <a class="btn ghost" href="/app/home">一般ホームを見る</a>
         </div>
       </div>

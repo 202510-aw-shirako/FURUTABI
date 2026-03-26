@@ -70,9 +70,67 @@ class SecurityConfigBoundaryTests {
             now
         );
         jdbcTemplate.update(
+            """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            2L,
+            "local@example.com",
+            "{noop}unused",
+            "local",
+            "Local Example",
+            "ローカル",
+            Date.valueOf("1990-01-01"),
+            "NO_ANSWER",
+            "000-0000-0000",
+            "Tokyo",
+            Boolean.TRUE,
+            "UNREQUESTED",
+            now,
+            now
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            3L,
+            "bridge@example.com",
+            "{noop}unused",
+            "bridge",
+            "Bridge Example",
+            "ブリッジ",
+            Date.valueOf("1990-01-01"),
+            "NO_ANSWER",
+            "000-0000-0000",
+            "Tokyo",
+            Boolean.TRUE,
+            "UNREQUESTED",
+            now,
+            now
+        );
+        jdbcTemplate.update(
             "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
             1L,
             "USER",
+            now
+        );
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            2L,
+            "LOCAL",
+            now
+        );
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            3L,
+            "BRIDGE",
             now
         );
         jdbcTemplate.update(
@@ -107,8 +165,8 @@ class SecurityConfigBoundaryTests {
                 """,
             20L,
             "LOCAL_GUIDE",
-            null,
-            1L,
+            3L,
+            2L,
             "Boundary gate",
             "Boundary gate summary",
             "Boundary gate body",
@@ -117,6 +175,26 @@ class SecurityConfigBoundaryTests {
             "published",
             "public",
             null,
+            now,
+            now,
+            null
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO proposal_applications (
+                    id, proposal_id, applicant_user_id, application_status, latest_message_preview,
+                    latest_message_at, related_thread_id, requires_additional_verification,
+                    applied_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            30L,
+            20L,
+            1L,
+            "pending",
+            "Boundary application",
+            now,
+            null,
+            false,
             now,
             now,
             null
@@ -219,6 +297,20 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated gate application route is available after passing security")
     void authenticatedGateApplicationRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/gate/20/apply").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated bridge application list route is available after passing security")
+    void authenticatedBridgeApplicationListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/bridge-applications").with(user("bridge@example.com").roles("BRIDGE")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated bridge application detail route is available after passing security")
+    void authenticatedBridgeApplicationDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/bridge-applications/30").with(user("bridge@example.com").roles("BRIDGE")))
             .andExpect(status().isOk());
     }
 
