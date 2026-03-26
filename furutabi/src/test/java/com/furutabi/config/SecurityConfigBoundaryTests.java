@@ -160,6 +160,20 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated map record create route is available after passing security")
+    void authenticatedMapRecordCreateRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/map-records/new").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated map record edit route is available after passing security")
+    void authenticatedMapRecordEditRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/map-records/10/edit").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Preview public index is accessible without authentication")
     void unauthenticatedPreviewPublicIndexIsAccessible() throws Exception {
         mockMvc.perform(get("/preview/public/index.html"))

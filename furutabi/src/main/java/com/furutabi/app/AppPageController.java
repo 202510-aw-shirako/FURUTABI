@@ -92,6 +92,24 @@ public class AppPageController {
         return "app/map-records";
     }
 
+    @GetMapping("/map-records/new")
+    public String createMapRecord(Authentication authentication, Model model) {
+        MapRecordService.MapRecordEditorPageData pageData = mapRecordService.loadCreatePage(authentication.getName());
+        model.addAttribute("pageData", pageData);
+        model.addAttribute("mapRecordForm", pageData.form());
+        model.addAttribute("visibilityOptions", visibilityOptions());
+        return "app/map-record-form";
+    }
+
+    @PostMapping("/map-records")
+    public String saveNewMapRecord(Authentication authentication, @ModelAttribute("mapRecordForm") MapRecordForm mapRecordForm) {
+        MapRecordService.MapRecordSaveResult saveResult = mapRecordService.createRecord(authentication.getName(), mapRecordForm);
+        if (saveResult.draft()) {
+            return "redirect:/app/map-records/" + saveResult.mapRecordId() + "/edit?savedDraft";
+        }
+        return "redirect:/app/map-records/" + saveResult.mapRecordId() + "?saved";
+    }
+
     @GetMapping("/map-records/{id}")
     public String mapRecordDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
@@ -100,5 +118,60 @@ public class AppPageController {
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
         }
+    }
+
+    @GetMapping("/map-records/{id}/edit")
+    public String editMapRecord(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            MapRecordService.MapRecordEditorPageData pageData = mapRecordService.loadEditPage(authentication.getName(), id);
+            model.addAttribute("pageData", pageData);
+            model.addAttribute("mapRecordForm", pageData.form());
+            model.addAttribute("visibilityOptions", visibilityOptions());
+            return "app/map-record-form";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @PostMapping("/map-records/{id}")
+    public String updateMapRecord(
+        @PathVariable long id,
+        Authentication authentication,
+        @ModelAttribute("mapRecordForm") MapRecordForm mapRecordForm
+    ) {
+        try {
+            MapRecordService.MapRecordSaveResult saveResult = mapRecordService.updateRecord(
+                authentication.getName(),
+                id,
+                mapRecordForm
+            );
+            if (saveResult.draft()) {
+                return "redirect:/app/map-records/" + id + "/edit?savedDraft";
+            }
+            return "redirect:/app/map-records/" + id + "?saved";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @PostMapping("/map-records/{id}/delete")
+    public String deleteMapRecord(@PathVariable long id, Authentication authentication) {
+        try {
+            mapRecordService.deleteRecord(authentication.getName(), id);
+            return "redirect:/app/map-records?deleted";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    private VisibilityOption[] visibilityOptions() {
+        return new VisibilityOption[] {
+            new VisibilityOption("PUBLIC", "一般公開"),
+            new VisibilityOption("PRIVATE", "本人のみ"),
+            new VisibilityOption("LIMITED", "関係者まで")
+        };
+    }
+
+    public record VisibilityOption(String value, String label) {
     }
 }

@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
@@ -80,10 +81,13 @@ public class DevUserSeed implements ApplicationRunner {
                 now
             );
 
-            userId = jdbcTemplate.queryForObject(
+            userId = Objects.requireNonNull(
+                jdbcTemplate.queryForObject(
                 "SELECT id FROM users WHERE email = ?",
                 Long.class,
                 email
+                ),
+                "Seed user ID was not found after insert: " + email
             );
         } else {
             userId = existingUserId;
