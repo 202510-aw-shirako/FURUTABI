@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ちいきの入り口 詳細 | FURUTABI</title>
+  <title>ちいきの入口 詳細 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <main class="container" aria-label="ちいきの入り口 詳細">
+  <main class="container" aria-label="ちいきの入口 詳細">
     <section class="section section--hero" aria-label="ヒーロー">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -28,9 +28,13 @@
         <h1 class="h1" th:text="${pageData.title}">gate title</h1>
         <a class="sectionTitleLink" href="/app/gate">一覧へ戻る</a>
       </div>
+      <div class="mypageNoticeBox" th:if="${param.applied}">
+        <p>申請を作成しました。受け入れ判断や chat 開始はまだ次段階です。</p>
+      </div>
       <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
         <span class="pill" th:text="${pageData.visibilityLabel}">PUBLIC</span>
-        <span class="pill pill--soft" th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '所要時間未設定'}">60分</span>
+        <span class="pill pill--soft"
+              th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '所要時間は次段階で設定'}">60分</span>
       </div>
       <p class="lead" th:if="${pageData.summary != null}" th:text="${pageData.summary}">summary</p>
     </section>
@@ -41,9 +45,10 @@
           <div class="h2">この入口について</div>
           <p class="note" th:text="${pageData.body != null ? pageData.body : '詳細本文はまだ最小表示です。'}">body</p>
           <p class="note" th:if="${pageData.locationName != null}" th:text="${'場所: ' + pageData.locationName}">場所</p>
-          <p class="note" th:text="${pageData.hostNickname != null ? '投稿者: ' + pageData.hostNickname : '投稿者未設定'}">投稿者</p>
-          <p class="note" th:if="${pageData.bridgeNickname != null}" th:text="${'橋渡し: ' + pageData.bridgeNickname}">橋渡し</p>
-          <p class="note" th:if="${pageData.createdAt != null}" th:text="${'作成日時: ' + #temporals.format(pageData.createdAt, 'yyyy-MM-dd HH:mm')}">日時</p>
+          <p class="note" th:text="${pageData.hostNickname != null ? '投稿者: ' + pageData.hostNickname : '投稿者は次段階で表示'}">投稿者</p>
+          <p class="note" th:if="${pageData.bridgeNickname != null}" th:text="${'ブリッジ: ' + pageData.bridgeNickname}">ブリッジ</p>
+          <p class="note" th:if="${pageData.createdAt != null}"
+             th:text="${'作成日時: ' + #temporals.format(pageData.createdAt, 'yyyy-MM-dd HH:mm')}">作成日時</p>
         </article>
 
         <article class="card">
@@ -52,10 +57,14 @@
             <span class="proposalTag" th:each="tag : ${pageData.tags}" th:text="${tag}">tag</span>
           </div>
           <p class="note" th:if="${pageData.tags.isEmpty()}">タグはまだ設定されていません。</p>
-          <div style="margin-top:16px;">
+
+          <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
             <span class="btn ghost" th:if="${pageData.owner}">投稿者として表示中</span>
-            <p class="note" style="margin-top:12px;">申請、受け入れ判断、chat 開始はまだ次段階です。今回は公開一覧と詳細の backend 接続だけを先に通しています。</p>
+            <a class="btn primary" th:if="${pageData.canApply}" th:href="@{/app/gate/{id}/apply(id=${pageData.proposalId})}">申請する</a>
           </div>
+          <p class="note" th:if="${pageData.applicationStatus != null}" style="margin-top:12px;"
+             th:text="${'あなたの申請状態: ' + pageData.applicationStatus}">申請状態</p>
+          <p class="note" style="margin-top:12px;">申請作成までは backend でつながりました。受け入れ判断と chat 開始はまだ次段階です。</p>
         </article>
       </div>
     </section>

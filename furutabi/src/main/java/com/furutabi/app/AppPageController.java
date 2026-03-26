@@ -18,15 +18,18 @@ public class AppPageController {
     private final AppSettingsService appSettingsService;
     private final MapRecordService mapRecordService;
     private final GateService gateService;
+    private final ProposalApplicationService proposalApplicationService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
         MapRecordService mapRecordService,
-        GateService gateService
+        GateService gateService,
+        ProposalApplicationService proposalApplicationService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
         this.gateService = gateService;
+        this.proposalApplicationService = proposalApplicationService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -109,6 +112,33 @@ public class AppPageController {
         try {
             model.addAttribute("pageData", gateService.loadVisibleGateDetail(authentication.getName(), id));
             return "app/gate-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gate proposal not found", ex);
+        }
+    }
+
+    @GetMapping("/gate/{id}/apply")
+    public String gateApplicationPage(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", proposalApplicationService.loadApplicationPage(authentication.getName(), id));
+            model.addAttribute("proposalApplicationForm", new ProposalApplicationForm());
+            return "app/gate-application-form";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gate proposal not found", ex);
+        }
+    }
+
+    @PostMapping("/gate/{id}/apply")
+    public String createGateApplication(
+        @PathVariable long id,
+        Authentication authentication,
+        @ModelAttribute("proposalApplicationForm") ProposalApplicationForm proposalApplicationForm
+    ) {
+        try {
+            proposalApplicationService.createApplication(authentication.getName(), id, proposalApplicationForm);
+            return "redirect:/app/gate/" + id + "?applied";
+        } catch (ProposalApplicationService.ProposalApplicationConflictException ex) {
+            return "redirect:/app/gate/" + id + "/apply?blocked";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gate proposal not found", ex);
         }

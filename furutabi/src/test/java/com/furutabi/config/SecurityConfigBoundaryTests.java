@@ -216,6 +216,13 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated gate application route is available after passing security")
+    void authenticatedGateApplicationRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/gate/20/apply").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Preview public index is accessible without authentication")
     void unauthenticatedPreviewPublicIndexIsAccessible() throws Exception {
         mockMvc.perform(get("/preview/public/index.html"))

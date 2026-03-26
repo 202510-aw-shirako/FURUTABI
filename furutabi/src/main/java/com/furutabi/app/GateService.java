@@ -53,8 +53,23 @@ public class GateService {
             nullableText(row.bridgeNickname()),
             loadTags(proposalId),
             row.createdAt() == null ? null : row.createdAt().toLocalDateTime(),
-            viewerUserId != null && viewerUserId == row.hostUserId()
+            viewerUserId != null && viewerUserId == row.hostUserId(),
+            canApply(viewerUserId, row),
+            loadApplicationStatus(viewerUserId, proposalId)
         );
+    }
+
+    private boolean canApply(Long viewerUserId, GateDetailRow row) {
+        if (viewerUserId == null) {
+            return false;
+        }
+        if (viewerUserId == row.hostUserId()) {
+            return false;
+        }
+        if (row.bridgeUserId() != null && viewerUserId == row.bridgeUserId()) {
+            return false;
+        }
+        return loadApplicationStatus(viewerUserId, row.proposalId()) == null;
     }
 
     private List<GateSummaryRow> loadGateCandidates() {
@@ -89,7 +104,7 @@ public class GateService {
             return jdbcTemplate.queryForObject(
                 """
                     SELECT p.id, p.host_user_id, p.title, p.summary, p.body, p.location_name, p.duration_minutes,
-                           p.visibility_scope, p.created_at,
+                           p.visibility_scope, p.created_at, p.bridge_user_id,
                            host.nickname AS host_nickname,
                            bridge.nickname AS bridge_nickname
                     FROM proposals p
@@ -111,7 +126,8 @@ public class GateService {
                     rs.getString("visibility_scope"),
                     rs.getString("host_nickname"),
                     rs.getString("bridge_nickname"),
-                    rs.getTimestamp("created_at")
+                    rs.getTimestamp("created_at"),
+                    rs.getObject("bridge_user_id", Long.class)
                 ),
                 proposalId
             );
@@ -162,6 +178,30 @@ public class GateService {
         }
     }
 
+    private String loadApplicationStatus(Long viewerUserId, long proposalId) {
+        if (viewerUserId == null) {
+            return null;
+        }
+        try {
+            return jdbcTemplate.queryForObject(
+                """
+                    SELECT application_status
+                    FROM proposal_applications
+                    WHERE proposal_id = ?
+                      AND applicant_user_id = ?
+                      AND deleted_at IS NULL
+                    ORDER BY applied_at DESC, id DESC
+                    FETCH FIRST 1 ROWS ONLY
+                    """,
+                String.class,
+                proposalId,
+                viewerUserId
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
     private String nullableText(String value) {
         if (value == null || value.isBlank()) {
             return null;
@@ -197,7 +237,9 @@ public class GateService {
         String bridgeNickname,
         List<String> tags,
         LocalDateTime createdAt,
-        boolean owner
+        boolean owner,
+        boolean canApply,
+        String applicationStatus
     ) {
     }
 
@@ -245,7 +287,8 @@ public class GateService {
         String visibilityScope,
         String hostNickname,
         String bridgeNickname,
-        Timestamp createdAt
+        Timestamp createdAt,
+        Long bridgeUserId
     ) {
     }
 }

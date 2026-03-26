@@ -40,10 +40,11 @@ public class DevUserSeed implements ApplicationRunner {
             return;
         }
 
-        seedUser("user@example.com", "USER", "一般ユーザー", "イッパンユーザー");
-        seedUser("local@example.com", "LOCAL", "地域ユーザー", "チイキユーザー");
-        seedUser("bridge@example.com", "BRIDGE", "架け橋ユーザー", "カケハシユーザー");
-        seedUser("admin@example.com", "ADMIN", "管理ユーザー", "カンリユーザー");
+        seedUser("user@example.com", "USER", "User Seed", "User Seed");
+        seedUser("local@example.com", "LOCAL", "Local Seed", "Local Seed");
+        seedUser("bridge@example.com", "BRIDGE", "Bridge Seed", "Bridge Seed");
+        seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
+        seedPilotGateProposal();
     }
 
     private void seedUser(String email, String roleName, String name, String nameKana) {
@@ -83,9 +84,9 @@ public class DevUserSeed implements ApplicationRunner {
 
             userId = Objects.requireNonNull(
                 jdbcTemplate.queryForObject(
-                "SELECT id FROM users WHERE email = ?",
-                Long.class,
-                email
+                    "SELECT id FROM users WHERE email = ?",
+                    Long.class,
+                    email
                 ),
                 "Seed user ID was not found after insert: " + email
             );
@@ -111,5 +112,95 @@ public class DevUserSeed implements ApplicationRunner {
             roleName
         );
         return count != null && count > 0;
+    }
+
+    private void seedPilotGateProposal() {
+        // Development-only pilot case for manual verification.
+        // Remove this once real gate proposal creation or richer dev fixtures are ready.
+        long hostUserId = requireUserIdByEmail("local@example.com");
+        long bridgeUserId = requireUserIdByEmail("bridge@example.com");
+        String title = "【dev確認用】ちいきの入り口 申請確認";
+
+        List<Long> existingProposalIds = jdbcTemplate.query(
+            "SELECT id FROM proposals WHERE title = ? AND host_user_id = ? AND deleted_at IS NULL",
+            (rs, rowNum) -> rs.getLong("id"),
+            title,
+            hostUserId
+        );
+
+        long proposalId;
+        if (existingProposalIds.isEmpty()) {
+            Timestamp now = Timestamp.from(Instant.now());
+            jdbcTemplate.update(
+                """
+                    INSERT INTO proposals (
+                        proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                        duration_minutes, location_name, status, visibility_scope,
+                        cover_image_path, created_at, updated_at, deleted_at
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                "GATE",
+                bridgeUserId,
+                hostUserId,
+                title,
+                "dev専用の申請確認用パイロットケースです。",
+                "user@example.com で gate 詳細を開き、申請導線を手動確認するための dev 専用データです。",
+                90,
+                "開発用シード町",
+                "published",
+                "public",
+                null,
+                now,
+                now,
+                null
+            );
+
+            proposalId = Objects.requireNonNull(
+                jdbcTemplate.queryForObject(
+                    "SELECT id FROM proposals WHERE title = ? AND host_user_id = ? AND deleted_at IS NULL",
+                    Long.class,
+                    title,
+                    hostUserId
+                ),
+                "Pilot gate proposal ID was not found after insert."
+            );
+        } else {
+            proposalId = existingProposalIds.getFirst();
+        }
+
+        seedProposalTag(proposalId, "dev-seed", 0);
+        seedProposalTag(proposalId, "gate-pilot", 1);
+    }
+
+    private void seedProposalTag(long proposalId, String tagName, int sortOrder) {
+        Long count = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM proposal_tags WHERE proposal_id = ? AND tag_name = ?",
+            Long.class,
+            proposalId,
+            tagName
+        );
+        if (count != null && count > 0) {
+            return;
+        }
+
+        jdbcTemplate.update(
+            "INSERT INTO proposal_tags (proposal_id, tag_name, sort_order, created_at) VALUES (?, ?, ?, ?)",
+            proposalId,
+            tagName,
+            sortOrder,
+            Timestamp.from(Instant.now())
+        );
+    }
+
+    private long requireUserIdByEmail(String email) {
+        return Objects.requireNonNull(
+            jdbcTemplate.queryForObject(
+                "SELECT id FROM users WHERE email = ?",
+                Long.class,
+                email
+            ),
+            "Dev seed user ID was not found for email: " + email
+        );
     }
 }
