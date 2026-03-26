@@ -121,6 +121,7 @@
       : ['public'];
     var label = options && options.meta ? options.meta : '— わたしの地図';
     var records;
+    var linksEnabled = !options || options.linksEnabled !== false;
 
     if (!interactions || typeof interactions.getMapRecords !== 'function') {
       return {};
@@ -143,7 +144,7 @@
         year: pin.recordedYear || getYearFromDateString(recordedAt),
         category: pin.recordType || 'memo',
         body: [summarizeMapRecord(pin)],
-        link: basePath || '#',
+        link: linksEnabled ? (basePath || '#') : '#',
         aria: 'わたしの地図の記録',
         x: Number(pin.x),
         y: Number(pin.y)
@@ -194,7 +195,7 @@
     }).join('');
   }
 
-  function withBasePath(basePath) {
+  function withBasePath(basePath, linksEnabled) {
     // 画面ごとに public / app で相対パスが違うため、リンクだけここで吸収する。
     // Javaルーティング化したら `/stories/{id}` などの絶対パス生成に置き換える。
     return Object.keys(stories).reduce(function (acc, id) {
@@ -210,7 +211,7 @@
         category: story.category,
         pinClass: story.pinClass,
         body: story.body.slice(),
-        link: (basePath || '') + 'story.html?story=' + story.id,
+        link: linksEnabled === false ? '#' : (basePath || '') + 'story.html?story=' + story.id,
         aria: defaultLabel + ' ' + story.id
       };
       return acc;

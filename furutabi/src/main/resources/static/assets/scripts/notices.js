@@ -210,7 +210,7 @@
     if (explicit === 'false') {
       return false;
     }
-    return !window.location.pathname.replace(/\\/g, '/').startsWith('/app/');
+    return false;
   }
 
   function renderTopics(root) {

@@ -149,17 +149,15 @@
       variant: 'public',
       brandHref: 'index.html',
       mainLinks: [
-        { href: 'gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { label: 'ちいきの入り口（次段階）', disabled: true },
         { href: '#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { href: 'about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
-        { href: 'local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
-        { href: 'faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: 'safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: '地域の方へ（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: 'お問い合わせ（次段階）', disabled: true }
       ],
       utilityLinks: [
-        { href: 'bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' },
-        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
+        { href: 'bridge.html', label: 'ブリッジ' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -170,17 +168,15 @@
       variant: 'public',
       brandHref: 'index.html',
       mainLinks: [
-        { href: 'gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { label: 'ちいきの入り口（次段階）', disabled: true },
         { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { href: 'about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
-        { href: 'local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
-        { href: 'faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: 'safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: '地域の方へ（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: 'お問い合わせ（次段階）', disabled: true }
       ],
       utilityLinks: [
-        { href: 'bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' },
-        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
+        { href: 'bridge.html', label: 'ブリッジ' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -191,17 +187,15 @@
       variant: 'public',
       brandHref: 'index.html',
       mainLinks: [
-        { href: 'gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { label: 'ちいきの入り口（次段階）', disabled: true },
         { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { href: 'about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
-        { href: 'local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
-        { href: 'faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: 'safety.html', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { label: '私たちの目指すもの（次段階）', disabled: true },
+        { label: '地域の方へ（次段階）', disabled: true },
+        { label: 'FAQ（次段階）', disabled: true },
+        { label: 'お問い合わせ（次段階）', disabled: true }
       ],
       utilityLinks: [
-        { href: 'bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' },
-        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
+        { href: 'bridge.html', label: 'ブリッジ' }
       ],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
@@ -302,20 +296,20 @@
 
   var footerConfig = {
     about: [
-      { href: 'about.html', label: 'FURUTABI' },
-      { href: 'about.html', label: '私たちの目指すもの' },
-      { href: 'faq.html', label: 'FAQ' },
-      { href: 'safety.html', label: 'お問い合わせ' }
+      { href: 'index.html', label: 'FURUTABI' },
+      { label: '私たちの目指すもの（次段階）', disabled: true },
+      { label: 'FAQ（次段階）', disabled: true },
+      { label: 'お問い合わせ（次段階）', disabled: true }
     ],
     usage: [
-      { href: 'gate.html', label: 'ちいきの入り口' },
+      { label: 'ちいきの入り口（次段階）', disabled: true },
       { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと' },
-      { href: 'about.html#feature-map', label: 'わたしの地図' },
-      { href: 'okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって' }
+      { label: 'わたしの地図（次段階）', disabled: true },
+      { label: 'ちいきのおかって（次段階）', disabled: true }
     ],
     legal: [
-      { href: 'terms.html', label: '利用規約' },
-      { href: 'privacy.html', label: 'プライバシーポリシー' },
+      { label: '利用規約（次段階）', disabled: true },
+      { label: 'プライバシーポリシー（次段階）', disabled: true },
       { href: '../auth/login.html', label: 'ログイン' }
     ]
   };
