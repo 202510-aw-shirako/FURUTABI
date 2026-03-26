@@ -17,7 +17,7 @@
   </header>
 
   <main class="container" aria-label="わたしの地図の記録一覧">
-    <section class="section section--hero" aria-label="ページ導入">
+    <section class="section section--hero" aria-label="ページ案内">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
       </div>
@@ -33,7 +33,7 @@
       </div>
       <p class="lead">
         <strong th:text="${pageData.currentUserLabel}">furutabi-user</strong>
-        さんが残した公開済みの記録を一覧で見られるページです。作成・編集・削除はここから次に進めます。
+        さんから見えている「わたしの地図の記録」を一覧で見られるページです。オーナーの記録はここから編集できます。
       </p>
       <div class="mypageNoticeBox" th:if="${param.deleted}">
         <p>記録を一覧から外しました。</p>
@@ -51,21 +51,22 @@
             <span th:text="${record.locationName} ?: '場所メモはまだありません'">場所メモ</span>
             <span th:if="${record.createdAt != null}" th:text="' / ' + ${record.createdAt}"> / 2026.03.25</span>
           </p>
-          <p class="lead" th:text="${record.summary}">記録の概要</p>
+          <p class="lead" th:text="${record.summary}">記録の要約</p>
+          <p class="note" th:text="'投稿者: ' + ${record.ownerDisplayName}">投稿者: furutabi-user</p>
           <div class="sectionTitleRow" style="margin-top:12px;">
             <span class="note" th:text="'画像 ' + ${record.imageCount} + '枚'">画像 0枚</span>
             <span class="note" th:text="'コメント ' + ${record.commentCount} + '件'">コメント 0件</span>
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
             <a class="btn ghost" th:href="@{/app/map-records/{id}(id=${record.id})}">詳細を読む</a>
-            <a class="btn ghost" th:href="@{/app/map-records/{id}/edit(id=${record.id})}">編集する</a>
+            <a class="btn ghost" th:if="${record.owner}" th:href="@{/app/map-records/{id}/edit(id=${record.id})}">編集する</a>
           </div>
         </article>
       </div>
 
       <div class="card" th:if="${#lists.isEmpty(pageData.records)}">
-        <div class="h2">まだ公開済みの記録はありません</div>
-        <p class="note">今回の段階では、一覧・詳細に加えて作成・編集・削除までを最小でつないでいます。最初の記録を追加すると、この一覧に出ます。</p>
+        <div class="h2">まだ見える地図の記録はありません</div>
+        <p class="note">公開済みの記録や、自分で作成した記録がここに並びます。まずは最初の記録を追加できます。</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
           <a class="btn primary" href="/app/map-records/new">最初の記録を追加</a>
           <a class="btn ghost" href="/app/home#tab-map">ホームの地図へ戻る</a>

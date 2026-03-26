@@ -51,10 +51,12 @@ class MapRecordFlowTests {
         insertRole(100L, "USER", now);
         insertRole(101L, "USER", now);
 
-        insertMapRecord(501L, 100L, "朝の海辺メモ", "朝の海を見ながらゆっくり歩いた記録です。", "public", false, now);
-        insertMapRecord(502L, 100L, "個人メモ", "本人だけに残しておきたい記録です。", "private", false, now);
-        insertMapRecord(503L, 100L, "関係者向けメモ", "LIMITED ですが map 側 relation はまだ owner 中心です。", "limited", false, now);
-        insertMapRecord(504L, 100L, "下書き中の記録", "一覧にはまだ出さない下書きです。", "private", true, now);
+        insertMapRecord(501L, 100L, "Public owner record", "Public body", "public", false, now);
+        insertMapRecord(502L, 100L, "Private owner record", "Private body", "private", false, now);
+        insertMapRecord(503L, 100L, "Limited owner record", "Limited body", "limited", false, now);
+        insertMapRecord(504L, 100L, "Draft owner record", "Draft body", "private", true, now);
+        insertMapRecord(505L, 100L, "Deleted owner record", "Deleted body", "public", false, now);
+        jdbcTemplate.update("UPDATE map_records SET deleted_at = ?, updated_at = ? WHERE id = ?", now, now, 505L);
 
         jdbcTemplate.update(
             "INSERT INTO map_record_images (map_record_id, file_path, sort_order, created_at) VALUES (?, ?, ?, ?)",
@@ -70,7 +72,7 @@ class MapRecordFlowTests {
                 """,
             501L,
             101L,
-            "また行きたい場所です。",
+            "Looks good",
             false,
             now,
             now,
@@ -79,14 +81,27 @@ class MapRecordFlowTests {
     }
 
     @Test
-    @DisplayName("Authenticated owner can view own published map record list")
-    void ownerCanViewOwnPublishedMapRecordList() throws Exception {
+    @DisplayName("Authenticated owner can view visible map record list")
+    void ownerCanViewVisibleMapRecordList() throws Exception {
         mockMvc.perform(get("/app/map-records").with(user("owner@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("朝の海辺メモ")))
-            .andExpect(content().string(containsString("個人メモ")))
-            .andExpect(content().string(containsString("関係者向けメモ")))
-            .andExpect(content().string(not(containsString("下書き中の記録"))));
+            .andExpect(content().string(containsString("Public owner record")))
+            .andExpect(content().string(containsString("Private owner record")))
+            .andExpect(content().string(containsString("Limited owner record")))
+            .andExpect(content().string(not(containsString("Draft owner record"))))
+            .andExpect(content().string(not(containsString("Deleted owner record"))));
+    }
+
+    @Test
+    @DisplayName("Authenticated viewer sees only visible map records in list")
+    void viewerSeesOnlyVisibleMapRecordsInList() throws Exception {
+        mockMvc.perform(get("/app/map-records").with(user("viewer@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Public owner record")))
+            .andExpect(content().string(not(containsString("Private owner record"))))
+            .andExpect(content().string(not(containsString("Limited owner record"))))
+            .andExpect(content().string(not(containsString("Deleted owner record"))))
+            .andExpect(content().string(not(containsString(">編集する<"))));
     }
 
     @Test
@@ -104,8 +119,8 @@ class MapRecordFlowTests {
                 post("/app/map-records")
                     .with(user("owner@example.com").roles("USER"))
                     .with(csrf())
-                    .param("title", "夕方の路地メモ")
-                    .param("body", "路地を歩いた時間を残します。")
+                    .param("title", "New trip record")
+                    .param("body", "Record body for Kamakura")
                     .param("visibility", "PUBLIC")
                     .param("locationName", "Kamakura")
                     .param("locationPrecisionLevel", "town")
@@ -117,7 +132,7 @@ class MapRecordFlowTests {
             "SELECT COUNT(*) FROM map_records WHERE user_id = ? AND title = ? AND deleted_at IS NULL",
             Integer.class,
             100L,
-            "夕方の路地メモ"
+            "New trip record"
         );
         Assertions.assertEquals(1, count);
     }
@@ -129,8 +144,8 @@ class MapRecordFlowTests {
                 post("/app/map-records/501")
                     .with(user("owner@example.com").roles("USER"))
                     .with(csrf())
-                    .param("title", "更新後の海辺メモ")
-                    .param("body", "更新後の本文です。")
+                    .param("title", "Updated public record")
+                    .param("body", "Updated body")
                     .param("visibility", "PRIVATE")
                     .param("locationName", "Yuigahama")
                     .param("locationPrecisionLevel", "point")
@@ -148,8 +163,28 @@ class MapRecordFlowTests {
             String.class,
             501L
         );
-        Assertions.assertEquals("更新後の海辺メモ", updatedTitle);
+        Assertions.assertEquals("Updated public record", updatedTitle);
         Assertions.assertEquals("private", updatedVisibility);
+    }
+
+    @Test
+    @DisplayName("Visibility changes are reflected in list access")
+    void visibilityChangesAreReflectedInListAccess() throws Exception {
+        mockMvc.perform(
+                post("/app/map-records/501")
+                    .with(user("owner@example.com").roles("USER"))
+                    .with(csrf())
+                    .param("title", "Updated public record")
+                    .param("body", "Updated body")
+                    .param("visibility", "PRIVATE")
+                    .param("locationName", "Yuigahama")
+                    .param("locationPrecisionLevel", "point")
+            )
+            .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(get("/app/map-records").with(user("viewer@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(not(containsString("Updated public record"))));
     }
 
     @Test
@@ -159,8 +194,8 @@ class MapRecordFlowTests {
                 post("/app/map-records/501")
                     .with(user("owner@example.com").roles("USER"))
                     .with(csrf())
-                    .param("title", "下書きへ戻す記録")
-                    .param("body", "下書きに戻します。")
+                    .param("title", "Draft update")
+                    .param("body", "Draft body")
                     .param("visibility", "PRIVATE")
                     .param("locationName", "Kamakura")
                     .param("locationPrecisionLevel", "area")
@@ -197,11 +232,18 @@ class MapRecordFlowTests {
     }
 
     @Test
+    @DisplayName("Deleted map record detail is hidden")
+    void deletedMapRecordDetailIsHidden() throws Exception {
+        mockMvc.perform(get("/app/map-records/505").with(user("owner@example.com").roles("USER")))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
     @DisplayName("Public map record detail is available to another authenticated user")
     void publicMapRecordDetailIsAvailable() throws Exception {
         mockMvc.perform(get("/app/map-records/501").with(user("viewer@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("朝の海辺メモ")))
+            .andExpect(content().string(containsString("Public owner record")))
             .andExpect(content().string(containsString("一般公開")));
     }
 
@@ -226,7 +268,7 @@ class MapRecordFlowTests {
                 post("/app/map-records/501")
                     .with(user("viewer@example.com").roles("USER"))
                     .with(csrf())
-                    .param("title", "触れない更新")
+                    .param("title", "Not allowed")
                     .param("visibility", "PUBLIC")
                     .param("locationPrecisionLevel", "area")
             )

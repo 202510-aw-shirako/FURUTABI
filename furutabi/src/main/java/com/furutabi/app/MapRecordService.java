@@ -29,7 +29,7 @@ public class MapRecordService {
         this.visibilityAccessService = visibilityAccessService;
     }
 
-    public MapRecordListPageData loadOwnMapRecordList(String email) {
+    public MapRecordListPageData loadVisibleMapRecordList(String email) {
         UserRow currentUser = requireUser(email);
         List<MapRecordSummary> records = jdbcTemplate.query(
             """
@@ -43,13 +43,15 @@ public class MapRecordService {
                        ) AS comment_count
                 FROM map_records mr
                 JOIN users u ON u.id = mr.user_id
-                WHERE mr.user_id = ? AND mr.deleted_at IS NULL AND mr.is_draft = FALSE
+                WHERE mr.deleted_at IS NULL AND mr.is_draft = FALSE
                 ORDER BY mr.created_at DESC, mr.id DESC
                 """,
             (rs, rowNum) -> {
                 VisibilityScope scope = VisibilityScope.fromDbValue(rs.getString("visibility"));
+                long ownerUserId = rs.getLong("user_id");
                 return new MapRecordSummary(
                     rs.getLong("id"),
+                    ownerUserId,
                     rs.getString("title"),
                     summarize(rs.getString("body")),
                     rs.getString("location_name"),
@@ -59,11 +61,17 @@ public class MapRecordService {
                     visibilityLabel(scope),
                     rs.getInt("image_count"),
                     rs.getInt("comment_count"),
-                    true
+                    currentUser.id() == ownerUserId
                 );
-            },
-            currentUser.id()
-        );
+            }
+        ).stream()
+            .filter(record -> visibilityAccessService.canView(
+                VisibilityScope.fromDbValue(record.visibilityKey()),
+                currentUser.id(),
+                record.ownerUserId(),
+                false
+            ))
+            .toList();
 
         return new MapRecordListPageData(displayName(currentUser.nickname(), currentUser.name(), currentUser.email()), records);
     }
@@ -381,6 +389,7 @@ public class MapRecordService {
 
     public record MapRecordSummary(
         long id,
+        long ownerUserId,
         String title,
         String summary,
         String locationName,

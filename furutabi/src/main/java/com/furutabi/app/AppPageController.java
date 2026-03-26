@@ -88,7 +88,7 @@ public class AppPageController {
 
     @GetMapping({"/map-records", "/map-records.html"})
     public String mapRecords(Authentication authentication, Model model) {
-        model.addAttribute("pageData", mapRecordService.loadOwnMapRecordList(authentication.getName()));
+        model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordList(authentication.getName()));
         return "app/map-records";
     }
 
