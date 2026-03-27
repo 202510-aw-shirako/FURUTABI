@@ -39,6 +39,8 @@ class HostApplicationReviewFlowTests {
     void setUpReviewData() {
         Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
 
+        jdbcTemplate.update("DELETE FROM chat_messages");
+        jdbcTemplate.update("DELETE FROM chat_threads");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
         jdbcTemplate.update("DELETE FROM proposal_applications");
         jdbcTemplate.update("DELETE FROM proposal_tags");
@@ -130,10 +132,16 @@ class HostApplicationReviewFlowTests {
             Long.class,
             801L
         );
+        String threadStatus = jdbcTemplate.queryForObject(
+            "SELECT status FROM chat_threads WHERE id = ?",
+            String.class,
+            relatedThreadId
+        );
 
         Assertions.assertEquals("accepted", applicationStatus);
         Assertions.assertEquals(1, acceptedHistoryCount);
-        Assertions.assertNull(relatedThreadId);
+        Assertions.assertNotNull(relatedThreadId);
+        Assertions.assertEquals("open", threadStatus);
     }
 
     @Test
@@ -157,6 +165,55 @@ class HostApplicationReviewFlowTests {
 
         Assertions.assertEquals("rejected", applicationStatus);
         Assertions.assertEquals(1, rejectedHistoryCount);
+    }
+
+    @Test
+    @DisplayName("reject closes already linked chat thread when one exists")
+    void rejectClosesLinkedChatThread() throws Exception {
+        Timestamp now = Timestamp.from(Instant.parse("2026-03-25T02:30:00Z"));
+        jdbcTemplate.update(
+            """
+                INSERT INTO chat_threads (
+                    id, user_id, counterpart_id, counterpart_role, related_entity_type, related_entity_id,
+                    title, status, unread_count, requires_attention, related_url, latest_message_preview,
+                    latest_message_at, created_at, updated_at, closed_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            901L,
+            103L,
+            101L,
+            "BRIDGE",
+            "PROPOSAL_APPLICATION",
+            802L,
+            "Bridge host okatte",
+            "open",
+            0,
+            false,
+            "/app/host-applications/802",
+            null,
+            null,
+            now,
+            now,
+            null,
+            null
+        );
+        jdbcTemplate.update(
+            "UPDATE proposal_applications SET related_thread_id = ?, updated_at = ? WHERE id = ?",
+            901L,
+            now,
+            802L
+        );
+
+        mockMvc.perform(post("/app/host-applications/802/reject").with(user("bridge@example.com").roles("BRIDGE")).with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/host-applications/802?rejected"));
+
+        String threadStatus = jdbcTemplate.queryForObject(
+            "SELECT status FROM chat_threads WHERE id = ?",
+            String.class,
+            901L
+        );
+        Assertions.assertEquals("closed", threadStatus);
     }
 
     @Test

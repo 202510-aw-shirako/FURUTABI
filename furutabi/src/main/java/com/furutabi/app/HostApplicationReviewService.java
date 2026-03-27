@@ -3,10 +3,12 @@ package com.furutabi.app;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.furutabi.relation.RelatedUserService;
 
@@ -15,10 +17,16 @@ public class HostApplicationReviewService {
 
     private final JdbcTemplate jdbcTemplate;
     private final RelatedUserService relatedUserService;
+    private final ApplicationChatThreadService applicationChatThreadService;
 
-    public HostApplicationReviewService(JdbcTemplate jdbcTemplate, RelatedUserService relatedUserService) {
+    public HostApplicationReviewService(
+        JdbcTemplate jdbcTemplate,
+        RelatedUserService relatedUserService,
+        ApplicationChatThreadService applicationChatThreadService
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.relatedUserService = relatedUserService;
+        this.applicationChatThreadService = applicationChatThreadService;
     }
 
     public BridgeApplicationListPageData loadPendingApplications(String email) {
@@ -97,6 +105,7 @@ public class HostApplicationReviewService {
                 ),
                 applicationId
             );
+            row = Objects.requireNonNull(row, "Proposal application not found: " + applicationId);
         } catch (EmptyResultDataAccessException ex) {
             throw new IllegalStateException("Proposal application not found: " + applicationId, ex);
         }
@@ -124,10 +133,12 @@ public class HostApplicationReviewService {
         );
     }
 
+    @Transactional
     public void acceptApplication(String email, long applicationId) {
         decide(email, applicationId, "accepted", "Accepted by proposal host.");
     }
 
+    @Transactional
     public void rejectApplication(String email, long applicationId) {
         decide(email, applicationId, "rejected", "Rejected by proposal host.");
     }
@@ -153,6 +164,7 @@ public class HostApplicationReviewService {
                 ),
                 applicationId
             );
+            row = Objects.requireNonNull(row, "Proposal application not found: " + applicationId);
         } catch (EmptyResultDataAccessException ex) {
             throw new IllegalStateException("Proposal application not found: " + applicationId, ex);
         }
@@ -187,6 +199,12 @@ public class HostApplicationReviewService {
             reviewerUserId,
             now
         );
+
+        if ("accepted".equalsIgnoreCase(nextStatus)) {
+            applicationChatThreadService.ensureOpenThread(applicationId);
+        } else {
+            applicationChatThreadService.closeThread(applicationId);
+        }
     }
 
     private long requireUserIdByEmail(String email) {
