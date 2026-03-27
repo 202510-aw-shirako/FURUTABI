@@ -21,6 +21,7 @@ public class AppPageController {
     private final OkatteService okatteService;
     private final ProposalApplicationService proposalApplicationService;
     private final HostApplicationReviewService hostApplicationReviewService;
+    private final ChatThreadMessagingService chatThreadMessagingService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
@@ -28,7 +29,8 @@ public class AppPageController {
         GateService gateService,
         OkatteService okatteService,
         ProposalApplicationService proposalApplicationService,
-        HostApplicationReviewService hostApplicationReviewService
+        HostApplicationReviewService hostApplicationReviewService,
+        ChatThreadMessagingService chatThreadMessagingService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
@@ -36,6 +38,7 @@ public class AppPageController {
         this.okatteService = okatteService;
         this.proposalApplicationService = proposalApplicationService;
         this.hostApplicationReviewService = hostApplicationReviewService;
+        this.chatThreadMessagingService = chatThreadMessagingService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -85,6 +88,39 @@ public class AppPageController {
             return "redirect:/app/host-applications/" + id + "?blocked";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
+        }
+    }
+
+    @GetMapping({"/chat", "/chat.html"})
+    public String chatThreads(Authentication authentication, Model model) {
+        model.addAttribute("pageData", chatThreadMessagingService.loadThreadList(authentication.getName()));
+        return "app/chat-thread-list";
+    }
+
+    @GetMapping("/chat/{id}")
+    public String chatThreadDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", chatThreadMessagingService.loadThreadDetail(authentication.getName(), id));
+            model.addAttribute("chatMessageForm", new ChatMessageForm());
+            return "app/chat-thread-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat thread not found", ex);
+        }
+    }
+
+    @PostMapping("/chat/{id}/messages")
+    public String sendChatMessage(
+        @PathVariable long id,
+        Authentication authentication,
+        @ModelAttribute("chatMessageForm") ChatMessageForm chatMessageForm
+    ) {
+        try {
+            chatThreadMessagingService.sendMessage(authentication.getName(), id, chatMessageForm);
+            return "redirect:/app/chat/" + id + "?sent";
+        } catch (ChatThreadMessagingService.ChatThreadMessagingConflictException ex) {
+            return "redirect:/app/chat/" + id + "?blocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat thread not found", ex);
         }
     }
 

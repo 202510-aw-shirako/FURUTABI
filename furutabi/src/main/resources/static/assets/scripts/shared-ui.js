@@ -241,7 +241,7 @@
       ],
       notificationsHref: '/app/mypage',
       action: [
-        { label: '連絡（次段階）', disabled: true },
+        { href: '/app/chat', label: '連絡', currentMatchers: ['chat', 'chat.html'] },
         { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
@@ -288,7 +288,7 @@
       ],
       notificationsHref: '/app/mypage',
       action: [
-        { label: '\u9023\u7d61\uff08\u6b21\u6bb5\u968e\uff09', disabled: true },
+        { href: '/app/chat', label: '\u9023\u7d61', currentMatchers: ['chat', 'chat.html'] },
         { href: '/app/mypage', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     }

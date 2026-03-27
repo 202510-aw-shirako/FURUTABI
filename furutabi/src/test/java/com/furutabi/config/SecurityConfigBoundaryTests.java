@@ -225,6 +225,32 @@ class SecurityConfigBoundaryTests {
             now,
             null
         );
+        jdbcTemplate.update(
+            """
+                INSERT INTO chat_threads (
+                    id, user_id, counterpart_id, counterpart_role, related_entity_type, related_entity_id,
+                    title, status, unread_count, requires_attention, related_url, latest_message_preview,
+                    latest_message_at, created_at, updated_at, closed_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            40L,
+            1L,
+            2L,
+            "LOCAL",
+            "PROPOSAL_APPLICATION",
+            30L,
+            "Boundary chat",
+            "open",
+            0,
+            false,
+            "/app/host-applications/30",
+            "Boundary application",
+            now,
+            now,
+            now,
+            null,
+            null
+        );
     }
 
     @Test
@@ -358,6 +384,20 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated okatte apply route is available after passing security")
     void authenticatedOkatteApplyRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/okatte/21/apply").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated chat list route is available after passing security")
+    void authenticatedChatListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/chat").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated chat detail route is available for participants after passing security")
+    void authenticatedChatDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/chat/40").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>連絡一覧 | FURUTABI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section fv">
+      <div class="sectionTitleRow">
+        <h1 class="h1">連絡一覧</h1>
+      </div>
+      <p class="lead">参加中の thread だけを表示します。partner は自動で含めず、applicant と host の最小二者 chat を前提にしています。</p>
+      <div class="mypageNoticeBox" th:if="${pageData.threads.isEmpty()}">
+        <p>まだ表示できる連絡はありません。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="chatShell">
+        <div class="chatMain">
+          <article class="chatThreadHeader" th:each="thread : ${pageData.threads}">
+            <div class="sectionTitleRow">
+              <div>
+                <div class="chatThreadTitle" th:text="${thread.title}">thread title</div>
+                <div class="chipRow chatThreadMeta">
+                  <span class="pill pill--soft" th:text="${thread.counterpartNickname}">counterpart</span>
+                  <span class="pill" th:text="${thread.counterpartRole}">role</span>
+                  <span class="pill pill--soft" th:text="${thread.status}">open</span>
+                </div>
+              </div>
+              <a class="sectionTitleLink" th:href="@{/app/chat/{id}(id=${thread.threadId})}">詳細へ</a>
+            </div>
+            <p class="note" th:if="${thread.latestMessagePreview != null}" th:text="${thread.latestMessagePreview}">latest preview</p>
+            <p class="note" th:if="${thread.latestMessagePreview == null}">まだ message はありません。</p>
+            <p class="note" th:if="${thread.latestMessageAt != null}"
+               th:text="${#temporals.format(thread.latestMessageAt.toLocalDateTime(), 'yyyy-MM-dd HH:mm')}">2026-03-27 10:00</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/scripts/shared-ui.js"></script>
+</body>
+</html>
