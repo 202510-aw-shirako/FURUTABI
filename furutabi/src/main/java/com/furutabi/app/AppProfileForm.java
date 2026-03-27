@@ -3,6 +3,7 @@ package com.furutabi.app;
 public class AppProfileForm {
 
     private String bio;
+    private String ageRange;
     private String region;
     private String interestRegion;
     private String visitHistory;
@@ -17,6 +18,14 @@ public class AppProfileForm {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public String getAgeRange() {
+        return ageRange;
+    }
+
+    public void setAgeRange(String ageRange) {
+        this.ageRange = ageRange;
     }
 
     public String getRegion() {

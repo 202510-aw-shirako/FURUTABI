@@ -101,7 +101,7 @@ class MypageSettingsFlowTests {
             "UNSPECIFIED",
             "Shellfish allergy",
             "Quiet places are easier for me.",
-            null,
+            "THIRTIES",
             now,
             now
         );
@@ -162,6 +162,7 @@ class MypageSettingsFlowTests {
         mockMvc.perform(get("/app/profile").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("I enjoy talking with local people while traveling.")))
+            .andExpect(content().string(containsString("THIRTIES")))
             .andExpect(content().string(containsString("Kamakura")));
     }
 
@@ -172,6 +173,7 @@ class MypageSettingsFlowTests {
                 .with(user("user@example.com").roles("USER"))
                 .with(csrf())
                 .param("bio", "I enjoy slow walks in seaside towns.")
+                .param("ageRange", "FORTIES")
                 .param("region", "Shonan")
                 .param("interestRegion", "Onomichi")
                 .param("visitHistory", "Visited Kamakura three times")
@@ -183,9 +185,11 @@ class MypageSettingsFlowTests {
             .andExpect(redirectedUrl("/app/profile?saved"));
 
         String region = jdbcTemplate.queryForObject("SELECT region FROM user_profiles WHERE user_id = ?", String.class, 100L);
+        String ageRange = jdbcTemplate.queryForObject("SELECT age_range FROM user_profiles WHERE user_id = ?", String.class, 100L);
         String withChildren = jdbcTemplate.queryForObject("SELECT with_children FROM user_profiles WHERE user_id = ?", String.class, 100L);
 
         Assertions.assertEquals("Shonan", region);
+        Assertions.assertEquals("FORTIES", ageRange);
         Assertions.assertEquals("WITHOUT_CHILDREN", withChildren);
     }
 

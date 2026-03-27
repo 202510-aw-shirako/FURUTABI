@@ -48,6 +48,18 @@
               <textarea rows="4" th:field="*{bio}"></textarea>
             </label>
             <label class="mypageField">
+              <span>年齢層</span>
+              <select th:field="*{ageRange}">
+                <option value="">選択してください</option>
+                <option value="TEENS">10代</option>
+                <option value="TWENTIES">20代</option>
+                <option value="THIRTIES">30代</option>
+                <option value="FORTIES">40代</option>
+                <option value="FIFTIES">50代</option>
+                <option value="SIXTIES_PLUS">60代以上</option>
+              </select>
+            </label>
+            <label class="mypageField">
               <span>今いる地域</span>
               <input type="text" th:field="*{region}" />
             </label>

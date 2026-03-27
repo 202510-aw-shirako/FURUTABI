@@ -55,6 +55,7 @@ public class AppSettingsService {
         AppProfileForm form = new AppProfileForm();
         if (profile != null) {
             form.setBio(profile.bio());
+            form.setAgeRange(profile.ageRange());
             form.setRegion(profile.region());
             form.setInterestRegion(profile.interestRegion());
             form.setVisitHistory(profile.visitHistory());
@@ -116,11 +117,12 @@ public class AppSettingsService {
             jdbcTemplate.update(
                 """
                     UPDATE user_profiles
-                    SET bio = ?, region = ?, interest_region = ?, visit_history = ?, care_note = ?,
+                    SET bio = ?, age_range = ?, region = ?, interest_region = ?, visit_history = ?, care_note = ?,
                         with_children = ?, food_note = ?, relation_note = ?, updated_at = ?
                     WHERE user_id = ?
                     """,
                 nullable(form.getBio()),
+                nullable(form.getAgeRange()),
                 nullable(form.getRegion()),
                 nullable(form.getInterestRegion()),
                 nullable(form.getVisitHistory()),
@@ -142,6 +144,7 @@ public class AppSettingsService {
                 user.id(),
                 nullable(form.getBio()),
                 null,
+                nullable(form.getAgeRange()),
                 nullable(form.getRegion()),
                 nullable(form.getInterestRegion()),
                 nullable(form.getVisitHistory()),
@@ -149,7 +152,6 @@ public class AppSettingsService {
                 nullable(form.getWithChildren()),
                 nullable(form.getFoodNote()),
                 nullable(form.getRelationNote()),
-                null,
                 now,
                 now
             );
@@ -236,12 +238,13 @@ public class AppSettingsService {
         try {
             return jdbcTemplate.queryForObject(
                 """
-                    SELECT bio, region, interest_region, visit_history, care_note, with_children, food_note, relation_note
+                    SELECT bio, age_range, region, interest_region, visit_history, care_note, with_children, food_note, relation_note
                     FROM user_profiles
                     WHERE user_id = ?
                     """,
                 (rs, rowNum) -> new UserProfileRow(
                     rs.getString("bio"),
+                    rs.getString("age_range"),
                     rs.getString("region"),
                     rs.getString("interest_region"),
                     rs.getString("visit_history"),
@@ -288,6 +291,7 @@ public class AppSettingsService {
 
     private boolean hasProfileContent(UserProfileRow row) {
         return row.bio() != null
+            || row.ageRange() != null
             || row.region() != null
             || row.interestRegion() != null
             || row.visitHistory() != null
@@ -350,6 +354,7 @@ public class AppSettingsService {
 
     private record UserProfileRow(
         String bio,
+        String ageRange,
         String region,
         String interestRegion,
         String visitHistory,
