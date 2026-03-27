@@ -17,6 +17,7 @@ public class AppPageController {
 
     private final AppSettingsService appSettingsService;
     private final MapRecordService mapRecordService;
+    private final MapRecordCommentService mapRecordCommentService;
     private final GateService gateService;
     private final OkatteService okatteService;
     private final ProposalApplicationService proposalApplicationService;
@@ -27,6 +28,7 @@ public class AppPageController {
     public AppPageController(
         AppSettingsService appSettingsService,
         MapRecordService mapRecordService,
+        MapRecordCommentService mapRecordCommentService,
         GateService gateService,
         OkatteService okatteService,
         ProposalApplicationService proposalApplicationService,
@@ -36,6 +38,7 @@ public class AppPageController {
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
+        this.mapRecordCommentService = mapRecordCommentService;
         this.gateService = gateService;
         this.okatteService = okatteService;
         this.proposalApplicationService = proposalApplicationService;
@@ -300,7 +303,41 @@ public class AppPageController {
     public String mapRecordDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
             model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordDetail(authentication.getName(), id));
+            model.addAttribute("commentPageData", mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
+            model.addAttribute("mapRecordCommentForm", new MapRecordCommentForm());
             return "app/map-record-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @PostMapping("/map-records/{id}/comments")
+    public String createMapRecordComment(
+        @PathVariable long id,
+        Authentication authentication,
+        @ModelAttribute("mapRecordCommentForm") MapRecordCommentForm mapRecordCommentForm
+    ) {
+        try {
+            mapRecordCommentService.addComment(authentication.getName(), id, mapRecordCommentForm);
+            return "redirect:/app/map-records/" + id + "?commentSaved";
+        } catch (MapRecordCommentService.MapRecordCommentConflictException ex) {
+            return "redirect:/app/map-records/" + id + "?commentBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @PostMapping("/map-records/{mapRecordId}/comments/{commentId}/hide")
+    public String hideMapRecordComment(
+        @PathVariable long mapRecordId,
+        @PathVariable long commentId,
+        Authentication authentication
+    ) {
+        try {
+            mapRecordCommentService.hideComment(authentication.getName(), mapRecordId, commentId);
+            return "redirect:/app/map-records/" + mapRecordId + "?commentHidden";
+        } catch (MapRecordCommentService.MapRecordCommentConflictException ex) {
+            return "redirect:/app/map-records/" + mapRecordId + "?commentBlocked";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
         }

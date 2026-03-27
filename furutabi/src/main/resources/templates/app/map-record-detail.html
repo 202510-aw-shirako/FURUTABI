@@ -26,7 +26,7 @@
     <section class="section">
       <div class="sectionTitleRow">
         <h1 class="h1" th:text="${pageData.record.title}">記録タイトル</h1>
-        <span class="pill" th:text="${pageData.record.visibilityLabel}">本人のみ</span>
+        <span class="pill" th:text="${pageData.record.visibilityLabel}">公開範囲</span>
       </div>
       <p class="lead">
         <span th:text="${pageData.record.ownerDisplayName}">furutabi-user</span>
@@ -35,10 +35,21 @@
       <div class="mypageNoticeBox" th:if="${param.saved}">
         <p>記録を更新しました。</p>
       </div>
+      <div class="mypageNoticeBox" th:if="${param.commentSaved}">
+        <p>コメントを投稿しました。</p>
+      </div>
+      <div class="mypageNoticeBox" th:if="${param.commentHidden}">
+        <p>コメントを非表示にしました。</p>
+      </div>
+      <div class="mypageNoticeBox" th:if="${param.commentBlocked}">
+        <p>この操作は完了できませんでした。</p>
+      </div>
       <p class="note">
         <span th:text="${pageData.record.locationName} ?: '場所メモはまだありません'">場所メモ</span>
-        <span th:if="${pageData.record.locationPrecisionLevel != null}"
-              th:text="' / 位置精度: ' + ${pageData.record.locationPrecisionLevel}"> / 位置精度: area</span>
+        <span
+          th:if="${pageData.record.locationPrecisionLevel != null}"
+          th:text="' / 位置精度: ' + ${pageData.record.locationPrecisionLevel}"
+        > / 位置精度: area</span>
       </p>
       <div class="card noticeArticle" style="margin-top:18px;">
         <p th:text="${pageData.record.body} ?: 'まだ本文はありません。'">本文</p>
@@ -54,20 +65,69 @@
           <p class="note" th:text="'公開設定更新: ' + (${pageData.record.visibilityUpdatedAt} ?: '未設定')">公開設定更新: 2026.03.25</p>
         </div>
         <div class="card">
-          <div class="h2">この段階で見えているもの</div>
-          <p class="note" th:text="'画像 ' + ${pageData.record.imageCount} + '枚'">画像 0枚</p>
-          <p class="note" th:text="'コメント ' + ${pageData.record.commentCount} + '件'">コメント 0件</p>
+          <div class="h2">この記録で見えているもの</div>
+          <p class="note" th:text="'画像 ' + ${pageData.record.imageCount} + ' 枚'">画像 0 枚</p>
+          <p class="note" th:text="'コメント ' + ${pageData.record.commentCount} + ' 件'">コメント 0 件</p>
           <p class="note" th:if="${pageData.ownerViewing}">owner として見ているため、この記録は編集と削除ができます。</p>
-          <p class="note" th:unless="${pageData.ownerViewing}">owner ではありませんが、現在の Visibility 判定で見えている記録です。</p>
+          <p class="note" th:unless="${pageData.ownerViewing}">owner ではありませんが、現在の visibility 条件で見えている記録です。</p>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionTitleRow">
+        <h2 class="h2">コメント</h2>
+        <span class="note" th:text="'公開中 ' + ${pageData.record.commentCount} + ' 件'">公開中 0 件</span>
+      </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <form th:action="@{/app/map-records/{id}/comments(id=${pageData.record.id})}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <label class="note" for="map-comment-body">公開コメントを残す</label>
+          <textarea
+            id="map-comment-body"
+            name="body"
+            rows="4"
+            maxlength="1000"
+            style="width:100%;margin-top:8px;"
+            placeholder="感想や公開してよい範囲のひとことを書いてください。支援メモや個人情報の詳細は書かない前提です。"
+          ></textarea>
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+            <p class="note">コメントは chat や支援メモとは別の公開寄りレイヤです。</p>
+            <button class="btn primary" type="submit">コメントを投稿</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" th:if="${#lists.isEmpty(commentPageData.comments)}">
+        <p class="note">まだコメントはありません。</p>
+      </div>
+
+      <div class="grid2" th:if="${not #lists.isEmpty(commentPageData.comments)}">
+        <article class="card" th:each="comment : ${commentPageData.comments}">
+          <div class="sectionTitleRow">
+            <strong th:text="${comment.authorDisplayName}">comment-user</strong>
+            <span class="note" th:text="${comment.createdAt}">2026.03.27 10:00</span>
+          </div>
+          <p class="lead" th:text="${comment.body}">comment body</p>
+          <form
+            th:if="${comment.moderationAvailable}"
+            th:action="@{/app/map-records/{mapRecordId}/comments/{commentId}/hide(mapRecordId=${pageData.record.id},commentId=${comment.id})}"
+            method="post"
+            style="margin-top:12px;"
+          >
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button class="btn ghost" type="submit">非表示にする</button>
+          </form>
+        </article>
       </div>
     </section>
 
     <section class="section">
       <div class="denseBox">
         <div>
-          <div class="h2">次の導線</div>
-          <p class="note">この段階では一覧・詳細・作成・編集・削除を backend でつないでいます。画像処理やコメント本体はまだ次段階です。</p>
+          <div class="h2">次の操作</div>
+          <p class="note">この詳細では一覧・本文・コメント・編集導線までを扱います。画像やコメント運用の次段階は別作業です。</p>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <a class="btn ghost" href="/app/map-records">一覧へ戻る</a>
