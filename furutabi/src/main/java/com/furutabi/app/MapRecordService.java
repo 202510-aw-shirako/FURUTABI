@@ -31,7 +31,8 @@ public class MapRecordService {
 
     public MapRecordListPageData loadVisibleMapRecordList(String email) {
         UserRow currentUser = requireUser(email);
-        List<MapRecordSummary> records = jdbcTemplate.query(
+        List<MapRecordSummary> records = loadMapRecordSummaries(
+            currentUser,
             """
                 SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
                        u.email, u.nickname, u.name,
@@ -45,33 +46,33 @@ public class MapRecordService {
                 JOIN users u ON u.id = mr.user_id
                 WHERE mr.deleted_at IS NULL AND mr.is_draft = FALSE
                 ORDER BY mr.created_at DESC, mr.id DESC
-                """,
-            (rs, rowNum) -> {
-                VisibilityScope scope = VisibilityScope.fromDbValue(rs.getString("visibility"));
-                long ownerUserId = rs.getLong("user_id");
-                return new MapRecordSummary(
-                    rs.getLong("id"),
-                    ownerUserId,
-                    rs.getString("title"),
-                    summarize(rs.getString("body")),
-                    rs.getString("location_name"),
-                    displayName(rs.getString("nickname"), rs.getString("name"), rs.getString("email")),
-                    formatTimestamp(rs.getTimestamp("created_at")),
-                    scope.name(),
-                    visibilityLabel(scope),
-                    rs.getInt("image_count"),
-                    rs.getInt("comment_count"),
-                    currentUser.id() == ownerUserId
-                );
-            }
-        ).stream()
-            .filter(record -> visibilityAccessService.canView(
-                VisibilityScope.fromDbValue(record.visibilityKey()),
-                currentUser.id(),
-                record.ownerUserId(),
-                false
-            ))
-            .toList();
+                """
+        );
+
+        return new MapRecordListPageData(displayName(currentUser.nickname(), currentUser.name(), currentUser.email()), records);
+    }
+
+    public MapRecordListPageData loadVisibleFootprintList(String email) {
+        UserRow currentUser = requireUser(email);
+        List<MapRecordSummary> records = loadMapRecordSummaries(
+            currentUser,
+            """
+                SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
+                       u.email, u.nickname, u.name,
+                       (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                       (
+                           SELECT COUNT(*)
+                           FROM map_record_comments mc
+                           WHERE mc.map_record_id = mr.id AND mc.deleted_at IS NULL AND mc.is_hidden = FALSE
+                       ) AS comment_count
+                FROM map_records mr
+                JOIN users u ON u.id = mr.user_id
+                WHERE mr.deleted_at IS NULL
+                  AND mr.is_draft = FALSE
+                  AND mr.visibility IN ('public', 'limited')
+                ORDER BY COALESCE(mr.visibility_updated_at, mr.updated_at, mr.created_at) DESC, mr.id DESC
+                """
+        );
 
         return new MapRecordListPageData(displayName(currentUser.nickname(), currentUser.name(), currentUser.email()), records);
     }
@@ -125,6 +126,14 @@ public class MapRecordService {
         } catch (EmptyResultDataAccessException ex) {
             throw new IllegalStateException("Map record not found: " + mapRecordId, ex);
         }
+    }
+
+    public MapRecordDetailPageData loadVisibleFootprintDetail(String email, long mapRecordId) {
+        MapRecordDetailPageData pageData = loadVisibleMapRecordDetail(email, mapRecordId);
+        if ("PRIVATE".equalsIgnoreCase(pageData.record().visibilityKey())) {
+            throw new IllegalStateException("Footprint record is not visible in footprint view: " + mapRecordId);
+        }
+        return pageData;
     }
 
     public MapRecordEditorPageData loadCreatePage(String email) {
@@ -318,6 +327,37 @@ public class MapRecordService {
             return trimmed;
         }
         return trimmed.substring(0, 96) + "...";
+    }
+
+    private List<MapRecordSummary> loadMapRecordSummaries(UserRow currentUser, String sql) {
+        return jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> {
+                VisibilityScope scope = VisibilityScope.fromDbValue(rs.getString("visibility"));
+                long ownerUserId = rs.getLong("user_id");
+                return new MapRecordSummary(
+                    rs.getLong("id"),
+                    ownerUserId,
+                    rs.getString("title"),
+                    summarize(rs.getString("body")),
+                    rs.getString("location_name"),
+                    displayName(rs.getString("nickname"), rs.getString("name"), rs.getString("email")),
+                    formatTimestamp(rs.getTimestamp("created_at")),
+                    scope.name(),
+                    visibilityLabel(scope),
+                    rs.getInt("image_count"),
+                    rs.getInt("comment_count"),
+                    currentUser.id() == ownerUserId
+                );
+            }
+        ).stream()
+            .filter(record -> visibilityAccessService.canView(
+                VisibilityScope.fromDbValue(record.visibilityKey()),
+                currentUser.id(),
+                record.ownerUserId(),
+                false
+            ))
+            .toList();
     }
 
     private String currentUserDisplay(UserRow currentUser) {

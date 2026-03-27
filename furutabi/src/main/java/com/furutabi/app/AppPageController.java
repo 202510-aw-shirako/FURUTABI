@@ -195,6 +195,12 @@ public class AppPageController {
         return "app/map-records";
     }
 
+    @GetMapping({"/footprints", "/footprints.html"})
+    public String footprints(Authentication authentication, Model model) {
+        model.addAttribute("pageData", mapRecordService.loadVisibleFootprintList(authentication.getName()));
+        return "app/footprint-list";
+    }
+
     @GetMapping({"/gate", "/gate.html"})
     public String gateList(Authentication authentication, Model model) {
         model.addAttribute("pageData", gateService.loadVisibleGateList(authentication.getName()));
@@ -308,6 +314,50 @@ public class AppPageController {
             return "app/map-record-detail";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @GetMapping("/footprints/{id}")
+    public String footprintDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", mapRecordService.loadVisibleFootprintDetail(authentication.getName(), id));
+            model.addAttribute("commentPageData", mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
+            model.addAttribute("mapRecordCommentForm", new MapRecordCommentForm());
+            return "app/footprint-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Footprint not found", ex);
+        }
+    }
+
+    @PostMapping("/footprints/{id}/comments")
+    public String createFootprintComment(
+        @PathVariable long id,
+        Authentication authentication,
+        @ModelAttribute("mapRecordCommentForm") MapRecordCommentForm mapRecordCommentForm
+    ) {
+        try {
+            mapRecordCommentService.addComment(authentication.getName(), id, mapRecordCommentForm);
+            return "redirect:/app/footprints/" + id + "?commentSaved";
+        } catch (MapRecordCommentService.MapRecordCommentConflictException ex) {
+            return "redirect:/app/footprints/" + id + "?commentBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Footprint not found", ex);
+        }
+    }
+
+    @PostMapping("/footprints/{mapRecordId}/comments/{commentId}/hide")
+    public String hideFootprintComment(
+        @PathVariable long mapRecordId,
+        @PathVariable long commentId,
+        Authentication authentication
+    ) {
+        try {
+            mapRecordCommentService.hideComment(authentication.getName(), mapRecordId, commentId);
+            return "redirect:/app/footprints/" + mapRecordId + "?commentHidden";
+        } catch (MapRecordCommentService.MapRecordCommentConflictException ex) {
+            return "redirect:/app/footprints/" + mapRecordId + "?commentBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Footprint not found", ex);
         }
     }
 

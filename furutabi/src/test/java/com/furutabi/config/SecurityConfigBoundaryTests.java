@@ -318,9 +318,23 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated footprint list route is available after passing security")
+    void authenticatedFootprintListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/footprints").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Authenticated map record detail route is available after passing security")
     void authenticatedMapRecordDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/map-records/10").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated footprint detail route is available after passing security")
+    void authenticatedFootprintDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/footprints/10").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ごひいきさんの足あと | FURUTABI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="ごひいきさんの足あと">
+    <section class="section section--hero" aria-label="ページ導入">
+      <div class="fullbleed">
+        <div class="ph ph--pageHero" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="sectionTitleRow">
+        <h1 class="h1">ごひいきさんの足あと</h1>
+        <a class="sectionTitleLink" href="/app/map-records">わたしの地図へ</a>
+      </div>
+      <p class="lead">
+        <strong th:text="${pageData.currentUserLabel}">furutabi-user</strong>
+        さんが見られる公開寄りの地図記録だけを、足あととして一覧します。
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="grid2" th:if="${not #lists.isEmpty(pageData.records)}">
+        <article class="card" th:each="record : ${pageData.records}">
+          <div class="sectionTitleRow">
+            <h2 class="h2" th:text="${record.title}">足あとタイトル</h2>
+            <span class="pill" th:text="${record.visibilityLabel}">公開中</span>
+          </div>
+          <p class="note">
+            <span th:text="${record.locationName} ?: '場所メモはまだありません'">場所メモ</span>
+            <span th:if="${record.createdAt != null}" th:text="' / ' + ${record.createdAt}"> / 2026.03.27</span>
+          </p>
+          <p class="lead" th:text="${record.summary}">足あと要約</p>
+          <p class="note" th:text="'記録した人: ' + ${record.ownerDisplayName}">記録した人: furutabi-user</p>
+          <div class="sectionTitleRow" style="margin-top:12px;">
+            <span class="note" th:text="'画像 ' + ${record.imageCount} + ' 枚'">画像 0 枚</span>
+            <span class="note" th:text="'コメント ' + ${record.commentCount} + ' 件'">コメント 0 件</span>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+            <a class="btn ghost" th:href="@{/app/footprints/{id}(id=${record.id})}">足あとを見る</a>
+            <a class="btn ghost" th:href="@{/app/map-records/{id}(id=${record.id})}">地図詳細へ</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="card" th:if="${#lists.isEmpty(pageData.records)}">
+        <div class="h2">見える足あとはまだありません</div>
+        <p class="note">公開または限定公開の地図記録が見えると、ここに足あととして並びます。</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/scripts/shared-ui.js"></script>
+</body>
+</html>
