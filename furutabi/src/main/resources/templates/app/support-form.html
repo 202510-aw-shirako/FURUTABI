@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>サポート送信 | FURUTABI</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="サポート送信">
+    <section class="section fv">
+      <div class="sectionTitleRow">
+        <h1 class="h1">サポート送信</h1>
+      </div>
+      <p class="lead">
+        公開 comments や chat に流しづらい相談は、非公開の support 窓口から送れます。
+      </p>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <form action="/app/support" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+          <label class="note" for="requestType">種別</label>
+          <select id="requestType" name="requestType" style="width:100%;margin:8px 0 16px;">
+            <option value="general">一般相談</option>
+            <option value="account">アカウント</option>
+            <option value="map">地図 / 足あと</option>
+            <option value="chat">連絡</option>
+            <option value="proposal">提案 / 申請</option>
+          </select>
+
+          <label class="note" for="relatedFeature">関連機能</label>
+          <input id="relatedFeature" name="relatedFeature" type="text" maxlength="50" style="width:100%;margin:8px 0 16px;" placeholder="例: わたしの地図 / おかって / 通知" />
+
+          <label class="note" for="targetReference">対象のIDやURL</label>
+          <input id="targetReference" name="targetReference" type="text" maxlength="255" style="width:100%;margin:8px 0 16px;" placeholder="例: /app/chat/901" />
+
+          <label class="note" for="replyPreference">返信希望</label>
+          <select id="replyPreference" name="replyPreference" style="width:100%;margin:8px 0 16px;">
+            <option value="optional">任意</option>
+            <option value="required">返信希望</option>
+            <option value="none">返信不要</option>
+          </select>
+
+          <label class="note" for="body">内容</label>
+          <textarea id="body" name="body" rows="8" maxlength="4000" style="width:100%;margin:8px 0 16px;" placeholder="問題内容や相談内容を入力してください。支援メモの代用ではなく、運用へ届ける前提の内容に留めます。"></textarea>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn ghost" type="submit">送信する</button>
+            <a class="btn ghost" href="/app/support">一覧へ戻る</a>
+          </div>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <script src="/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

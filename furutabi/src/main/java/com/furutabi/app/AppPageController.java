@@ -25,6 +25,7 @@ public class AppPageController {
     private final ChatThreadMessagingService chatThreadMessagingService;
     private final HistoryService historyService;
     private final NotificationCenterService notificationCenterService;
+    private final SupportRequestService supportRequestService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
@@ -36,7 +37,8 @@ public class AppPageController {
         HostApplicationReviewService hostApplicationReviewService,
         ChatThreadMessagingService chatThreadMessagingService,
         HistoryService historyService,
-        NotificationCenterService notificationCenterService
+        NotificationCenterService notificationCenterService,
+        SupportRequestService supportRequestService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
@@ -48,6 +50,7 @@ public class AppPageController {
         this.chatThreadMessagingService = chatThreadMessagingService;
         this.historyService = historyService;
         this.notificationCenterService = notificationCenterService;
+        this.supportRequestService = supportRequestService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -127,6 +130,72 @@ public class AppPageController {
     public String notifications(Authentication authentication, Model model) {
         model.addAttribute("pageData", notificationCenterService.loadNotifications(authentication.getName()));
         return "app/notification-list";
+    }
+
+    @GetMapping({"/support", "/support.html"})
+    public String supportList(Authentication authentication, Model model) {
+        model.addAttribute("pageData", supportRequestService.loadOwnRequests(authentication.getName()));
+        return "app/support-list";
+    }
+
+    @GetMapping("/support/new")
+    public String supportCreatePage(Authentication authentication, Model model) {
+        model.addAttribute("pageData", supportRequestService.loadCreatePage(authentication.getName()));
+        model.addAttribute("supportRequestForm", new SupportRequestForm());
+        return "app/support-form";
+    }
+
+    @PostMapping("/support")
+    public String createSupportRequest(
+        Authentication authentication,
+        @ModelAttribute("supportRequestForm") SupportRequestForm supportRequestForm
+    ) {
+        try {
+            long supportRequestId = supportRequestService.createRequest(authentication.getName(), supportRequestForm);
+            return "redirect:/app/support/" + supportRequestId + "?submitted";
+        } catch (SupportRequestService.SupportRequestConflictException ex) {
+            return "redirect:/app/support/new?blocked";
+        }
+    }
+
+    @GetMapping("/support/{id}")
+    public String supportDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", supportRequestService.loadDetail(authentication.getName(), id));
+            return "app/support-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support request not found", ex);
+        }
+    }
+
+    @GetMapping("/support/admin")
+    public String supportAdminList(Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", supportRequestService.loadAdminQueue(authentication.getName()));
+            return "app/support-list";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support admin page not found", ex);
+        }
+    }
+
+    @PostMapping("/support/{id}/handle")
+    public String handleSupportRequest(@PathVariable long id, Authentication authentication) {
+        try {
+            supportRequestService.markHandled(authentication.getName(), id);
+            return "redirect:/app/support/" + id + "?handled";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support request not found", ex);
+        }
+    }
+
+    @PostMapping("/support/{id}/close")
+    public String closeSupportRequest(@PathVariable long id, Authentication authentication) {
+        try {
+            supportRequestService.closeRequest(authentication.getName(), id);
+            return "redirect:/app/support/" + id + "?closed";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support request not found", ex);
+        }
     }
 
     @PostMapping("/notifications/{id}/open")

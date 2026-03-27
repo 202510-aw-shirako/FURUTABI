@@ -39,6 +39,8 @@ class SecurityConfigBoundaryTests {
         jdbcTemplate.update("DELETE FROM chat_threads");
         jdbcTemplate.update("DELETE FROM notification_delivery_logs");
         jdbcTemplate.update("DELETE FROM notifications");
+        jdbcTemplate.update("DELETE FROM support_request_status_history");
+        jdbcTemplate.update("DELETE FROM support_requests");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
         jdbcTemplate.update("DELETE FROM proposal_applications");
         jdbcTemplate.update("DELETE FROM proposal_tags");
@@ -66,6 +68,29 @@ class SecurityConfigBoundaryTests {
             "user",
             "User Example",
             "ユーザー",
+            Date.valueOf("1990-01-01"),
+            "NO_ANSWER",
+            "000-0000-0000",
+            "Tokyo",
+            Boolean.TRUE,
+            "UNREQUESTED",
+            now,
+            now
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            4L,
+            "admin@example.com",
+            "{noop}unused",
+            "admin",
+            "Admin Example",
+            "アドミン",
             Date.valueOf("1990-01-01"),
             "NO_ANSWER",
             "000-0000-0000",
@@ -137,6 +162,12 @@ class SecurityConfigBoundaryTests {
             "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
             3L,
             "BRIDGE",
+            now
+        );
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            4L,
+            "ADMIN",
             now
         );
         jdbcTemplate.update(
@@ -281,6 +312,26 @@ class SecurityConfigBoundaryTests {
             null,
             null
         );
+        jdbcTemplate.update(
+            """
+                INSERT INTO support_requests (
+                    id, user_id, request_type, related_feature, target_reference, body,
+                    reply_preference, status, handled_by_user_id, created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            60L,
+            1L,
+            "general",
+            "account",
+            "/app/account",
+            "Need help with account settings",
+            "optional",
+            "received",
+            null,
+            now,
+            now,
+            null
+        );
     }
 
     @Test
@@ -323,6 +374,34 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated notifications route is available after passing security")
     void authenticatedNotificationsRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/notifications").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated support list route is available after passing security")
+    void authenticatedSupportListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/support").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated support create route is available after passing security")
+    void authenticatedSupportCreateRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/support/new").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated support detail route is available for request owner")
+    void authenticatedSupportDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/support/60").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated support admin route is available for admin")
+    void authenticatedSupportAdminRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/support/admin").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk());
     }
 

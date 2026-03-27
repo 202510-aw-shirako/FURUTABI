@@ -154,7 +154,7 @@
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: '地域の方へ（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: 'お問い合わせ（次段階）', disabled: true }
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
       utilityLinks: [
         { href: 'bridge.html', label: 'ブリッジ' }
@@ -173,7 +173,7 @@
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: '地域の方へ（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: 'お問い合わせ（次段階）', disabled: true }
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
       utilityLinks: [
         { href: 'bridge.html', label: 'ブリッジ' }
@@ -192,7 +192,7 @@
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: '地域の方へ（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: 'お問い合わせ（次段階）', disabled: true }
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
       utilityLinks: [
         { href: 'bridge.html', label: 'ブリッジ' }
@@ -234,7 +234,7 @@
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: 'お問い合わせ（次段階）', disabled: true }
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
       utilityLinks: [
         { href: '/preview/public/bridge.html', label: 'ブリッジ' }
@@ -242,7 +242,7 @@
       notificationsHref: '/app/notifications',
       action: [
         { href: '/app/chat', label: '連絡', currentMatchers: ['chat', 'chat.html'] },
-        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'notifications', 'notifications.html', 'history', 'history.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
+        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'notifications', 'notifications.html', 'history', 'history.html', 'support', 'support.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
     app_local: {
@@ -256,7 +256,7 @@
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: 'お問い合わせ（次段階）', disabled: true }
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
       utilityLinks: [
         { href: '/preview/public/bridge.html', label: 'ブリッジ' }
@@ -264,7 +264,7 @@
       notificationsHref: '/app/notifications',
       action: [
         { label: '連絡（次段階）', disabled: true },
-        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'notifications', 'notifications.html', 'history', 'history.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
+        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'notifications', 'notifications.html', 'history', 'history.html', 'support', 'support.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
     app_local_member: {
@@ -281,7 +281,7 @@
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: '\u304a\u554f\u3044\u5408\u308f\u305b\uff08\u6b21\u6bb5\u968e\uff09', disabled: true }
+        { href: '/app/support', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['support', 'support.html'] }
       ],
       utilityLinks: [
         { href: '/preview/public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' }
@@ -289,7 +289,7 @@
       notificationsHref: '/app/notifications',
       action: [
         { href: '/app/chat', label: '\u9023\u7d61', currentMatchers: ['chat', 'chat.html'] },
-        { href: '/app/mypage', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage', 'mypage.html', 'notifications', 'notifications.html', 'history', 'history.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
+        { href: '/app/mypage', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage', 'mypage.html', 'notifications', 'notifications.html', 'history', 'history.html', 'support', 'support.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     }
   };
@@ -328,7 +328,7 @@
         { href: localApp ? '/app/local-member-home' : '/app/home', label: 'FURUTABI' },
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { label: 'お問い合わせ（次段階）', disabled: true }
+        { href: '/app/support', label: 'お問い合わせ' }
       ],
       usage: [
         { href: '/app/gate', label: 'ちいきの入り口' },
