@@ -24,6 +24,7 @@ public class AppPageController {
     private final HostApplicationReviewService hostApplicationReviewService;
     private final ChatThreadMessagingService chatThreadMessagingService;
     private final HistoryService historyService;
+    private final NotificationCenterService notificationCenterService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
@@ -34,7 +35,8 @@ public class AppPageController {
         ProposalApplicationService proposalApplicationService,
         HostApplicationReviewService hostApplicationReviewService,
         ChatThreadMessagingService chatThreadMessagingService,
-        HistoryService historyService
+        HistoryService historyService,
+        NotificationCenterService notificationCenterService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
@@ -45,6 +47,7 @@ public class AppPageController {
         this.hostApplicationReviewService = hostApplicationReviewService;
         this.chatThreadMessagingService = chatThreadMessagingService;
         this.historyService = historyService;
+        this.notificationCenterService = notificationCenterService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -118,6 +121,21 @@ public class AppPageController {
     public String history(Authentication authentication, Model model) {
         model.addAttribute("pageData", historyService.loadHistory(authentication.getName()));
         return "app/history-list";
+    }
+
+    @GetMapping({"/notifications", "/notifications.html"})
+    public String notifications(Authentication authentication, Model model) {
+        model.addAttribute("pageData", notificationCenterService.loadNotifications(authentication.getName()));
+        return "app/notification-list";
+    }
+
+    @PostMapping("/notifications/{id}/open")
+    public String openNotification(@PathVariable long id, Authentication authentication) {
+        try {
+            return "redirect:" + notificationCenterService.openNotification(authentication.getName(), id);
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Notification not found", ex);
+        }
     }
 
     @PostMapping("/chat/{id}/messages")

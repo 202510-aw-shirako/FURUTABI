@@ -46,10 +46,15 @@ class ProposalApplicationFlowTests {
 
         jdbcTemplate.update("DELETE FROM chat_messages");
         jdbcTemplate.update("DELETE FROM chat_threads");
+        jdbcTemplate.update("DELETE FROM notification_delivery_logs");
+        jdbcTemplate.update("DELETE FROM notifications");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
         jdbcTemplate.update("DELETE FROM proposal_applications");
         jdbcTemplate.update("DELETE FROM proposal_tags");
         jdbcTemplate.update("DELETE FROM proposals");
+        jdbcTemplate.update("DELETE FROM map_record_comments");
+        jdbcTemplate.update("DELETE FROM map_record_images");
+        jdbcTemplate.update("DELETE FROM map_records");
         jdbcTemplate.update("DELETE FROM sms_verifications");
         jdbcTemplate.update("DELETE FROM contact_preferences");
         jdbcTemplate.update("DELETE FROM user_profiles");

@@ -19,10 +19,16 @@ public class MapRecordCommentService {
 
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
+    private final NotificationCenterService notificationCenterService;
 
-    public MapRecordCommentService(JdbcTemplate jdbcTemplate, VisibilityAccessService visibilityAccessService) {
+    public MapRecordCommentService(
+        JdbcTemplate jdbcTemplate,
+        VisibilityAccessService visibilityAccessService,
+        NotificationCenterService notificationCenterService
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.visibilityAccessService = visibilityAccessService;
+        this.notificationCenterService = notificationCenterService;
     }
 
     public MapRecordCommentPageData loadVisibleComments(String email, long mapRecordId) {
@@ -91,6 +97,7 @@ public class MapRecordCommentService {
             now,
             null
         );
+        notificationCenterService.notifyMapComment(mapRecordId, currentUser.id(), normalizedBody);
     }
 
     public void hideComment(String email, long mapRecordId, long commentId) {

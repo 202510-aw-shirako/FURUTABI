@@ -1,8 +1,10 @@
 package com.furutabi.config;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,6 +37,8 @@ class SecurityConfigBoundaryTests {
 
         jdbcTemplate.update("DELETE FROM chat_messages");
         jdbcTemplate.update("DELETE FROM chat_threads");
+        jdbcTemplate.update("DELETE FROM notification_delivery_logs");
+        jdbcTemplate.update("DELETE FROM notifications");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
         jdbcTemplate.update("DELETE FROM proposal_applications");
         jdbcTemplate.update("DELETE FROM proposal_tags");
@@ -251,6 +255,32 @@ class SecurityConfigBoundaryTests {
             null,
             null
         );
+        jdbcTemplate.update(
+            """
+                INSERT INTO notifications (
+                    id, user_id, type, title, body, related_entity_type, related_entity_id,
+                    related_url, sender_name, sender_role, preview_text, severity,
+                    action_label, is_read, created_at, read_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            50L,
+            1L,
+            "chat_message",
+            "New chat message",
+            "Local host sent a new chat message",
+            "CHAT_THREAD",
+            40L,
+            "/app/chat/40",
+            "local",
+            "LOCAL",
+            "Boundary application",
+            "normal",
+            "Open chat",
+            false,
+            now,
+            null,
+            null
+        );
     }
 
     @Test
@@ -286,6 +316,13 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated history route is available after passing security")
     void authenticatedHistoryRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/history").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated notifications route is available after passing security")
+    void authenticatedNotificationsRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/notifications").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 
@@ -420,6 +457,14 @@ class SecurityConfigBoundaryTests {
     void authenticatedChatDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/chat/40").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated notification open route is available for notification owner")
+    void authenticatedNotificationOpenRouteIsAvailable() throws Exception {
+        mockMvc.perform(post("/app/notifications/50/open").with(user("user@example.com").roles("USER")).with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/chat/40"));
     }
 
     @Test

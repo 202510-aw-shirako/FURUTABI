@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ChatThreadMessagingService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final NotificationCenterService notificationCenterService;
 
-    public ChatThreadMessagingService(JdbcTemplate jdbcTemplate) {
+    public ChatThreadMessagingService(JdbcTemplate jdbcTemplate, NotificationCenterService notificationCenterService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.notificationCenterService = notificationCenterService;
     }
 
     public ChatThreadListPageData loadThreadList(String currentUserEmail) {
@@ -140,6 +142,7 @@ public class ChatThreadMessagingService {
             now,
             threadId
         );
+        notificationCenterService.notifyNewChatMessage(threadId, currentUserId, body);
     }
 
     private long requireUserId(String email) {

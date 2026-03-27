@@ -41,6 +41,8 @@ class HostApplicationReviewFlowTests {
 
         jdbcTemplate.update("DELETE FROM chat_messages");
         jdbcTemplate.update("DELETE FROM chat_threads");
+        jdbcTemplate.update("DELETE FROM notification_delivery_logs");
+        jdbcTemplate.update("DELETE FROM notifications");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
         jdbcTemplate.update("DELETE FROM proposal_applications");
         jdbcTemplate.update("DELETE FROM proposal_tags");

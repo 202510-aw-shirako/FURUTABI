@@ -18,15 +18,18 @@ public class HostApplicationReviewService {
     private final JdbcTemplate jdbcTemplate;
     private final RelatedUserService relatedUserService;
     private final ApplicationChatThreadService applicationChatThreadService;
+    private final NotificationCenterService notificationCenterService;
 
     public HostApplicationReviewService(
         JdbcTemplate jdbcTemplate,
         RelatedUserService relatedUserService,
-        ApplicationChatThreadService applicationChatThreadService
+        ApplicationChatThreadService applicationChatThreadService,
+        NotificationCenterService notificationCenterService
     ) {
         this.jdbcTemplate = jdbcTemplate;
         this.relatedUserService = relatedUserService;
         this.applicationChatThreadService = applicationChatThreadService;
+        this.notificationCenterService = notificationCenterService;
     }
 
     public BridgeApplicationListPageData loadPendingApplications(String email) {
@@ -205,6 +208,7 @@ public class HostApplicationReviewService {
         } else {
             applicationChatThreadService.closeThread(applicationId);
         }
+        notificationCenterService.notifyApplicationDecision(applicationId, nextStatus);
     }
 
     private long requireUserIdByEmail(String email) {
