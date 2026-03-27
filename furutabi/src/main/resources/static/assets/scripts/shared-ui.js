@@ -242,7 +242,7 @@
       notificationsHref: '/app/mypage',
       action: [
         { href: '/app/chat', label: '連絡', currentMatchers: ['chat', 'chat.html'] },
-        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
+        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'history', 'history.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
     app_local: {
@@ -264,7 +264,7 @@
       notificationsHref: '/app/mypage',
       action: [
         { label: '連絡（次段階）', disabled: true },
-        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
+        { href: '/app/mypage', label: 'マイページ', currentMatchers: ['mypage', 'mypage.html', 'history', 'history.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     },
     app_local_member: {
@@ -289,7 +289,7 @@
       notificationsHref: '/app/mypage',
       action: [
         { href: '/app/chat', label: '\u9023\u7d61', currentMatchers: ['chat', 'chat.html'] },
-        { href: '/app/mypage', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage', 'mypage.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
+        { href: '/app/mypage', label: '\u30de\u30a4\u30da\u30fc\u30b8', currentMatchers: ['mypage', 'mypage.html', 'history', 'history.html', 'account', 'account.html', 'profile', 'profile.html', 'privacy-settings', 'privacy-settings.html'] }
       ]
     }
   };

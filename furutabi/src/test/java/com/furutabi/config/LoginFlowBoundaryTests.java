@@ -50,6 +50,9 @@ class LoginFlowBoundaryTests {
         jdbcTemplate.update("DELETE FROM proposal_applications");
         jdbcTemplate.update("DELETE FROM proposal_tags");
         jdbcTemplate.update("DELETE FROM proposals");
+        jdbcTemplate.update("DELETE FROM map_record_comments");
+        jdbcTemplate.update("DELETE FROM map_record_images");
+        jdbcTemplate.update("DELETE FROM map_records");
         jdbcTemplate.update("DELETE FROM user_roles");
         jdbcTemplate.update("DELETE FROM users");
 

@@ -22,6 +22,7 @@ public class AppPageController {
     private final ProposalApplicationService proposalApplicationService;
     private final HostApplicationReviewService hostApplicationReviewService;
     private final ChatThreadMessagingService chatThreadMessagingService;
+    private final HistoryService historyService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
@@ -30,7 +31,8 @@ public class AppPageController {
         OkatteService okatteService,
         ProposalApplicationService proposalApplicationService,
         HostApplicationReviewService hostApplicationReviewService,
-        ChatThreadMessagingService chatThreadMessagingService
+        ChatThreadMessagingService chatThreadMessagingService,
+        HistoryService historyService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
@@ -39,6 +41,7 @@ public class AppPageController {
         this.proposalApplicationService = proposalApplicationService;
         this.hostApplicationReviewService = hostApplicationReviewService;
         this.chatThreadMessagingService = chatThreadMessagingService;
+        this.historyService = historyService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -106,6 +109,12 @@ public class AppPageController {
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat thread not found", ex);
         }
+    }
+
+    @GetMapping({"/history", "/history.html"})
+    public String history(Authentication authentication, Model model) {
+        model.addAttribute("pageData", historyService.loadHistory(authentication.getName()));
+        return "app/history-list";
     }
 
     @PostMapping("/chat/{id}/messages")

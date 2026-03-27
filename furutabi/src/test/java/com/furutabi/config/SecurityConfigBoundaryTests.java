@@ -283,6 +283,13 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated history route is available after passing security")
+    void authenticatedHistoryRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/history").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Authenticated account route is available after passing security")
     void authenticatedAccountRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/account").with(user("user@example.com").roles("USER")))
