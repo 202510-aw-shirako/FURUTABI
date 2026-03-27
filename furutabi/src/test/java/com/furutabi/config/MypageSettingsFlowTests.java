@@ -108,11 +108,14 @@ class MypageSettingsFlowTests {
         jdbcTemplate.update(
             """
                 INSERT INTO contact_preferences (
-                    user_id, receive_operation_notice, receive_security_notice, receive_bridge_contact,
-                    receive_local_contact, receive_email_notice, receive_sms_notice, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    user_id, profile_visibility, map_default_visibility, receive_operation_notice,
+                    receive_security_notice, receive_bridge_contact, receive_local_contact,
+                    receive_email_notice, receive_sms_notice, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
             100L,
+            "limited",
+            "public",
             true,
             true,
             true,
@@ -199,6 +202,8 @@ class MypageSettingsFlowTests {
         mockMvc.perform(get("/app/privacy-settings").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("/app/privacy-settings")))
+            .andExpect(content().string(containsString("LIMITED")))
+            .andExpect(content().string(containsString("PUBLIC")))
             .andExpect(content().string(containsString("receiveBridgeContact")));
     }
 
@@ -208,6 +213,8 @@ class MypageSettingsFlowTests {
         mockMvc.perform(post("/app/privacy-settings")
                 .with(user("user@example.com").roles("USER"))
                 .with(csrf())
+                .param("profileVisibility", "PRIVATE")
+                .param("mapDefaultVisibility", "LIMITED")
                 .param("receiveOperationNotice", "true")
                 .param("receiveSecurityNotice", "false")
                 .param("receiveBridgeContact", "false")
@@ -217,6 +224,16 @@ class MypageSettingsFlowTests {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/app/privacy-settings?saved"));
 
+        String profileVisibility = jdbcTemplate.queryForObject(
+            "SELECT profile_visibility FROM contact_preferences WHERE user_id = ?",
+            String.class,
+            100L
+        );
+        String mapDefaultVisibility = jdbcTemplate.queryForObject(
+            "SELECT map_default_visibility FROM contact_preferences WHERE user_id = ?",
+            String.class,
+            100L
+        );
         Boolean receiveLocalContact = jdbcTemplate.queryForObject(
             "SELECT receive_local_contact FROM contact_preferences WHERE user_id = ?",
             Boolean.class,
@@ -228,6 +245,8 @@ class MypageSettingsFlowTests {
             100L
         );
 
+        Assertions.assertEquals("private", profileVisibility);
+        Assertions.assertEquals("limited", mapDefaultVisibility);
         Assertions.assertEquals(Boolean.TRUE, receiveLocalContact);
         Assertions.assertEquals(Boolean.TRUE, receiveSmsNotice);
     }

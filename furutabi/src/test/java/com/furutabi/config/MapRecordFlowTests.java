@@ -52,6 +52,7 @@ class MapRecordFlowTests {
         jdbcTemplate.update("DELETE FROM map_record_comments");
         jdbcTemplate.update("DELETE FROM map_record_images");
         jdbcTemplate.update("DELETE FROM map_records");
+        jdbcTemplate.update("DELETE FROM contact_preferences");
         jdbcTemplate.update("DELETE FROM user_roles");
         jdbcTemplate.update("DELETE FROM users");
 
@@ -60,6 +61,8 @@ class MapRecordFlowTests {
 
         insertRole(100L, "USER", now);
         insertRole(101L, "USER", now);
+        insertContactPreferences(100L, "private", "limited", now);
+        insertContactPreferences(101L, "private", "private", now);
 
         insertMapRecord(501L, 100L, "Public owner record", "Public body", "public", false, now);
         insertMapRecord(502L, 100L, "Private owner record", "Private body", "private", false, now);
@@ -120,6 +123,14 @@ class MapRecordFlowTests {
         mockMvc.perform(get("/app/map-records/new").with(user("owner@example.com").roles("USER")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("わたしの地図の記録を追加")));
+    }
+
+    @Test
+    @DisplayName("Create page uses privacy settings map visibility default")
+    void createPageUsesPrivacySettingsMapVisibilityDefault() throws Exception {
+        mockMvc.perform(get("/app/map-records/new").with(user("owner@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("option value=\"LIMITED\" selected=\"selected\"")));
     }
 
     @Test
@@ -335,6 +346,29 @@ class MapRecordFlowTests {
             "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
             userId,
             roleName,
+            now
+        );
+    }
+
+    private void insertContactPreferences(long userId, String profileVisibility, String mapDefaultVisibility, Timestamp now) {
+        jdbcTemplate.update(
+            """
+                INSERT INTO contact_preferences (
+                    user_id, profile_visibility, map_default_visibility, receive_operation_notice,
+                    receive_security_notice, receive_bridge_contact, receive_local_contact,
+                    receive_email_notice, receive_sms_notice, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            userId,
+            profileVisibility,
+            mapDefaultVisibility,
+            true,
+            true,
+            true,
+            false,
+            true,
+            false,
+            now,
             now
         );
     }

@@ -60,6 +60,24 @@
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <div class="mypageFormGrid">
             <div class="mypageField mypageField--full">
+              <span>公開範囲の初期設定</span>
+              <div class="mypageFormGrid">
+                <label class="mypageField">
+                  <span>プロフィールの公開範囲</span>
+                  <select th:field="*{profileVisibility}">
+                    <option th:each="option : ${visibilityOptions}" th:value="${option.value}" th:text="${option.label}">本人のみ</option>
+                  </select>
+                </label>
+                <label class="mypageField">
+                  <span>地図・足あとの既定公開範囲</span>
+                  <select th:field="*{mapDefaultVisibility}">
+                    <option th:each="option : ${visibilityOptions}" th:value="${option.value}" th:text="${option.label}">本人のみ</option>
+                  </select>
+                </label>
+              </div>
+              <p class="note">LIMITED は関係者までです。ログイン済み全体への公開ではありません。</p>
+            </div>
+            <div class="mypageField mypageField--full">
               <span>通知・連絡設定</span>
               <div class="mypageCheckStack">
                 <label><input type="checkbox" th:field="*{receiveOperationNotice}" />運営からのお知らせを受け取る</label>

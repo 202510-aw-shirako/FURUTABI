@@ -264,6 +264,7 @@ public class AppPageController {
         model.addAttribute("privacySettingsForm", pageData.form());
         model.addAttribute("smsVerified", pageData.smsVerified());
         model.addAttribute("additionalVerificationStatus", pageData.additionalVerificationStatus());
+        model.addAttribute("visibilityOptions", visibilityOptions());
         return "app/privacy-settings";
     }
 

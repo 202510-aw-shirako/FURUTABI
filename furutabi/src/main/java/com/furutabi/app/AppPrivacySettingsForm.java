@@ -2,12 +2,30 @@ package com.furutabi.app;
 
 public class AppPrivacySettingsForm {
 
+    private String profileVisibility = "PRIVATE";
+    private String mapDefaultVisibility = "PRIVATE";
     private boolean receiveOperationNotice = true;
     private boolean receiveSecurityNotice = true;
     private boolean receiveBridgeContact = true;
     private boolean receiveLocalContact;
     private boolean receiveEmailNotice = true;
     private boolean receiveSmsNotice;
+
+    public String getProfileVisibility() {
+        return profileVisibility;
+    }
+
+    public void setProfileVisibility(String profileVisibility) {
+        this.profileVisibility = profileVisibility;
+    }
+
+    public String getMapDefaultVisibility() {
+        return mapDefaultVisibility;
+    }
+
+    public void setMapDefaultVisibility(String mapDefaultVisibility) {
+        this.mapDefaultVisibility = mapDefaultVisibility;
+    }
 
     public boolean isReceiveOperationNotice() {
         return receiveOperationNotice;

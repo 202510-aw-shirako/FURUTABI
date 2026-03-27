@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.furutabi.visibility.VisibilityScope;
+
 @Service
 public class AppSettingsService {
 
@@ -73,6 +75,8 @@ public class AppSettingsService {
 
         AppPrivacySettingsForm form = new AppPrivacySettingsForm();
         if (preference != null) {
+            form.setProfileVisibility(preference.profileVisibility().name());
+            form.setMapDefaultVisibility(preference.mapDefaultVisibility().name());
             form.setReceiveOperationNotice(preference.receiveOperationNotice());
             form.setReceiveSecurityNotice(preference.receiveSecurityNotice());
             form.setReceiveBridgeContact(preference.receiveBridgeContact());
@@ -144,7 +148,6 @@ public class AppSettingsService {
                 user.id(),
                 nullable(form.getBio()),
                 null,
-                nullable(form.getAgeRange()),
                 nullable(form.getRegion()),
                 nullable(form.getInterestRegion()),
                 nullable(form.getVisitHistory()),
@@ -152,6 +155,7 @@ public class AppSettingsService {
                 nullable(form.getWithChildren()),
                 nullable(form.getFoodNote()),
                 nullable(form.getRelationNote()),
+                nullable(form.getAgeRange()),
                 now,
                 now
             );
@@ -169,10 +173,13 @@ public class AppSettingsService {
             jdbcTemplate.update(
                 """
                     UPDATE contact_preferences
-                    SET receive_operation_notice = ?, receive_security_notice = ?, receive_bridge_contact = ?,
+                    SET profile_visibility = ?, map_default_visibility = ?,
+                        receive_operation_notice = ?, receive_security_notice = ?, receive_bridge_contact = ?,
                         receive_local_contact = ?, receive_email_notice = ?, receive_sms_notice = ?, updated_at = ?
                     WHERE user_id = ?
                     """,
+                toDbVisibility(form.getProfileVisibility()),
+                toDbVisibility(form.getMapDefaultVisibility()),
                 form.isReceiveOperationNotice(),
                 form.isReceiveSecurityNotice(),
                 form.isReceiveBridgeContact(),
@@ -186,11 +193,14 @@ public class AppSettingsService {
             jdbcTemplate.update(
                 """
                     INSERT INTO contact_preferences (
-                        user_id, receive_operation_notice, receive_security_notice, receive_bridge_contact,
-                        receive_local_contact, receive_email_notice, receive_sms_notice, created_at, updated_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        user_id, profile_visibility, map_default_visibility, receive_operation_notice,
+                        receive_security_notice, receive_bridge_contact, receive_local_contact,
+                        receive_email_notice, receive_sms_notice, created_at, updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                 user.id(),
+                toDbVisibility(form.getProfileVisibility()),
+                toDbVisibility(form.getMapDefaultVisibility()),
                 form.isReceiveOperationNotice(),
                 form.isReceiveSecurityNotice(),
                 form.isReceiveBridgeContact(),
@@ -264,12 +274,15 @@ public class AppSettingsService {
         try {
             return jdbcTemplate.queryForObject(
                 """
-                    SELECT receive_operation_notice, receive_security_notice, receive_bridge_contact,
-                           receive_local_contact, receive_email_notice, receive_sms_notice
+                    SELECT profile_visibility, map_default_visibility, receive_operation_notice,
+                           receive_security_notice, receive_bridge_contact, receive_local_contact,
+                           receive_email_notice, receive_sms_notice
                     FROM contact_preferences
                     WHERE user_id = ?
                     """,
                 (rs, rowNum) -> new ContactPreferenceRow(
+                    VisibilityScope.fromDbValue(rs.getString("profile_visibility")),
+                    VisibilityScope.fromDbValue(rs.getString("map_default_visibility")),
                     rs.getBoolean("receive_operation_notice"),
                     rs.getBoolean("receive_security_notice"),
                     rs.getBoolean("receive_bridge_contact"),
@@ -308,6 +321,10 @@ public class AppSettingsService {
     private String nullable(String value) {
         String trimmed = value == null ? null : value.trim();
         return (trimmed == null || trimmed.isEmpty()) ? null : trimmed;
+    }
+
+    private String toDbVisibility(String value) {
+        return VisibilityScope.fromDbValue(value).name().toLowerCase();
     }
 
     public record MypageSummary(
@@ -366,6 +383,8 @@ public class AppSettingsService {
     }
 
     private record ContactPreferenceRow(
+        VisibilityScope profileVisibility,
+        VisibilityScope mapDefaultVisibility,
         boolean receiveOperationNotice,
         boolean receiveSecurityNotice,
         boolean receiveBridgeContact,

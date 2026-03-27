@@ -139,7 +139,7 @@ public class MapRecordService {
     public MapRecordEditorPageData loadCreatePage(String email) {
         UserRow currentUser = requireUser(email);
         MapRecordForm form = new MapRecordForm();
-        form.setVisibility(VisibilityScope.PRIVATE.name());
+        form.setVisibility(loadDefaultMapVisibility(currentUser.id()).name());
         form.setLocationPrecisionLevel("area");
         form.setDraft(false);
         return new MapRecordEditorPageData(
@@ -390,6 +390,19 @@ public class MapRecordService {
     }
 
     private VisibilityScope normalizeVisibility(String value) {
+        return VisibilityScope.fromDbValue(value);
+    }
+
+    private VisibilityScope loadDefaultMapVisibility(long userId) {
+        String value = jdbcTemplate.query(
+            """
+                SELECT map_default_visibility
+                FROM contact_preferences
+                WHERE user_id = ?
+                """,
+            rs -> rs.next() ? rs.getString("map_default_visibility") : null,
+            userId
+        );
         return VisibilityScope.fromDbValue(value);
     }
 
