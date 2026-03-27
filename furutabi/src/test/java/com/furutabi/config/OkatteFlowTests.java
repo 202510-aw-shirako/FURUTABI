@@ -1,0 +1,226 @@
+package com.furutabi.config;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.Instant;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.furutabi.relation.RelatedUserService;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class OkatteFlowTests {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private RelatedUserService relatedUserService;
+
+    @BeforeEach
+    void setUpOkatteData() {
+        Timestamp now = Timestamp.from(Instant.parse("2026-03-25T00:00:00Z"));
+
+        jdbcTemplate.update("DELETE FROM proposal_application_status_history");
+        jdbcTemplate.update("DELETE FROM proposal_applications");
+        jdbcTemplate.update("DELETE FROM proposal_tags");
+        jdbcTemplate.update("DELETE FROM proposals");
+        jdbcTemplate.update("DELETE FROM sms_verifications");
+        jdbcTemplate.update("DELETE FROM contact_preferences");
+        jdbcTemplate.update("DELETE FROM user_profiles");
+        jdbcTemplate.update("DELETE FROM user_roles");
+        jdbcTemplate.update("DELETE FROM users");
+
+        insertUser(100L, "host@example.com", "host-user", now);
+        insertUser(101L, "bridge@example.com", "bridge-user", now);
+        insertUser(102L, "guest@example.com", "guest-user", now);
+
+        insertRole(100L, "LOCAL", now);
+        insertRole(101L, "BRIDGE", now);
+        insertRole(102L, "USER", now);
+
+        insertProposal(701L, "OKATTE", 100L, 101L, "Public okatte", "public", "published", now);
+        insertProposal(702L, "OKATTE", 100L, 101L, "Private okatte", "private", "published", now);
+        insertProposal(703L, "LOCAL_GUIDE", 100L, 101L, "Gate proposal", "public", "published", now);
+
+        jdbcTemplate.update(
+            "INSERT INTO proposal_tags (proposal_id, tag_name, sort_order, created_at) VALUES (?, ?, ?, ?)",
+            701L,
+            "おかって",
+            0,
+            now
+        );
+    }
+
+    @Test
+    @DisplayName("viewer sees okatte list and gate proposals stay out")
+    void viewerSeesOkatteListOnly() throws Exception {
+        mockMvc.perform(get("/app/okatte").with(user("guest@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Public okatte")))
+            .andExpect(content().string(not(containsString("Gate proposal"))))
+            .andExpect(content().string(not(containsString("Private okatte"))));
+    }
+
+    @Test
+    @DisplayName("viewer can open okatte detail and move to application page")
+    void viewerCanOpenOkatteDetail() throws Exception {
+        mockMvc.perform(get("/app/okatte/701").with(user("guest@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Public okatte")))
+            .andExpect(content().string(containsString("この候補で申請する")));
+
+        mockMvc.perform(get("/app/okatte/701/apply").with(user("guest@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("おかってへ申請する")));
+    }
+
+    @Test
+    @DisplayName("viewer can create okatte application and history is added")
+    void viewerCanCreateOkatteApplication() throws Exception {
+        mockMvc.perform(
+                post("/app/okatte/701/apply")
+                    .with(user("guest@example.com").roles("USER"))
+                    .with(csrf())
+                    .param("applicantMessage", "この候補で進みたいです")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/okatte/701?applied"));
+
+        Long applicationId = jdbcTemplate.queryForObject(
+            "SELECT id FROM proposal_applications WHERE proposal_id = ? AND applicant_user_id = ? AND deleted_at IS NULL",
+            Long.class,
+            701L,
+            102L
+        );
+        Assertions.assertNotNull(applicationId);
+
+        String applicationStatus = jdbcTemplate.queryForObject(
+            "SELECT application_status FROM proposal_applications WHERE id = ?",
+            String.class,
+            applicationId
+        );
+        Long relatedThreadId = jdbcTemplate.queryForObject(
+            "SELECT related_thread_id FROM proposal_applications WHERE id = ?",
+            Long.class,
+            applicationId
+        );
+        Integer historyCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM proposal_application_status_history WHERE proposal_application_id = ? AND status = ?",
+            Integer.class,
+            applicationId,
+            "pending"
+        );
+
+        Assertions.assertEquals("pending", applicationStatus);
+        Assertions.assertNull(relatedThreadId);
+        Assertions.assertEquals(1, historyCount);
+        Assertions.assertTrue(relatedUserService.isProposalApplicant(102L, 701L));
+    }
+
+    @Test
+    @DisplayName("unauthenticated okatte routes redirect to login")
+    void unauthenticatedOkatteRoutesRedirectToLogin() throws Exception {
+        mockMvc.perform(get("/app/okatte"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
+
+        mockMvc.perform(get("/app/okatte/701/apply"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("**/login"));
+    }
+
+    private void insertUser(long id, String email, String nickname, Timestamp now) {
+        jdbcTemplate.update(
+            """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            id,
+            email,
+            "{noop}unused",
+            nickname,
+            nickname,
+            nickname,
+            Date.valueOf("1990-01-01"),
+            "NO_ANSWER",
+            "090-0000-0000",
+            "Test address",
+            true,
+            "UNREQUESTED",
+            now,
+            now
+        );
+    }
+
+    private void insertRole(long userId, String roleName, Timestamp now) {
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            userId,
+            roleName,
+            now
+        );
+    }
+
+    private void insertProposal(
+        long proposalId,
+        String proposalType,
+        long hostUserId,
+        long bridgeUserId,
+        String title,
+        String visibility,
+        String status,
+        Timestamp now
+    ) {
+        jdbcTemplate.update(
+            """
+                INSERT INTO proposals (
+                    id, proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                    duration_minutes, location_name, status, visibility_scope, cover_image_path,
+                    created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            proposalId,
+            proposalType,
+            bridgeUserId,
+            hostUserId,
+            title,
+            title + " summary",
+            title + " body",
+            45,
+            "Kamakura",
+            status,
+            visibility,
+            null,
+            now,
+            now,
+            null
+        );
+    }
+}

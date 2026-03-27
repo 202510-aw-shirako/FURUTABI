@@ -285,7 +285,7 @@
         return '/app/gate';
       }
       if (type === 'okatte') {
-        return '';
+        return '/app/okatte';
       }
     }
     if (!context || context === 'public') {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>申請確認 | FURUTABI</title>
+  <title>主催者申請一覧 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <main class="container" aria-label="架け橋さん向け申請確認">
+  <main class="container" aria-label="主催者向け申請一覧">
     <section class="section section--hero" aria-label="ページヒーロー">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -25,10 +25,10 @@
 
     <section class="section fv">
       <div class="sectionTitleRow">
-        <h1 class="h1">申請確認</h1>
-        <a class="sectionTitleLink" href="/app/local-member-home">地域ホームへ戻る</a>
+        <h1 class="h1">主催者申請一覧</h1>
+        <a class="sectionTitleLink" href="/app/local-member-home">ホームへ戻る</a>
       </div>
-      <p class="lead">架け橋さんに届いた pending 申請だけを確認できます。受諾と拒否は詳細画面で行います。</p>
+      <p class="lead">自分が主催者の proposal に届いた pending 申請を確認できます。承認と拒否は詳細画面から行います。</p>
     </section>
 
     <section class="section">
@@ -39,23 +39,23 @@
             <span class="note"
                   th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要時間は次段階で設定'}">60分</span>
           </div>
-          <h2 class="h2" th:text="${item.title}">gate title</h2>
+          <h2 class="h2" th:text="${item.title}">proposal title</h2>
           <p class="note" th:text="${'申請者: ' + item.applicantNickname}">申請者</p>
-          <p class="note" th:text="${'地域担当: ' + item.hostNickname}">地域担当</p>
+          <p class="note" th:text="${'主催者: ' + item.hostNickname}">主催者</p>
           <p class="note" th:if="${item.locationName != null}" th:text="${'場所: ' + item.locationName}">場所</p>
           <p class="note" th:if="${item.latestMessagePreview != null}" th:text="${item.latestMessagePreview}">メモ</p>
           <p class="note" th:if="${item.appliedAt != null}"
              th:text="${'申請日時: ' + #temporals.format(item.appliedAt, 'yyyy-MM-dd HH:mm')}">申請日時</p>
           <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
-            <a class="btn primary" th:href="@{/app/bridge-applications/{id}(id=${item.applicationId})}">詳細を見る</a>
-            <a class="btn ghost" th:href="@{/app/gate/{id}(id=${item.proposalId})}">gate 詳細</a>
+            <a class="btn primary" th:href="@{/app/host-applications/{id}(id=${item.applicationId})}">詳細を見る</a>
+            <a class="btn ghost" th:href="${item.proposalDetailPath}">proposal 詳細</a>
           </div>
         </article>
       </div>
 
       <div class="card" th:if="${pageData.items.isEmpty()}">
-        <div class="h2">まだ確認待ちの申請はありません</div>
-        <p class="note">今は pending の申請だけを表示しています。受諾済みや拒否済みの整理は次段階です。</p>
+        <div class="h2">まだ処理待ちの申請はありません</div>
+        <p class="note">自分が主催者の pending 申請だけを表示しています。候補選択や申請作成のあとで確認できます。</p>
       </div>
     </section>
   </main>

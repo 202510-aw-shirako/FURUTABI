@@ -181,6 +181,30 @@ class SecurityConfigBoundaryTests {
         );
         jdbcTemplate.update(
             """
+                INSERT INTO proposals (
+                    id, proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                    duration_minutes, location_name, status, visibility_scope, cover_image_path,
+                    created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            21L,
+            "OKATTE",
+            3L,
+            2L,
+            "Boundary okatte",
+            "Boundary okatte summary",
+            "Boundary okatte body",
+            60,
+            "Tokyo",
+            "published",
+            "public",
+            null,
+            now,
+            now,
+            null
+        );
+        jdbcTemplate.update(
+            """
                 INSERT INTO proposal_applications (
                     id, proposal_id, applicant_user_id, application_status, latest_message_preview,
                     latest_message_at, related_thread_id, requires_additional_verification,
@@ -301,16 +325,37 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
-    @DisplayName("Authenticated bridge application list route is available after passing security")
-    void authenticatedBridgeApplicationListRouteIsAvailable() throws Exception {
-        mockMvc.perform(get("/app/bridge-applications").with(user("bridge@example.com").roles("BRIDGE")))
+    @DisplayName("Authenticated host application list route is available after passing security")
+    void authenticatedHostApplicationListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/host-applications").with(user("local@example.com").roles("LOCAL")))
             .andExpect(status().isOk());
     }
 
     @Test
-    @DisplayName("Authenticated bridge application detail route is available after passing security")
-    void authenticatedBridgeApplicationDetailRouteIsAvailable() throws Exception {
-        mockMvc.perform(get("/app/bridge-applications/30").with(user("bridge@example.com").roles("BRIDGE")))
+    @DisplayName("Authenticated host application detail route is available after passing security")
+    void authenticatedHostApplicationDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/host-applications/30").with(user("local@example.com").roles("LOCAL")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated okatte list route is available after passing security")
+    void authenticatedOkatteListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/okatte").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated okatte detail route is available after passing security")
+    void authenticatedOkatteDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/okatte/21").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated okatte apply route is available after passing security")
+    void authenticatedOkatteApplyRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/okatte/21/apply").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk());
     }
 

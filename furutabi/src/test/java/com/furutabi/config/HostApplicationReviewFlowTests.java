@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class BridgeApplicationReviewFlowTests {
+class HostApplicationReviewFlowTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -61,44 +61,58 @@ class BridgeApplicationReviewFlowTests {
         insertRole(103L, "USER", now);
         insertRole(104L, "USER", now);
 
-        insertProposal(701L, 100L, 101L, "Bridge gate", "public", "published", now);
+        insertProposal(701L, "LOCAL_GUIDE", 100L, 101L, "Local host gate", "public", "published", now);
+        insertProposal(702L, "OKATTE", 101L, 101L, "Bridge host okatte", "public", "published", now);
+
         insertApplication(801L, 701L, 103L, "pending", Timestamp.from(Instant.parse("2026-03-25T01:00:00Z")));
+        insertApplication(802L, 702L, 103L, "pending", Timestamp.from(Instant.parse("2026-03-25T01:10:00Z")));
     }
 
     @Test
-    @DisplayName("related bridge user can view pending application list and detail")
-    void relatedBridgeUserCanViewPendingApplicationListAndDetail() throws Exception {
-        mockMvc.perform(get("/app/bridge-applications").with(user("bridge@example.com").roles("BRIDGE")))
+    @DisplayName("proposal host can view pending application list and detail")
+    void proposalHostCanViewPendingApplicationListAndDetail() throws Exception {
+        mockMvc.perform(get("/app/host-applications").with(user("local@example.com").roles("LOCAL")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Bridge gate")))
-            .andExpect(content().string(containsString("guest-user")));
+            .andExpect(content().string(containsString("Local host gate")))
+            .andExpect(content().string(not(containsString("Bridge host okatte"))));
 
-        mockMvc.perform(get("/app/bridge-applications/801").with(user("bridge@example.com").roles("BRIDGE")))
+        mockMvc.perform(get("/app/host-applications/801").with(user("local@example.com").roles("LOCAL")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("受諾する")))
+            .andExpect(content().string(containsString("承認する")))
+            .andExpect(content().string(containsString("拒否する")));
+
+        mockMvc.perform(get("/app/host-applications").with(user("bridge@example.com").roles("BRIDGE")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Bridge host okatte")))
+            .andExpect(content().string(not(containsString("Local host gate"))));
+
+        mockMvc.perform(get("/app/host-applications/802").with(user("bridge@example.com").roles("BRIDGE")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("承認する")))
             .andExpect(content().string(containsString("拒否する")));
     }
 
     @Test
-    @DisplayName("unrelated users cannot review bridge application")
-    void unrelatedUsersCannotReviewBridgeApplication() throws Exception {
-        mockMvc.perform(get("/app/bridge-applications").with(user("other-bridge@example.com").roles("BRIDGE")))
+    @DisplayName("non-host users cannot review host applications")
+    void nonHostUsersCannotReviewHostApplications() throws Exception {
+        mockMvc.perform(get("/app/host-applications").with(user("other-bridge@example.com").roles("BRIDGE")))
             .andExpect(status().isOk())
-            .andExpect(content().string(not(containsString("Bridge gate"))));
+            .andExpect(content().string(not(containsString("Bridge host okatte"))))
+            .andExpect(content().string(not(containsString("Local host gate"))));
 
-        mockMvc.perform(get("/app/bridge-applications/801").with(user("other-bridge@example.com").roles("BRIDGE")))
+        mockMvc.perform(get("/app/host-applications/801").with(user("bridge@example.com").roles("BRIDGE")))
             .andExpect(status().isNotFound());
 
-        mockMvc.perform(post("/app/bridge-applications/801/accept").with(user("viewer@example.com").roles("USER")).with(csrf()))
+        mockMvc.perform(post("/app/host-applications/801/accept").with(user("viewer@example.com").roles("USER")).with(csrf()))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("pending application can be accepted")
-    void pendingApplicationCanBeAccepted() throws Exception {
-        mockMvc.perform(post("/app/bridge-applications/801/accept").with(user("bridge@example.com").roles("BRIDGE")).with(csrf()))
+    @DisplayName("local host can accept pending application")
+    void localHostCanAcceptPendingApplication() throws Exception {
+        mockMvc.perform(post("/app/host-applications/801/accept").with(user("local@example.com").roles("LOCAL")).with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/app/bridge-applications/801?accepted"));
+            .andExpect(redirectedUrl("/app/host-applications/801?accepted"));
 
         String applicationStatus = jdbcTemplate.queryForObject(
             "SELECT application_status FROM proposal_applications WHERE id = ?",
@@ -123,21 +137,21 @@ class BridgeApplicationReviewFlowTests {
     }
 
     @Test
-    @DisplayName("pending application can be rejected")
-    void pendingApplicationCanBeRejected() throws Exception {
-        mockMvc.perform(post("/app/bridge-applications/801/reject").with(user("bridge@example.com").roles("BRIDGE")).with(csrf()))
+    @DisplayName("bridge host can reject pending application")
+    void bridgeHostCanRejectPendingApplication() throws Exception {
+        mockMvc.perform(post("/app/host-applications/802/reject").with(user("bridge@example.com").roles("BRIDGE")).with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/app/bridge-applications/801?rejected"));
+            .andExpect(redirectedUrl("/app/host-applications/802?rejected"));
 
         String applicationStatus = jdbcTemplate.queryForObject(
             "SELECT application_status FROM proposal_applications WHERE id = ?",
             String.class,
-            801L
+            802L
         );
         Integer rejectedHistoryCount = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM proposal_application_status_history WHERE proposal_application_id = ? AND status = ?",
             Integer.class,
-            801L,
+            802L,
             "rejected"
         );
 
@@ -155,15 +169,15 @@ class BridgeApplicationReviewFlowTests {
             801L
         );
 
-        mockMvc.perform(post("/app/bridge-applications/801/reject").with(user("bridge@example.com").roles("BRIDGE")).with(csrf()))
+        mockMvc.perform(post("/app/host-applications/801/reject").with(user("local@example.com").roles("LOCAL")).with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/app/bridge-applications/801?blocked"));
+            .andExpect(redirectedUrl("/app/host-applications/801?blocked"));
     }
 
     @Test
-    @DisplayName("unauthenticated bridge review route redirects to login")
-    void unauthenticatedBridgeReviewRouteRedirectsToLogin() throws Exception {
-        mockMvc.perform(get("/app/bridge-applications"))
+    @DisplayName("unauthenticated host review route redirects to login")
+    void unauthenticatedHostReviewRouteRedirectsToLogin() throws Exception {
+        mockMvc.perform(get("/app/host-applications"))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("**/login"));
     }
@@ -205,6 +219,7 @@ class BridgeApplicationReviewFlowTests {
 
     private void insertProposal(
         long proposalId,
+        String proposalType,
         long hostUserId,
         long bridgeUserId,
         String title,
@@ -221,7 +236,7 @@ class BridgeApplicationReviewFlowTests {
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
             proposalId,
-            "LOCAL_GUIDE",
+            proposalType,
             bridgeUserId,
             hostUserId,
             title,

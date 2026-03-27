@@ -18,21 +18,24 @@ public class AppPageController {
     private final AppSettingsService appSettingsService;
     private final MapRecordService mapRecordService;
     private final GateService gateService;
+    private final OkatteService okatteService;
     private final ProposalApplicationService proposalApplicationService;
-    private final BridgeApplicationReviewService bridgeApplicationReviewService;
+    private final HostApplicationReviewService hostApplicationReviewService;
 
     public AppPageController(
         AppSettingsService appSettingsService,
         MapRecordService mapRecordService,
         GateService gateService,
+        OkatteService okatteService,
         ProposalApplicationService proposalApplicationService,
-        BridgeApplicationReviewService bridgeApplicationReviewService
+        HostApplicationReviewService hostApplicationReviewService
     ) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
         this.gateService = gateService;
+        this.okatteService = okatteService;
         this.proposalApplicationService = proposalApplicationService;
-        this.bridgeApplicationReviewService = bridgeApplicationReviewService;
+        this.hostApplicationReviewService = hostApplicationReviewService;
     }
 
     @GetMapping({"/home", "/home.html"})
@@ -45,41 +48,41 @@ public class AppPageController {
         return "app/local-member-home";
     }
 
-    @GetMapping({"/bridge-applications", "/bridge-applications.html"})
-    public String bridgeApplications(Authentication authentication, Model model) {
-        model.addAttribute("pageData", bridgeApplicationReviewService.loadPendingApplications(authentication.getName()));
-        return "app/bridge-application-list";
+    @GetMapping({"/host-applications", "/host-applications.html", "/bridge-applications", "/bridge-applications.html"})
+    public String hostApplications(Authentication authentication, Model model) {
+        model.addAttribute("pageData", hostApplicationReviewService.loadPendingApplications(authentication.getName()));
+        return "app/host-application-list";
     }
 
-    @GetMapping("/bridge-applications/{id}")
-    public String bridgeApplicationDetail(@PathVariable long id, Authentication authentication, Model model) {
+    @GetMapping({"/host-applications/{id}", "/bridge-applications/{id}"})
+    public String hostApplicationDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
-            model.addAttribute("pageData", bridgeApplicationReviewService.loadApplicationDetail(authentication.getName(), id));
-            return "app/bridge-application-detail";
+            model.addAttribute("pageData", hostApplicationReviewService.loadApplicationDetail(authentication.getName(), id));
+            return "app/host-application-detail";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
         }
     }
 
-    @PostMapping("/bridge-applications/{id}/accept")
-    public String acceptBridgeApplication(@PathVariable long id, Authentication authentication) {
+    @PostMapping({"/host-applications/{id}/accept", "/bridge-applications/{id}/accept"})
+    public String acceptHostApplication(@PathVariable long id, Authentication authentication) {
         try {
-            bridgeApplicationReviewService.acceptApplication(authentication.getName(), id);
-            return "redirect:/app/bridge-applications/" + id + "?accepted";
-        } catch (BridgeApplicationReviewService.BridgeApplicationReviewConflictException ex) {
-            return "redirect:/app/bridge-applications/" + id + "?blocked";
+            hostApplicationReviewService.acceptApplication(authentication.getName(), id);
+            return "redirect:/app/host-applications/" + id + "?accepted";
+        } catch (HostApplicationReviewService.HostApplicationReviewConflictException ex) {
+            return "redirect:/app/host-applications/" + id + "?blocked";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
         }
     }
 
-    @PostMapping("/bridge-applications/{id}/reject")
-    public String rejectBridgeApplication(@PathVariable long id, Authentication authentication) {
+    @PostMapping({"/host-applications/{id}/reject", "/bridge-applications/{id}/reject"})
+    public String rejectHostApplication(@PathVariable long id, Authentication authentication) {
         try {
-            bridgeApplicationReviewService.rejectApplication(authentication.getName(), id);
-            return "redirect:/app/bridge-applications/" + id + "?rejected";
-        } catch (BridgeApplicationReviewService.BridgeApplicationReviewConflictException ex) {
-            return "redirect:/app/bridge-applications/" + id + "?blocked";
+            hostApplicationReviewService.rejectApplication(authentication.getName(), id);
+            return "redirect:/app/host-applications/" + id + "?rejected";
+        } catch (HostApplicationReviewService.HostApplicationReviewConflictException ex) {
+            return "redirect:/app/host-applications/" + id + "?blocked";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
         }
@@ -160,6 +163,22 @@ public class AppPageController {
         }
     }
 
+    @GetMapping({"/okatte", "/okatte.html"})
+    public String okatteList(Authentication authentication, Model model) {
+        model.addAttribute("pageData", okatteService.loadVisibleOkatteList(authentication.getName()));
+        return "app/okatte-list";
+    }
+
+    @GetMapping("/okatte/{id}")
+    public String okatteDetail(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", okatteService.loadVisibleOkatteDetail(authentication.getName(), id));
+            return "app/okatte-detail";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Okatte proposal not found", ex);
+        }
+    }
+
     @GetMapping("/gate/{id}/apply")
     public String gateApplicationPage(@PathVariable long id, Authentication authentication, Model model) {
         try {
@@ -168,6 +187,33 @@ public class AppPageController {
             return "app/gate-application-form";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Gate proposal not found", ex);
+        }
+    }
+
+    @GetMapping("/okatte/{id}/apply")
+    public String okatteApplicationPage(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", proposalApplicationService.loadOkatteApplicationPage(authentication.getName(), id));
+            model.addAttribute("proposalApplicationForm", new ProposalApplicationForm());
+            return "app/okatte-application-form";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Okatte proposal not found", ex);
+        }
+    }
+
+    @PostMapping("/okatte/{id}/apply")
+    public String createOkatteApplication(
+        @PathVariable long id,
+        Authentication authentication,
+        @ModelAttribute("proposalApplicationForm") ProposalApplicationForm proposalApplicationForm
+    ) {
+        try {
+            proposalApplicationService.createOkatteApplication(authentication.getName(), id, proposalApplicationForm);
+            return "redirect:/app/okatte/" + id + "?applied";
+        } catch (ProposalApplicationService.ProposalApplicationConflictException ex) {
+            return "redirect:/app/okatte/" + id + "/apply?blocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Okatte proposal not found", ex);
         }
     }
 

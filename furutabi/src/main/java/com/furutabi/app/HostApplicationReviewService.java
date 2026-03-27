@@ -11,25 +11,23 @@ import org.springframework.stereotype.Service;
 import com.furutabi.relation.RelatedUserService;
 
 @Service
-public class BridgeApplicationReviewService {
+public class HostApplicationReviewService {
 
     private final JdbcTemplate jdbcTemplate;
     private final RelatedUserService relatedUserService;
 
-    public BridgeApplicationReviewService(JdbcTemplate jdbcTemplate, RelatedUserService relatedUserService) {
+    public HostApplicationReviewService(JdbcTemplate jdbcTemplate, RelatedUserService relatedUserService) {
         this.jdbcTemplate = jdbcTemplate;
         this.relatedUserService = relatedUserService;
     }
 
     public BridgeApplicationListPageData loadPendingApplications(String email) {
         long reviewerUserId = requireUserIdByEmail(email);
-        if (!hasBridgeRole(reviewerUserId)) {
-            return new BridgeApplicationListPageData(List.of());
-        }
 
         List<BridgeApplicationSummary> items = jdbcTemplate.query(
             """
                 SELECT pa.id, pa.proposal_id, pa.application_status, pa.latest_message_preview, pa.applied_at,
+                       p.proposal_type,
                        p.title, p.location_name, p.duration_minutes,
                        applicant.nickname AS applicant_nickname,
                        host.nickname AS host_nickname
@@ -39,14 +37,14 @@ public class BridgeApplicationReviewService {
                 JOIN users host ON host.id = p.host_user_id
                 WHERE pa.deleted_at IS NULL
                   AND p.deleted_at IS NULL
-                  AND p.bridge_user_id = ?
-                  AND p.proposal_type IN ('LOCAL_GUIDE', 'GATE')
+                  AND p.host_user_id = ?
                   AND LOWER(pa.application_status) = 'pending'
                 ORDER BY pa.applied_at DESC, pa.id DESC
                 """,
             (rs, rowNum) -> new BridgeApplicationSummary(
                 rs.getLong("id"),
                 rs.getLong("proposal_id"),
+                rs.getString("proposal_type"),
                 rs.getString("title"),
                 rs.getString("applicant_nickname"),
                 rs.getString("host_nickname"),
@@ -54,7 +52,8 @@ public class BridgeApplicationReviewService {
                 rs.getObject("duration_minutes", Integer.class),
                 rs.getString("application_status"),
                 rs.getString("latest_message_preview"),
-                rs.getTimestamp("applied_at") == null ? null : rs.getTimestamp("applied_at").toLocalDateTime()
+                rs.getTimestamp("applied_at") == null ? null : rs.getTimestamp("applied_at").toLocalDateTime(),
+                proposalDetailPath(rs.getString("proposal_type"), rs.getLong("proposal_id"))
             ),
             reviewerUserId
         );
@@ -63,9 +62,6 @@ public class BridgeApplicationReviewService {
 
     public BridgeApplicationDetailPageData loadApplicationDetail(String email, long applicationId) {
         long reviewerUserId = requireUserIdByEmail(email);
-        if (!hasBridgeRole(reviewerUserId)) {
-            throw new IllegalStateException("Bridge review is not available.");
-        }
 
         BridgeApplicationDetailRow row;
         try {
@@ -73,6 +69,7 @@ public class BridgeApplicationReviewService {
                 """
                     SELECT pa.id, pa.proposal_id, pa.application_status, pa.latest_message_preview, pa.applied_at,
                            pa.related_thread_id, p.title, p.summary, p.location_name, p.duration_minutes,
+                           p.proposal_type,
                            applicant.nickname AS applicant_nickname,
                            host.nickname AS host_nickname
                     FROM proposal_applications pa
@@ -82,7 +79,6 @@ public class BridgeApplicationReviewService {
                     WHERE pa.id = ?
                       AND pa.deleted_at IS NULL
                       AND p.deleted_at IS NULL
-                      AND p.proposal_type IN ('LOCAL_GUIDE', 'GATE')
                     """,
                 (rs, rowNum) -> new BridgeApplicationDetailRow(
                     rs.getLong("id"),
@@ -95,6 +91,7 @@ public class BridgeApplicationReviewService {
                     rs.getString("summary"),
                     rs.getString("location_name"),
                     rs.getObject("duration_minutes", Integer.class),
+                    rs.getString("proposal_type"),
                     rs.getString("applicant_nickname"),
                     rs.getString("host_nickname")
                 ),
@@ -104,13 +101,14 @@ public class BridgeApplicationReviewService {
             throw new IllegalStateException("Proposal application not found: " + applicationId, ex);
         }
 
-        if (!relatedUserService.isProposalBridge(reviewerUserId, row.proposalId())) {
-            throw new IllegalStateException("Proposal application is not available to this bridge reviewer.");
+        if (!relatedUserService.isProposalOwner(reviewerUserId, row.proposalId())) {
+            throw new IllegalStateException("Proposal application is not available to this proposal host.");
         }
 
         return new BridgeApplicationDetailPageData(
             row.applicationId(),
             row.proposalId(),
+            row.proposalType(),
             row.title(),
             nullableText(row.summary()),
             nullableText(row.locationName()),
@@ -121,23 +119,21 @@ public class BridgeApplicationReviewService {
             nullableText(row.latestMessagePreview()),
             row.appliedAt(),
             "pending".equalsIgnoreCase(row.applicationStatus()),
-            row.relatedThreadId() != null
+            row.relatedThreadId() != null,
+            proposalDetailPath(row.proposalType(), row.proposalId())
         );
     }
 
     public void acceptApplication(String email, long applicationId) {
-        decide(email, applicationId, "accepted", "Accepted by bridge reviewer.");
+        decide(email, applicationId, "accepted", "Accepted by proposal host.");
     }
 
     public void rejectApplication(String email, long applicationId) {
-        decide(email, applicationId, "rejected", "Rejected by bridge reviewer.");
+        decide(email, applicationId, "rejected", "Rejected by proposal host.");
     }
 
     private void decide(String email, long applicationId, String nextStatus, String historyNote) {
         long reviewerUserId = requireUserIdByEmail(email);
-        if (!hasBridgeRole(reviewerUserId)) {
-            throw new IllegalStateException("Bridge review is not available.");
-        }
 
         BridgeApplicationDecisionRow row;
         try {
@@ -149,7 +145,6 @@ public class BridgeApplicationReviewService {
                     WHERE pa.id = ?
                       AND pa.deleted_at IS NULL
                       AND p.deleted_at IS NULL
-                      AND p.proposal_type IN ('LOCAL_GUIDE', 'GATE')
                     """,
                 (rs, rowNum) -> new BridgeApplicationDecisionRow(
                     rs.getLong("id"),
@@ -162,11 +157,11 @@ public class BridgeApplicationReviewService {
             throw new IllegalStateException("Proposal application not found: " + applicationId, ex);
         }
 
-        if (!relatedUserService.isProposalBridge(reviewerUserId, row.proposalId())) {
-            throw new IllegalStateException("Proposal application is not available to this bridge reviewer.");
+        if (!relatedUserService.isProposalOwner(reviewerUserId, row.proposalId())) {
+            throw new IllegalStateException("Proposal application is not available to this proposal host.");
         }
         if (!"pending".equalsIgnoreCase(row.applicationStatus())) {
-            throw new BridgeApplicationReviewConflictException("Only pending applications can be reviewed.");
+            throw new HostApplicationReviewConflictException("Only pending applications can be reviewed.");
         }
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
@@ -210,20 +205,18 @@ public class BridgeApplicationReviewService {
         }
     }
 
-    private boolean hasBridgeRole(long userId) {
-        Integer count = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM user_roles WHERE user_id = ? AND role_name = 'BRIDGE'",
-            Integer.class,
-            userId
-        );
-        return count != null && count > 0;
-    }
-
     private String nullableText(String value) {
         if (value == null || value.isBlank()) {
             return null;
         }
         return value;
+    }
+
+    private String proposalDetailPath(String proposalType, long proposalId) {
+        if ("OKATTE".equalsIgnoreCase(proposalType)) {
+            return "/app/okatte/" + proposalId;
+        }
+        return "/app/gate/" + proposalId;
     }
 
     public record BridgeApplicationListPageData(List<BridgeApplicationSummary> items) {
@@ -232,6 +225,7 @@ public class BridgeApplicationReviewService {
     public record BridgeApplicationSummary(
         long applicationId,
         long proposalId,
+        String proposalType,
         String title,
         String applicantNickname,
         String hostNickname,
@@ -239,13 +233,15 @@ public class BridgeApplicationReviewService {
         Integer durationMinutes,
         String applicationStatus,
         String latestMessagePreview,
-        LocalDateTime appliedAt
+        LocalDateTime appliedAt,
+        String proposalDetailPath
     ) {
     }
 
     public record BridgeApplicationDetailPageData(
         long applicationId,
         long proposalId,
+        String proposalType,
         String title,
         String summary,
         String locationName,
@@ -256,7 +252,8 @@ public class BridgeApplicationReviewService {
         String latestMessagePreview,
         LocalDateTime appliedAt,
         boolean canReview,
-        boolean chatOpened
+        boolean chatOpened,
+        String proposalDetailPath
     ) {
     }
 
@@ -271,6 +268,7 @@ public class BridgeApplicationReviewService {
         String summary,
         String locationName,
         Integer durationMinutes,
+        String proposalType,
         String applicantNickname,
         String hostNickname
     ) {
@@ -279,8 +277,8 @@ public class BridgeApplicationReviewService {
     private record BridgeApplicationDecisionRow(long applicationId, long proposalId, String applicationStatus) {
     }
 
-    public static class BridgeApplicationReviewConflictException extends RuntimeException {
-        public BridgeApplicationReviewConflictException(String message) {
+    public static class HostApplicationReviewConflictException extends RuntimeException {
+        public HostApplicationReviewConflictException(String message) {
             super(message);
         }
     }

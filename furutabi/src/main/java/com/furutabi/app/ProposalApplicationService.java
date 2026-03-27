@@ -25,8 +25,24 @@ public class ProposalApplicationService {
     }
 
     public ProposalApplicationPageData loadApplicationPage(String email, long proposalId) {
+        return loadApplicationPage(email, proposalId, ProposalContext.gate());
+    }
+
+    public ProposalApplicationPageData loadOkatteApplicationPage(String email, long proposalId) {
+        return loadApplicationPage(email, proposalId, ProposalContext.okatte());
+    }
+
+    public ProposalApplicationCreateResult createApplication(String email, long proposalId, ProposalApplicationForm form) {
+        return createApplication(email, proposalId, form, ProposalContext.gate());
+    }
+
+    public ProposalApplicationCreateResult createOkatteApplication(String email, long proposalId, ProposalApplicationForm form) {
+        return createApplication(email, proposalId, form, ProposalContext.okatte());
+    }
+
+    private ProposalApplicationPageData loadApplicationPage(String email, long proposalId, ProposalContext context) {
         long applicantUserId = requireUserIdByEmail(email);
-        GateApplicationTarget target = requireVisibleGateTarget(applicantUserId, proposalId);
+        ProposalApplicationTarget target = requireVisibleProposalTarget(applicantUserId, proposalId, context);
         ExistingApplication existingApplication = findExistingApplication(applicantUserId, proposalId);
         String blockingMessage = resolveBlockingMessage(applicantUserId, target, existingApplication);
 
@@ -45,9 +61,14 @@ public class ProposalApplicationService {
         );
     }
 
-    public ProposalApplicationCreateResult createApplication(String email, long proposalId, ProposalApplicationForm form) {
+    private ProposalApplicationCreateResult createApplication(
+        String email,
+        long proposalId,
+        ProposalApplicationForm form,
+        ProposalContext context
+    ) {
         long applicantUserId = requireUserIdByEmail(email);
-        GateApplicationTarget target = requireVisibleGateTarget(applicantUserId, proposalId);
+        ProposalApplicationTarget target = requireVisibleProposalTarget(applicantUserId, proposalId, context);
         ExistingApplication existingApplication = findExistingApplication(applicantUserId, proposalId);
         String blockingMessage = resolveBlockingMessage(applicantUserId, target, existingApplication);
         if (blockingMessage != null) {
@@ -103,24 +124,12 @@ public class ProposalApplicationService {
         return new ProposalApplicationCreateResult(applicationId, proposalId);
     }
 
-    private GateApplicationTarget requireVisibleGateTarget(long viewerUserId, long proposalId) {
-        GateApplicationTarget target;
+    private ProposalApplicationTarget requireVisibleProposalTarget(long viewerUserId, long proposalId, ProposalContext context) {
+        ProposalApplicationTarget target;
         try {
             target = jdbcTemplate.queryForObject(
-                """
-                    SELECT p.id, p.host_user_id, p.bridge_user_id, p.title, p.summary, p.location_name,
-                           p.duration_minutes, p.visibility_scope,
-                           host.nickname AS host_nickname,
-                           bridge.nickname AS bridge_nickname
-                    FROM proposals p
-                    JOIN users host ON host.id = p.host_user_id
-                    LEFT JOIN users bridge ON bridge.id = p.bridge_user_id
-                    WHERE p.id = ?
-                      AND p.deleted_at IS NULL
-                      AND LOWER(p.status) = 'published'
-                      AND p.proposal_type IN ('LOCAL_GUIDE', 'GATE')
-                    """,
-                (rs, rowNum) -> new GateApplicationTarget(
+                context.selectSql(),
+                (rs, rowNum) -> new ProposalApplicationTarget(
                     rs.getLong("id"),
                     rs.getLong("host_user_id"),
                     rs.getObject("bridge_user_id", Long.class),
@@ -135,11 +144,11 @@ public class ProposalApplicationService {
                 proposalId
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new IllegalStateException("Gate proposal not found: " + proposalId, ex);
+            throw new IllegalStateException(context.notFoundMessage() + ": " + proposalId, ex);
         }
 
         if (!visibilityAccessService.canViewProposal(viewerUserId, proposalId)) {
-            throw new IllegalStateException("Gate proposal is not visible: " + proposalId);
+            throw new IllegalStateException(context.hiddenMessage() + ": " + proposalId);
         }
 
         return target;
@@ -202,17 +211,17 @@ public class ProposalApplicationService {
 
     private String resolveBlockingMessage(
         long applicantUserId,
-        GateApplicationTarget target,
+        ProposalApplicationTarget target,
         ExistingApplication existingApplication
     ) {
         if (applicantUserId == target.hostUserId()) {
-            return "You cannot apply to your own gate proposal.";
+            return "You cannot apply to your own proposal.";
         }
         if (target.bridgeUserId() != null && applicantUserId == target.bridgeUserId()) {
-            return "Bridge-side users cannot apply to the same gate proposal.";
+            return "Bridge-side users cannot apply to the same proposal.";
         }
         if (existingApplication != null) {
-            return "You already have an application for this gate proposal.";
+            return "You already have an application for this proposal.";
         }
         return null;
     }
@@ -235,7 +244,7 @@ public class ProposalApplicationService {
     public record ProposalApplicationCreateResult(long applicationId, long proposalId) {
     }
 
-    private record GateApplicationTarget(
+    private record ProposalApplicationTarget(
         long proposalId,
         long hostUserId,
         Long bridgeUserId,
@@ -250,6 +259,48 @@ public class ProposalApplicationService {
     }
 
     private record ExistingApplication(long applicationId, String applicationStatus) {
+    }
+
+    private record ProposalContext(String selectSql, String notFoundMessage, String hiddenMessage) {
+        private static ProposalContext gate() {
+            return new ProposalContext(
+                """
+                    SELECT p.id, p.host_user_id, p.bridge_user_id, p.title, p.summary, p.location_name,
+                           p.duration_minutes, p.visibility_scope,
+                           host.nickname AS host_nickname,
+                           bridge.nickname AS bridge_nickname
+                    FROM proposals p
+                    JOIN users host ON host.id = p.host_user_id
+                    LEFT JOIN users bridge ON bridge.id = p.bridge_user_id
+                    WHERE p.id = ?
+                      AND p.deleted_at IS NULL
+                      AND LOWER(p.status) = 'published'
+                      AND p.proposal_type IN ('LOCAL_GUIDE', 'GATE')
+                    """,
+                "Gate proposal not found",
+                "Gate proposal is not visible"
+            );
+        }
+
+        private static ProposalContext okatte() {
+            return new ProposalContext(
+                """
+                    SELECT p.id, p.host_user_id, p.bridge_user_id, p.title, p.summary, p.location_name,
+                           p.duration_minutes, p.visibility_scope,
+                           host.nickname AS host_nickname,
+                           bridge.nickname AS bridge_nickname
+                    FROM proposals p
+                    JOIN users host ON host.id = p.host_user_id
+                    LEFT JOIN users bridge ON bridge.id = p.bridge_user_id
+                    WHERE p.id = ?
+                      AND p.deleted_at IS NULL
+                      AND LOWER(p.status) = 'published'
+                      AND p.proposal_type = 'OKATTE'
+                    """,
+                "Okatte proposal not found",
+                "Okatte proposal is not visible"
+            );
+        }
     }
 
     public static class ProposalApplicationConflictException extends RuntimeException {

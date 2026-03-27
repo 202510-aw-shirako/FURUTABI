@@ -45,6 +45,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedUser("bridge@example.com", "BRIDGE", "Bridge Seed", "Bridge Seed");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
+        seedPilotOkatteProposal();
     }
 
     private void seedUser(String email, String roleName, String name, String nameKana) {
@@ -171,6 +172,65 @@ public class DevUserSeed implements ApplicationRunner {
 
         seedProposalTag(proposalId, "dev-seed", 0);
         seedProposalTag(proposalId, "gate-pilot", 1);
+    }
+
+    private void seedPilotOkatteProposal() {
+        // Development-only pilot case for manual verification.
+        // Remove this once real okatte proposal creation or richer dev fixtures are ready.
+        long hostUserId = requireUserIdByEmail("local@example.com");
+        long bridgeUserId = requireUserIdByEmail("bridge@example.com");
+        String title = "【dev確認用】ちいきのおかって 候補確認";
+
+        List<Long> existingProposalIds = jdbcTemplate.query(
+            "SELECT id FROM proposals WHERE title = ? AND host_user_id = ? AND deleted_at IS NULL",
+            (rs, rowNum) -> rs.getLong("id"),
+            title,
+            hostUserId
+        );
+
+        long proposalId;
+        if (existingProposalIds.isEmpty()) {
+            Timestamp now = Timestamp.from(Instant.now());
+            jdbcTemplate.update(
+                """
+                    INSERT INTO proposals (
+                        proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                        duration_minutes, location_name, status, visibility_scope,
+                        cover_image_path, created_at, updated_at, deleted_at
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                "OKATTE",
+                bridgeUserId,
+                hostUserId,
+                title,
+                "dev確認用のおかって候補パイロットケースです。",
+                "user@example.com で候補を見て選び、申請導線まで手動確認するための dev 専用データです。",
+                120,
+                "開発用おかって会場",
+                "published",
+                "public",
+                null,
+                now,
+                now,
+                null
+            );
+
+            proposalId = Objects.requireNonNull(
+                jdbcTemplate.queryForObject(
+                    "SELECT id FROM proposals WHERE title = ? AND host_user_id = ? AND deleted_at IS NULL",
+                    Long.class,
+                    title,
+                    hostUserId
+                ),
+                "Pilot okatte proposal ID was not found after insert."
+            );
+        } else {
+            proposalId = existingProposalIds.getFirst();
+        }
+
+        seedProposalTag(proposalId, "dev-seed", 0);
+        seedProposalTag(proposalId, "okatte-pilot", 1);
     }
 
     private void seedProposalTag(long proposalId, String tagName, int sortOrder) {
