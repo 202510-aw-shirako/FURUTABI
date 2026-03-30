@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>admin 詳細管理ページ</title>
+    <title>管理者向けユーザー詳細</title>
 </head>
 <body>
 <main>
@@ -59,7 +59,7 @@
     </section>
 
     <section>
-        <h2>2. role policy 参照</h2>
+        <h2>2. 役割ごとの基本設定</h2>
         <dl>
             <dt>役割</dt>
             <dd>
@@ -80,9 +80,9 @@
             <dd th:text="${pageData.rolePolicy.individualHostPermissionGrantAllowed ? '可' : '不可'}">false</dd>
             <dt>入り口担当権限の個別付与可</dt>
             <dd th:text="${pageData.rolePolicy.individualPartnerPermissionGrantAllowed ? '可' : '不可'}">false</dd>
-            <dt>休止に admin 承認が要るか</dt>
+            <dt>休止に管理者承認が必要か</dt>
             <dd th:text="${pageData.rolePolicy.adminApprovalRequiredForPause ? '必要' : '不要'}">false</dd>
-            <dt>取り下げに admin 承認が要るか</dt>
+            <dt>取り下げに管理者承認が必要か</dt>
             <dd th:text="${pageData.rolePolicy.adminApprovalRequiredForWithdrawal ? '必要' : '不要'}">false</dd>
             <dt>役割復帰に管理者承認が必要か</dt>
             <dd th:text="${pageData.rolePolicy.adminApprovalRequiredForRoleRestore ? '必要' : '不要'}">false</dd>
@@ -288,7 +288,7 @@
             </li>
             <li th:if="${pageData.proposalApplication.latestApplicationReference != null}"
                 th:text="${'最新の申請参照: ' + pageData.proposalApplication.latestApplicationReference}">
-                latest application reference
+                最新の申請参照
             </li>
         </ul>
     </section>
@@ -387,7 +387,7 @@
             <li><a th:href="${pageData.relatedLinks.supportAdminUrl}">連絡・通報一覧</a></li>
             <li th:if="${pageData.relatedLinks.supportDetailUrl != null}">
                 <a th:href="${pageData.relatedLinks.supportDetailUrl}"
-                   th:text="${'対象ユーザーの最新の連絡・通報詳細を見る（' + pageData.relatedLinks.supportRequestCount + '件）'}">latest support detail</a>
+                   th:text="${'対象ユーザーの最新の連絡・通報詳細を見る（' + pageData.relatedLinks.supportRequestCount + '件）'}">対象ユーザーの最新の連絡・通報詳細</a>
             </li>
             <li><a th:href="${pageData.relatedLinks.historyUrl}">関わりの記録</a></li>
             <li><a th:href="${pageData.relatedLinks.notificationsUrl}">通知一覧</a></li>
