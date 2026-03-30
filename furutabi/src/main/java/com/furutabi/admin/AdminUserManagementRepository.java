@@ -134,6 +134,7 @@ public class AdminUserManagementRepository {
             (rs, rowNum) -> new RolePolicyRow(
                 rs.getString("region_id"),
                 rs.getString("role_name"),
+                true,
                 rs.getBoolean("role_assignable"),
                 rs.getBoolean("default_host_permission"),
                 rs.getBoolean("default_partner_permission"),
@@ -154,6 +155,7 @@ public class AdminUserManagementRepository {
         return new RolePolicyRow(
             regionId,
             normalizedRole,
+            false,
             true,
             AdminRoleCatalog.defaultHostPermission(normalizedRole),
             AdminRoleCatalog.defaultPartnerPermission(normalizedRole),
@@ -627,11 +629,66 @@ public class AdminUserManagementRepository {
             Integer.class,
             targetUserId
         );
+        Long latestHostProposalId = jdbcTemplate.query(
+            """
+                SELECT id
+                FROM proposals
+                WHERE host_user_id = ?
+                  AND deleted_at IS NULL
+                  AND proposal_type <> 'OKATTE'
+                ORDER BY created_at DESC, id DESC
+                LIMIT 1
+                """,
+            rs -> rs.next() ? rs.getLong("id") : null,
+            targetUserId
+        );
+        Long latestBridgeProposalId = jdbcTemplate.query(
+            """
+                SELECT id
+                FROM proposals
+                WHERE bridge_user_id = ?
+                  AND deleted_at IS NULL
+                  AND proposal_type <> 'OKATTE'
+                ORDER BY created_at DESC, id DESC
+                LIMIT 1
+                """,
+            rs -> rs.next() ? rs.getLong("id") : null,
+            targetUserId
+        );
+        Long latestOkatteCandidateId = jdbcTemplate.query(
+            """
+                SELECT id
+                FROM proposals
+                WHERE bridge_user_id = ?
+                  AND deleted_at IS NULL
+                  AND proposal_type = 'OKATTE'
+                ORDER BY created_at DESC, id DESC
+                LIMIT 1
+                """,
+            rs -> rs.next() ? rs.getLong("id") : null,
+            targetUserId
+        );
+        Long latestApplicationId = jdbcTemplate.query(
+            """
+                SELECT id
+                FROM proposal_applications
+                WHERE applicant_user_id = ?
+                  AND deleted_at IS NULL
+                ORDER BY applied_at DESC, id DESC
+                LIMIT 1
+                """,
+            rs -> rs.next() ? rs.getLong("id") : null,
+            targetUserId
+        );
         return new ProposalApplicationSummaryRow(
             hostProposalCount == null ? 0 : hostProposalCount,
             bridgeProposalCount == null ? 0 : bridgeProposalCount,
             okatteCandidateCount == null ? 0 : okatteCandidateCount,
-            applicationCount == null ? 0 : applicationCount
+            applicationCount == null ? 0 : applicationCount,
+            latestHostProposalId,
+            latestBridgeProposalId,
+            latestOkatteCandidateId,
+            latestApplicationId
         );
     }
 
@@ -689,11 +746,11 @@ public class AdminUserManagementRepository {
     public record UserRow(long userId, String email, String nickname, String name) {}
     public record TargetUserRow(long userId, String email, String nickname, String name, String region, String interestRegion, String ageRange) {}
     public record CurrentRoleStateRow(long userId, String roleName, String roleState, String regionId, String reason, Timestamp updatedAt) {}
-    public record RolePolicyRow(String regionId, String roleName, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
+    public record RolePolicyRow(String regionId, String roleName, boolean configured, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
     public record PermissionRuleRow(long permissionRuleId, String regionId, long targetUserId, String permissionName, String ruleState, Date effectiveFrom, Date effectiveTo, Timestamp grantedAt, Long grantedByUserId, String grantReason, Timestamp suspendedAt, Long suspendedByUserId, String suspensionReason, Timestamp resumedAt, Long resumedByUserId, String resumeReason, Timestamp revokedAt, Long revokedByUserId, String revokeReason) {}
     public record PartnerAssignmentRow(long assignmentId, String regionId, long targetUserId, long partnerUserId, String assignmentStatus, Date effectiveFrom, Date effectiveTo, Timestamp assignedAt, Timestamp endedAt, String partnerLabel, String assignedByLabel) {}
     public record PermissionChangeLogRow(long permissionChangeLogId, String regionId, String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, Timestamp changedAt, String changedByLabel) {}
     public record AccessLogRow(long accessLogId, String viewerContext, String targetType, long targetId, String viewReason, Timestamp viewedAt, String viewerLabel) {}
-    public record ProposalApplicationSummaryRow(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount) {}
+    public record ProposalApplicationSummaryRow(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, Long latestHostProposalId, Long latestBridgeProposalId, Long latestOkatteCandidateId, Long latestApplicationId) {}
     public record RegionSettingSummaryRow(String regionId, int settingCount) {}
 }

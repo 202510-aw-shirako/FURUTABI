@@ -38,6 +38,11 @@ public class AdminUserManagementService {
         this.objectMapper = objectMapper;
     }
 
+    public void requireAdminViewer(String viewerEmail) {
+        UserRow viewer = repository.requireUserByEmail(viewerEmail);
+        requireAdmin(viewer.userId());
+    }
+
     @Transactional
     public AdminUserDetailPageData loadDetailPage(String viewerEmail, long targetUserId) {
         UserRow viewer = repository.requireUserByEmail(viewerEmail);
@@ -48,6 +53,7 @@ public class AdminUserManagementService {
         CurrentRoleStateRow currentRoleState = repository.findCurrentRoleState(targetUserId, regionId);
         String effectiveRegionId = normalizeRegionId(currentRoleState.regionId(), regionId);
         RolePolicyRow rolePolicy = repository.findRolePolicy(effectiveRegionId, currentRoleState.roleName());
+        String legacyAuthRoleName = AdminRoleCatalog.canonicalRoleName(repository.findHighestLegacyRoleName(targetUserId));
         List<PermissionItem> permissions = List.of(
             buildPermissionItem(targetUserId, rolePolicy, effectiveRegionId, currentRoleState.roleName(), AdminRoleCatalog.HOST_PERMISSION),
             buildPermissionItem(targetUserId, rolePolicy, effectiveRegionId, currentRoleState.roleName(), AdminRoleCatalog.PARTNER_PERMISSION)
@@ -67,15 +73,45 @@ public class AdminUserManagementService {
         RegionSettingSummaryRow regionSettingSummary = repository.loadRegionSettingSummary(effectiveRegionId);
 
         return new AdminUserDetailPageData(
-            new BasicInfoSection(target.userId(), displayName(target.nickname(), target.name(), target.email()), target.email(), target.ageRange(), currentRoleState.roleName(), AdminRoleCatalog.displayRoleLabel(currentRoleState.roleName()), currentRoleState.roleState(), effectiveRegionId),
-            new RolePolicySection(rolePolicy.regionId(), rolePolicy.roleName(), rolePolicy.roleAssignable(), rolePolicy.defaultHostPermission(), rolePolicy.defaultPartnerPermission(), rolePolicy.individualHostPermissionGrantAllowed(), rolePolicy.individualPartnerPermissionGrantAllowed(), rolePolicy.adminApprovalRequiredForPause(), rolePolicy.adminApprovalRequiredForWithdrawal(), rolePolicy.adminApprovalRequiredForRoleRestore()),
+            new BasicInfoSection(
+                target.userId(),
+                displayName(target.nickname(), target.name(), target.email()),
+                target.email(),
+                target.ageRange(),
+                currentRoleState.roleName(),
+                AdminRoleCatalog.displayRoleLabel(currentRoleState.roleName()),
+                currentRoleState.roleState(),
+                effectiveRegionId,
+                legacyAuthRoleName,
+                !legacyAuthRoleName.equals(currentRoleState.roleName())
+            ),
+            new RolePolicySection(rolePolicy.regionId(), rolePolicy.roleName(), rolePolicy.configured(), rolePolicy.roleAssignable(), rolePolicy.defaultHostPermission(), rolePolicy.defaultPartnerPermission(), rolePolicy.individualHostPermissionGrantAllowed(), rolePolicy.individualPartnerPermissionGrantAllowed(), rolePolicy.adminApprovalRequiredForPause(), rolePolicy.adminApprovalRequiredForWithdrawal(), rolePolicy.adminApprovalRequiredForRoleRestore()),
             permissions,
             new RoleStateSection(currentRoleState.roleName(), currentRoleState.roleState(), formatTimestamp(currentRoleState.updatedAt()), currentRoleState.reason()),
             assignments,
-            new ProposalApplicationSection(proposalSummary.hostProposalCount(), proposalSummary.bridgeProposalCount(), proposalSummary.okatteCandidateCount(), proposalSummary.applicationCount()),
+            new ProposalApplicationSection(
+                proposalSummary.hostProposalCount(),
+                proposalSummary.bridgeProposalCount(),
+                proposalSummary.okatteCandidateCount(),
+                proposalSummary.applicationCount(),
+                detailUrl("/app/gate/", proposalSummary.latestHostProposalId()),
+                detailUrl("/app/gate/", proposalSummary.latestBridgeProposalId()),
+                detailUrl("/app/okatte/", proposalSummary.latestOkatteCandidateId()),
+                proposalSummary.latestApplicationId() == null ? null : "application#" + proposalSummary.latestApplicationId()
+            ),
             permissionChangeLogs,
             accessLogs,
-            new RelatedLinksSection("/app/account", "/app/profile", "/app/support/admin", "/app/history", "/app/notifications"),
+            new RelatedLinksSection(
+                null,
+                null,
+                null,
+                "/app/support/admin",
+                "/app/history",
+                "/app/notifications",
+                "/app/admin/users/" + targetUserId + "/support-notes",
+                detailUrl("/app/gate/", proposalSummary.latestHostProposalId()),
+                detailUrl("/app/okatte/", proposalSummary.latestOkatteCandidateId())
+            ),
             new RegionSettingsSection(regionSettingSummary.regionId(), regionSettingSummary.settingCount(), "/app/admin/regions/" + regionSettingSummary.regionId())
         );
     }
@@ -208,7 +244,9 @@ public class AdminUserManagementService {
             default -> defaultGranted;
         };
         boolean manageable = isPermissionManageable(rolePolicy, roleName, permissionName);
-        return new PermissionItem(permissionName, active, defaultGranted, ruleState, manageable, regionId, formatDate(rule == null ? null : rule.effectiveFrom()), formatDate(rule == null ? null : rule.effectiveTo()));
+        String effectiveState = ruleState == null ? (defaultGranted ? "active" : "inactive") : ruleState;
+        String source = ruleState == null ? "role_policy_default" : "permission_rule";
+        return new PermissionItem(permissionName, active, defaultGranted, ruleState, effectiveState, source, manageable, regionId, formatDate(rule == null ? null : rule.effectiveFrom()), formatDate(rule == null ? null : rule.effectiveTo()));
     }
 
     private boolean isPermissionManageable(RolePolicyRow rolePolicy, String roleName, String permissionName) {
@@ -340,16 +378,23 @@ public class AdminUserManagementService {
         return email == null ? "unknown" : email;
     }
 
+    private String detailUrl(String prefix, Long id) {
+        if (id == null) {
+            return null;
+        }
+        return prefix + id;
+    }
+
     public record AdminUserDetailPageData(BasicInfoSection basicInfo, RolePolicySection rolePolicy, List<PermissionItem> permissions, RoleStateSection roleState, List<AssignmentItem> assignments, ProposalApplicationSection proposalApplication, List<PermissionChangeLogItem> permissionChangeLogs, List<AccessLogItem> accessLogs, RelatedLinksSection relatedLinks, RegionSettingsSection regionSettings) {}
-    public record BasicInfoSection(long targetUserId, String displayName, String email, String ageRange, String roleName, String roleLabel, String roleState, String regionId) {}
-    public record RolePolicySection(String regionId, String roleName, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
-    public record PermissionItem(String permissionName, boolean active, boolean defaultGranted, String ruleState, boolean manageable, String regionId, String effectiveFrom, String effectiveTo) {}
+    public record BasicInfoSection(long targetUserId, String displayName, String email, String ageRange, String roleName, String roleLabel, String roleState, String regionId, String legacyAuthRoleName, boolean roleSourceDiffers) {}
+    public record RolePolicySection(String regionId, String roleName, boolean configured, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
+    public record PermissionItem(String permissionName, boolean active, boolean defaultGranted, String ruleState, String effectiveState, String source, boolean manageable, String regionId, String effectiveFrom, String effectiveTo) {}
     public record RoleStateSection(String roleName, String roleState, String updatedAt, String reason) {}
     public record AssignmentItem(long assignmentId, String regionId, long partnerUserId, String partnerLabel, String assignmentStatus, String effectiveFrom, String effectiveTo, String assignedAt, String endedAt) {}
-    public record ProposalApplicationSection(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount) {}
+    public record ProposalApplicationSection(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, String latestHostProposalUrl, String latestBridgeProposalUrl, String latestOkatteCandidateUrl, String latestApplicationReference) {}
     public record PermissionChangeLogItem(String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, String changedByLabel, String changedAt) {}
     public record AccessLogItem(String viewerContext, String targetType, long targetId, String viewReason, String viewerLabel, String viewedAt) {}
-    public record RelatedLinksSection(String accountUrl, String profileUrl, String supportAdminUrl, String historyUrl, String notificationsUrl) {}
+    public record RelatedLinksSection(String accountUrl, String profileUrl, String privacySettingsUrl, String supportAdminUrl, String historyUrl, String notificationsUrl, String supportNotesUrl, String proposalUrl, String okatteUrl) {}
     public record RegionSettingsSection(String regionId, int settingCount, String settingsUrl) {}
 
     public static class AdminUserManagementAccessDeniedException extends RuntimeException {

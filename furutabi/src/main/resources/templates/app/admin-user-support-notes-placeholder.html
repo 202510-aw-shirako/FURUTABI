@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Support Notes Placeholder</title>
+</head>
+<body>
+<main>
+    <!--
+      Java handoff note:
+      This placeholder exists because support notes / handoff notes are a separate user-linked layer.
+      They must not be absorbed into support or privacy-settings.
+      This route is only a forward connection point from the admin detail page in C.
+      Full support-note UI and permission rules belong to later steps.
+    -->
+    <h1>Support Notes Placeholder</h1>
+    <p th:text="${'Support note management for ' + pageData.basicInfo.displayName + ' is intentionally deferred to a later step.'}">
+        Support notes are not implemented in this step.
+    </p>
+    <a th:href="@{|/app/admin/users/${pageData.basicInfo.targetUserId}|}">Back to admin user detail</a>
+</main>
+</body>
+</html>

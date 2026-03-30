@@ -36,6 +36,31 @@ public class AdminUserManagementController {
         }
     }
 
+    @GetMapping("/users/{id}/support-notes")
+    public String adminSupportNotesPlaceholder(@PathVariable long id, Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", adminUserManagementService.loadDetailPage(authentication.getName(), id));
+            return "app/admin-user-support-notes-placeholder";
+        } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin user detail not found", ex);
+        }
+    }
+
+    @GetMapping("/regions/{regionId}")
+    public String adminRegionSettingsPlaceholder(@PathVariable String regionId, Authentication authentication, Model model) {
+        try {
+            adminUserManagementService.requireAdminViewer(authentication.getName());
+            model.addAttribute("regionId", regionId);
+            return "app/admin-region-settings-placeholder";
+        } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin region settings not found", ex);
+        }
+    }
+
     @PostMapping("/users/{id}/permissions/{permissionName}/grant")
     public String grantPermission(@PathVariable long id, @PathVariable String permissionName, Authentication authentication, @ModelAttribute("permissionRuleForm") AdminPermissionRuleOperationForm permissionRuleForm) {
         return change("granted", id, () -> adminUserManagementService.grantPermission(authentication.getName(), id, permissionName, permissionRuleForm));
@@ -103,4 +128,5 @@ public class AdminUserManagementController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin user detail not found", ex);
         }
     }
+
 }

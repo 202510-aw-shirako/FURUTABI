@@ -420,6 +420,20 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated admin support notes placeholder route is available for admin")
+    void authenticatedAdminSupportNotesPlaceholderRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/admin/users/1/support-notes").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated admin region settings placeholder route is available for admin")
+    void authenticatedAdminRegionSettingsPlaceholderRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/admin/regions/Tokyo").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Authenticated account route is available after passing security")
     void authenticatedAccountRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/account").with(user("user@example.com").roles("USER")))

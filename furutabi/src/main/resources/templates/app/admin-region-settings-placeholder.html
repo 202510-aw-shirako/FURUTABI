@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Region Settings Placeholder</title>
+</head>
+<body>
+<main>
+    <!--
+      Java handoff note:
+      This placeholder exists so the admin detail page can point toward future region-scoped settings.
+      The settings UI itself is intentionally out of scope in C.
+      Keep the distinction that admin is the actor and region is the scope.
+    -->
+    <h1>Region-Scoped Settings Placeholder</h1>
+    <p th:text="${'Region settings UI for ' + regionId + ' is intentionally deferred to a later step.'}">
+        Region settings placeholder.
+    </p>
+</main>
+</body>
+</html>

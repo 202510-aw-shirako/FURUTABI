@@ -2,10 +2,12 @@ package com.furutabi.config;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsString;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -123,7 +125,12 @@ class AdminUserManagementFlowTests {
     @DisplayName("admin can open admin user detail and deep access is logged")
     void adminCanOpenDetailAndAccessLogIsRecorded() throws Exception {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Admin User Detail")))
+            .andExpect(content().string(containsString("Legacy auth role")))
+            .andExpect(content().string(containsString("Catalog fallback default")))
+            .andExpect(content().string(containsString("Support notes placeholder")))
+            .andExpect(content().string(containsString("Region-Scoped Settings")));
 
         Integer count = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM access_logs WHERE viewer_context = 'admin' AND target_type = 'admin_user_detail' AND target_id = ?",
@@ -220,6 +227,18 @@ class AdminUserManagementFlowTests {
         );
         org.assertj.core.api.Assertions.assertThat(assignmentStatus).isEqualTo("active");
         org.assertj.core.api.Assertions.assertThat(logCount).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("admin can open support notes and region settings placeholders from admin detail routes")
+    void adminCanOpenPlaceholders() throws Exception {
+        mockMvc.perform(get("/app/admin/users/1/support-notes").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Support Notes Placeholder")));
+
+        mockMvc.perform(get("/app/admin/regions/Tokyo").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("Region-Scoped Settings Placeholder")));
     }
 
     private void insertUser(long id, String email, String nickname, String name, Timestamp now) {
