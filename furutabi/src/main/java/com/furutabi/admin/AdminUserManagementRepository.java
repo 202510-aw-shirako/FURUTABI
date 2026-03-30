@@ -540,6 +540,7 @@ public class AdminUserManagementRepository {
             """
                 SELECT pcl.id, pcl.region_id, pcl.changed_object_type, pcl.changed_object_name,
                        pcl.action_type, pcl.before_value, pcl.after_value, pcl.reason, pcl.changed_at,
+                       pcl.changed_by_user_id,
                        actor.nickname AS actor_nickname, actor.name AS actor_name, actor.email AS actor_email
                 FROM permission_change_logs pcl
                 LEFT JOIN users actor ON actor.id = pcl.changed_by_user_id
@@ -556,6 +557,7 @@ public class AdminUserManagementRepository {
                 rs.getString("after_value"),
                 rs.getString("reason"),
                 rs.getTimestamp("changed_at"),
+                rs.getLong("changed_by_user_id"),
                 displayName(rs.getString("actor_nickname"), rs.getString("actor_name"), rs.getString("actor_email"))
             ),
             targetUserId
@@ -587,7 +589,7 @@ public class AdminUserManagementRepository {
     public List<AccessLogRow> listAccessLogs(long targetUserId) {
         return jdbcTemplate.query(
             """
-                SELECT al.id, al.viewer_context, al.target_type, al.target_id, al.view_reason, al.viewed_at,
+                SELECT al.id, al.viewer_user_id, al.viewer_context, al.target_type, al.target_id, al.view_reason, al.viewed_at,
                        viewer.nickname AS viewer_nickname, viewer.name AS viewer_name, viewer.email AS viewer_email
                 FROM access_logs al
                 LEFT JOIN users viewer ON viewer.id = al.viewer_user_id
@@ -597,6 +599,7 @@ public class AdminUserManagementRepository {
                 """,
             (rs, rowNum) -> new AccessLogRow(
                 rs.getLong("id"),
+                rs.getLong("viewer_user_id"),
                 rs.getString("viewer_context"),
                 rs.getString("target_type"),
                 rs.getLong("target_id"),
@@ -773,8 +776,8 @@ public class AdminUserManagementRepository {
     public record PermissionRuleRow(long permissionRuleId, String regionId, long targetUserId, String permissionName, String ruleState, Date effectiveFrom, Date effectiveTo, Timestamp grantedAt, Long grantedByUserId, String grantReason, Timestamp suspendedAt, Long suspendedByUserId, String suspensionReason, Timestamp resumedAt, Long resumedByUserId, String resumeReason, Timestamp revokedAt, Long revokedByUserId, String revokeReason) {}
     public record PartnerAssignmentRow(long assignmentId, String regionId, long targetUserId, long partnerUserId, String assignmentStatus, Date effectiveFrom, Date effectiveTo, Timestamp assignedAt, Timestamp endedAt, String partnerLabel, String assignedByLabel) {}
     public record PartnerCandidateRow(long userId, String displayName, String region, String interestRegion) {}
-    public record PermissionChangeLogRow(long permissionChangeLogId, String regionId, String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, Timestamp changedAt, String changedByLabel) {}
-    public record AccessLogRow(long accessLogId, String viewerContext, String targetType, long targetId, String viewReason, Timestamp viewedAt, String viewerLabel) {}
+    public record PermissionChangeLogRow(long permissionChangeLogId, String regionId, String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, Timestamp changedAt, long changedByUserId, String changedByLabel) {}
+    public record AccessLogRow(long accessLogId, long viewerUserId, String viewerContext, String targetType, long targetId, String viewReason, Timestamp viewedAt, String viewerLabel) {}
     public record ProposalApplicationSummaryRow(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, Long latestHostProposalId, Long latestBridgeProposalId, Long latestOkatteCandidateId, Long latestApplicationId) {}
     public record RegionSettingSummaryRow(String regionId, int settingCount) {}
 }

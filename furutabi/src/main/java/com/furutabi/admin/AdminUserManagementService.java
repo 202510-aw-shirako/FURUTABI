@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.furutabi.admin.AdminUserManagementRepository.AccessLogRow;
 import com.furutabi.admin.AdminUserManagementRepository.CurrentRoleStateRow;
@@ -347,11 +349,27 @@ public class AdminUserManagementService {
     }
 
     private PermissionChangeLogItem toPermissionChangeLogItem(PermissionChangeLogRow row) {
-        return new PermissionChangeLogItem(row.changedObjectType(), row.changedObjectName(), row.actionType(), row.beforeValue(), row.afterValue(), row.reason(), row.changedByLabel(), formatTimestamp(row.changedAt()));
+        JsonDisplay before = toJsonDisplay(row.beforeValue());
+        JsonDisplay after = toJsonDisplay(row.afterValue());
+        return new PermissionChangeLogItem(
+            row.changedObjectType(),
+            row.changedObjectName(),
+            row.actionType(),
+            row.beforeValue(),
+            before.summary(),
+            before.entries(),
+            row.afterValue(),
+            after.summary(),
+            after.entries(),
+            row.reason(),
+            row.changedByUserId(),
+            row.changedByLabel(),
+            formatTimestamp(row.changedAt())
+        );
     }
 
     private AccessLogItem toAccessLogItem(AccessLogRow row) {
-        return new AccessLogItem(row.viewerContext(), row.targetType(), row.targetId(), row.viewReason(), row.viewerLabel(), formatTimestamp(row.viewedAt()));
+        return new AccessLogItem(row.viewerUserId(), row.viewerContext(), row.targetType(), row.targetId(), row.viewReason(), row.viewerLabel(), formatTimestamp(row.viewedAt()));
     }
 
     private AssignmentItem toAssignmentItem(PartnerAssignmentRow row) {
@@ -409,6 +427,43 @@ public class AdminUserManagementService {
         }
     }
 
+    private JsonDisplay toJsonDisplay(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return new JsonDisplay("-", List.of());
+        }
+        try {
+            Map<String, Object> map = objectMapper.readValue(raw, new TypeReference<LinkedHashMap<String, Object>>() {});
+            List<JsonField> entries = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                entries.add(new JsonField(entry.getKey(), stringifyJsonValue(entry.getValue())));
+            }
+            String summary = entries.isEmpty()
+                ? "-"
+                : entries.stream()
+                    .limit(3)
+                    .map(field -> field.name() + "=" + field.value())
+                    .reduce((left, right) -> left + ", " + right)
+                    .orElse("-");
+            return new JsonDisplay(summary, entries);
+        } catch (JsonProcessingException ex) {
+            return new JsonDisplay(raw, List.of(new JsonField("raw", raw)));
+        }
+    }
+
+    private String stringifyJsonValue(Object value) {
+        if (value == null) {
+            return "null";
+        }
+        if (value instanceof List<?> || value instanceof Map<?, ?>) {
+            try {
+                return objectMapper.writeValueAsString(value);
+            } catch (JsonProcessingException ex) {
+                return String.valueOf(value);
+            }
+        }
+        return String.valueOf(value);
+    }
+
     private String formatTimestamp(Timestamp timestamp) {
         return timestamp == null ? null : timestamp.toLocalDateTime().format(PAGE_TIME);
     }
@@ -442,10 +497,12 @@ public class AdminUserManagementService {
     public record AssignmentItem(long assignmentId, String regionId, long partnerUserId, String partnerLabel, String assignmentStatus, String effectiveFrom, String effectiveTo, String assignedAt, String endedAt) {}
     public record PartnerCandidateItem(long partnerUserId, String partnerLabel, String roleName, boolean partnerPermissionActive) {}
     public record ProposalApplicationSection(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, String latestHostProposalUrl, String latestBridgeProposalUrl, String latestOkatteCandidateUrl, String latestApplicationReference) {}
-    public record PermissionChangeLogItem(String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, String changedByLabel, String changedAt) {}
-    public record AccessLogItem(String viewerContext, String targetType, long targetId, String viewReason, String viewerLabel, String viewedAt) {}
+    public record PermissionChangeLogItem(String changedObjectType, String changedObjectName, String actionType, String beforeRaw, String beforeSummary, List<JsonField> beforeEntries, String afterRaw, String afterSummary, List<JsonField> afterEntries, String reason, long changedByUserId, String changedByLabel, String changedAt) {}
+    public record AccessLogItem(long viewerUserId, String viewerContext, String targetType, long targetId, String viewReason, String viewerLabel, String viewedAt) {}
     public record RelatedLinksSection(String accountUrl, String profileUrl, String privacySettingsUrl, String supportAdminUrl, String historyUrl, String notificationsUrl, String supportNotesUrl, String proposalUrl, String okatteUrl) {}
     public record RegionSettingsSection(String regionId, int settingCount, String settingsUrl) {}
+    public record JsonField(String name, String value) {}
+    public record JsonDisplay(String summary, List<JsonField> entries) {}
 
     public static class AdminUserManagementAccessDeniedException extends RuntimeException {
         public AdminUserManagementAccessDeniedException(String message) { super(message); }

@@ -10,11 +10,10 @@
       Java handoff note:
       This placeholder exists because support notes / handoff notes are a separate user-linked layer.
       They must not be absorbed into support or privacy-settings.
-      This route is only a forward connection point from the admin detail page in C.
-      Full support-note UI and permission rules belong to later steps.
+      This route is only a forward connection point from the admin detail page.
     -->
     <h1>支援メモ placeholder</h1>
-    <p th:text="${pageData.basicInfo.displayName + ' の支援メモ管理は、後続工程で実装予定です。'}">
+    <p th:text="${pageData.basicInfo.displayName + ' の支援メモ導線です。現段階では placeholder です。'}">
         支援メモはこの段階では未実装です。
     </p>
     <a th:href="@{|/app/admin/users/${pageData.basicInfo.targetUserId}|}">admin 詳細管理ページへ戻る</a>

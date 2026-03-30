@@ -8,17 +8,17 @@
 <main>
     <!--
       Java handoff note:
-      This template is the staged admin user detail page.
+      This is the staged admin user detail page.
       Keep user_roles (legacy auth role) and user_role_states (management-side current role) separated.
-      Permission Change Log currently covers role / permission / partner_assignment changes.
-      Support notes and region settings remain separate placeholder routes for later steps.
+      permission_change_log currently covers role / permission / partner_assignment changes.
+      Support notes and region settings remain separate routes for later steps.
     -->
     <header>
         <h1>admin 詳細管理ページ</h1>
-        <p>このページは対象ユーザーの管理状態を確認するための基本表示です。操作を広げすぎず、既存導線と衝突しない範囲で段階的に整えています。</p>
+        <p>対象ユーザーの管理状態を確認するための基本表示です。操作系は段階的に追加しており、ここでは責務ごとのセクションを分けて表示しています。</p>
     </header>
 
-    <section th:if="${param.granted != null or param.suspended != null or param.resumed != null or param.revoked != null or param.blocked != null or param.assignmentCreated != null or param.assignmentPaused != null or param.assignmentResumed != null or param.assignmentEnded != null}">
+    <section th:if="${param.granted != null or param.suspended != null or param.resumed != null or param.revoked != null or param.blocked != null or param.assignmentCreated != null or param.assignmentPaused != null or param.assignmentResumed != null or param.assignmentEnded != null or param.roleSuspended != null or param.roleRestored != null or param.roleRevoked != null}">
         <h2>状態</h2>
         <p th:if="${param.granted != null}">permission を付与しました。</p>
         <p th:if="${param.suspended != null}">permission を停止しました。</p>
@@ -28,7 +28,10 @@
         <p th:if="${param.assignmentPaused != null}">partner assignment を一時休止しました。</p>
         <p th:if="${param.assignmentResumed != null}">partner assignment を再開しました。</p>
         <p th:if="${param.assignmentEnded != null}">partner assignment を終了しました。</p>
-        <p th:if="${param.blocked != null}">現在のルールまたは入力内容により、この操作は実行できませんでした。</p>
+        <p th:if="${param.roleSuspended != null}">role 状態を停止しました。</p>
+        <p th:if="${param.roleRestored != null}">role 状態を復帰しました。</p>
+        <p th:if="${param.roleRevoked != null}">role 状態を取り下げました。</p>
+        <p th:if="${param.blocked != null}">現在のルールまたは入力内容により、この操作はこの段階では実行できませんでした。</p>
     </section>
 
     <section>
@@ -46,12 +49,10 @@
             <dd th:text="${pageData.basicInfo.roleState}">role state</dd>
             <dt>既存認証用 role</dt>
             <dd th:text="${pageData.basicInfo.legacyAuthRoleName}">legacy auth role</dd>
-            <dt>地域スコープ</dt>
+            <dt>所属スコープ</dt>
             <dd th:text="${pageData.basicInfo.regionId}">region</dd>
         </dl>
-        <p th:if="${pageData.basicInfo.roleSourceDiffers}">
-            既存認証用 role と、管理側の現在 role は分けて表示しています。
-        </p>
+        <p th:if="${pageData.basicInfo.roleSourceDiffers}">既存認証用 role と、管理上の現在 role は分けて表示しています。</p>
     </section>
 
     <section>
@@ -61,8 +62,8 @@
             <dd th:text="${pageData.rolePolicy.roleName}">role</dd>
             <dt>地域</dt>
             <dd th:text="${pageData.rolePolicy.regionId}">region</dd>
-            <dt>policy source</dt>
-            <dd th:text="${pageData.rolePolicy.configured ? 'DB configured policy' : 'catalog fallback default'}">policy source</dd>
+            <dt>Policy source</dt>
+            <dd th:text="${pageData.rolePolicy.configured ? 'DB configured policy' : 'Catalog fallback default'}">policy source</dd>
             <dt>付与対象にできるか</dt>
             <dd th:text="${pageData.rolePolicy.roleAssignable}">false</dd>
             <dt>default host_permission</dt>
@@ -115,18 +116,16 @@
             </tr>
             </tbody>
         </table>
-        <p>この表示は permission の結果であり、permission_rule による個人例外を別で読めるようにしています。</p>
+        <p>ここは permission の状態です。partner_assignment の有無とは分けて読めるようにしています。</p>
     </section>
 
     <section>
         <h2>permission 個別操作</h2>
-        <p>role policy の既定と、permission_rule の個人例外を分けて読めるようにしています。ここで扱うのは assignment ではありません。</p>
+        <p>role policy の既定と、permission_rule の個人例外を分けて扱うための操作です。assignment 操作とは混ぜません。</p>
         <div th:each="permission : ${pageData.permissions}">
             <h3 th:text="${permission.permissionName}">permission name</h3>
             <p th:text="${'現在状態: ' + permission.effectiveState + ' / source: ' + permission.source}">current state</p>
-            <p th:if="${!permission.manageable}">
-                この permission は、role policy または role 既定で管理されるため、この段階では個別操作できません。
-            </p>
+            <p th:if="${!permission.manageable}">この permission は role policy または role 既定で管理されるため、この段階では個別操作できません。</p>
             <div th:if="${permission.manageable}">
                 <form th:action="@{|/app/admin/users/${pageData.basicInfo.targetUserId}/permissions/${permission.permissionName}/grant|}" method="post">
                     <input type="hidden" name="regionId" th:value="${pageData.basicInfo.regionId}">
@@ -290,27 +289,51 @@
 
     <section>
         <h2>6. 権限変更ログ</h2>
-        <p>このログは現在、role / permission / partner assignment の変更を含みます。</p>
+        <p>このログは role / permission / partner assignment の変更証跡をまとめて確認するためのものです。</p>
         <table>
             <thead>
             <tr>
-                <th>対象</th>
+                <th>対象種別</th>
+                <th>対象名</th>
                 <th>操作</th>
                 <th>変更者</th>
                 <th>理由</th>
                 <th>変更日時</th>
+                <th>差分要約</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(pageData.permissionChangeLogs)}">
-                <td colspan="5">権限変更ログはまだありません。</td>
+                <td colspan="7">権限変更ログはまだありません。</td>
             </tr>
             <tr th:each="item : ${pageData.permissionChangeLogs}">
-                <td th:text="${item.changedObjectType + ' / ' + item.changedObjectName}">object</td>
+                <td th:text="${item.changedObjectType}">type</td>
+                <td th:text="${item.changedObjectName}">name</td>
                 <td th:text="${item.actionType}">action</td>
-                <td th:text="${item.changedByLabel}">changed by</td>
+                <td th:text="${item.changedByLabel + ' / user#' + item.changedByUserId}">changed by</td>
                 <td th:text="${item.reason ?: '-'}">reason</td>
                 <td th:text="${item.changedAt}">changed at</td>
+                <td>
+                    <div th:text="${'before: ' + item.beforeSummary}">before summary</div>
+                    <div th:text="${'after: ' + item.afterSummary}">after summary</div>
+                    <details>
+                        <summary>JSON を開く</summary>
+                        <div>
+                            <h4>before_value</h4>
+                            <ul>
+                                <li th:if="${#lists.isEmpty(item.beforeEntries)}">-</li>
+                                <li th:each="entry : ${item.beforeEntries}" th:text="${entry.name + ' = ' + entry.value}">before entry</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4>after_value</h4>
+                            <ul>
+                                <li th:if="${#lists.isEmpty(item.afterEntries)}">-</li>
+                                <li th:each="entry : ${item.afterEntries}" th:text="${entry.name + ' = ' + entry.value}">after entry</li>
+                            </ul>
+                        </div>
+                    </details>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -318,24 +341,27 @@
 
     <section>
         <h2>7. 閲覧ログ</h2>
+        <p>ここは deep view の証跡です。通常の activity 一覧として広げません。</p>
         <table>
             <thead>
             <tr>
-                <th>閲覧文脈</th>
+                <th>viewer_context</th>
                 <th>閲覧者</th>
-                <th>対象</th>
+                <th>対象種別</th>
+                <th>対象ID</th>
                 <th>理由</th>
                 <th>閲覧日時</th>
             </tr>
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(pageData.accessLogs)}">
-                <td colspan="5">閲覧ログはまだありません。</td>
+                <td colspan="6">閲覧ログはまだありません。</td>
             </tr>
             <tr th:each="item : ${pageData.accessLogs}">
                 <td th:text="${item.viewerContext}">context</td>
-                <td th:text="${item.viewerLabel}">viewer</td>
-                <td th:text="${item.targetType + ' / ' + item.targetId}">target</td>
+                <td th:text="${item.viewerLabel + ' / user#' + item.viewerUserId}">viewer</td>
+                <td th:text="${item.targetType}">target type</td>
+                <td th:text="${item.targetId}">target id</td>
                 <td th:text="${item.viewReason ?: '-'}">reason</td>
                 <td th:text="${item.viewedAt}">viewed at</td>
             </tr>
@@ -361,8 +387,8 @@
             <li th:if="${pageData.relatedLinks.okatteUrl != null}">
                 <a th:href="${pageData.relatedLinks.okatteUrl}">okatte detail</a>
             </li>
-            <li><a th:href="${pageData.relatedLinks.supportNotesUrl}">支援メモ導線 placeholder</a></li>
-            <li>対象ユーザー向けの account / profile / privacy-settings / chat / application detail route は、この段階ではまだ固定していません。</li>
+            <li><a th:href="${pageData.relatedLinks.supportNotesUrl}">支援メモ placeholder</a></li>
+            <li>対象ユーザー向けの account / profile / privacy-settings / chat / application detail route は、この段階ではまだ直接出していません。</li>
         </ul>
     </section>
 
@@ -376,7 +402,7 @@
         <p th:text="${'地域: ' + pageData.regionSettings.regionId + ' / 設定済み件数: ' + pageData.regionSettings.settingCount}">
             region settings summary
         </p>
-        <a th:href="${pageData.regionSettings.settingsUrl}">region settings placeholder を開く</a>
+        <p><a th:href="${pageData.regionSettings.settingsUrl}">region-scoped settings placeholder</a></p>
     </section>
 </main>
 </body>

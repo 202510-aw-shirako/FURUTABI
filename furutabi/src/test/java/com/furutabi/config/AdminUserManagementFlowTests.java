@@ -124,15 +124,17 @@ class AdminUserManagementFlowTests {
     }
 
     @Test
-    @DisplayName("admin can open admin user detail and deep access is logged")
+    @DisplayName("admin can open admin user detail and access log is recorded")
     void adminCanOpenDetailAndAccessLogIsRecorded() throws Exception {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("admin 詳細管理ページ")))
             .andExpect(content().string(containsString("既存認証用 role")))
-            .andExpect(content().string(containsString("catalog fallback default")))
-            .andExpect(content().string(containsString("支援メモ導線 placeholder")))
-            .andExpect(content().string(containsString("region-scoped settings 導線")));
+            .andExpect(content().string(containsString("Catalog fallback default")))
+            .andExpect(content().string(containsString("支援メモ placeholder")))
+            .andExpect(content().string(containsString("region-scoped settings 導線")))
+            .andExpect(content().string(containsString("権限変更ログ")))
+            .andExpect(content().string(containsString("閲覧ログ")));
 
         Integer count = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM access_logs WHERE viewer_context = 'admin' AND target_type = 'admin_user_detail' AND target_id = ?",
@@ -175,6 +177,65 @@ class AdminUserManagementFlowTests {
         );
         org.assertj.core.api.Assertions.assertThat(state).isEqualTo("active");
         org.assertj.core.api.Assertions.assertThat(afterValue).contains("host_permission").contains("active");
+    }
+
+    @Test
+    @DisplayName("admin detail shows permission change log with summary and expandable json")
+    void adminDetailShowsPermissionChangeLog() throws Exception {
+        jdbcTemplate.update(
+            """
+                INSERT INTO permission_change_logs (
+                    region_id, target_user_id, changed_object_type, changed_object_name, action_type,
+                    before_value, after_value, changed_by_user_id, reason, changed_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            "Tokyo",
+            1L,
+            "permission",
+            "host_permission",
+            "grant",
+            "{\"state\":\"none\"}",
+            "{\"permission_name\":\"host_permission\",\"rule_state\":\"active\",\"effective_to\":\"2026-04-01\"}",
+            4L,
+            "Grant for test",
+            Timestamp.from(Instant.parse("2026-03-26T00:00:00Z"))
+        );
+
+        mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("権限変更ログ")))
+            .andExpect(content().string(containsString("host_permission")))
+            .andExpect(content().string(containsString("grant")))
+            .andExpect(content().string(containsString("before: state=none")))
+            .andExpect(content().string(containsString("after: permission_name=host_permission")))
+            .andExpect(content().string(containsString("JSON を開く")))
+            .andExpect(content().string(containsString("rule_state = active")));
+    }
+
+    @Test
+    @DisplayName("admin detail shows access log with viewer context and viewer user id")
+    void adminDetailShowsAccessLog() throws Exception {
+        jdbcTemplate.update(
+            """
+                INSERT INTO access_logs (
+                    viewer_user_id, viewer_context, target_type, target_id, view_reason, viewed_at
+                ) VALUES (?, ?, ?, ?, ?, ?)
+                """,
+            4L,
+            "admin",
+            "admin_user_detail",
+            1L,
+            "Audit review",
+            Timestamp.from(Instant.parse("2026-03-26T01:00:00Z"))
+        );
+
+        mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("閲覧ログ")))
+            .andExpect(content().string(containsString("viewer_context")))
+            .andExpect(content().string(containsString("admin")))
+            .andExpect(content().string(containsString("user#4")))
+            .andExpect(content().string(containsString("Audit review")));
     }
 
     @Test
@@ -336,15 +397,15 @@ class AdminUserManagementFlowTests {
     void bridgePartnerPermissionOperationIsBlocked() throws Exception {
         mockMvc.perform(get("/app/admin/users/3").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("この permission は、role policy または role 既定で管理されるため、この段階では個別操作できません。")))
-            .andExpect(content().string(not(containsString("/permissions/partner_permission/revoke"))));
+            .andExpect(content().string(containsString("この permission は role policy または role 既定で管理されるため、この段階では個別操作できません。")))
+            .andExpect(content().string(not(containsString("/app/admin/users/3/permissions/partner_permission/revoke"))));
 
         mockMvc.perform(
                 post("/app/admin/users/3/permissions/partner_permission/revoke")
                     .with(user("admin@example.com").roles("ADMIN"))
                     .with(csrf())
                     .param("regionId", "Tokyo")
-                    .param("reason", "Should stay managed by bridge role")
+                    .param("reason", "Bridge partner revoke must be blocked")
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("/app/admin/users/3?blocked*"));
@@ -352,12 +413,13 @@ class AdminUserManagementFlowTests {
 
     @Test
     @DisplayName("permission operation is blocked when reason is missing or date range is invalid")
-    void permissionOperationValidationIsApplied() throws Exception {
+    void permissionOperationIsBlockedWhenReasonMissingOrDateInvalid() throws Exception {
         mockMvc.perform(
                 post("/app/admin/users/1/permissions/host_permission/grant")
                     .with(user("admin@example.com").roles("ADMIN"))
                     .with(csrf())
                     .param("regionId", "Tokyo")
+                    .param("reason", "")
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("/app/admin/users/1?blocked*"));
@@ -367,9 +429,9 @@ class AdminUserManagementFlowTests {
                     .with(user("admin@example.com").roles("ADMIN"))
                     .with(csrf())
                     .param("regionId", "Tokyo")
-                    .param("effectiveFrom", "2026-04-10")
+                    .param("effectiveFrom", "2026-04-02")
                     .param("effectiveTo", "2026-04-01")
-                    .param("reason", "Invalid range")
+                    .param("reason", "Invalid date range")
             )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("/app/admin/users/1?blocked*"));
@@ -383,27 +445,28 @@ class AdminUserManagementFlowTests {
                     .with(user("admin@example.com").roles("ADMIN"))
                     .with(csrf())
                     .param("regionId", "Tokyo")
-                    .param("reason", "Suspend from admin detail")
+                    .param("reason", "Suspend for admin review")
             )
-            .andExpect(status().is3xxRedirection());
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?roleSuspended*"));
 
-        String roleState = jdbcTemplate.queryForObject(
+        String state = jdbcTemplate.queryForObject(
             "SELECT role_state FROM user_role_states WHERE user_id = ?",
             String.class,
             1L
         );
-        Integer logCount = jdbcTemplate.queryForObject(
+        Integer count = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM permission_change_logs WHERE changed_object_type = 'role' AND target_user_id = ?",
             Integer.class,
             1L
         );
-        org.assertj.core.api.Assertions.assertThat(roleState).isEqualTo("suspended");
-        org.assertj.core.api.Assertions.assertThat(logCount).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(state).isEqualTo("suspended");
+        org.assertj.core.api.Assertions.assertThat(count).isEqualTo(1);
     }
 
     @Test
     @DisplayName("admin can create pause resume and end partner assignment with reason and dates")
-    void adminCanOperatePartnerAssignment() throws Exception {
+    void adminCanCreatePauseResumeAndEndAssignment() throws Exception {
         mockMvc.perform(
                 post("/app/admin/users/1/assignments")
                     .with(user("admin@example.com").roles("ADMIN"))
