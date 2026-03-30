@@ -102,18 +102,18 @@ public class AdminUserManagementController {
     }
 
     @PostMapping("/users/{id}/assignments/{assignmentId}/pause")
-    public String pauseAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication) {
-        return change("assignmentPaused", id, () -> adminUserManagementService.pausePartnerAssignment(authentication.getName(), id, assignmentId, "Paused from admin detail"));
+    public String pauseAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication, @ModelAttribute("partnerAssignmentForm") AdminPartnerAssignmentForm partnerAssignmentForm) {
+        return change("assignmentPaused", id, () -> adminUserManagementService.pausePartnerAssignment(authentication.getName(), id, assignmentId, partnerAssignmentForm));
     }
 
     @PostMapping("/users/{id}/assignments/{assignmentId}/resume")
-    public String resumeAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication) {
-        return change("assignmentResumed", id, () -> adminUserManagementService.resumePartnerAssignment(authentication.getName(), id, assignmentId, "Resumed from admin detail"));
+    public String resumeAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication, @ModelAttribute("partnerAssignmentForm") AdminPartnerAssignmentForm partnerAssignmentForm) {
+        return change("assignmentResumed", id, () -> adminUserManagementService.resumePartnerAssignment(authentication.getName(), id, assignmentId, partnerAssignmentForm));
     }
 
     @PostMapping("/users/{id}/assignments/{assignmentId}/end")
-    public String endAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication) {
-        return change("assignmentEnded", id, () -> adminUserManagementService.endPartnerAssignment(authentication.getName(), id, assignmentId, "Ended from admin detail"));
+    public String endAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication, @ModelAttribute("partnerAssignmentForm") AdminPartnerAssignmentForm partnerAssignmentForm) {
+        return change("assignmentEnded", id, () -> adminUserManagementService.endPartnerAssignment(authentication.getName(), id, assignmentId, partnerAssignmentForm));
     }
 
     private String change(String flag, long targetUserId, Runnable action) {

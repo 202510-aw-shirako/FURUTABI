@@ -325,6 +325,25 @@ public class AdminUserManagementRepository {
         );
     }
 
+    public List<PartnerCandidateRow> listPartnerCandidates(long targetUserId) {
+        return jdbcTemplate.query(
+            """
+                SELECT u.id, u.email, u.nickname, u.name, up.region, up.interest_region
+                FROM users u
+                LEFT JOIN user_profiles up ON up.user_id = u.id
+                WHERE u.id <> ?
+                ORDER BY u.id ASC
+                """,
+            (rs, rowNum) -> new PartnerCandidateRow(
+                rs.getLong("id"),
+                displayName(rs.getString("nickname"), rs.getString("name"), rs.getString("email")),
+                rs.getString("region"),
+                rs.getString("interest_region")
+            ),
+            targetUserId
+        );
+    }
+
     public long createPartnerAssignment(
         String regionId,
         long targetUserId,
@@ -395,11 +414,13 @@ public class AdminUserManagementRepository {
         }
     }
 
-    public void updatePartnerAssignmentStatus(long assignmentId, String nextStatus, long actorUserId, String reason, Timestamp changedAt) {
+    public void updatePartnerAssignmentStatus(long assignmentId, String nextStatus, Date effectiveFrom, Date effectiveTo, long actorUserId, String reason, Timestamp changedAt) {
         jdbcTemplate.update(
             """
                 UPDATE partner_assignments
                 SET assignment_status = ?,
+                    effective_from = COALESCE(?, effective_from),
+                    effective_to = COALESCE(?, effective_to),
                     paused_at = CASE WHEN ? = 'paused' THEN ? ELSE paused_at END,
                     paused_by_user_id = CASE WHEN ? = 'paused' THEN ? ELSE paused_by_user_id END,
                     pause_reason = CASE WHEN ? = 'paused' THEN ? ELSE pause_reason END,
@@ -413,6 +434,8 @@ public class AdminUserManagementRepository {
                 WHERE id = ?
                 """,
             nextStatus,
+            effectiveFrom,
+            effectiveTo,
             nextStatus, changedAt, nextStatus, actorUserId, nextStatus, reason,
             nextStatus, changedAt, nextStatus, actorUserId, nextStatus, reason,
             nextStatus, changedAt, nextStatus, actorUserId, nextStatus, reason,
@@ -749,6 +772,7 @@ public class AdminUserManagementRepository {
     public record RolePolicyRow(String regionId, String roleName, boolean configured, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
     public record PermissionRuleRow(long permissionRuleId, String regionId, long targetUserId, String permissionName, String ruleState, Date effectiveFrom, Date effectiveTo, Timestamp grantedAt, Long grantedByUserId, String grantReason, Timestamp suspendedAt, Long suspendedByUserId, String suspensionReason, Timestamp resumedAt, Long resumedByUserId, String resumeReason, Timestamp revokedAt, Long revokedByUserId, String revokeReason) {}
     public record PartnerAssignmentRow(long assignmentId, String regionId, long targetUserId, long partnerUserId, String assignmentStatus, Date effectiveFrom, Date effectiveTo, Timestamp assignedAt, Timestamp endedAt, String partnerLabel, String assignedByLabel) {}
+    public record PartnerCandidateRow(long userId, String displayName, String region, String interestRegion) {}
     public record PermissionChangeLogRow(long permissionChangeLogId, String regionId, String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, Timestamp changedAt, String changedByLabel) {}
     public record AccessLogRow(long accessLogId, String viewerContext, String targetType, long targetId, String viewReason, Timestamp viewedAt, String viewerLabel) {}
     public record ProposalApplicationSummaryRow(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, Long latestHostProposalId, Long latestBridgeProposalId, Long latestOkatteCandidateId, Long latestApplicationId) {}

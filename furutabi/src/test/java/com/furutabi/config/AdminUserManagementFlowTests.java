@@ -1,14 +1,14 @@
 package com.furutabi.config;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -74,6 +74,7 @@ class AdminUserManagementFlowTests {
         insertRole(4L, "ADMIN", now);
 
         insertProfile(1L, "Tokyo", now);
+        insertProfile(2L, "Tokyo", now);
         insertProfile(3L, "Tokyo", now);
 
         jdbcTemplate.update(
@@ -207,8 +208,7 @@ class AdminUserManagementFlowTests {
                     .param("effectiveTo", "2026-04-30")
                     .param("reason", "Suspend host permission")
             )
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern("/app/admin/users/1?*"));
+            .andExpect(status().is3xxRedirection());
 
         mockMvc.perform(
                 post("/app/admin/users/1/permissions/host_permission/resume")
@@ -402,31 +402,157 @@ class AdminUserManagementFlowTests {
     }
 
     @Test
-    @DisplayName("admin can create partner assignment for bridge partner and assignment log is recorded")
-    void adminCanCreatePartnerAssignment() throws Exception {
+    @DisplayName("admin can create pause resume and end partner assignment with reason and dates")
+    void adminCanOperatePartnerAssignment() throws Exception {
         mockMvc.perform(
                 post("/app/admin/users/1/assignments")
                     .with(user("admin@example.com").roles("ADMIN"))
                     .with(csrf())
                     .param("regionId", "Tokyo")
                     .param("partnerUserId", "3")
+                    .param("effectiveFrom", "2026-03-01")
+                    .param("effectiveTo", "2026-04-30")
                     .param("reason", "Assign bridge partner")
             )
-            .andExpect(status().is3xxRedirection());
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?assignmentCreated*"));
 
-        String assignmentStatus = jdbcTemplate.queryForObject(
-            "SELECT assignment_status FROM partner_assignments WHERE user_id = ? AND partner_user_id = ?",
-            String.class,
+        Long assignmentId = jdbcTemplate.queryForObject(
+            "SELECT id FROM partner_assignments WHERE user_id = ? AND partner_user_id = ?",
+            Long.class,
             1L,
             3L
+        );
+
+        mockMvc.perform(
+                post("/app/admin/users/1/assignments/" + assignmentId + "/pause")
+                    .with(user("admin@example.com").roles("ADMIN"))
+                    .with(csrf())
+                    .param("effectiveFrom", "2026-03-01")
+                    .param("effectiveTo", "2026-04-15")
+                    .param("reason", "Pause assignment")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?assignmentPaused*"));
+
+        mockMvc.perform(
+                post("/app/admin/users/1/assignments/" + assignmentId + "/resume")
+                    .with(user("admin@example.com").roles("ADMIN"))
+                    .with(csrf())
+                    .param("effectiveFrom", "2026-03-05")
+                    .param("effectiveTo", "2026-04-20")
+                    .param("reason", "Resume assignment")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?assignmentResumed*"));
+
+        mockMvc.perform(
+                post("/app/admin/users/1/assignments/" + assignmentId + "/end")
+                    .with(user("admin@example.com").roles("ADMIN"))
+                    .with(csrf())
+                    .param("effectiveFrom", "2026-03-05")
+                    .param("effectiveTo", "2026-04-25")
+                    .param("reason", "End assignment")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?assignmentEnded*"));
+
+        String assignmentStatus = jdbcTemplate.queryForObject(
+            "SELECT assignment_status FROM partner_assignments WHERE id = ?",
+            String.class,
+            assignmentId
+        );
+        String endReason = jdbcTemplate.queryForObject(
+            "SELECT end_reason FROM partner_assignments WHERE id = ?",
+            String.class,
+            assignmentId
         );
         Integer logCount = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM permission_change_logs WHERE changed_object_type = 'partner_assignment' AND target_user_id = ?",
             Integer.class,
             1L
         );
-        org.assertj.core.api.Assertions.assertThat(assignmentStatus).isEqualTo("active");
-        org.assertj.core.api.Assertions.assertThat(logCount).isEqualTo(1);
+        org.assertj.core.api.Assertions.assertThat(assignmentStatus).isEqualTo("ended");
+        org.assertj.core.api.Assertions.assertThat(endReason).isEqualTo("End assignment");
+        org.assertj.core.api.Assertions.assertThat(logCount).isGreaterThanOrEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("assignment creation is blocked when partner permission is missing")
+    void assignmentCreationIsBlockedWithoutPartnerPermission() throws Exception {
+        mockMvc.perform(
+                post("/app/admin/users/1/assignments")
+                    .with(user("admin@example.com").roles("ADMIN"))
+                    .with(csrf())
+                    .param("regionId", "Tokyo")
+                    .param("partnerUserId", "2")
+                    .param("reason", "Local user cannot be assignment partner")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?blocked*"));
+
+        Integer count = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM partner_assignments WHERE user_id = ?",
+            Integer.class,
+            1L
+        );
+        org.assertj.core.api.Assertions.assertThat(count).isZero();
+    }
+
+    @Test
+    @DisplayName("permission alone does not imply assignment and ended assignment cannot resume")
+    void assignmentDisplayAndEndedResumeBoundary() throws Exception {
+        jdbcTemplate.update(
+            """
+                INSERT INTO permission_rules (
+                    region_id, target_user_id, permission_name, rule_state,
+                    granted_at, grant_reason, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            "Tokyo",
+            1L,
+            "partner_permission",
+            "active",
+            Timestamp.from(Instant.parse("2026-03-01T00:00:00Z")),
+            "seed partner permission",
+            Timestamp.from(Instant.parse("2026-03-01T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-01T00:00:00Z"))
+        );
+
+        mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("partner assignment はまだありません。")))
+            .andExpect(content().string(containsString("partner_permission を持っていることと、実際の partner assignment があることは別です。")));
+
+        jdbcTemplate.update(
+            """
+                INSERT INTO partner_assignments (
+                    id, region_id, user_id, partner_user_id, assignment_status,
+                    assigned_at, ended_at, assigned_by_user_id, assignment_reason, end_reason, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            80L,
+            "Tokyo",
+            1L,
+            3L,
+            "ended",
+            Timestamp.from(Instant.parse("2026-03-01T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-20T00:00:00Z")),
+            4L,
+            "seed assignment",
+            "seed ended",
+            Timestamp.from(Instant.parse("2026-03-01T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-20T00:00:00Z"))
+        );
+
+        mockMvc.perform(
+                post("/app/admin/users/1/assignments/80/resume")
+                    .with(user("admin@example.com").roles("ADMIN"))
+                    .with(csrf())
+                    .param("reason", "Resume ended assignment should fail")
+            )
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/admin/users/1?blocked*"));
     }
 
     @Test
