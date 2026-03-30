@@ -103,6 +103,54 @@ class AdminUserManagementFlowTests {
         );
         jdbcTemplate.update(
             """
+                INSERT INTO proposals (
+                    id, proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                    duration_minutes, location_name, status, visibility_scope, cover_image_path,
+                    created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            21L,
+            "LOCAL_GUIDE",
+            null,
+            1L,
+            "Target host proposal",
+            "summary",
+            "body",
+            90,
+            "Tokyo",
+            "published",
+            "public",
+            null,
+            Timestamp.from(Instant.parse("2026-03-26T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-26T00:00:00Z")),
+            null
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO proposals (
+                    id, proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                    duration_minutes, location_name, status, visibility_scope, cover_image_path,
+                    created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            22L,
+            "LOCAL_GUIDE",
+            1L,
+            2L,
+            "Target bridge proposal",
+            "summary",
+            "body",
+            75,
+            "Tokyo",
+            "published",
+            "public",
+            null,
+            Timestamp.from(Instant.parse("2026-03-27T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-27T00:00:00Z")),
+            null
+        );
+        jdbcTemplate.update(
+            """
                 INSERT INTO proposal_applications (
                     id, proposal_id, applicant_user_id, application_status, latest_message_preview,
                     latest_message_at, related_thread_id, requires_additional_verification,
@@ -119,6 +167,26 @@ class AdminUserManagementFlowTests {
             false,
             now,
             now,
+            null
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO support_requests (
+                    id, user_id, request_type, related_feature, target_reference, body,
+                    reply_preference, status, handled_by_user_id, created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            40L,
+            1L,
+            "general",
+            "admin-detail",
+            "user#1",
+            "Need support follow-up",
+            "optional",
+            "received",
+            null,
+            Timestamp.from(Instant.parse("2026-03-28T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-28T00:00:00Z")),
             null
         );
     }
@@ -236,6 +304,25 @@ class AdminUserManagementFlowTests {
             .andExpect(content().string(containsString("admin")))
             .andExpect(content().string(containsString("user#4")))
             .andExpect(content().string(containsString("Audit review")));
+    }
+
+    @Test
+    @DisplayName("admin detail shows safe related links and skips self service or restricted routes")
+    void adminDetailShowsSafeRelatedLinks() throws Exception {
+        mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("/app/support/admin")))
+            .andExpect(content().string(containsString("/app/support/40")))
+            .andExpect(content().string(containsString("/app/history")))
+            .andExpect(content().string(containsString("/app/notifications")))
+            .andExpect(content().string(containsString("/app/gate/21")))
+            .andExpect(content().string(containsString("/app/gate/22")))
+            .andExpect(content().string(containsString("/app/admin/users/1/support-notes")))
+            .andExpect(content().string(not(containsString("href=\"/app/account\""))))
+            .andExpect(content().string(not(containsString("href=\"/app/profile\""))))
+            .andExpect(content().string(not(containsString("href=\"/app/privacy-settings\""))))
+            .andExpect(content().string(not(containsString("/app/host-applications/30"))))
+            .andExpect(content().string(not(containsString("/app/chat/"))));
     }
 
     @Test

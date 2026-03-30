@@ -718,6 +718,35 @@ public class AdminUserManagementRepository {
         );
     }
 
+    public SupportSummaryRow loadSupportSummary(long targetUserId) {
+        Integer supportRequestCount = jdbcTemplate.queryForObject(
+            """
+                SELECT COUNT(*)
+                FROM support_requests
+                WHERE user_id = ?
+                  AND deleted_at IS NULL
+                """,
+            Integer.class,
+            targetUserId
+        );
+        Long latestSupportRequestId = jdbcTemplate.query(
+            """
+                SELECT id
+                FROM support_requests
+                WHERE user_id = ?
+                  AND deleted_at IS NULL
+                ORDER BY created_at DESC, id DESC
+                LIMIT 1
+                """,
+            rs -> rs.next() ? rs.getLong("id") : null,
+            targetUserId
+        );
+        return new SupportSummaryRow(
+            supportRequestCount == null ? 0 : supportRequestCount,
+            latestSupportRequestId
+        );
+    }
+
     public RegionSettingSummaryRow loadRegionSettingSummary(String regionId) {
         Integer count = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM region_scoped_settings WHERE region_id = ?",
@@ -779,5 +808,6 @@ public class AdminUserManagementRepository {
     public record PermissionChangeLogRow(long permissionChangeLogId, String regionId, String changedObjectType, String changedObjectName, String actionType, String beforeValue, String afterValue, String reason, Timestamp changedAt, long changedByUserId, String changedByLabel) {}
     public record AccessLogRow(long accessLogId, long viewerUserId, String viewerContext, String targetType, long targetId, String viewReason, Timestamp viewedAt, String viewerLabel) {}
     public record ProposalApplicationSummaryRow(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, Long latestHostProposalId, Long latestBridgeProposalId, Long latestOkatteCandidateId, Long latestApplicationId) {}
+    public record SupportSummaryRow(int supportRequestCount, Long latestSupportRequestId) {}
     public record RegionSettingSummaryRow(String regionId, int settingCount) {}
 }

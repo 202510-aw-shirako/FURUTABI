@@ -379,16 +379,24 @@
         -->
         <ul>
             <li><a th:href="${pageData.relatedLinks.supportAdminUrl}">support admin 一覧</a></li>
+            <li th:if="${pageData.relatedLinks.supportDetailUrl != null}">
+                <a th:href="${pageData.relatedLinks.supportDetailUrl}"
+                   th:text="${'対象ユーザーの最新 support 詳細を開く（' + pageData.relatedLinks.supportRequestCount + '件）'}">latest support detail</a>
+            </li>
             <li><a th:href="${pageData.relatedLinks.historyUrl}">関わりの記録</a></li>
             <li><a th:href="${pageData.relatedLinks.notificationsUrl}">通知一覧</a></li>
             <li th:if="${pageData.relatedLinks.proposalUrl != null}">
-                <a th:href="${pageData.relatedLinks.proposalUrl}">proposal detail</a>
+                <a th:href="${pageData.relatedLinks.proposalUrl}">最新 host proposal detail</a>
+            </li>
+            <li th:if="${pageData.relatedLinks.bridgeProposalUrl != null}">
+                <a th:href="${pageData.relatedLinks.bridgeProposalUrl}">最新 bridge proposal detail</a>
             </li>
             <li th:if="${pageData.relatedLinks.okatteUrl != null}">
-                <a th:href="${pageData.relatedLinks.okatteUrl}">okatte detail</a>
+                <a th:href="${pageData.relatedLinks.okatteUrl}">最新 okatte detail</a>
             </li>
             <li><a th:href="${pageData.relatedLinks.supportNotesUrl}">支援メモ placeholder</a></li>
-            <li>対象ユーザー向けの account / profile / privacy-settings / chat / application detail route は、この段階ではまだ直接出していません。</li>
+            <li>account / profile / privacy-settings は既存 self-service route のため、この段階では対象ユーザー向け直リンクを出していません。</li>
+            <li>chat は既存 participant-only route、application detail は既存 reviewer-only route のため、この段階では admin 詳細から直接は出していません。</li>
         </ul>
     </section>
 

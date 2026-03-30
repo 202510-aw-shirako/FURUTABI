@@ -25,8 +25,10 @@ import com.furutabi.admin.AdminUserManagementRepository.PermissionRuleRow;
 import com.furutabi.admin.AdminUserManagementRepository.ProposalApplicationSummaryRow;
 import com.furutabi.admin.AdminUserManagementRepository.RegionSettingSummaryRow;
 import com.furutabi.admin.AdminUserManagementRepository.RolePolicyRow;
+import com.furutabi.admin.AdminUserManagementRepository.SupportSummaryRow;
 import com.furutabi.admin.AdminUserManagementRepository.TargetUserRow;
 import com.furutabi.admin.AdminUserManagementRepository.UserRow;
+import com.furutabi.visibility.VisibilityAccessService;
 
 @Service
 public class AdminUserManagementService {
@@ -35,10 +37,16 @@ public class AdminUserManagementService {
 
     private final AdminUserManagementRepository repository;
     private final ObjectMapper objectMapper;
+    private final VisibilityAccessService visibilityAccessService;
 
-    public AdminUserManagementService(AdminUserManagementRepository repository, ObjectMapper objectMapper) {
+    public AdminUserManagementService(
+        AdminUserManagementRepository repository,
+        ObjectMapper objectMapper,
+        VisibilityAccessService visibilityAccessService
+    ) {
         this.repository = repository;
         this.objectMapper = objectMapper;
+        this.visibilityAccessService = visibilityAccessService;
     }
 
     public void requireAdminViewer(String viewerEmail) {
@@ -67,6 +75,7 @@ public class AdminUserManagementService {
             .filter(PartnerCandidateItem::partnerPermissionActive)
             .toList();
         ProposalApplicationSummaryRow proposalSummary = repository.loadProposalApplicationSummary(targetUserId);
+        SupportSummaryRow supportSummary = repository.loadSupportSummary(targetUserId);
         List<PermissionChangeLogItem> permissionChangeLogs = repository.listPermissionChangeLogs(targetUserId).stream().map(this::toPermissionChangeLogItem).toList();
         repository.insertAccessLog(
             viewer.userId(),
@@ -102,9 +111,9 @@ public class AdminUserManagementService {
                 proposalSummary.bridgeProposalCount(),
                 proposalSummary.okatteCandidateCount(),
                 proposalSummary.applicationCount(),
-                detailUrl("/app/gate/", proposalSummary.latestHostProposalId()),
-                detailUrl("/app/gate/", proposalSummary.latestBridgeProposalId()),
-                detailUrl("/app/okatte/", proposalSummary.latestOkatteCandidateId()),
+                visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestHostProposalId(), "/app/gate/"),
+                visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestBridgeProposalId(), "/app/gate/"),
+                visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestOkatteCandidateId(), "/app/okatte/"),
                 proposalSummary.latestApplicationId() == null ? null : "application#" + proposalSummary.latestApplicationId()
             ),
             permissionChangeLogs,
@@ -114,11 +123,14 @@ public class AdminUserManagementService {
                 null,
                 null,
                 "/app/support/admin",
+                supportSummary.latestSupportRequestId() == null ? null : "/app/support/" + supportSummary.latestSupportRequestId(),
                 "/app/history",
                 "/app/notifications",
                 "/app/admin/users/" + targetUserId + "/support-notes",
-                detailUrl("/app/gate/", proposalSummary.latestHostProposalId()),
-                detailUrl("/app/okatte/", proposalSummary.latestOkatteCandidateId())
+                visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestHostProposalId(), "/app/gate/"),
+                visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestBridgeProposalId(), "/app/gate/"),
+                visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestOkatteCandidateId(), "/app/okatte/"),
+                supportSummary.supportRequestCount()
             ),
             new RegionSettingsSection(regionSettingSummary.regionId(), regionSettingSummary.settingCount(), "/app/admin/regions/" + regionSettingSummary.regionId())
         );
@@ -489,6 +501,16 @@ public class AdminUserManagementService {
         return prefix + id;
     }
 
+    private String visibleProposalDetailUrl(long viewerUserId, Long proposalId, String prefix) {
+        if (proposalId == null) {
+            return null;
+        }
+        if (!visibilityAccessService.canViewProposal(viewerUserId, proposalId)) {
+            return null;
+        }
+        return prefix + proposalId;
+    }
+
     public record AdminUserDetailPageData(BasicInfoSection basicInfo, RolePolicySection rolePolicy, List<PermissionItem> permissions, RoleStateSection roleState, List<AssignmentItem> assignments, List<PartnerCandidateItem> partnerCandidates, ProposalApplicationSection proposalApplication, List<PermissionChangeLogItem> permissionChangeLogs, List<AccessLogItem> accessLogs, RelatedLinksSection relatedLinks, RegionSettingsSection regionSettings) {}
     public record BasicInfoSection(long targetUserId, String displayName, String email, String ageRange, String roleName, String roleLabel, String roleState, String regionId, String legacyAuthRoleName, boolean roleSourceDiffers) {}
     public record RolePolicySection(String regionId, String roleName, boolean configured, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
@@ -499,7 +521,20 @@ public class AdminUserManagementService {
     public record ProposalApplicationSection(int hostProposalCount, int bridgeProposalCount, int okatteCandidateCount, int applicationCount, String latestHostProposalUrl, String latestBridgeProposalUrl, String latestOkatteCandidateUrl, String latestApplicationReference) {}
     public record PermissionChangeLogItem(String changedObjectType, String changedObjectName, String actionType, String beforeRaw, String beforeSummary, List<JsonField> beforeEntries, String afterRaw, String afterSummary, List<JsonField> afterEntries, String reason, long changedByUserId, String changedByLabel, String changedAt) {}
     public record AccessLogItem(long viewerUserId, String viewerContext, String targetType, long targetId, String viewReason, String viewerLabel, String viewedAt) {}
-    public record RelatedLinksSection(String accountUrl, String profileUrl, String privacySettingsUrl, String supportAdminUrl, String historyUrl, String notificationsUrl, String supportNotesUrl, String proposalUrl, String okatteUrl) {}
+    public record RelatedLinksSection(
+        String accountUrl,
+        String profileUrl,
+        String privacySettingsUrl,
+        String supportAdminUrl,
+        String supportDetailUrl,
+        String historyUrl,
+        String notificationsUrl,
+        String supportNotesUrl,
+        String proposalUrl,
+        String bridgeProposalUrl,
+        String okatteUrl,
+        int supportRequestCount
+    ) {}
     public record RegionSettingsSection(String regionId, int settingCount, String settingsUrl) {}
     public record JsonField(String name, String value) {}
     public record JsonDisplay(String summary, List<JsonField> entries) {}
