@@ -39,6 +39,13 @@ class SecurityConfigBoundaryTests {
         jdbcTemplate.update("DELETE FROM chat_threads");
         jdbcTemplate.update("DELETE FROM notification_delivery_logs");
         jdbcTemplate.update("DELETE FROM notifications");
+        jdbcTemplate.update("DELETE FROM access_logs");
+        jdbcTemplate.update("DELETE FROM permission_change_logs");
+        jdbcTemplate.update("DELETE FROM partner_assignments");
+        jdbcTemplate.update("DELETE FROM permission_rules");
+        jdbcTemplate.update("DELETE FROM role_policies");
+        jdbcTemplate.update("DELETE FROM user_role_states");
+        jdbcTemplate.update("DELETE FROM region_scoped_settings");
         jdbcTemplate.update("DELETE FROM support_request_status_history");
         jdbcTemplate.update("DELETE FROM support_requests");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
@@ -402,6 +409,13 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated support admin route is available for admin")
     void authenticatedSupportAdminRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/support/admin").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Authenticated admin detail route is available for admin")
+    void authenticatedAdminDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk());
     }
 

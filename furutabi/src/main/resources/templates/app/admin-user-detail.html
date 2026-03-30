@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin User Detail</title>
+</head>
+<body>
+<main>
+    <h1>admin 詳細管理</h1>
+    <section>
+        <h2>基本情報</h2>
+        <p th:text="${pageData.basicInfo.displayName}">display name</p>
+        <p th:text="${pageData.basicInfo.email}">email</p>
+        <p th:text="${pageData.basicInfo.roleLabel + ' / ' + pageData.basicInfo.roleState}">role</p>
+        <p th:text="${pageData.basicInfo.regionId}">region</p>
+    </section>
+    <section>
+        <h2>role policy 参照</h2>
+        <p th:text="${pageData.rolePolicy.roleName}">role</p>
+        <p th:text="${pageData.rolePolicy.regionId}">region</p>
+    </section>
+    <section>
+        <h2>現在の permission</h2>
+        <div th:each="permission : ${pageData.permissions}">
+            <p th:text="${permission.permissionName + ' / ' + (permission.active ? 'active' : 'inactive')}">permission</p>
+        </div>
+    </section>
+    <section>
+        <h2>partner assignment</h2>
+        <ul>
+            <li th:each="assignment : ${pageData.assignments}" th:text="${assignment.partnerLabel + ' / ' + assignment.assignmentStatus}">assignment</li>
+        </ul>
+    </section>
+    <section>
+        <h2>proposal / application / okatte 関連</h2>
+        <p th:text="${'host proposals: ' + pageData.proposalApplication.hostProposalCount}">host proposals</p>
+        <p th:text="${'bridge proposals: ' + pageData.proposalApplication.bridgeProposalCount}">bridge proposals</p>
+        <p th:text="${'okatte candidates: ' + pageData.proposalApplication.okatteCandidateCount}">okatte</p>
+        <p th:text="${'applications: ' + pageData.proposalApplication.applicationCount}">applications</p>
+    </section>
+    <section>
+        <h2>権限変更ログ</h2>
+        <ul>
+            <li th:each="item : ${pageData.permissionChangeLogs}" th:text="${item.changedObjectType + ' / ' + item.actionType + ' / ' + item.changedAt}">log</li>
+        </ul>
+    </section>
+    <section>
+        <h2>閲覧ログ</h2>
+        <ul>
+            <li th:each="item : ${pageData.accessLogs}" th:text="${item.viewerContext + ' / ' + item.viewerLabel + ' / ' + item.viewedAt}">access</li>
+        </ul>
+    </section>
+</main>
+</body>
+</html>
