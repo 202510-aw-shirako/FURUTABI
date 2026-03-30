@@ -196,11 +196,11 @@ class AdminUserManagementFlowTests {
     void adminCanOpenDetailAndAccessLogIsRecorded() throws Exception {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("admin 詳細管理ページ")))
+            .andExpect(content().string(containsString("管理者向けユーザー詳細")))
             .andExpect(content().string(containsString("既存認証用 role")))
-            .andExpect(content().string(containsString("Catalog fallback default")))
-            .andExpect(content().string(containsString("支援メモ placeholder")))
-            .andExpect(content().string(containsString("region-scoped settings 導線")))
+            .andExpect(content().string(containsString("保存済み地域設定が未登録のため、既定値を表示中")))
+            .andExpect(content().string(containsString("支援メモ（準備中）")))
+            .andExpect(content().string(containsString("地域設定への導線")))
             .andExpect(content().string(containsString("権限変更ログ")))
             .andExpect(content().string(containsString("閲覧ログ")));
 
@@ -300,8 +300,8 @@ class AdminUserManagementFlowTests {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("閲覧ログ")))
-            .andExpect(content().string(containsString("viewer_context")))
-            .andExpect(content().string(containsString("admin")))
+            .andExpect(content().string(containsString("閲覧時の立場")))
+            .andExpect(content().string(containsString("管理者")))
             .andExpect(content().string(containsString("user#4")))
             .andExpect(content().string(containsString("Audit review")));
     }
@@ -311,13 +311,14 @@ class AdminUserManagementFlowTests {
     void adminDetailShowsSafeRelatedLinks() throws Exception {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("/app/support/admin")))
+            .andExpect(content().string(containsString("連絡・通報一覧")))
             .andExpect(content().string(containsString("/app/support/40")))
             .andExpect(content().string(containsString("/app/history")))
             .andExpect(content().string(containsString("/app/notifications")))
             .andExpect(content().string(containsString("/app/gate/21")))
             .andExpect(content().string(containsString("/app/gate/22")))
             .andExpect(content().string(containsString("/app/admin/users/1/support-notes")))
+            .andExpect(content().string(containsString("アカウント・プロフィール・公開範囲設定は本人向け画面")))
             .andExpect(content().string(not(containsString("href=\"/app/account\""))))
             .andExpect(content().string(not(containsString("href=\"/app/profile\""))))
             .andExpect(content().string(not(containsString("href=\"/app/privacy-settings\""))))
@@ -452,9 +453,9 @@ class AdminUserManagementFlowTests {
 
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("permission 個別操作")))
+            .andExpect(content().string(containsString("権限の個別操作")))
             .andExpect(content().string(containsString("partner_permission")))
-            .andExpect(content().string(containsString("permission_rule")));
+            .andExpect(content().string(containsString("個別ルール")));
     }
 
     @Test
@@ -484,7 +485,7 @@ class AdminUserManagementFlowTests {
     void bridgePartnerPermissionOperationIsBlocked() throws Exception {
         mockMvc.perform(get("/app/admin/users/3").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("この permission は role policy または role 既定で管理されるため、この段階では個別操作できません。")))
+            .andExpect(content().string(containsString("この権限は地域の基本設定または役割の既定で管理されているため、この段階では個別操作できません。")))
             .andExpect(content().string(not(containsString("/app/admin/users/3/permissions/partner_permission/revoke"))));
 
         mockMvc.perform(
@@ -671,8 +672,8 @@ class AdminUserManagementFlowTests {
 
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("partner assignment はまだありません。")))
-            .andExpect(content().string(containsString("partner_permission を持っていることと、実際の partner assignment があることは別です。")));
+            .andExpect(content().string(containsString("担当設定はまだありません。")))
+            .andExpect(content().string(containsString("入り口担当権限を持っていることと、実際に担当として設定されていることは別です。")));
 
         jdbcTemplate.update(
             """
@@ -710,11 +711,11 @@ class AdminUserManagementFlowTests {
     void adminCanOpenPlaceholders() throws Exception {
         mockMvc.perform(get("/app/admin/users/1/support-notes").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("支援メモ placeholder")));
+            .andExpect(content().string(containsString("支援メモ")));
 
         mockMvc.perform(get("/app/admin/regions/Tokyo").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("region-scoped settings placeholder")));
+            .andExpect(content().string(containsString("地域設定")));
     }
 
     private void insertUser(long id, String email, String nickname, String name, Timestamp now) {
