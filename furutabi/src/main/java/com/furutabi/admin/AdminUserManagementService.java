@@ -195,15 +195,20 @@ public class AdminUserManagementService {
             throw new AdminUserManagementConflictException("Managed permission is required");
         }
         CurrentRoleStateRow currentRoleState = repository.findCurrentRoleState(targetUserId, normalizeRegionId(target.region(), target.interestRegion()));
-        if (AdminRoleCatalog.BRIDGE_ROLE.equals(currentRoleState.roleName()) && AdminRoleCatalog.PARTNER_PERMISSION.equals(normalizedPermission) && !"grant".equals(actionType)) {
-            throw new AdminUserManagementConflictException("bridge_role partner_permission stays managed by role");
-        }
         String regionId = normalizeRegionId(form == null ? null : form.getRegionId(), currentRoleState.regionId(), target.region(), target.interestRegion());
+        RolePolicyRow rolePolicy = repository.findRolePolicy(regionId, currentRoleState.roleName());
+        if (!isPermissionManageable(rolePolicy, currentRoleState.roleName(), normalizedPermission)) {
+            throw new AdminUserManagementConflictException("This permission is managed by role policy or role defaults in the current step");
+        }
+        String normalizedReason = normalizeRequiredReason(form == null ? null : form.getReason());
+        Date effectiveFrom = parseDate(form == null ? null : form.getEffectiveFrom());
+        Date effectiveTo = parseDate(form == null ? null : form.getEffectiveTo());
+        validateEffectiveRange(effectiveFrom, effectiveTo);
         PermissionRuleRow beforeRule = repository.findPermissionRule(regionId, targetUserId, normalizedPermission);
         Timestamp now = Timestamp.from(Instant.now());
-        repository.upsertPermissionRule(regionId, targetUserId, normalizedPermission, nextState, parseDate(form == null ? null : form.getEffectiveFrom()), parseDate(form == null ? null : form.getEffectiveTo()), viewer.userId(), normalizeReason(form == null ? null : form.getReason()), now);
+        repository.upsertPermissionRule(regionId, targetUserId, normalizedPermission, nextState, effectiveFrom, effectiveTo, viewer.userId(), normalizedReason, now);
         PermissionRuleRow afterRule = repository.findPermissionRule(regionId, targetUserId, normalizedPermission);
-        repository.insertPermissionChangeLog(regionId, targetUserId, "permission", normalizedPermission, actionType, toJson(permissionRuleMap(beforeRule)), toJson(permissionRuleMap(afterRule)), viewer.userId(), normalizeReason(form == null ? null : form.getReason()), now);
+        repository.insertPermissionChangeLog(regionId, targetUserId, "permission", normalizedPermission, actionType, toJson(permissionRuleMap(beforeRule)), toJson(permissionRuleMap(afterRule)), viewer.userId(), normalizedReason, now);
     }
 
     private void changeAssignmentState(String viewerEmail, long targetUserId, long assignmentId, String nextState, String actionType, String reason) {
@@ -299,11 +304,25 @@ public class AdminUserManagementService {
         return normalized.length() > 500 ? normalized.substring(0, 500) : normalized;
     }
 
+    private String normalizeRequiredReason(String reason) {
+        String normalized = normalizeReason(reason);
+        if (normalized == null) {
+            throw new AdminUserManagementConflictException("Reason is required");
+        }
+        return normalized;
+    }
+
     private Date parseDate(String raw) {
         if (raw == null || raw.isBlank()) {
             return null;
         }
         return Date.valueOf(LocalDate.parse(raw.trim()));
+    }
+
+    private void validateEffectiveRange(Date effectiveFrom, Date effectiveTo) {
+        if (effectiveFrom != null && effectiveTo != null && effectiveTo.before(effectiveFrom)) {
+            throw new AdminUserManagementConflictException("effective_to must be on or after effective_from");
+        }
     }
 
     private String normalizeRuleState(String ruleState, Date effectiveTo) {

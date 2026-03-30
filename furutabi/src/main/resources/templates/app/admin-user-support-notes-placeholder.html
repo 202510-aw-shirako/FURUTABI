@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Support Notes Placeholder</title>
+    <title>支援メモ placeholder</title>
 </head>
 <body>
 <main>
@@ -13,11 +13,11 @@
       This route is only a forward connection point from the admin detail page in C.
       Full support-note UI and permission rules belong to later steps.
     -->
-    <h1>Support Notes Placeholder</h1>
-    <p th:text="${'Support note management for ' + pageData.basicInfo.displayName + ' is intentionally deferred to a later step.'}">
-        Support notes are not implemented in this step.
+    <h1>支援メモ placeholder</h1>
+    <p th:text="${pageData.basicInfo.displayName + ' の支援メモ管理は、後続工程で実装予定です。'}">
+        支援メモはこの段階では未実装です。
     </p>
-    <a th:href="@{|/app/admin/users/${pageData.basicInfo.targetUserId}|}">Back to admin user detail</a>
+    <a th:href="@{|/app/admin/users/${pageData.basicInfo.targetUserId}|}">admin 詳細管理ページへ戻る</a>
 </main>
 </body>
 </html>

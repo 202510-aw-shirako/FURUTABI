@@ -2,7 +2,7 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Region Settings Placeholder</title>
+    <title>region-scoped settings placeholder</title>
 </head>
 <body>
 <main>
@@ -12,9 +12,9 @@
       The settings UI itself is intentionally out of scope in C.
       Keep the distinction that admin is the actor and region is the scope.
     -->
-    <h1>Region-Scoped Settings Placeholder</h1>
-    <p th:text="${'Region settings UI for ' + regionId + ' is intentionally deferred to a later step.'}">
-        Region settings placeholder.
+    <h1>region-scoped settings placeholder</h1>
+    <p th:text="${regionId + ' の settings UI は、後続工程で実装予定です。'}">
+        region settings placeholder
     </p>
 </main>
 </body>
