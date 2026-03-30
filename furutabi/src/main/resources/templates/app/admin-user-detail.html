@@ -50,7 +50,7 @@
             </dd>
             <dt>役割状態</dt>
             <dd th:text="${pageData.basicInfo.roleState == 'active' ? '有効' : (pageData.basicInfo.roleState == 'suspended' ? '停止中' : (pageData.basicInfo.roleState == 'revoked' ? '取消' : pageData.basicInfo.roleState))}">role state</dd>
-            <dt>既存認証用 role</dt>
+            <dt>既存認証用ロール</dt>
             <dd><small th:text="${pageData.basicInfo.legacyAuthRoleName}">legacy auth role</small></dd>
             <dt>所属地域</dt>
             <dd th:text="${pageData.basicInfo.regionId == 'default' ? 'default（既定）' : pageData.basicInfo.regionId}">region</dd>
@@ -266,7 +266,7 @@
     </section>
 
     <section>
-        <h2>5. proposal / application / okatte 関連概要</h2>
+        <h2>5. 提案・申請・おかって関連概要</h2>
         <!--
           Java handoff note:
           Proposal / application / okatte are intentionally summarized separately.
@@ -312,7 +312,7 @@
             <tr th:if="${#lists.isEmpty(pageData.permissionChangeLogs)}">
                 <td colspan="7">権限変更ログはまだありません。</td>
             </tr>
-            <tr th:each="item : ${pageData.permissionChangeLogs}">
+            <tr th:each="item, itemStat : ${pageData.permissionChangeLogs}" th:if="${itemStat.index < 5}">
                 <td th:text="${item.changedObjectType}">type</td>
                 <td th:text="${item.changedObjectName}">name</td>
                 <td th:text="${item.actionType}">action</td>
@@ -343,6 +343,53 @@
             </tr>
             </tbody>
         </table>
+        <details th:if="${#lists.size(pageData.permissionChangeLogs) > 5}">
+            <summary th:text="${'続きの変更履歴を見る（残り ' + (#lists.size(pageData.permissionChangeLogs) - 5) + ' 件）'}">続きの変更履歴を見る</summary>
+            <table>
+                <thead>
+                <tr>
+                    <th>対象種別</th>
+                    <th>対象名</th>
+                    <th>操作</th>
+                    <th>変更者</th>
+                    <th>理由</th>
+                    <th>変更日時</th>
+                    <th>差分要約</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, itemStat : ${pageData.permissionChangeLogs}" th:if="${itemStat.index >= 5}">
+                    <td th:text="${item.changedObjectType}">type</td>
+                    <td th:text="${item.changedObjectName}">name</td>
+                    <td th:text="${item.actionType}">action</td>
+                    <td th:text="${item.changedByLabel + ' / user#' + item.changedByUserId}">changed by</td>
+                    <td th:text="${item.reason ?: '未記入'}">reason</td>
+                    <td th:text="${item.changedAt}">changed at</td>
+                    <td>
+                        <div th:text="${'before: ' + item.beforeSummary}">before summary</div>
+                        <div th:text="${'after: ' + item.afterSummary}">after summary</div>
+                        <details>
+                            <summary>JSON を開く</summary>
+                            <div>
+                                <h4>before_value</h4>
+                                <ul>
+                                    <li th:if="${#lists.isEmpty(item.beforeEntries)}">未記録</li>
+                                    <li th:each="entry : ${item.beforeEntries}" th:text="${entry.name + ' = ' + entry.value}">before entry</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>after_value</h4>
+                                <ul>
+                                    <li th:if="${#lists.isEmpty(item.afterEntries)}">未記録</li>
+                                    <li th:each="entry : ${item.afterEntries}" th:text="${entry.name + ' = ' + entry.value}">after entry</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </details>
     </section>
 
     <section>
@@ -363,7 +410,7 @@
             <tr th:if="${#lists.isEmpty(pageData.accessLogs)}">
                 <td colspan="6">閲覧ログはまだありません。</td>
             </tr>
-            <tr th:each="item : ${pageData.accessLogs}">
+            <tr th:each="item, itemStat : ${pageData.accessLogs}" th:if="${itemStat.index < 5}">
                 <td th:text="${item.viewerContext == 'admin' ? '管理者' : (item.viewerContext == 'host' ? '受け入れ担当' : (item.viewerContext == 'partner' ? '入り口担当' : item.viewerContext))}">context</td>
                 <td th:text="${item.viewerLabel + ' / user#' + item.viewerUserId}">viewer</td>
                 <td th:text="${item.targetType == 'admin_user_detail' ? '管理者ユーザー詳細ページ' : item.targetType}">target type</td>
@@ -373,6 +420,31 @@
             </tr>
             </tbody>
         </table>
+        <details th:if="${#lists.size(pageData.accessLogs) > 5}">
+            <summary th:text="${'続きの閲覧履歴を見る（残り ' + (#lists.size(pageData.accessLogs) - 5) + ' 件）'}">続きの閲覧履歴を見る</summary>
+            <table>
+                <thead>
+                <tr>
+                    <th>閲覧時の立場</th>
+                    <th>閲覧者</th>
+                    <th>対象種別</th>
+                    <th>対象ID</th>
+                    <th>理由</th>
+                    <th>閲覧日時</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, itemStat : ${pageData.accessLogs}" th:if="${itemStat.index >= 5}">
+                    <td th:text="${item.viewerContext == 'admin' ? '管理者' : (item.viewerContext == 'host' ? '受け入れ担当' : (item.viewerContext == 'partner' ? '入り口担当' : item.viewerContext))}">context</td>
+                    <td th:text="${item.viewerLabel + ' / user#' + item.viewerUserId}">viewer</td>
+                    <td th:text="${item.targetType == 'admin_user_detail' ? '管理者ユーザー詳細ページ' : item.targetType}">target type</td>
+                    <td th:text="${item.targetId}">target id</td>
+                    <td th:text="${item.viewReason == 'Open admin detail page' ? '管理者詳細ページを表示' : (item.viewReason ?: '未記入')}">reason</td>
+                    <td th:text="${item.viewedAt}">viewed at</td>
+                </tr>
+                </tbody>
+            </table>
+        </details>
     </section>
 
     <section>
@@ -413,7 +485,7 @@
           This is only a bridge to later region-scoped settings work.
           Region is a scope, not an actor.
         -->
-        <p th:text="${'地域: ' + pageData.regionSettings.regionId + ' / 設定済み件数: ' + pageData.regionSettings.settingCount}">
+        <p th:text="${'対象地域: ' + (pageData.regionSettings.regionId == 'default' ? 'default（既定）' : pageData.regionSettings.regionId) + ' / 設定件数: ' + pageData.regionSettings.settingCount}">
             region settings summary
         </p>
         <p><a th:href="${pageData.regionSettings.settingsUrl}">地域設定画面（準備中）</a></p>

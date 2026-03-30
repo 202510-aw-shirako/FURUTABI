@@ -197,7 +197,7 @@ class AdminUserManagementFlowTests {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("管理者向けユーザー詳細")))
-            .andExpect(content().string(containsString("既存認証用 role")))
+            .andExpect(content().string(containsString("既存認証用ロール")))
             .andExpect(content().string(containsString("保存済み地域設定が未登録のため、既定値を表示中")))
             .andExpect(content().string(containsString("支援メモ（準備中）")))
             .andExpect(content().string(containsString("地域設定への導線")))
