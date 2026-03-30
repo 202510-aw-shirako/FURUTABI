@@ -55,7 +55,9 @@ public class OkatteService {
             row.createdAt() == null ? null : row.createdAt().toLocalDateTime(),
             viewerUserId != null && viewerUserId == row.hostUserId(),
             canApply(viewerUserId, row),
-            loadApplicationStatus(viewerUserId, proposalId)
+            loadApplicationStatus(viewerUserId, proposalId),
+            loadRelatedChatPath(viewerUserId, proposalId),
+            "/app/history"
         );
     }
 
@@ -202,6 +204,32 @@ public class OkatteService {
         }
     }
 
+    private String loadRelatedChatPath(Long viewerUserId, long proposalId) {
+        if (viewerUserId == null) {
+            return null;
+        }
+        try {
+            Long threadId = jdbcTemplate.queryForObject(
+                """
+                    SELECT related_thread_id
+                    FROM proposal_applications
+                    WHERE proposal_id = ?
+                      AND applicant_user_id = ?
+                      AND deleted_at IS NULL
+                      AND related_thread_id IS NOT NULL
+                    ORDER BY applied_at DESC, id DESC
+                    FETCH FIRST 1 ROWS ONLY
+                    """,
+                Long.class,
+                proposalId,
+                viewerUserId
+            );
+            return threadId == null ? null : "/app/chat/" + threadId;
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
     private String nullableText(String value) {
         if (value == null || value.isBlank()) {
             return null;
@@ -239,7 +267,9 @@ public class OkatteService {
         LocalDateTime createdAt,
         boolean owner,
         boolean canApply,
-        String applicationStatus
+        String applicationStatus,
+        String relatedChatPath,
+        String historyPath
     ) {
     }
 

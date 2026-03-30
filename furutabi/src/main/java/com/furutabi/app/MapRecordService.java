@@ -118,7 +118,10 @@ public class MapRecordService {
                             rs.getInt("image_count"),
                             rs.getInt("comment_count")
                         ),
-                        currentUser.id() == rs.getLong("user_id")
+                        currentUser.id() == rs.getLong("user_id"),
+                        scope != VisibilityScope.PRIVATE,
+                        scope != VisibilityScope.PRIVATE ? "/app/footprints/" + rs.getLong("id") : null,
+                        "/app/history"
                     );
                 },
                 mapRecordId
@@ -456,7 +459,13 @@ public class MapRecordService {
     ) {
     }
 
-    public record MapRecordDetailPageData(MapRecordDetail record, boolean ownerViewing) {
+    public record MapRecordDetailPageData(
+        MapRecordDetail record,
+        boolean ownerViewing,
+        boolean footprintAvailable,
+        String footprintDetailPath,
+        String historyPath
+    ) {
     }
 
     public record MapRecordDetail(

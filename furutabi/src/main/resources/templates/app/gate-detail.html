@@ -65,6 +65,10 @@
           <p class="note" th:if="${pageData.applicationStatus != null}" style="margin-top:12px;"
              th:text="${'あなたの申請状態: ' + pageData.applicationStatus}">申請状態</p>
           <p class="note" style="margin-top:12px;">申請作成までは backend でつながりました。受け入れ判断と chat 開始はまだ次段階です。</p>
+          <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn ghost" th:if="${pageData.relatedChatPath != null}" th:href="${pageData.relatedChatPath}">chat の続きへ</a>
+            <a class="btn ghost" th:if="${pageData.historyPath != null}" th:href="${pageData.historyPath}">関わりの記録へ</a>
+          </div>
         </article>
       </div>
     </section>

@@ -137,6 +137,17 @@ class MypageSettingsFlowTests {
     }
 
     @Test
+    @DisplayName("GET /app/mypage keeps thin cross-feature hub links")
+    void mypageShowsThinCrossFeatureHubLinks() throws Exception {
+        mockMvc.perform(get("/app/mypage").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("href=\"/app/history\"")))
+            .andExpect(content().string(containsString("href=\"/app/chat\"")))
+            .andExpect(content().string(containsString("href=\"/app/notifications\"")))
+            .andExpect(content().string(containsString("href=\"/app/map-records\"")));
+    }
+
+    @Test
     @DisplayName("POST /app/account updates users table")
     void accountPageUpdatesUsersTable() throws Exception {
         mockMvc.perform(post("/app/account")
