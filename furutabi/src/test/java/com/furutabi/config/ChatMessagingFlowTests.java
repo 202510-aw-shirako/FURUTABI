@@ -130,6 +130,57 @@ class ChatMessagingFlowTests {
     }
 
     @Test
+    @DisplayName("host and applicant can notify partner from chat detail")
+    void hostAndApplicantCanNotifyPartnerFromChatDetail() throws Exception {
+        mockMvc.perform(get("/app/chat/901").with(user("guest@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("架け橋さんに知らせる")));
+
+        mockMvc.perform(post("/app/chat/901/notify-partner")
+                .with(user("guest@example.com").roles("USER"))
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/chat/901?partnerNotified"));
+
+        Integer coordinationThreadCount = jdbcTemplate.queryForObject(
+            """
+                SELECT COUNT(*)
+                FROM chat_threads
+                WHERE related_entity_type = 'PROPOSAL_PARTNER_COORDINATION'
+                  AND related_entity_id = ?
+                  AND user_id = ?
+                  AND counterpart_id = ?
+                  AND deleted_at IS NULL
+                """,
+            Integer.class,
+            801L,
+            100L,
+            101L
+        );
+        Long notificationId = jdbcTemplate.queryForObject(
+            """
+                SELECT id
+                FROM notifications
+                WHERE user_id = ? AND type = ?
+                ORDER BY created_at DESC, id DESC
+                FETCH FIRST 1 ROWS ONLY
+                """,
+            Long.class,
+            101L,
+            "partner_attention_requested"
+        );
+        String relatedUrl = jdbcTemplate.queryForObject(
+            "SELECT related_url FROM notifications WHERE id = ?",
+            String.class,
+            notificationId
+        );
+
+        Assertions.assertEquals(1, coordinationThreadCount);
+        Assertions.assertNotNull(notificationId);
+        Assertions.assertTrue(relatedUrl.startsWith("/app/chat/"));
+    }
+
+    @Test
     @DisplayName("closed thread cannot receive new message")
     void closedThreadCannotReceiveNewMessage() throws Exception {
         Timestamp now = Timestamp.from(Instant.parse("2026-03-27T01:00:00Z"));

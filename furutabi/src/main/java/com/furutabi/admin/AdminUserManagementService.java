@@ -126,7 +126,7 @@ public class AdminUserManagementService {
                 supportSummary.latestSupportRequestId() == null ? null : "/app/support/" + supportSummary.latestSupportRequestId(),
                 "/app/history",
                 "/app/notifications",
-                "/app/admin/users/" + targetUserId + "/support-notes",
+                "/app/support-notes/users/" + targetUserId,
                 visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestHostProposalId(), "/app/gate/"),
                 visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestBridgeProposalId(), "/app/gate/"),
                 visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestOkatteCandidateId(), "/app/okatte/"),

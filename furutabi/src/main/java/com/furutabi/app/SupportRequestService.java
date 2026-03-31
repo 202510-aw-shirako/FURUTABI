@@ -20,9 +20,11 @@ public class SupportRequestService {
     private static final DateTimeFormatter PAGE_TIME = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 
     private final JdbcTemplate jdbcTemplate;
+    private final NotificationCenterService notificationCenterService;
 
-    public SupportRequestService(JdbcTemplate jdbcTemplate) {
+    public SupportRequestService(JdbcTemplate jdbcTemplate, NotificationCenterService notificationCenterService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.notificationCenterService = notificationCenterService;
     }
 
     public SupportListPageData loadOwnRequests(String email) {

@@ -28,18 +28,17 @@ public class AppPageController {
     private final SupportRequestService supportRequestService;
 
     public AppPageController(
-        AppSettingsService appSettingsService,
-        MapRecordService mapRecordService,
-        MapRecordCommentService mapRecordCommentService,
-        GateService gateService,
-        OkatteService okatteService,
-        ProposalApplicationService proposalApplicationService,
-        HostApplicationReviewService hostApplicationReviewService,
-        ChatThreadMessagingService chatThreadMessagingService,
-        HistoryService historyService,
-        NotificationCenterService notificationCenterService,
-        SupportRequestService supportRequestService
-    ) {
+            AppSettingsService appSettingsService,
+            MapRecordService mapRecordService,
+            MapRecordCommentService mapRecordCommentService,
+            GateService gateService,
+            OkatteService okatteService,
+            ProposalApplicationService proposalApplicationService,
+            HostApplicationReviewService hostApplicationReviewService,
+            ChatThreadMessagingService chatThreadMessagingService,
+            HistoryService historyService,
+            NotificationCenterService notificationCenterService,
+            SupportRequestService supportRequestService) {
         this.appSettingsService = appSettingsService;
         this.mapRecordService = mapRecordService;
         this.mapRecordCommentService = mapRecordCommentService;
@@ -53,33 +52,35 @@ public class AppPageController {
         this.supportRequestService = supportRequestService;
     }
 
-    @GetMapping({"/home", "/home.html"})
+    @GetMapping({ "/home", "/home.html" })
     public String home() {
         return "app/home";
     }
 
-    @GetMapping({"/local-member-home", "/local-member-home.html"})
+    @GetMapping({ "/local-member-home", "/local-member-home.html" })
     public String localMemberHome() {
         return "app/local-member-home";
     }
 
-    @GetMapping({"/host-applications", "/host-applications.html", "/bridge-applications", "/bridge-applications.html"})
+    @GetMapping({ "/host-applications", "/host-applications.html", "/bridge-applications",
+            "/bridge-applications.html" })
     public String hostApplications(Authentication authentication, Model model) {
         model.addAttribute("pageData", hostApplicationReviewService.loadPendingApplications(authentication.getName()));
         return "app/host-application-list";
     }
 
-    @GetMapping({"/host-applications/{id}", "/bridge-applications/{id}"})
+    @GetMapping({ "/host-applications/{id}", "/bridge-applications/{id}" })
     public String hostApplicationDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
-            model.addAttribute("pageData", hostApplicationReviewService.loadApplicationDetail(authentication.getName(), id));
+            model.addAttribute("pageData",
+                    hostApplicationReviewService.loadApplicationDetail(authentication.getName(), id));
             return "app/host-application-detail";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Proposal application not found", ex);
         }
     }
 
-    @PostMapping({"/host-applications/{id}/accept", "/bridge-applications/{id}/accept"})
+    @PostMapping({ "/host-applications/{id}/accept", "/bridge-applications/{id}/accept" })
     public String acceptHostApplication(@PathVariable long id, Authentication authentication) {
         try {
             hostApplicationReviewService.acceptApplication(authentication.getName(), id);
@@ -91,7 +92,7 @@ public class AppPageController {
         }
     }
 
-    @PostMapping({"/host-applications/{id}/reject", "/bridge-applications/{id}/reject"})
+    @PostMapping({ "/host-applications/{id}/reject", "/bridge-applications/{id}/reject" })
     public String rejectHostApplication(@PathVariable long id, Authentication authentication) {
         try {
             hostApplicationReviewService.rejectApplication(authentication.getName(), id);
@@ -103,7 +104,7 @@ public class AppPageController {
         }
     }
 
-    @GetMapping({"/chat", "/chat.html"})
+    @GetMapping({ "/chat", "/chat.html" })
     public String chatThreads(Authentication authentication, Model model) {
         model.addAttribute("pageData", chatThreadMessagingService.loadThreadList(authentication.getName()));
         return "app/chat-thread-list";
@@ -120,19 +121,19 @@ public class AppPageController {
         }
     }
 
-    @GetMapping({"/history", "/history.html"})
+    @GetMapping({ "/history", "/history.html" })
     public String history(Authentication authentication, Model model) {
         model.addAttribute("pageData", historyService.loadHistory(authentication.getName()));
         return "app/history-list";
     }
 
-    @GetMapping({"/notifications", "/notifications.html"})
+    @GetMapping({ "/notifications", "/notifications.html" })
     public String notifications(Authentication authentication, Model model) {
         model.addAttribute("pageData", notificationCenterService.loadNotifications(authentication.getName()));
         return "app/notification-list";
     }
 
-    @GetMapping({"/support", "/support.html"})
+    @GetMapping({ "/support", "/support.html" })
     public String supportList(Authentication authentication, Model model) {
         model.addAttribute("pageData", supportRequestService.loadOwnRequests(authentication.getName()));
         return "app/support-list";
@@ -147,9 +148,8 @@ public class AppPageController {
 
     @PostMapping("/support")
     public String createSupportRequest(
-        Authentication authentication,
-        @ModelAttribute("supportRequestForm") SupportRequestForm supportRequestForm
-    ) {
+            Authentication authentication,
+            @ModelAttribute("supportRequestForm") SupportRequestForm supportRequestForm) {
         try {
             long supportRequestId = supportRequestService.createRequest(authentication.getName(), supportRequestForm);
             return "redirect:/app/support/" + supportRequestId + "?submitted";
@@ -209,10 +209,9 @@ public class AppPageController {
 
     @PostMapping("/chat/{id}/messages")
     public String sendChatMessage(
-        @PathVariable long id,
-        Authentication authentication,
-        @ModelAttribute("chatMessageForm") ChatMessageForm chatMessageForm
-    ) {
+            @PathVariable long id,
+            Authentication authentication,
+            @ModelAttribute("chatMessageForm") ChatMessageForm chatMessageForm) {
         try {
             chatThreadMessagingService.sendMessage(authentication.getName(), id, chatMessageForm);
             return "redirect:/app/chat/" + id + "?sent";
@@ -223,13 +222,25 @@ public class AppPageController {
         }
     }
 
-    @GetMapping({"/mypage", "/mypage.html"})
+    @PostMapping("/chat/{id}/notify-partner")
+    public String notifyPartnerForChat(@PathVariable long id, Authentication authentication) {
+        try {
+            chatThreadMessagingService.notifyPartnerAttention(authentication.getName(), id);
+            return "redirect:/app/chat/" + id + "?partnerNotified";
+        } catch (ChatThreadMessagingService.ChatThreadMessagingConflictException ex) {
+            return "redirect:/app/chat/" + id + "?partnerBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat thread not found", ex);
+        }
+    }
+
+    @GetMapping({ "/mypage", "/mypage.html" })
     public String mypage(Authentication authentication, Model model) {
         model.addAttribute("summary", appSettingsService.loadMypageSummary(authentication.getName()));
         return "app/mypage";
     }
 
-    @GetMapping({"/account", "/account.html"})
+    @GetMapping({ "/account", "/account.html" })
     public String account(Authentication authentication, Model model) {
         AppSettingsService.AccountPageData pageData = appSettingsService.loadAccountPage(authentication.getName());
         model.addAttribute("accountForm", pageData.form());
@@ -240,27 +251,29 @@ public class AppPageController {
     }
 
     @PostMapping("/account")
-    public String saveAccount(Authentication authentication, @ModelAttribute("accountForm") AppAccountForm accountForm) {
+    public String saveAccount(Authentication authentication,
+            @ModelAttribute("accountForm") AppAccountForm accountForm) {
         appSettingsService.saveAccount(authentication.getName(), accountForm);
         return "redirect:/app/account?saved";
     }
 
-    @GetMapping({"/profile", "/profile.html"})
+    @GetMapping({ "/profile", "/profile.html" })
     public String profile(Authentication authentication, Model model) {
         model.addAttribute("profileForm", appSettingsService.loadProfileForm(authentication.getName()));
         return "app/profile";
     }
 
     @PostMapping("/profile")
-    public String saveProfile(Authentication authentication, @ModelAttribute("profileForm") AppProfileForm profileForm) {
+    public String saveProfile(Authentication authentication,
+            @ModelAttribute("profileForm") AppProfileForm profileForm) {
         appSettingsService.saveProfile(authentication.getName(), profileForm);
         return "redirect:/app/profile?saved";
     }
 
-    @GetMapping({"/privacy-settings", "/privacy-settings.html"})
+    @GetMapping({ "/privacy-settings", "/privacy-settings.html" })
     public String privacySettings(Authentication authentication, Model model) {
-        AppSettingsService.PrivacySettingsPageData pageData =
-            appSettingsService.loadPrivacySettingsPage(authentication.getName());
+        AppSettingsService.PrivacySettingsPageData pageData = appSettingsService
+                .loadPrivacySettingsPage(authentication.getName());
         model.addAttribute("privacySettingsForm", pageData.form());
         model.addAttribute("smsVerified", pageData.smsVerified());
         model.addAttribute("additionalVerificationStatus", pageData.additionalVerificationStatus());
@@ -270,26 +283,25 @@ public class AppPageController {
 
     @PostMapping("/privacy-settings")
     public String savePrivacySettings(
-        Authentication authentication,
-        @ModelAttribute("privacySettingsForm") AppPrivacySettingsForm privacySettingsForm
-    ) {
+            Authentication authentication,
+            @ModelAttribute("privacySettingsForm") AppPrivacySettingsForm privacySettingsForm) {
         appSettingsService.savePrivacySettings(authentication.getName(), privacySettingsForm);
         return "redirect:/app/privacy-settings?saved";
     }
 
-    @GetMapping({"/map-records", "/map-records.html"})
+    @GetMapping({ "/map-records", "/map-records.html" })
     public String mapRecords(Authentication authentication, Model model) {
         model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordList(authentication.getName()));
         return "app/map-records";
     }
 
-    @GetMapping({"/footprints", "/footprints.html"})
+    @GetMapping({ "/footprints", "/footprints.html" })
     public String footprints(Authentication authentication, Model model) {
         model.addAttribute("pageData", mapRecordService.loadVisibleFootprintList(authentication.getName()));
         return "app/footprint-list";
     }
 
-    @GetMapping({"/gate", "/gate.html"})
+    @GetMapping({ "/gate", "/gate.html" })
     public String gateList(Authentication authentication, Model model) {
         model.addAttribute("pageData", gateService.loadVisibleGateList(authentication.getName()));
         return "app/gate-list";
@@ -305,7 +317,7 @@ public class AppPageController {
         }
     }
 
-    @GetMapping({"/okatte", "/okatte.html"})
+    @GetMapping({ "/okatte", "/okatte.html" })
     public String okatteList(Authentication authentication, Model model) {
         model.addAttribute("pageData", okatteService.loadVisibleOkatteList(authentication.getName()));
         return "app/okatte-list";
@@ -324,7 +336,8 @@ public class AppPageController {
     @GetMapping("/gate/{id}/apply")
     public String gateApplicationPage(@PathVariable long id, Authentication authentication, Model model) {
         try {
-            model.addAttribute("pageData", proposalApplicationService.loadApplicationPage(authentication.getName(), id));
+            model.addAttribute("pageData",
+                    proposalApplicationService.loadApplicationPage(authentication.getName(), id));
             model.addAttribute("proposalApplicationForm", new ProposalApplicationForm());
             return "app/gate-application-form";
         } catch (IllegalStateException ex) {
@@ -335,7 +348,8 @@ public class AppPageController {
     @GetMapping("/okatte/{id}/apply")
     public String okatteApplicationPage(@PathVariable long id, Authentication authentication, Model model) {
         try {
-            model.addAttribute("pageData", proposalApplicationService.loadOkatteApplicationPage(authentication.getName(), id));
+            model.addAttribute("pageData",
+                    proposalApplicationService.loadOkatteApplicationPage(authentication.getName(), id));
             model.addAttribute("proposalApplicationForm", new ProposalApplicationForm());
             return "app/okatte-application-form";
         } catch (IllegalStateException ex) {
@@ -345,10 +359,9 @@ public class AppPageController {
 
     @PostMapping("/okatte/{id}/apply")
     public String createOkatteApplication(
-        @PathVariable long id,
-        Authentication authentication,
-        @ModelAttribute("proposalApplicationForm") ProposalApplicationForm proposalApplicationForm
-    ) {
+            @PathVariable long id,
+            Authentication authentication,
+            @ModelAttribute("proposalApplicationForm") ProposalApplicationForm proposalApplicationForm) {
         try {
             proposalApplicationService.createOkatteApplication(authentication.getName(), id, proposalApplicationForm);
             return "redirect:/app/okatte/" + id + "?applied";
@@ -361,10 +374,9 @@ public class AppPageController {
 
     @PostMapping("/gate/{id}/apply")
     public String createGateApplication(
-        @PathVariable long id,
-        Authentication authentication,
-        @ModelAttribute("proposalApplicationForm") ProposalApplicationForm proposalApplicationForm
-    ) {
+            @PathVariable long id,
+            Authentication authentication,
+            @ModelAttribute("proposalApplicationForm") ProposalApplicationForm proposalApplicationForm) {
         try {
             proposalApplicationService.createApplication(authentication.getName(), id, proposalApplicationForm);
             return "redirect:/app/gate/" + id + "?applied";
@@ -385,8 +397,10 @@ public class AppPageController {
     }
 
     @PostMapping("/map-records")
-    public String saveNewMapRecord(Authentication authentication, @ModelAttribute("mapRecordForm") MapRecordForm mapRecordForm) {
-        MapRecordService.MapRecordSaveResult saveResult = mapRecordService.createRecord(authentication.getName(), mapRecordForm);
+    public String saveNewMapRecord(Authentication authentication,
+            @ModelAttribute("mapRecordForm") MapRecordForm mapRecordForm) {
+        MapRecordService.MapRecordSaveResult saveResult = mapRecordService.createRecord(authentication.getName(),
+                mapRecordForm);
         if (saveResult.draft()) {
             return "redirect:/app/map-records/" + saveResult.mapRecordId() + "/edit?savedDraft";
         }
@@ -397,7 +411,8 @@ public class AppPageController {
     public String mapRecordDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
             model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordDetail(authentication.getName(), id));
-            model.addAttribute("commentPageData", mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
+            model.addAttribute("commentPageData",
+                    mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
             model.addAttribute("mapRecordCommentForm", new MapRecordCommentForm());
             return "app/map-record-detail";
         } catch (IllegalStateException ex) {
@@ -409,7 +424,8 @@ public class AppPageController {
     public String footprintDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
             model.addAttribute("pageData", mapRecordService.loadVisibleFootprintDetail(authentication.getName(), id));
-            model.addAttribute("commentPageData", mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
+            model.addAttribute("commentPageData",
+                    mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
             model.addAttribute("mapRecordCommentForm", new MapRecordCommentForm());
             return "app/footprint-detail";
         } catch (IllegalStateException ex) {
@@ -419,10 +435,9 @@ public class AppPageController {
 
     @PostMapping("/footprints/{id}/comments")
     public String createFootprintComment(
-        @PathVariable long id,
-        Authentication authentication,
-        @ModelAttribute("mapRecordCommentForm") MapRecordCommentForm mapRecordCommentForm
-    ) {
+            @PathVariable long id,
+            Authentication authentication,
+            @ModelAttribute("mapRecordCommentForm") MapRecordCommentForm mapRecordCommentForm) {
         try {
             mapRecordCommentService.addComment(authentication.getName(), id, mapRecordCommentForm);
             return "redirect:/app/footprints/" + id + "?commentSaved";
@@ -435,10 +450,9 @@ public class AppPageController {
 
     @PostMapping("/footprints/{mapRecordId}/comments/{commentId}/hide")
     public String hideFootprintComment(
-        @PathVariable long mapRecordId,
-        @PathVariable long commentId,
-        Authentication authentication
-    ) {
+            @PathVariable long mapRecordId,
+            @PathVariable long commentId,
+            Authentication authentication) {
         try {
             mapRecordCommentService.hideComment(authentication.getName(), mapRecordId, commentId);
             return "redirect:/app/footprints/" + mapRecordId + "?commentHidden";
@@ -451,10 +465,9 @@ public class AppPageController {
 
     @PostMapping("/map-records/{id}/comments")
     public String createMapRecordComment(
-        @PathVariable long id,
-        Authentication authentication,
-        @ModelAttribute("mapRecordCommentForm") MapRecordCommentForm mapRecordCommentForm
-    ) {
+            @PathVariable long id,
+            Authentication authentication,
+            @ModelAttribute("mapRecordCommentForm") MapRecordCommentForm mapRecordCommentForm) {
         try {
             mapRecordCommentService.addComment(authentication.getName(), id, mapRecordCommentForm);
             return "redirect:/app/map-records/" + id + "?commentSaved";
@@ -467,10 +480,9 @@ public class AppPageController {
 
     @PostMapping("/map-records/{mapRecordId}/comments/{commentId}/hide")
     public String hideMapRecordComment(
-        @PathVariable long mapRecordId,
-        @PathVariable long commentId,
-        Authentication authentication
-    ) {
+            @PathVariable long mapRecordId,
+            @PathVariable long commentId,
+            Authentication authentication) {
         try {
             mapRecordCommentService.hideComment(authentication.getName(), mapRecordId, commentId);
             return "redirect:/app/map-records/" + mapRecordId + "?commentHidden";
@@ -484,7 +496,8 @@ public class AppPageController {
     @GetMapping("/map-records/{id}/edit")
     public String editMapRecord(@PathVariable long id, Authentication authentication, Model model) {
         try {
-            MapRecordService.MapRecordEditorPageData pageData = mapRecordService.loadEditPage(authentication.getName(), id);
+            MapRecordService.MapRecordEditorPageData pageData = mapRecordService.loadEditPage(authentication.getName(),
+                    id);
             model.addAttribute("pageData", pageData);
             model.addAttribute("mapRecordForm", pageData.form());
             model.addAttribute("visibilityOptions", visibilityOptions());
@@ -496,16 +509,14 @@ public class AppPageController {
 
     @PostMapping("/map-records/{id}")
     public String updateMapRecord(
-        @PathVariable long id,
-        Authentication authentication,
-        @ModelAttribute("mapRecordForm") MapRecordForm mapRecordForm
-    ) {
+            @PathVariable long id,
+            Authentication authentication,
+            @ModelAttribute("mapRecordForm") MapRecordForm mapRecordForm) {
         try {
             MapRecordService.MapRecordSaveResult saveResult = mapRecordService.updateRecord(
-                authentication.getName(),
-                id,
-                mapRecordForm
-            );
+                    authentication.getName(),
+                    id,
+                    mapRecordForm);
             if (saveResult.draft()) {
                 return "redirect:/app/map-records/" + id + "/edit?savedDraft";
             }
@@ -527,9 +538,9 @@ public class AppPageController {
 
     private VisibilityOption[] visibilityOptions() {
         return new VisibilityOption[] {
-            new VisibilityOption("PUBLIC", "一般公開"),
-            new VisibilityOption("PRIVATE", "本人のみ"),
-            new VisibilityOption("LIMITED", "関係者まで")
+                new VisibilityOption("PUBLIC", "一般公開"),
+                new VisibilityOption("PRIVATE", "本人のみ"),
+                new VisibilityOption("LIMITED", "関係者まで")
         };
     }
 

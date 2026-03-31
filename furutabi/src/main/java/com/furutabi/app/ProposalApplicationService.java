@@ -18,10 +18,16 @@ public class ProposalApplicationService {
 
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
+    private final ApplicationChatThreadService applicationChatThreadService;
 
-    public ProposalApplicationService(JdbcTemplate jdbcTemplate, VisibilityAccessService visibilityAccessService) {
+    public ProposalApplicationService(
+        JdbcTemplate jdbcTemplate,
+        VisibilityAccessService visibilityAccessService,
+        ApplicationChatThreadService applicationChatThreadService
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.visibilityAccessService = visibilityAccessService;
+        this.applicationChatThreadService = applicationChatThreadService;
     }
 
     public ProposalApplicationPageData loadApplicationPage(String email, long proposalId) {
@@ -120,6 +126,7 @@ public class ProposalApplicationService {
             applicantUserId,
             now
         );
+        applicationChatThreadService.ensureHostPartnerCoordinationThread(applicationId);
 
         return new ProposalApplicationCreateResult(applicationId, proposalId);
     }

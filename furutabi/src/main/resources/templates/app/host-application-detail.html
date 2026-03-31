@@ -78,6 +78,7 @@
 
           <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
             <a class="btn ghost" th:href="${pageData.proposalDetailPath}">proposal 詳細へ戻る</a>
+            <a class="btn ghost" th:if="${pageData.supportNoteUrl != null}" th:href="${pageData.supportNoteUrl}">終了後の支援メモを書く</a>
           </div>
         </article>
       </div>

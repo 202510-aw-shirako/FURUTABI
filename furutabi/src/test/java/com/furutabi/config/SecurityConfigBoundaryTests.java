@@ -41,6 +41,8 @@ class SecurityConfigBoundaryTests {
         jdbcTemplate.update("DELETE FROM notifications");
         jdbcTemplate.update("DELETE FROM access_logs");
         jdbcTemplate.update("DELETE FROM permission_change_logs");
+        jdbcTemplate.update("DELETE FROM support_note_reports");
+        jdbcTemplate.update("DELETE FROM support_notes");
         jdbcTemplate.update("DELETE FROM partner_assignments");
         jdbcTemplate.update("DELETE FROM permission_rules");
         jdbcTemplate.update("DELETE FROM role_policies");
@@ -420,9 +422,17 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
-    @DisplayName("Authenticated admin support notes placeholder route is available for admin")
-    void authenticatedAdminSupportNotesPlaceholderRouteIsAvailable() throws Exception {
+    @DisplayName("Authenticated admin support notes redirect route is available for admin")
+    void authenticatedAdminSupportNotesRedirectRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/admin/users/1/support-notes").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/support-notes/users/1"));
+    }
+
+    @Test
+    @DisplayName("Authenticated support note list route is available after passing security")
+    void authenticatedSupportNoteListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/support-notes/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk());
     }
 

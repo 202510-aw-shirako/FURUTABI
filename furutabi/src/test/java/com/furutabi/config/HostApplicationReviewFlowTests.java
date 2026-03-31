@@ -224,6 +224,49 @@ class HostApplicationReviewFlowTests {
     }
 
     @Test
+    @DisplayName("closed accepted application detail shows support note action")
+    void closedAcceptedApplicationShowsSupportNoteAction() throws Exception {
+        Timestamp now = Timestamp.from(Instant.parse("2026-03-25T02:30:00Z"));
+        jdbcTemplate.update(
+            "UPDATE proposal_applications SET application_status = ?, related_thread_id = ?, updated_at = ? WHERE id = ?",
+            "accepted",
+            901L,
+            now,
+            801L
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO chat_threads (
+                    id, user_id, counterpart_id, counterpart_role, related_entity_type, related_entity_id,
+                    title, status, unread_count, requires_attention, related_url, latest_message_preview,
+                    latest_message_at, created_at, updated_at, closed_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            901L,
+            103L,
+            100L,
+            "LOCAL",
+            "PROPOSAL_APPLICATION",
+            801L,
+            "Local host gate",
+            "closed",
+            0,
+            false,
+            "/app/host-applications/801",
+            null,
+            null,
+            now,
+            now,
+            now,
+            null
+        );
+
+        mockMvc.perform(get("/app/host-applications/801").with(user("local@example.com").roles("LOCAL")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("/app/support-notes/users/103/new?relatedCardId=801")));
+    }
+
+    @Test
     @DisplayName("review cannot be repeated once application is no longer pending")
     void reviewCannotBeRepeated() throws Exception {
         jdbcTemplate.update(

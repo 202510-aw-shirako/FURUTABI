@@ -14,10 +14,16 @@ public class ChatThreadMessagingService {
 
     private final JdbcTemplate jdbcTemplate;
     private final NotificationCenterService notificationCenterService;
+    private final ApplicationChatThreadService applicationChatThreadService;
 
-    public ChatThreadMessagingService(JdbcTemplate jdbcTemplate, NotificationCenterService notificationCenterService) {
+    public ChatThreadMessagingService(
+        JdbcTemplate jdbcTemplate,
+        NotificationCenterService notificationCenterService,
+        ApplicationChatThreadService applicationChatThreadService
+    ) {
         this.jdbcTemplate = jdbcTemplate;
         this.notificationCenterService = notificationCenterService;
+        this.applicationChatThreadService = applicationChatThreadService;
     }
 
     public ChatThreadListPageData loadThreadList(String currentUserEmail) {
@@ -63,6 +69,7 @@ public class ChatThreadMessagingService {
     public ChatThreadDetailPageData loadThreadDetail(String currentUserEmail, long threadId) {
         long currentUserId = requireUserId(currentUserEmail);
         ThreadAccessRow thread = requireAccessibleThread(currentUserId, threadId);
+        PartnerAssistAction partnerAssistAction = loadPartnerAssistAction(currentUserId, thread);
         List<ChatMessageItem> messages = jdbcTemplate.query(
             """
                 SELECT cm.id,
@@ -98,7 +105,24 @@ public class ChatThreadMessagingService {
             thread.counterpartNickname(),
             thread.counterpartRole(),
             "open".equalsIgnoreCase(thread.status()),
+            partnerAssistAction != null,
+            partnerAssistAction == null ? null : partnerAssistAction.label(),
             messages
+        );
+    }
+
+    @Transactional
+    public void notifyPartnerAttention(String currentUserEmail, long threadId) {
+        long currentUserId = requireUserId(currentUserEmail);
+        ThreadAccessRow thread = requireAccessibleThread(currentUserId, threadId);
+        PartnerAssistAction partnerAssistAction = loadPartnerAssistAction(currentUserId, thread);
+        if (partnerAssistAction == null) {
+            throw new ChatThreadMessagingConflictException("Partner assist is not available");
+        }
+        notificationCenterService.notifyBridgePartnerAttentionRequested(
+            partnerAssistAction.applicationId(),
+            currentUserId,
+            partnerAssistAction.relatedUrl()
         );
     }
 
@@ -161,12 +185,14 @@ public class ChatThreadMessagingService {
         try {
             return jdbcTemplate.queryForObject(
                 """
-                    SELECT ct.id,
-                           ct.title,
-                           ct.status,
-                           ct.related_url,
-                           ct.counterpart_role,
-                           other.nickname AS counterpart_nickname
+                        SELECT ct.id,
+                               ct.title,
+                               ct.status,
+                               ct.related_url,
+                               ct.related_entity_type,
+                               ct.related_entity_id,
+                               ct.counterpart_role,
+                               other.nickname AS counterpart_nickname
                     FROM chat_threads ct
                     JOIN users other
                       ON other.id = CASE
@@ -182,6 +208,8 @@ public class ChatThreadMessagingService {
                     rs.getString("title"),
                     rs.getString("status"),
                     rs.getString("related_url"),
+                    rs.getString("related_entity_type"),
+                    rs.getObject("related_entity_id", Long.class),
                     rs.getString("counterpart_nickname"),
                     rs.getString("counterpart_role")
                 ),
@@ -192,6 +220,50 @@ public class ChatThreadMessagingService {
             );
         } catch (EmptyResultDataAccessException ex) {
             throw new IllegalStateException("Chat thread not found: " + threadId, ex);
+        }
+    }
+
+    private PartnerAssistAction loadPartnerAssistAction(long currentUserId, ThreadAccessRow thread) {
+        if (!"PROPOSAL_APPLICATION".equalsIgnoreCase(thread.relatedEntityType()) || thread.relatedEntityId() == null) {
+            return null;
+        }
+        try {
+            PartnerAssistRow row = jdbcTemplate.queryForObject(
+                """
+                    SELECT pa.id AS application_id,
+                           pa.applicant_user_id,
+                           p.host_user_id,
+                           p.bridge_user_id
+                    FROM proposal_applications pa
+                    JOIN proposals p ON p.id = pa.proposal_id
+                    WHERE pa.id = ?
+                      AND pa.deleted_at IS NULL
+                      AND p.deleted_at IS NULL
+                      AND LOWER(pa.application_status) = 'accepted'
+                    """,
+                (rs, rowNum) -> new PartnerAssistRow(
+                    rs.getLong("application_id"),
+                    rs.getLong("applicant_user_id"),
+                    rs.getLong("host_user_id"),
+                    rs.getObject("bridge_user_id", Long.class)
+                ),
+                thread.relatedEntityId()
+            );
+            if (row == null || row.bridgeUserId() == null || row.bridgeUserId() == currentUserId) {
+                return null;
+            }
+            if (currentUserId != row.applicantUserId() && currentUserId != row.hostUserId()) {
+                return null;
+            }
+            Long coordinationThreadId = applicationChatThreadService.ensureHostPartnerCoordinationThread(row.applicationId());
+            String relatedUrl = coordinationThreadId == null ? "/app/chat" : "/app/chat/" + coordinationThreadId;
+            return new PartnerAssistAction(
+                row.applicationId(),
+                "架け橋さんに通知",
+                relatedUrl
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
         }
     }
 
@@ -263,6 +335,8 @@ public class ChatThreadMessagingService {
         String counterpartNickname,
         String counterpartRole,
         boolean canSend,
+        boolean canNotifyPartner,
+        String partnerNotifyLabel,
         List<ChatMessageItem> messages
     ) {
     }
@@ -284,9 +358,17 @@ public class ChatThreadMessagingService {
         String title,
         String status,
         String relatedUrl,
+        String relatedEntityType,
+        Long relatedEntityId,
         String counterpartNickname,
         String counterpartRole
     ) {
+    }
+
+    private record PartnerAssistRow(long applicationId, long applicantUserId, long hostUserId, Long bridgeUserId) {
+    }
+
+    private record PartnerAssistAction(long applicationId, String label, String relatedUrl) {
     }
 
     public static final class ChatThreadMessagingConflictException extends RuntimeException {

@@ -79,14 +79,17 @@ public class HostApplicationReviewService {
             row = jdbcTemplate.queryForObject(
                 """
                     SELECT pa.id, pa.proposal_id, pa.application_status, pa.latest_message_preview, pa.applied_at,
-                           pa.related_thread_id, p.title, p.summary, p.location_name, p.duration_minutes,
+                           pa.related_thread_id, pa.applicant_user_id,
+                           p.title, p.summary, p.location_name, p.duration_minutes, p.bridge_user_id,
                            p.proposal_type,
+                           ct.status AS thread_status,
                            applicant.nickname AS applicant_nickname,
                            host.nickname AS host_nickname
                     FROM proposal_applications pa
                     JOIN proposals p ON p.id = pa.proposal_id
                     JOIN users applicant ON applicant.id = pa.applicant_user_id
                     JOIN users host ON host.id = p.host_user_id
+                    LEFT JOIN chat_threads ct ON ct.id = pa.related_thread_id AND ct.deleted_at IS NULL
                     WHERE pa.id = ?
                       AND pa.deleted_at IS NULL
                       AND p.deleted_at IS NULL
@@ -98,11 +101,14 @@ public class HostApplicationReviewService {
                     rs.getString("latest_message_preview"),
                     rs.getTimestamp("applied_at") == null ? null : rs.getTimestamp("applied_at").toLocalDateTime(),
                     rs.getObject("related_thread_id", Long.class),
+                    rs.getLong("applicant_user_id"),
                     rs.getString("title"),
                     rs.getString("summary"),
                     rs.getString("location_name"),
                     rs.getObject("duration_minutes", Integer.class),
                     rs.getString("proposal_type"),
+                    rs.getObject("bridge_user_id", Long.class),
+                    rs.getString("thread_status"),
                     rs.getString("applicant_nickname"),
                     rs.getString("host_nickname")
                 ),
@@ -132,8 +138,28 @@ public class HostApplicationReviewService {
             row.appliedAt(),
             "pending".equalsIgnoreCase(row.applicationStatus()),
             row.relatedThreadId() != null,
-            proposalDetailPath(row.proposalType(), row.proposalId())
+            proposalDetailPath(row.proposalType(), row.proposalId()),
+            buildSupportNoteUrl(row)
         );
+    }
+
+    private String buildSupportNoteUrl(BridgeApplicationDetailRow row) {
+        if (!"accepted".equalsIgnoreCase(row.applicationStatus())) {
+            return null;
+        }
+        if (!isClosedThreadStatus(row.threadStatus())) {
+            return null;
+        }
+        return "/app/support-notes/users/" + row.applicantUserId() + "/new?relatedCardId=" + row.applicationId();
+    }
+
+    private boolean isClosedThreadStatus(String threadStatus) {
+        if (threadStatus == null) {
+            return false;
+        }
+        return "closed".equalsIgnoreCase(threadStatus)
+            || "completed".equalsIgnoreCase(threadStatus)
+            || "cancelled".equalsIgnoreCase(threadStatus);
     }
 
     @Transactional
@@ -275,7 +301,8 @@ public class HostApplicationReviewService {
         LocalDateTime appliedAt,
         boolean canReview,
         boolean chatOpened,
-        String proposalDetailPath
+        String proposalDetailPath,
+        String supportNoteUrl
     ) {
     }
 
@@ -286,11 +313,14 @@ public class HostApplicationReviewService {
         String latestMessagePreview,
         LocalDateTime appliedAt,
         Long relatedThreadId,
+        long applicantUserId,
         String title,
         String summary,
         String locationName,
         Integer durationMinutes,
         String proposalType,
+        Long bridgeUserId,
+        String threadStatus,
         String applicantNickname,
         String hostNickname
     ) {

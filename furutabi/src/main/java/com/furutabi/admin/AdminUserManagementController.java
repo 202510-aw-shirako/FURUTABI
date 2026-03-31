@@ -37,10 +37,10 @@ public class AdminUserManagementController {
     }
 
     @GetMapping("/users/{id}/support-notes")
-    public String adminSupportNotesPlaceholder(@PathVariable long id, Authentication authentication, Model model) {
+    public String adminSupportNotesRedirect(@PathVariable long id, Authentication authentication) {
         try {
-            model.addAttribute("pageData", adminUserManagementService.loadDetailPage(authentication.getName(), id));
-            return "app/admin-user-support-notes-placeholder";
+            adminUserManagementService.loadDetailPage(authentication.getName(), id);
+            return "redirect:/app/support-notes/users/" + id;
         } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);
         } catch (IllegalStateException ex) {

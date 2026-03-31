@@ -57,7 +57,8 @@ public class GateService {
             canApply(viewerUserId, row),
             loadApplicationStatus(viewerUserId, proposalId),
             loadRelatedChatPath(viewerUserId, proposalId),
-            "/app/history"
+            "/app/history",
+            loadSupportNoteUrl(viewerUserId, row)
         );
     }
 
@@ -230,6 +231,35 @@ public class GateService {
         }
     }
 
+    private String loadSupportNoteUrl(Long viewerUserId, GateDetailRow row) {
+        if (viewerUserId == null) {
+            return null;
+        }
+        if (viewerUserId.longValue() != row.hostUserId()
+            && (row.bridgeUserId() == null || viewerUserId.longValue() != row.bridgeUserId().longValue())) {
+            return null;
+        }
+        try {
+            return jdbcTemplate.queryForObject(
+                """
+                    SELECT '/app/support-notes/users/' || pa.applicant_user_id || '/new?relatedCardId=' || pa.id
+                    FROM proposal_applications pa
+                    JOIN chat_threads ct ON ct.id = pa.related_thread_id AND ct.deleted_at IS NULL
+                    WHERE pa.proposal_id = ?
+                      AND pa.deleted_at IS NULL
+                      AND LOWER(pa.application_status) = 'accepted'
+                      AND LOWER(ct.status) IN ('closed', 'completed', 'cancelled')
+                    ORDER BY ct.closed_at DESC, pa.id DESC
+                    FETCH FIRST 1 ROWS ONLY
+                    """,
+                String.class,
+                row.proposalId()
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
     private String nullableText(String value) {
         if (value == null || value.isBlank()) {
             return null;
@@ -269,7 +299,8 @@ public class GateService {
         boolean canApply,
         String applicationStatus,
         String relatedChatPath,
-        String historyPath
+        String historyPath,
+        String supportNoteUrl
     ) {
     }
 

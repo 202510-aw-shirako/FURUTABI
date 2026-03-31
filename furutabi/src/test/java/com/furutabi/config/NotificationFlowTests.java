@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Date;
@@ -113,6 +114,24 @@ class NotificationFlowTests {
         Assertions.assertNotNull(relatedUrl);
         Assertions.assertTrue(relatedUrl.startsWith("/app/chat/"));
 
+        Long partnerNotificationId = jdbcTemplate.queryForObject(
+            """
+                SELECT id
+                FROM notifications
+                WHERE user_id = ? AND type = ?
+                ORDER BY created_at DESC, id DESC
+                FETCH FIRST 1 ROWS ONLY
+                """,
+            Long.class,
+            104L,
+            "application_partner_accepted"
+        );
+        String partnerRelatedUrl = jdbcTemplate.queryForObject(
+            "SELECT related_url FROM notifications WHERE id = ?",
+            String.class,
+            partnerNotificationId
+        );
+
         mockMvc.perform(get("/app/notifications").with(user("guest@example.com").roles("USER")))
             .andExpect(status().isOk());
 
@@ -135,6 +154,8 @@ class NotificationFlowTests {
 
         Assertions.assertEquals(Boolean.TRUE, isRead);
         Assertions.assertNotNull(readAt);
+        Assertions.assertNotNull(partnerNotificationId);
+        Assertions.assertEquals("/app/bridge-applications/801", partnerRelatedUrl);
     }
 
     @Test
@@ -201,6 +222,30 @@ class NotificationFlowTests {
 
         Assertions.assertEquals(1, count);
         Assertions.assertEquals("/app/map-records/501", relatedUrl);
+    }
+
+    @Test
+    @DisplayName("support request stays in admin support flow and does not notify partner directly")
+    void supportRequestDoesNotNotifyBridgePartnerDirectly() throws Exception {
+        mockMvc.perform(post("/app/support")
+                .with(user("guest@example.com").roles("USER"))
+                .with(csrf())
+                .param("requestType", "chat")
+                .param("relatedFeature", "chat")
+                .param("targetReference", "/app/chat/901")
+                .param("replyPreference", "required")
+                .param("body", "間に入ってほしいので相談したいです"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/app/support/*?submitted"));
+
+        Integer partnerNotificationCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM notifications WHERE user_id = ? AND type = ?",
+            Integer.class,
+            104L,
+            "support_partner_attention"
+        );
+
+        Assertions.assertEquals(0, partnerNotificationCount);
     }
 
     @Test
@@ -411,3 +456,4 @@ class NotificationFlowTests {
         );
     }
 }
+

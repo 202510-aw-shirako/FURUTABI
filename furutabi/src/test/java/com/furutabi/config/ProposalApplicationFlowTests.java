@@ -121,10 +121,26 @@ class ProposalApplicationFlowTests {
             applicationId,
             "pending"
         );
+        Integer coordinationThreadCount = jdbcTemplate.queryForObject(
+            """
+                SELECT COUNT(*)
+                FROM chat_threads
+                WHERE related_entity_type = 'PROPOSAL_PARTNER_COORDINATION'
+                  AND related_entity_id = ?
+                  AND user_id = ?
+                  AND counterpart_id = ?
+                  AND deleted_at IS NULL
+                """,
+            Integer.class,
+            applicationId,
+            100L,
+            101L
+        );
 
         Assertions.assertEquals("pending", applicationStatus);
         Assertions.assertNull(relatedThreadId);
         Assertions.assertEquals(1, historyCount);
+        Assertions.assertEquals(1, coordinationThreadCount);
         Assertions.assertTrue(relatedUserService.isProposalApplicant(102L, 701L));
         Assertions.assertTrue(relatedUserService.isProposalApplicationParty(100L, applicationId));
         Assertions.assertTrue(relatedUserService.isProposalApplicationParty(102L, applicationId));

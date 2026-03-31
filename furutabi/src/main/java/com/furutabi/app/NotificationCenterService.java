@@ -103,6 +103,21 @@ public class NotificationCenterService {
             body,
             accepted ? "連絡を見る" : "提案を見る"
         );
+        if (accepted && row.bridgeUserId() != null && row.bridgeUserId() != row.applicantUserId()) {
+            createNotification(
+                row.bridgeUserId(),
+                "application_partner_accepted",
+                "申請が承認されました",
+                row.hostDisplayName() + " さんが申請を承認しました。提案先との状況を確認してください。",
+                "PROPOSAL_APPLICATION",
+                applicationId,
+                "/app/bridge-applications/" + applicationId,
+                row.hostDisplayName(),
+                row.hostRole(),
+                row.hostDisplayName() + " さんが承認しました。",
+                "申請の状況を見る"
+            );
+        }
     }
 
     public void notifyNewChatMessage(long threadId, long senderUserId, String body) {
@@ -139,6 +154,50 @@ public class NotificationCenterService {
             row.authorRole(),
             abbreviate(body, 255),
             "地図を見る"
+        );
+    }
+
+    public void notifyBridgePartnerAttentionRequested(long applicationId, long senderUserId, String relatedUrl) {
+        BridgePartnerAttentionRequestRow row = requireBridgePartnerAttentionRequestRow(applicationId, senderUserId);
+        if (row == null || row.bridgeUserId() == null || row.bridgeUserId() == senderUserId) {
+            return;
+        }
+        String sender = displayName(row.senderNickname(), row.senderName(), row.senderEmail());
+        createNotification(
+            row.bridgeUserId(),
+            "partner_attention_requested",
+            "架け橋さんに入ってほしい連絡があります",
+            sender + " さんから、今回の関わりに入ってほしい連絡が届いています。",
+            "PROPOSAL_APPLICATION",
+            applicationId,
+            relatedUrl,
+            sender,
+            row.senderRole(),
+            row.targetUserLabel() + " さんとの関わりです。",
+            "連携チャットを見る"
+        );
+    }
+
+    public void notifyBridgePartnerProjectClosed(long applicationId) {
+        BridgePartnerClosureRow row = requireBridgePartnerClosureRow(applicationId);
+        if (row == null || row.bridgeUserId() == null) {
+            return;
+        }
+        String host = displayName(row.hostNickname(), row.hostName(), row.hostEmail());
+        String title = "終了後の支援メモを書いてください";
+        String body = row.targetUserLabel() + " さんとの関わりが一段落しました。引き継ぎのための支援メモを残してください。";
+        createNotification(
+            row.bridgeUserId(),
+            "support_note_follow_up",
+            title,
+            body,
+            "PROPOSAL_APPLICATION",
+            applicationId,
+            "/app/support-notes/users/" + row.targetUserId() + "/new?relatedCardId=" + applicationId,
+            host,
+            row.hostRole(),
+            body,
+            "支援メモを書く"
         );
     }
 
@@ -228,6 +287,7 @@ public class NotificationCenterService {
                         SELECT pa.id,
                                pa.applicant_user_id,
                                pa.related_thread_id,
+                               p.bridge_user_id,
                                p.id AS proposal_id,
                                p.proposal_type,
                                host.email AS host_email,
@@ -255,6 +315,7 @@ public class NotificationCenterService {
                         """,
                     (rs, rowNum) -> new ApplicationDecisionNotificationRow(
                         rs.getLong("applicant_user_id"),
+                        rs.getObject("bridge_user_id", Long.class),
                         rs.getLong("proposal_id"),
                         rs.getString("proposal_type"),
                         rs.getObject("related_thread_id", Long.class),
@@ -368,11 +429,117 @@ public class NotificationCenterService {
         }
     }
 
+    private BridgePartnerAttentionRequestRow requireBridgePartnerAttentionRequestRow(long applicationId, long senderUserId) {
+        try {
+            return jdbcTemplate.queryForObject(
+                """
+                    SELECT pa.id AS application_id,
+                           p.bridge_user_id,
+                           target.email AS target_email,
+                           target.nickname AS target_nickname,
+                           target.name AS target_name,
+                           sender.email AS sender_email,
+                           sender.nickname AS sender_nickname,
+                           sender.name AS sender_name,
+                           COALESCE((
+                               SELECT ur.role_name
+                               FROM user_roles ur
+                               WHERE ur.user_id = ?
+                               ORDER BY CASE ur.role_name
+                                   WHEN 'ADMIN' THEN 1
+                                   WHEN 'BRIDGE' THEN 2
+                                   WHEN 'LOCAL' THEN 3
+                                   WHEN 'USER' THEN 4
+                                   ELSE 5
+                               END
+                               FETCH FIRST 1 ROWS ONLY
+                           ), 'USER') AS sender_role
+                    FROM proposal_applications pa
+                    JOIN proposals p ON p.id = pa.proposal_id
+                    JOIN users target ON target.id = pa.applicant_user_id
+                    JOIN users sender ON sender.id = ?
+                    WHERE pa.id = ?
+                      AND pa.deleted_at IS NULL
+                      AND p.deleted_at IS NULL
+                      AND LOWER(pa.application_status) = 'accepted'
+                    """,
+                (rs, rowNum) -> new BridgePartnerAttentionRequestRow(
+                    rs.getLong("application_id"),
+                    rs.getObject("bridge_user_id", Long.class),
+                    displayName(rs.getString("target_nickname"), rs.getString("target_name"), rs.getString("target_email")),
+                    rs.getString("sender_email"),
+                    rs.getString("sender_nickname"),
+                    rs.getString("sender_name"),
+                    rs.getString("sender_role")
+                ),
+                senderUserId,
+                senderUserId,
+                applicationId
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
+    private BridgePartnerClosureRow requireBridgePartnerClosureRow(long applicationId) {
+        try {
+            return jdbcTemplate.queryForObject(
+                """
+                    SELECT pa.id AS application_id,
+                           pa.applicant_user_id,
+                           applicant.email AS applicant_email,
+                           applicant.nickname AS applicant_nickname,
+                           applicant.name AS applicant_name,
+                           p.bridge_user_id,
+                           host.email AS host_email,
+                           host.nickname AS host_nickname,
+                           host.name AS host_name,
+                           COALESCE((
+                               SELECT ur.role_name
+                               FROM user_roles ur
+                               WHERE ur.user_id = p.host_user_id
+                               ORDER BY CASE ur.role_name
+                                   WHEN 'ADMIN' THEN 1
+                                   WHEN 'BRIDGE' THEN 2
+                                   WHEN 'LOCAL' THEN 3
+                                   WHEN 'USER' THEN 4
+                                   ELSE 5
+                               END
+                               FETCH FIRST 1 ROWS ONLY
+                           ), 'USER') AS host_role
+                    FROM proposal_applications pa
+                    JOIN proposals p ON p.id = pa.proposal_id
+                    JOIN users applicant ON applicant.id = pa.applicant_user_id
+                    JOIN users host ON host.id = p.host_user_id
+                    WHERE pa.id = ?
+                      AND pa.deleted_at IS NULL
+                      AND p.deleted_at IS NULL
+                      AND LOWER(pa.application_status) = 'accepted'
+                    """,
+                (rs, rowNum) -> new BridgePartnerClosureRow(
+                    rs.getLong("application_id"),
+                    rs.getLong("applicant_user_id"),
+                    displayName(rs.getString("applicant_nickname"), rs.getString("applicant_name"), rs.getString("applicant_email")),
+                    rs.getObject("bridge_user_id", Long.class),
+                    rs.getString("host_email"),
+                    rs.getString("host_nickname"),
+                    rs.getString("host_name"),
+                    rs.getString("host_role")
+                ),
+                applicationId
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
     private String kindLabel(String type) {
         return switch (type) {
-            case "application_accepted", "application_postponed" -> "申請";
+            case "application_accepted", "application_postponed", "application_partner_accepted" -> "申請";
             case "chat_message" -> "連絡";
             case "map_comment" -> "コメント";
+            case "partner_attention_requested" -> "連携";
+            case "support_note_follow_up" -> "支援メモ";
             default -> "通知";
         };
     }
@@ -446,6 +613,7 @@ public class NotificationCenterService {
 
     private record ApplicationDecisionNotificationRow(
         long applicantUserId,
+        Long bridgeUserId,
         long proposalId,
         String proposalType,
         Long relatedThreadId,
@@ -462,6 +630,29 @@ public class NotificationCenterService {
         String mapRecordTitle,
         String authorDisplayName,
         String authorRole
+    ) {
+    }
+
+    private record BridgePartnerAttentionRequestRow(
+        long applicationId,
+        Long bridgeUserId,
+        String targetUserLabel,
+        String senderEmail,
+        String senderNickname,
+        String senderName,
+        String senderRole
+    ) {
+    }
+
+    private record BridgePartnerClosureRow(
+        long applicationId,
+        long targetUserId,
+        String targetUserLabel,
+        Long bridgeUserId,
+        String hostEmail,
+        String hostNickname,
+        String hostName,
+        String hostRole
     ) {
     }
 }
