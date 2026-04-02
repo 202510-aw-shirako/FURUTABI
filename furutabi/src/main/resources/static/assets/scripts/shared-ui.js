@@ -206,6 +206,7 @@
       variant: 'public',
       brandHref: '../public/index.html',
       mainLinks: [
+        { href: '../public/bridge.html', label: 'ブリッジ' },
         { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '../app/home.html?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
         { href: '../public/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
@@ -213,11 +214,7 @@
         { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '../public/safety.html?context=app', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
       ],
-      utilityLinks: [
-        { href: '../public/bridge.html', label: 'ブリッジ' },
-        { href: '../app/home.html', label: 'ログイン後' },
-        { href: '../app/local-member-home.html', label: '\u30ed\u30b0\u30a4\u30f3\u5f8c\uff08\u5730\u57df\uff09' }
-      ],
+      utilityLinks: [],
       action: [
         { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
@@ -227,18 +224,17 @@
       variant: 'app',
       brandHref: '/app/home',
       mainLinks: [
+        { href: '/preview/public/bridge.html', label: 'ブリッジ' },
         { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
         { href: '/app/map-records', label: 'わたしの地図', currentMatchers: ['map-records'] },
         { href: '/app/home', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
-      utilityLinks: [
-        { href: '/preview/public/bridge.html', label: 'ブリッジ' }
-      ],
+      utilityLinks: [],
       notificationsHref: '/app/notifications',
       action: [
         { href: '/app/chat', label: '連絡', currentMatchers: ['chat', 'chat.html'] },
@@ -249,18 +245,17 @@
       variant: 'app',
       brandHref: '/app/local-member-home',
       mainLinks: [
+        { href: '/preview/public/bridge.html', label: 'ブリッジ' },
         { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
         { href: '/app/map-records', label: 'わたしの地図', currentMatchers: ['map-records'] },
         { href: '/app/local-member-home', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
+        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
       ],
-      utilityLinks: [
-        { href: '/preview/public/bridge.html', label: 'ブリッジ' }
-      ],
+      utilityLinks: [],
       notificationsHref: '/app/notifications',
       action: [
         { label: '連絡（次段階）', disabled: true },
@@ -274,18 +269,17 @@
       // Java移行時メモ: app_local_member は登録済み地域ユーザー向けヘッダーです。
       // 公開の local.html と混ぜず、LOCAL ロールのログイン後導線として分ける前提です。
       mainLinks: [
+        { href: '/preview/public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' },
         { href: '/app/gate', label: '\u3061\u3044\u304d\u306e\u5165\u308a\u53e3', currentMatchers: ['gate', 'gate.html'] },
         { href: '/app/map-records', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['map-records'] },
         { href: '/app/local-member-home', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: '\u3061\u3044\u304d\u306e\u304a\u304b\u3063\u3066', currentMatchers: ['okatte', 'okatte.html'] },
+        { href: '/app/support', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['support', 'support.html'] }
       ],
-      utilityLinks: [
-        { href: '/preview/public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' }
-      ],
+      utilityLinks: [],
       notificationsHref: '/app/notifications',
       action: [
         { href: '/app/chat', label: '\u9023\u7d61', currentMatchers: ['chat', 'chat.html'] },
@@ -397,7 +391,7 @@
       if (link.disabled || !link.href) {
         var disabledLabel = escapeHtml(link.label);
         if (disabledLabel.indexOf('（次段階）') >= 0) {
-          disabledLabel = disabledLabel.replace('（次段階）', '<br><span class="navSubLabel">（次段階）</span>');
+          disabledLabel = disabledLabel.replace('（次段階）', ' <span class="navSubLabel">（次段階）</span>');
         }
         return '<span class="' + className + ' is-disabled" aria-disabled="true">' + disabledLabel + '</span>';
       }
@@ -609,6 +603,25 @@
     }
 
     root.classList.add('siteHeaderNav');
+    root.classList.add(config.variant === 'app' ? 'siteHeaderNav--app' : 'siteHeaderNav--public');
+    var hasUtilityLinks = !!(config.utilityLinks && config.utilityLinks.length);
+    var utilityHtml = hasUtilityLinks
+      ? '<div class="siteHeaderUtility">' + renderNavLinks(config.utilityLinks, 'siteHeaderUtilityLink') + '</div>'
+      : '';
+
+    var menuModifier = config.variant === 'public' && !hasUtilityLinks
+      ? ' siteHeaderMenu--public-simple'
+      : '';
+
+    var menuHtml = '' +
+      '<div class="siteHeaderMenu' + menuModifier + '">' +
+        '<div class="siteHeaderLeftStack">' +
+          utilityHtml +
+          '<div class="siteHeaderPrimary">' + renderNavLinks(config.mainLinks, 'siteHeaderLink') + '</div>' +
+        '</div>' +
+        '<div class="siteHeaderActionWrap">' + (config.variant === 'app' ? renderNotificationBell(config) : '') + renderNavLinks(config.action, 'siteHeaderAction') + '</div>' +
+      '</div>';
+
     root.innerHTML = '' +
       '<!-- 公開側ヘッダーとログイン後ヘッダーは分ける -->' +
         '<!-- ログイン後はロゴからホームへ戻れるため、主ナビにホームは置かない -->' +
@@ -619,11 +632,7 @@
         '<span></span><span></span><span></span>' +
       '</button>' +
       renderImportantNotification(config) +
-      '<div class="siteHeaderMenu">' +
-        '<div class="siteHeaderUtility">' + renderNavLinks(config.utilityLinks, 'siteHeaderUtilityLink') + '</div>' +
-        '<div class="siteHeaderPrimary">' + renderNavLinks(config.mainLinks, 'siteHeaderLink') + '</div>' +
-        '<div class="siteHeaderActionWrap">' + renderNotificationBell(config) + renderNavLinks(config.action, 'siteHeaderAction') + '</div>' +
-      '</div>';
+      menuHtml;
 
     var toggle = root.querySelector('.siteHeaderToggle');
     var menu = root.querySelector('.siteHeaderMenu');
