@@ -118,8 +118,10 @@ class AdminUserManagementFlowTests {
     void adminCanOpenDetailAndAccessLogIsRecorded() throws Exception {
         mockMvc.perform(get("/app/admin/users/1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
+            .andExpect(content().string(containsString("/app/admin")))
+            .andExpect(content().string(containsString("/app/admin/users")))
             .andExpect(content().string(containsString("/app/support-notes/users/1")))
-            .andExpect(content().string(containsString("/app/admin/regions/Tokyo")))
+            .andExpect(content().string(containsString("/app/admin/regions/Tokyo?fromUserId=1")))
             .andExpect(content().string(containsString("/app/history")))
             .andExpect(content().string(containsString("/app/notifications")));
 
@@ -137,7 +139,8 @@ class AdminUserManagementFlowTests {
         mockMvc.perform(get("/app/admin").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("admin入口")))
-            .andExpect(content().string(containsString("/app/admin/users")));
+            .andExpect(content().string(containsString("/app/admin/users")))
+            .andExpect(content().string(containsString("/app/admin/regions/default")));
 
         mockMvc.perform(get("/app/admin/users").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
@@ -297,9 +300,10 @@ class AdminUserManagementFlowTests {
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/app/support-notes/users/1"));
 
-        mockMvc.perform(get("/app/admin/regions/Tokyo").with(user("admin@example.com").roles("ADMIN")))
+        mockMvc.perform(get("/app/admin/regions/Tokyo").param("fromUserId", "1").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Tokyo")));
+            .andExpect(content().string(containsString("Tokyo")))
+            .andExpect(content().string(containsString("/app/admin/users/1")));
     }
 
     private void insertUser(long id, String email, String nickname, String name, Timestamp now) {

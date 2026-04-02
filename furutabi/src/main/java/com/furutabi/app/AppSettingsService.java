@@ -36,6 +36,7 @@ public class AppSettingsService {
             profile == null ? null : profile.region(),
             profile == null ? null : profile.interestRegion(),
             profile != null && hasProfileContent(profile),
+            hasRole(user.id(), "ADMIN"),
             pointSummary.currentPoints(),
             pointSummary.enabledForRegion(),
             pointSummary.recentHistory()
@@ -309,6 +310,16 @@ public class AppSettingsService {
         return count != null && count > 0;
     }
 
+    private boolean hasRole(long userId, String roleName) {
+        Integer count = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM user_roles WHERE user_id = ? AND role_name = ?",
+            Integer.class,
+            userId,
+            roleName
+        );
+        return count != null && count > 0;
+    }
+
     private boolean hasProfileContent(UserProfileRow row) {
         return row.bio() != null
             || row.ageRange() != null
@@ -343,6 +354,7 @@ public class AppSettingsService {
         String region,
         String interestRegion,
         boolean profileReady,
+        boolean adminEntryAvailable,
         int currentPoints,
         boolean pointsEnabledForRegion,
         List<UserPointService.PointHistoryItem> pointHistory

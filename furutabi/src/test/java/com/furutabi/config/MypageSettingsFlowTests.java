@@ -79,9 +79,38 @@ class MypageSettingsFlowTests {
             now
         );
         jdbcTemplate.update(
+            """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            101L,
+            "admin@example.com",
+            "{noop}unused",
+            "admin-user",
+            "Admin User",
+            "ADMIN USER",
+            Date.valueOf("1988-01-01"),
+            "NO_ANSWER",
+            "090-9999-9999",
+            "Tokyo Chuo 9-9-9",
+            Boolean.TRUE,
+            "UNREQUESTED",
+            now,
+            now
+        );
+        jdbcTemplate.update(
             "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
             100L,
             "USER",
+            now
+        );
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            101L,
+            "ADMIN",
             now
         );
         jdbcTemplate.update(
@@ -144,7 +173,17 @@ class MypageSettingsFlowTests {
             .andExpect(content().string(containsString("href=\"/app/history\"")))
             .andExpect(content().string(containsString("href=\"/app/chat\"")))
             .andExpect(content().string(containsString("href=\"/app/notifications\"")))
-            .andExpect(content().string(containsString("href=\"/app/map-records\"")));
+            .andExpect(content().string(containsString("href=\"/app/map-records\"")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(containsString("href=\"/app/admin\""))));
+    }
+
+    @Test
+    @DisplayName("GET /app/mypage shows admin entry only for admin viewer")
+    void mypageShowsAdminEntryOnlyForAdminViewer() throws Exception {
+        mockMvc.perform(get("/app/mypage").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("管理入口")))
+            .andExpect(content().string(containsString("href=\"/app/admin\"")));
     }
 
     @Test

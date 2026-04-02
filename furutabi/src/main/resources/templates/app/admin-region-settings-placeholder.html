@@ -14,7 +14,11 @@
             地域設定サマリ
         </p>
         <p>この画面では地域単位で設定を持つことだけを確認し、個別の設定編集は別工程で扱います。</p>
-        <p><a href="/app/admin">admin入口へ戻る</a></p>
+        <p>
+            <a href="/app/admin">admin入口へ戻る</a>
+            <span th:if="${fromUserId != null}"> / </span>
+            <a th:if="${fromUserId != null}" th:href="@{/app/admin/users/{id}(id=${fromUserId})}">対象ユーザー詳細へ戻る</a>
+        </p>
     </section>
 </main>
 </body>

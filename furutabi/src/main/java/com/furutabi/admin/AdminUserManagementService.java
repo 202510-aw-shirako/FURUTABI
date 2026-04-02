@@ -66,7 +66,8 @@ public class AdminUserManagementService {
         return new AdminHomePageData(
             repository.countUsers(),
             "/app/admin/users",
-            "/app/support/admin"
+            "/app/support/admin",
+            "/app/admin/regions/default"
         );
     }
 
@@ -162,6 +163,8 @@ public class AdminUserManagementService {
             permissionChangeLogs,
             accessLogs,
             new RelatedLinksSection(
+                "/app/admin",
+                "/app/admin/users",
                 null,
                 null,
                 null,
@@ -175,7 +178,7 @@ public class AdminUserManagementService {
                 visibleProposalDetailUrl(viewer.userId(), proposalSummary.latestOkatteCandidateId(), "/app/okatte/"),
                 supportSummary.supportRequestCount()
             ),
-            new RegionSettingsSection(regionSettingSummary.regionId(), regionSettingSummary.settingCount(), "/app/admin/regions/" + regionSettingSummary.regionId())
+            new RegionSettingsSection(regionSettingSummary.regionId(), regionSettingSummary.settingCount(), "/app/admin/regions/" + regionSettingSummary.regionId() + "?fromUserId=" + targetUserId)
         );
     }
 
@@ -612,7 +615,12 @@ public class AdminUserManagementService {
     }
 
     public record AdminUserDetailPageData(BasicInfoSection basicInfo, RolePolicySection rolePolicy, List<PermissionItem> permissions, RoleStateSection roleState, List<AssignmentItem> assignments, List<PartnerCandidateItem> partnerCandidates, ProposalApplicationSection proposalApplication, List<PermissionChangeLogItem> permissionChangeLogs, List<AccessLogItem> accessLogs, RelatedLinksSection relatedLinks, RegionSettingsSection regionSettings) {}
-    public record AdminHomePageData(int totalUserCount, String userListUrl, String supportAdminUrl) {}
+    public record AdminHomePageData(
+        int totalUserCount,
+        String userListUrl,
+        String supportAdminUrl,
+        String regionSettingsSummaryUrl
+    ) {}
     public record AdminUserListPageData(String query, List<AdminUserListItem> users, int totalUserCount, int matchedCount, int shownCount, int currentPage, int totalPages, Integer previousPage, Integer nextPage) {}
     public record AdminUserListItem(long userId, String displayName, String email, String roleName, String roleLabel, String roleState, String regionId, String detailUrl) {}
     public record BasicInfoSection(long targetUserId, String displayName, String email, String ageRange, String roleName, String roleLabel, String roleState, String regionId, String legacyAuthRoleName, boolean roleSourceDiffers) {}
@@ -625,6 +633,8 @@ public class AdminUserManagementService {
     public record PermissionChangeLogItem(String changedObjectType, String changedObjectName, String actionType, String beforeRaw, String beforeSummary, List<JsonField> beforeEntries, String afterRaw, String afterSummary, List<JsonField> afterEntries, String reason, long changedByUserId, String changedByLabel, String changedAt) {}
     public record AccessLogItem(long viewerUserId, String viewerContext, String targetType, long targetId, String viewReason, String viewerLabel, String viewedAt) {}
     public record RelatedLinksSection(
+        String adminHomeUrl,
+        String adminUserListUrl,
         String accountUrl,
         String profileUrl,
         String privacySettingsUrl,

@@ -123,6 +123,10 @@
             <h2 class="h2">次に進めること</h2>
           </div>
           <div class="mypageLinkGrid">
+            <a class="mypageLinkCard" th:if="${summary.adminEntryAvailable}" href="/app/admin">
+              <h3 class="h2">管理入口</h3>
+              <p class="note">admin home からユーザー一覧と詳細管理へ入るための入口です。通常の self-service 導線とは分けて置いています。</p>
+            </a>
             <a class="mypageLinkCard" href="/app/history">
               <h3 class="h2">関わりの記録</h3>
               <p class="note">申請・chat・地図・足あとなど、自分の関わりを最小一覧で確認できます。</p>
