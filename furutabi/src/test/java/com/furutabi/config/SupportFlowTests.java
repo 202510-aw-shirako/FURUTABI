@@ -142,6 +142,10 @@ class SupportFlowTests {
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("account / requester")));
 
+        mockMvc.perform(get("/app/support/801").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("連絡・通報一覧へ戻る")));
+
         mockMvc.perform(post("/app/support/801/handle")
                 .with(user("admin@example.com").roles("ADMIN"))
                 .with(csrf()))

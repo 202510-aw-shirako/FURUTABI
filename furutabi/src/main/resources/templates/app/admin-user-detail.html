@@ -499,14 +499,14 @@
     </section>
     <section>
         <h2>10. ポイント</h2>
-        <p>制度イベントとしての手動付与と campaign 付与だけをここで扱います。主観評価ではなく、理由つきで user に付与します。</p>
+        <p>制度イベントとしての手動付与とキャンペーン付与だけをここで扱います。主観評価ではなく、理由つきで対象ユーザーに付与します。</p>
         <form th:action="@{|/app/admin/users/${pageData.basicInfo.targetUserId}/points/grant|}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <label>
                 付与方法
                 <select name="sourceMode">
                     <option value="manual">手動付与</option>
-                    <option value="campaign">campaign 付与</option>
+                    <option value="campaign">キャンペーン付与</option>
                 </select>
             </label>
             <label>

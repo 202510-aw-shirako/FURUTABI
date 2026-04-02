@@ -122,6 +122,7 @@ class AdminUserManagementFlowTests {
             .andExpect(content().string(containsString("/app/admin/users")))
             .andExpect(content().string(containsString("/app/support-notes/users/1")))
             .andExpect(content().string(containsString("/app/admin/regions/Tokyo?fromUserId=1")))
+            .andExpect(content().string(containsString("キャンペーン付与")))
             .andExpect(content().string(containsString("/app/history")))
             .andExpect(content().string(containsString("/app/notifications")));
 
@@ -145,6 +146,7 @@ class AdminUserManagementFlowTests {
         mockMvc.perform(get("/app/admin/users").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("adminユーザー一覧")))
+            .andExpect(content().string(containsString("名前 / メール / ユーザーID")))
             .andExpect(content().string(containsString("user#1")))
             .andExpect(content().string(containsString("/app/admin/users/1")))
             .andExpect(content().string(org.hamcrest.Matchers.not(containsString("/app/mypage"))));

@@ -44,7 +44,7 @@
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
           <a class="btn ghost" href="/app/support">一覧へ戻る</a>
-          <a class="btn ghost" th:if="${pageData.adminView}" href="/app/support/admin">admin 一覧へ戻る</a>
+          <a class="btn ghost" th:if="${pageData.adminView}" href="/app/support/admin">連絡・通報一覧へ戻る</a>
           <a class="btn ghost"
              th:if="${pageData.adminView and pageData.adminChatReviewEntryUrl != null}"
              th:href="${pageData.adminChatReviewEntryUrl}">関連チャットを確認（理由を記録）</a>
