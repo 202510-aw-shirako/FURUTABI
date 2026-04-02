@@ -1,4 +1,4 @@
-﻿package com.furutabi.config;
+package com.furutabi.config;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;

@@ -337,8 +337,11 @@ public class AppPageController {
     }
 
     @GetMapping({ "/footprints", "/footprints.html" })
-    public String footprints(Authentication authentication, Model model) {
-        model.addAttribute("pageData", mapRecordService.loadVisibleFootprintList(authentication.getName()));
+    public String footprints(
+            Authentication authentication,
+            @RequestParam(required = false) Long userId,
+            Model model) {
+        model.addAttribute("pageData", mapRecordService.loadVisibleFootprintList(authentication.getName(), userId));
         return "app/footprint-list";
     }
 
@@ -489,6 +492,34 @@ public class AppPageController {
         }
     }
 
+    @PostMapping("/footprints/{id}/reaction")
+    public String toggleFootprintReaction(
+            @PathVariable long id,
+            Authentication authentication,
+            @RequestParam(required = false) String returnTo) {
+        try {
+            mapRecordService.toggleViewerReaction(authentication.getName(), id);
+            return "redirect:" + safeMapReturnPath(returnTo, "/app/footprints/" + id);
+        } catch (MapRecordService.MapRecordEngagementConflictException ex) {
+            return "redirect:" + safeMapReturnPath(returnTo, "/app/footprints/" + id) + "?reactionBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Footprint not found", ex);
+        }
+    }
+
+    @PostMapping("/footprints/{id}/bookmark")
+    public String toggleFootprintBookmark(
+            @PathVariable long id,
+            Authentication authentication,
+            @RequestParam(required = false) String returnTo) {
+        try {
+            mapRecordService.toggleBookmark(authentication.getName(), id);
+            return "redirect:" + safeMapReturnPath(returnTo, "/app/footprints/" + id);
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Footprint not found", ex);
+        }
+    }
+
     @PostMapping("/footprints/{mapRecordId}/comments/{commentId}/hide")
     public String hideFootprintComment(
             @PathVariable long mapRecordId,
@@ -514,6 +545,34 @@ public class AppPageController {
             return "redirect:/app/map-records/" + id + "?commentSaved";
         } catch (MapRecordCommentService.MapRecordCommentConflictException ex) {
             return "redirect:/app/map-records/" + id + "?commentBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @PostMapping("/map-records/{id}/reaction")
+    public String toggleMapRecordReaction(
+            @PathVariable long id,
+            Authentication authentication,
+            @RequestParam(required = false) String returnTo) {
+        try {
+            mapRecordService.toggleViewerReaction(authentication.getName(), id);
+            return "redirect:" + safeMapReturnPath(returnTo, "/app/map-records/" + id);
+        } catch (MapRecordService.MapRecordEngagementConflictException ex) {
+            return "redirect:" + safeMapReturnPath(returnTo, "/app/map-records/" + id) + "?reactionBlocked";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
+        }
+    }
+
+    @PostMapping("/map-records/{id}/bookmark")
+    public String toggleMapRecordBookmark(
+            @PathVariable long id,
+            Authentication authentication,
+            @RequestParam(required = false) String returnTo) {
+        try {
+            mapRecordService.toggleBookmark(authentication.getName(), id);
+            return "redirect:" + safeMapReturnPath(returnTo, "/app/map-records/" + id);
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Map record not found", ex);
         }
@@ -586,5 +645,15 @@ public class AppPageController {
     }
 
     public record VisibilityOption(String value, String label) {
+    }
+
+    private String safeMapReturnPath(String returnTo, String fallback) {
+        if (returnTo == null || returnTo.isBlank()) {
+            return fallback;
+        }
+        if (returnTo.startsWith("/app/footprints") || returnTo.startsWith("/app/map-records")) {
+            return returnTo;
+        }
+        return fallback;
     }
 }

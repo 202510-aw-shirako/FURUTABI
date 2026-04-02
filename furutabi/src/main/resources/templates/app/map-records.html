@@ -33,7 +33,7 @@
       </div>
       <p class="lead">
         <strong th:text="${pageData.currentUserLabel}">furutabi-user</strong>
-        さんから見えている「わたしの地図の記録」を一覧で見られるページです。オーナーの記録はここから編集できます。
+        さんから見えている地図記録を一覧で見渡せるページです。owner の記録はここから編集できます。
       </p>
       <div class="mypageNoticeBox" th:if="${param.deleted}">
         <p>記録を一覧から外しました。</p>
@@ -52,10 +52,24 @@
             <span th:if="${record.createdAt != null}" th:text="' / ' + ${record.createdAt}"> / 2026.03.25</span>
           </p>
           <p class="lead" th:text="${record.summary}">記録の要約</p>
-          <p class="note" th:text="'投稿者: ' + ${record.ownerDisplayName}">投稿者: furutabi-user</p>
+          <p class="note" th:text="'記録した人: ' + ${record.ownerDisplayName}">記録した人: furutabi-user</p>
           <div class="sectionTitleRow" style="margin-top:12px;">
-            <span class="note" th:text="'画像 ' + ${record.imageCount} + '枚'">画像 0枚</span>
-            <span class="note" th:text="'コメント ' + ${record.commentCount} + '件'">コメント 0件</span>
+            <span class="note" th:text="'画像 ' + ${record.imageCount} + ' 枚'">画像 0 枚</span>
+            <span class="note" th:text="'コメント ' + ${record.commentCount} + ' 件'">コメント 0 件</span>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;">
+            <span class="note" th:text="'いいね ' + ${record.engagement.likeCount}">いいね 0</span>
+            <span class="note" th:text="'ありがとう ' + ${record.engagement.thanksCount}">ありがとう 0</span>
+            <form th:if="${record.engagement.reactionAllowed}" th:action="@{/app/map-records/{id}/reaction(id=${record.id})}" method="post" style="display:inline;">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <input type="hidden" name="returnTo" value="/app/map-records" />
+              <button class="btn ghost" type="submit" th:text="${record.engagement.reactionActive} ? ${record.engagement.reactionLabel + 'を解除'} : ${record.engagement.reactionLabel}">いいね</button>
+            </form>
+            <form th:action="@{/app/map-records/{id}/bookmark(id=${record.id})}" method="post" style="display:inline;">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <input type="hidden" name="returnTo" value="/app/map-records" />
+              <button class="btn ghost" type="submit" th:text="${record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>
+            </form>
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
             <a class="btn ghost" th:href="@{/app/map-records/{id}(id=${record.id})}">詳細を読む</a>
@@ -66,7 +80,7 @@
 
       <div class="card" th:if="${#lists.isEmpty(pageData.records)}">
         <div class="h2">まだ見える地図の記録はありません</div>
-        <p class="note">公開済みの記録や、自分で作成した記録がここに並びます。まずは最初の記録を追加できます。</p>
+        <p class="note">公開中の記録や、自分で投稿した記録がここに並びます。まずは最初の記録を追加してください。</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
           <a class="btn primary" href="/app/map-records/new">最初の記録を追加</a>
           <a class="btn ghost" href="/app/home#tab-map">ホームの地図へ戻る</a>

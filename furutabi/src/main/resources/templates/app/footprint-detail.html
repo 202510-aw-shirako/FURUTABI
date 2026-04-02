@@ -17,7 +17,7 @@
   </header>
 
   <main class="container" aria-label="足あと詳細">
-    <section class="section section--hero" aria-label="ページ導入">
+    <section class="section section--hero" aria-label="ページ案内">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
       </div>
@@ -39,24 +39,41 @@
         <p>コメントを非表示にしました。</p>
       </div>
       <div class="mypageNoticeBox" th:if="${param.commentBlocked}">
-        <p>この操作は完了できませんでした。</p>
+        <p>この操作は今はできませんでした。</p>
+      </div>
+      <div class="mypageNoticeBox" th:if="${param.reactionBlocked}">
+        <p>反応できる役割ではありません。</p>
       </div>
       <p class="note">
         <span th:text="${pageData.record.locationName} ?: '場所メモはまだありません'">場所メモ</span>
-        <span
-          th:if="${pageData.record.locationPrecisionLevel != null}"
-          th:text="' / 位置精度: ' + ${pageData.record.locationPrecisionLevel}"
-        > / 位置精度: area</span>
+        <span th:if="${pageData.record.locationPrecisionLevel != null}" th:text="' / 位置精度: ' + ${pageData.record.locationPrecisionLevel}"> / 位置精度: area</span>
+      </p>
+      <p class="note">
+        <a class="link" th:href="${pageData.record.ownerFilterPath}">このユーザーのピンだけ表示</a>
       </p>
       <div class="card noticeArticle" style="margin-top:18px;">
         <p th:text="${pageData.record.body} ?: 'まだ本文はありません。'">本文</p>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px;">
+        <span class="note" th:text="'いいね ' + ${pageData.record.engagement.likeCount}">いいね 0</span>
+        <span class="note" th:text="'ありがとう ' + ${pageData.record.engagement.thanksCount}">ありがとう 0</span>
+        <form th:if="${pageData.record.engagement.reactionAllowed}" th:action="@{/app/footprints/{id}/reaction(id=${pageData.record.id})}" method="post" style="display:inline;">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <input type="hidden" name="returnTo" th:value="${'/app/footprints/' + pageData.record.id}" />
+          <button class="btn ghost" type="submit" th:text="${pageData.record.engagement.reactionActive} ? ${pageData.record.engagement.reactionLabel + 'を解除'} : ${pageData.record.engagement.reactionLabel}">いいね</button>
+        </form>
+        <form th:action="@{/app/footprints/{id}/bookmark(id=${pageData.record.id})}" method="post" style="display:inline;">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <input type="hidden" name="returnTo" th:value="${'/app/footprints/' + pageData.record.id}" />
+          <button class="btn ghost" type="submit" th:text="${pageData.record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>
+        </form>
       </div>
     </section>
 
     <section class="section">
       <div class="sectionTitleRow">
         <h2 class="h2">足あとコメント</h2>
-        <span class="note" th:text="'公開中 ' + ${pageData.record.commentCount} + ' 件'">公開中 0 件</span>
+        <span class="note" th:text="'公開コメント ' + ${pageData.record.commentCount} + ' 件'">公開コメント 0 件</span>
       </div>
 
       <div class="card" style="margin-bottom:16px;">
@@ -69,7 +86,7 @@
             rows="4"
             maxlength="1000"
             style="width:100%;margin-top:8px;"
-            placeholder="公開してよい範囲の感想やひとことを書いてください。支援メモや個人情報の詳細は書かない前提です。"
+            placeholder="公開してよい感想だけを書いてください。支援メモや人間関係の詳しい話は別導線です。"
           ></textarea>
           <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap;">
             <p class="note">足あとコメントは chat や支援メモとは別の軽い公開コメントです。</p>
@@ -105,8 +122,8 @@
     <section class="section">
       <div class="denseBox">
         <div>
-          <div class="h2">次の操作</div>
-          <p class="note">足あと側では公開寄りに見える記録とコメントだけを扱います。支援メモや chat は別導線です。</p>
+          <div class="h2">次の導線</div>
+          <p class="note">足あとは公開寄りに見える記録だけを扱います。地図詳細や通常の地図導線は別に残します。</p>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <a class="btn ghost" href="/app/footprints">足あと一覧へ</a>

@@ -17,7 +17,7 @@
   </header>
 
   <main class="container" aria-label="ごひいきさんの足あと">
-    <section class="section section--hero" aria-label="ページ導入">
+    <section class="section section--hero" aria-label="ページ案内">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
       </div>
@@ -32,6 +32,13 @@
         <strong th:text="${pageData.currentUserLabel}">furutabi-user</strong>
         さんが見られる公開寄りの地図記録だけを、足あととして一覧します。
       </p>
+      <div class="mypageNoticeBox" th:if="${pageData.filterState.active}">
+        <p>
+          <strong th:text="${pageData.filterState.ownerDisplayName}">owner</strong>
+          さんのピンだけ表示中です。
+          <a class="link" th:href="${pageData.filterState.clearPath}">解除</a>
+        </p>
+      </div>
     </section>
 
     <section class="section">
@@ -46,10 +53,27 @@
             <span th:if="${record.createdAt != null}" th:text="' / ' + ${record.createdAt}"> / 2026.03.27</span>
           </p>
           <p class="lead" th:text="${record.summary}">足あと要約</p>
-          <p class="note" th:text="'記録した人: ' + ${record.ownerDisplayName}">記録した人: furutabi-user</p>
+          <p class="note">
+            <span th:text="'記録した人: ' + ${record.ownerDisplayName}">記録した人: furutabi-user</span>
+            <a class="link" th:href="${record.ownerFilterPath}" style="margin-left:8px;">このユーザーのピンだけ表示</a>
+          </p>
           <div class="sectionTitleRow" style="margin-top:12px;">
             <span class="note" th:text="'画像 ' + ${record.imageCount} + ' 枚'">画像 0 枚</span>
             <span class="note" th:text="'コメント ' + ${record.commentCount} + ' 件'">コメント 0 件</span>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;">
+            <span class="note" th:text="'いいね ' + ${record.engagement.likeCount}">いいね 0</span>
+            <span class="note" th:text="'ありがとう ' + ${record.engagement.thanksCount}">ありがとう 0</span>
+            <form th:if="${record.engagement.reactionAllowed}" th:action="@{/app/footprints/{id}/reaction(id=${record.id})}" method="post" style="display:inline;">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <input type="hidden" name="returnTo" th:value="${pageData.filterState.active ? '/app/footprints?userId=' + pageData.filterState.ownerUserId : '/app/footprints'}" />
+              <button class="btn ghost" type="submit" th:text="${record.engagement.reactionActive} ? ${record.engagement.reactionLabel + 'を解除'} : ${record.engagement.reactionLabel}">いいね</button>
+            </form>
+            <form th:action="@{/app/footprints/{id}/bookmark(id=${record.id})}" method="post" style="display:inline;">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <input type="hidden" name="returnTo" th:value="${pageData.filterState.active ? '/app/footprints?userId=' + pageData.filterState.ownerUserId : '/app/footprints'}" />
+              <button class="btn ghost" type="submit" th:text="${record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>
+            </form>
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
             <a class="btn ghost" th:href="@{/app/footprints/{id}(id=${record.id})}">足あとを見る</a>
