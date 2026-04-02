@@ -63,6 +63,34 @@
 
         <section class="mypageSection">
           <div class="sectionTitleRow">
+            <h2 class="h2">Points</h2>
+          </div>
+          <div class="mypageStatusGrid">
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">Current points</p>
+              <div class="mypageStatusValue">
+                <strong th:text="${summary.currentPoints}">0</strong>
+              </div>
+              <p class="note" th:text="${summary.pointsEnabledForRegion} ? '制度イベントに応じて加算されます。' : 'この地域ではポイント制度はまだ有効ではありません。'">制度イベントに応じて加算されます。</p>
+            </article>
+          </div>
+          <div class="mypageLinkGrid" th:if="${!#lists.isEmpty(summary.pointHistory)}">
+            <article class="mypageLinkCard" th:each="pointEvent : ${summary.pointHistory}">
+              <h3 class="h2">
+                <span th:text="${pointEvent.label}">登録</span>
+                <span th:text="${' +' + pointEvent.points}">+0</span>
+              </h3>
+              <p class="note">
+                <span th:text="${pointEvent.awardedAt}">2026.04.02</span>
+                <span th:text="${' / ' + pointEvent.regionId}">/ default</span>
+              </p>
+            </article>
+          </div>
+          <p class="note" th:if="${#lists.isEmpty(summary.pointHistory)}">まだポイント履歴はありません。</p>
+        </section>
+
+        <section class="mypageSection">
+          <div class="sectionTitleRow">
             <h2 class="h2">現在の状態</h2>
           </div>
           <div class="mypageStatusGrid">

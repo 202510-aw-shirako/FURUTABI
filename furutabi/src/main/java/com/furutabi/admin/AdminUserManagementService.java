@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.furutabi.app.UserPointService;
 import com.furutabi.admin.AdminUserManagementRepository.AccessLogRow;
 import com.furutabi.admin.AdminUserManagementRepository.CurrentRoleStateRow;
 import com.furutabi.admin.AdminUserManagementRepository.PartnerCandidateRow;
@@ -38,15 +39,18 @@ public class AdminUserManagementService {
     private final AdminUserManagementRepository repository;
     private final ObjectMapper objectMapper;
     private final VisibilityAccessService visibilityAccessService;
+    private final UserPointService userPointService;
 
     public AdminUserManagementService(
         AdminUserManagementRepository repository,
         ObjectMapper objectMapper,
-        VisibilityAccessService visibilityAccessService
+        VisibilityAccessService visibilityAccessService,
+        UserPointService userPointService
     ) {
         this.repository = repository;
         this.objectMapper = objectMapper;
         this.visibilityAccessService = visibilityAccessService;
+        this.userPointService = userPointService;
     }
 
     public void requireAdminViewer(String viewerEmail) {
@@ -175,6 +179,31 @@ public class AdminUserManagementService {
         String reason = normalizeRequiredReason(form == null ? null : form.getReason());
         long assignmentId = repository.createPartnerAssignment(regionId, targetUserId, partnerUserId, effectiveFrom, effectiveTo, viewer.userId(), reason, now);
         repository.insertPermissionChangeLog(regionId, targetUserId, "partner_assignment", "partner_assignment", "assign", toJson(Map.of("state", "none")), toJson(Map.of("assignment_id", assignmentId, "partner_user_id", partnerUserId, "state", "active")), viewer.userId(), reason, now);
+        userPointService.awardPartnerAssignmentPoint(assignmentId);
+    }
+
+    @Transactional
+    public void grantPoints(String viewerEmail, long targetUserId, AdminPointGrantForm form) {
+        UserRow viewer = repository.requireUserByEmail(viewerEmail);
+        requireAdmin(viewer.userId());
+        TargetUserRow target = repository.requireTargetUser(targetUserId);
+
+        int points = form == null || form.getPoints() == null ? 0 : form.getPoints();
+        if (points <= 0) {
+            throw new AdminUserManagementConflictException("Positive points are required");
+        }
+        String regionId = userPointService.normalizeRegionId(normalizeRegionId(form == null ? null : form.getRegionId(), target.region(), target.interestRegion()));
+        String reason = normalizeRequiredReason(form == null ? null : form.getReason());
+        String sourceMode = form == null || form.getSourceMode() == null ? "manual" : form.getSourceMode().trim().toLowerCase();
+
+        if ("campaign".equals(sourceMode)) {
+            userPointService.grantCampaignPoints(targetUserId, regionId, points, reason, viewer.userId());
+            return;
+        }
+        if (!"manual".equals(sourceMode)) {
+            throw new AdminUserManagementConflictException("Supported point grant mode is required");
+        }
+        userPointService.grantManualPoints(targetUserId, regionId, points, reason, viewer.userId());
     }
 
     @Transactional

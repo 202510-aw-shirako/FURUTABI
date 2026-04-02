@@ -3,6 +3,7 @@ package com.furutabi.app;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,14 +16,17 @@ import com.furutabi.visibility.VisibilityScope;
 public class AppSettingsService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final UserPointService userPointService;
 
-    public AppSettingsService(JdbcTemplate jdbcTemplate) {
+    public AppSettingsService(JdbcTemplate jdbcTemplate, UserPointService userPointService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.userPointService = userPointService;
     }
 
     public MypageSummary loadMypageSummary(String email) {
         UserRow user = requireUser(email);
         UserProfileRow profile = loadProfileRow(user.id());
+        UserPointService.UserPointSummary pointSummary = userPointService.loadUserPointSummary(user.id());
         return new MypageSummary(
             user.email(),
             user.nickname(),
@@ -31,7 +35,10 @@ public class AppSettingsService {
             user.additionalVerificationStatus(),
             profile == null ? null : profile.region(),
             profile == null ? null : profile.interestRegion(),
-            profile != null && hasProfileContent(profile)
+            profile != null && hasProfileContent(profile),
+            pointSummary.currentPoints(),
+            pointSummary.enabledForRegion(),
+            pointSummary.recentHistory()
         );
     }
 
@@ -335,7 +342,10 @@ public class AppSettingsService {
         String additionalVerificationStatus,
         String region,
         String interestRegion,
-        boolean profileReady
+        boolean profileReady,
+        int currentPoints,
+        boolean pointsEnabledForRegion,
+        List<UserPointService.PointHistoryItem> pointHistory
     ) {
     }
 

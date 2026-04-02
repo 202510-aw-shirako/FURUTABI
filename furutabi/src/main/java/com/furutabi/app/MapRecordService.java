@@ -26,10 +26,12 @@ public class MapRecordService {
 
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
+    private final UserPointService userPointService;
 
-    public MapRecordService(JdbcTemplate jdbcTemplate, VisibilityAccessService visibilityAccessService) {
+    public MapRecordService(JdbcTemplate jdbcTemplate, VisibilityAccessService visibilityAccessService, UserPointService userPointService) {
         this.jdbcTemplate = jdbcTemplate;
         this.visibilityAccessService = visibilityAccessService;
+        this.userPointService = userPointService;
     }
 
     public MapRecordListPageData loadVisibleMapRecordList(String email) {
@@ -239,6 +241,7 @@ public class MapRecordService {
         }, keyHolder);
         Number generatedId = Objects.requireNonNull(keyHolder.getKey(), "Map record ID was not generated");
         long mapRecordId = generatedId.longValue();
+        userPointService.awardMapRecordPoint(currentUser.id(), mapRecordId, scope, draft);
         return new MapRecordSaveResult(mapRecordId, draft);
     }
 

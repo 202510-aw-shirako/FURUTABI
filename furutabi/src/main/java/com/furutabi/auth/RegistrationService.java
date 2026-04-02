@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.furutabi.app.UserPointService;
+
 @Service
 public class RegistrationService {
 
@@ -22,10 +24,12 @@ public class RegistrationService {
 
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
+    private final UserPointService userPointService;
 
-    public RegistrationService(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+    public RegistrationService(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder, UserPointService userPointService) {
         this.jdbcTemplate = jdbcTemplate;
         this.passwordEncoder = passwordEncoder;
+        this.userPointService = userPointService;
     }
 
     @Transactional
@@ -129,6 +133,7 @@ public class RegistrationService {
             now,
             userId
         );
+        userPointService.awardRegistrationPoint(userId);
         return true;
     }
 

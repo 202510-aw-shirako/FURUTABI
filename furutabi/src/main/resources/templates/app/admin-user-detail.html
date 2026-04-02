@@ -490,6 +490,34 @@
         </p>
         <p><a th:href="${pageData.regionSettings.settingsUrl}">地域設定画面（準備中）</a></p>
     </section>
+    <section>
+        <h2>10. Points</h2>
+        <p>制度イベントとしての manual / campaign 付与だけをここで扱います。主観評価ではなく、理由つきで user に付与します。</p>
+        <form th:action="@{|/app/admin/users/${pageData.basicInfo.targetUserId}/points/grant|}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <label>
+                mode
+                <select name="sourceMode">
+                    <option value="manual">manual</option>
+                    <option value="campaign">campaign</option>
+                </select>
+            </label>
+            <label>
+                region
+                <input type="text" name="regionId" th:value="${pageData.basicInfo.regionId}">
+            </label>
+            <label>
+                points
+                <input type="number" name="points" min="1" required>
+            </label>
+            <label>
+                reason
+                <input type="text" name="reason" maxlength="500" required>
+            </label>
+            <button type="submit">grant points</button>
+        </form>
+        <p th:if="${param.pointsGranted != null}">points granted</p>
+    </section>
 </main>
 </body>
 </html>

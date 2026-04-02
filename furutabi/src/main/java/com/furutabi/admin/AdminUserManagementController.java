@@ -28,6 +28,7 @@ public class AdminUserManagementController {
             model.addAttribute("permissionRuleForm", new AdminPermissionRuleOperationForm());
             model.addAttribute("partnerAssignmentForm", new AdminPartnerAssignmentForm());
             model.addAttribute("roleStateForm", new AdminRoleStateOperationForm());
+            model.addAttribute("pointGrantForm", new AdminPointGrantForm());
             return "app/admin-user-detail";
         } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);
@@ -114,6 +115,11 @@ public class AdminUserManagementController {
     @PostMapping("/users/{id}/assignments/{assignmentId}/end")
     public String endAssignment(@PathVariable long id, @PathVariable long assignmentId, Authentication authentication, @ModelAttribute("partnerAssignmentForm") AdminPartnerAssignmentForm partnerAssignmentForm) {
         return change("assignmentEnded", id, () -> adminUserManagementService.endPartnerAssignment(authentication.getName(), id, assignmentId, partnerAssignmentForm));
+    }
+
+    @PostMapping("/users/{id}/points/grant")
+    public String grantPoints(@PathVariable long id, Authentication authentication, @ModelAttribute("pointGrantForm") AdminPointGrantForm pointGrantForm) {
+        return change("pointsGranted", id, () -> adminUserManagementService.grantPoints(authentication.getName(), id, pointGrantForm));
     }
 
     private String change(String flag, long targetUserId, Runnable action) {
