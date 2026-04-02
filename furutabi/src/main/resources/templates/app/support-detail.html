@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>サポート詳細 | FURUTABI</title>
+  <title>連絡・通報詳細 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,16 +16,16 @@
     </div>
   </header>
 
-  <main class="container" aria-label="サポート詳細">
+  <main class="container" aria-label="連絡・通報詳細">
     <section class="section fv">
       <div class="sectionTitleRow">
         <div>
-          <span class="pill pill--soft" th:text="${pageData.typeLabel}">サポート</span>
-          <h1 class="h1">サポート詳細</h1>
+          <span class="pill pill--soft" th:text="${pageData.typeLabel}">一般</span>
+          <h1 class="h1">連絡・通報詳細</h1>
         </div>
-        <span class="pill" th:text="${pageData.statusLabel}">受付</span>
+        <span class="pill" th:text="${pageData.statusLabel}">受付中</span>
       </div>
-      <p class="lead">公開 comments や chat とは別の、非公開の運用窓口です。</p>
+      <p class="lead">support は admin が対応する窓口です。必要時のみ、関連チャットを理由つきで確認できます。</p>
     </section>
 
     <section class="section">
@@ -35,18 +35,25 @@
         <p class="note" th:text="'返信希望: ' + ${pageData.replyPreferenceLabel}">返信希望</p>
         <p class="note" th:text="'関連機能: ' + (${pageData.relatedFeature} ?: '未設定')">関連機能</p>
         <p class="note" th:text="'対象参照: ' + (${pageData.targetReference} ?: '未設定')">対象参照</p>
-        <p class="note" th:if="${pageData.adminView}" th:text="'送信者: ' + (${pageData.requesterLabel} ?: '非表示')">送信者</p>
+        <p class="note" th:if="${pageData.adminView}" th:text="'依頼者: ' + (${pageData.requesterLabel} ?: '表示不可')">依頼者</p>
         <p class="note" th:if="${pageData.adminView and pageData.handlerLabel != null}" th:text="'対応者: ' + ${pageData.handlerLabel}">対応者</p>
+
         <div class="mypageNoticeBox" style="margin-top:16px;">
           <p th:text="${pageData.body}">body</p>
         </div>
+
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
           <a class="btn ghost" href="/app/support">一覧へ戻る</a>
-          <a class="btn ghost" th:if="${pageData.adminView}" href="/app/support/admin">運用一覧へ戻る</a>
+          <a class="btn ghost" th:if="${pageData.adminView}" href="/app/support/admin">admin 一覧へ戻る</a>
+          <a class="btn ghost"
+             th:if="${pageData.adminView and pageData.adminChatReviewEntryUrl != null}"
+             th:href="${pageData.adminChatReviewEntryUrl}">関連チャットを確認（理由を記録）</a>
+
           <form th:if="${pageData.canMarkHandled}" th:action="@{/app/support/{id}/handle(id=${pageData.supportRequestId})}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <button class="btn ghost" type="submit">対応中にする</button>
           </form>
+
           <form th:if="${pageData.canClose}" th:action="@{/app/support/{id}/close(id=${pageData.supportRequestId})}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <button class="btn ghost" type="submit">完了にする</button>

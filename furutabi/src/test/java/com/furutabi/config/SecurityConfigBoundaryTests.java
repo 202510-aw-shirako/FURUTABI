@@ -577,6 +577,26 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated admin chat review route is available for admin")
+    void authenticatedAdminChatReviewRouteIsAvailable() throws Exception {
+        jdbcTemplate.update(
+            """
+                UPDATE support_requests
+                SET request_type = ?, related_feature = ?, target_reference = ?
+                WHERE id = ?
+                """,
+            "chat",
+            "chat",
+            "/app/chat/40",
+            60L
+        );
+
+        mockMvc.perform(get("/app/admin/chat-threads/40/review?supportRequestId=60")
+                .with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("Authenticated notification open route is available for notification owner")
     void authenticatedNotificationOpenRouteIsAvailable() throws Exception {
         mockMvc.perform(post("/app/notifications/50/open").with(user("user@example.com").roles("USER")).with(csrf()))

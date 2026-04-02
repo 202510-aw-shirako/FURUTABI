@@ -193,7 +193,7 @@ class SupportNoteFlowTests {
         jdbcTemplate.update(
             "UPDATE proposal_applications SET application_status = ?, updated_at = ? WHERE id = ?",
             "completed",
-            Timestamp.from(Instant.parse("2026-03-26T00:00:00Z")),
+            Timestamp.from(Instant.parse("2026-03-27T00:00:00Z")),
             300L
         );
 
@@ -296,6 +296,38 @@ class SupportNoteFlowTests {
             .andExpect(content().string(not(containsString("通常の proposal 詳細を見る"))));
 
         mockMvc.perform(get("/app/host-applications/301").with(user("host@example.com").roles("LOCAL")))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("host cannot keep viewing related context after current assignment condition ends")
+    void hostCannotKeepViewingRelatedContextAfterAssignmentEnds() throws Exception {
+        long noteId = insertSupportNote(100L, 101L, "active", false, null, null, 301L);
+
+        jdbcTemplate.update(
+            "UPDATE proposal_applications SET application_status = ?, updated_at = ? WHERE id = ?",
+            "pending",
+            Timestamp.from(Instant.parse("2026-03-30T00:00:00Z")),
+            300L
+        );
+        jdbcTemplate.update(
+            "UPDATE proposal_applications SET application_status = ?, updated_at = ? WHERE id = ?",
+            "pending",
+            Timestamp.from(Instant.parse("2026-03-30T00:00:00Z")),
+            301L
+        );
+        jdbcTemplate.update(
+            "UPDATE chat_threads SET status = ? WHERE id = ?",
+            "open",
+            400L
+        );
+        jdbcTemplate.update(
+            "UPDATE chat_threads SET status = ? WHERE id = ?",
+            "open",
+            401L
+        );
+
+        mockMvc.perform(get("/app/support-notes/" + noteId + "/related-card").with(user("host@example.com").roles("LOCAL")))
             .andExpect(status().isNotFound());
     }
 

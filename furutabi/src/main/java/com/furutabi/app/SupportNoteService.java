@@ -741,8 +741,6 @@ public class SupportNoteService {
                         displayName(rs.getString("applicant_nickname"), null),
                         displayName(rs.getString("host_nickname"), null),
                         displayName(rs.getString("bridge_nickname"), null),
-                        normalizeApplicationStatusLabel(rs.getString("application_status")),
-                        normalizeThreadStatusLabel(rs.getString("thread_status")),
                         access.admin() ? "管理者として閲覧できる範囲の関連記録です。"
                             : access.hostViewer() ? "現在担当中の利用者に関する関連記録です。閲覧できる範囲のみ表示しています。"
                             : "閲覧できる範囲のみ関連記録を表示しています。",
@@ -1112,8 +1110,6 @@ public class SupportNoteService {
         String applicantLabel,
         String hostLabel,
         String bridgeLabel,
-        String applicationStatusLabel,
-        String threadStatusLabel,
         String accessNote,
         String proposalDetailUrl,
         String noteDetailUrl,

@@ -21,7 +21,7 @@
       <div class="sectionTitleRow">
         <div>
           <h1 class="h1">関連記録</h1>
-          <p class="lead" th:text="${pageData.targetUserLabel + ' さんに関する関連記録を、閲覧できる範囲だけ表示しています。'}">関連記録</p>
+          <p class="lead" th:text="${pageData.targetUserLabel + ' さんに関する関連記録を、支援で必要な範囲だけ表示しています。'}">関連記録</p>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <a class="btn ghost" th:href="${pageData.noteDetailUrl}">支援メモへ戻る</a>
@@ -36,8 +36,6 @@
         <h2 class="h2" th:text="${pageData.cardLabel}">関連カード</h2>
         <p class="note" th:text="${'訪問日: ' + (pageData.visitDate == null ? '未記録' : pageData.visitDate)}">訪問日</p>
         <p class="note" th:text="${'関係する場面: ' + pageData.relatedScene}">関係する場面</p>
-        <p class="note" th:text="${'申請状態: ' + pageData.applicationStatusLabel}">申請状態</p>
-        <p class="note" th:text="${'チャット状態: ' + pageData.threadStatusLabel}">チャット状態</p>
       </article>
     </section>
 
@@ -48,22 +46,22 @@
           <p th:if="${pageData.title != null}" th:text="${pageData.title}">タイトル</p>
           <p class="note" th:if="${pageData.summary != null}" th:text="${pageData.summary}">概要</p>
           <p class="note" th:if="${pageData.locationName != null}" th:text="${'場所: ' + pageData.locationName}">場所</p>
-          <p class="note" th:if="${pageData.durationMinutes != null}" th:text="${'想定時間: ' + pageData.durationMinutes + '分'}">時間</p>
+          <p class="note" th:if="${pageData.durationMinutes != null}" th:text="${'目安時間: ' + pageData.durationMinutes + '分'}">時間</p>
         </article>
 
         <article class="card">
           <h2 class="h2">関係者</h2>
           <p class="note" th:text="${'利用者: ' + pageData.applicantLabel}">利用者</p>
-          <p class="note" th:text="${'受け入れ側: ' + pageData.hostLabel}">受け入れ側</p>
-          <p class="note" th:if="${pageData.bridgeLabel != null}" th:text="${'架け橋さん: ' + pageData.bridgeLabel}">架け橋さん</p>
-          <p class="note" th:if="${pageData.bridgeLabel == null}">架け橋さんは記録されていません。</p>
+          <p class="note" th:text="${'受けた側: ' + pageData.hostLabel}">受けた側</p>
+          <p class="note" th:if="${pageData.bridgeLabel != null}" th:text="${'橋渡し: ' + pageData.bridgeLabel}">橋渡し</p>
+          <p class="note" th:if="${pageData.bridgeLabel == null}">橋渡しは記録されていません。</p>
         </article>
       </div>
     </section>
 
     <section class="section" th:if="${pageData.proposalDetailUrl != null}">
       <article class="card">
-        <h2 class="h2">通常導線</h2>
+        <h2 class="h2">通常権限</h2>
         <p class="note">通常権限で見られる proposal 詳細がある場合だけ表示しています。</p>
         <a class="btn ghost" th:href="${pageData.proposalDetailUrl}">proposal 詳細を見る</a>
       </article>

@@ -1,4 +1,4 @@
-package com.furutabi.config;
+﻿package com.furutabi.config;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -43,6 +43,7 @@ class ChatMessagingFlowTests {
         jdbcTemplate.update("DELETE FROM chat_threads");
         jdbcTemplate.update("DELETE FROM notification_delivery_logs");
         jdbcTemplate.update("DELETE FROM notifications");
+        jdbcTemplate.update("DELETE FROM access_logs");
         jdbcTemplate.update("DELETE FROM support_request_status_history");
         jdbcTemplate.update("DELETE FROM support_requests");
         jdbcTemplate.update("DELETE FROM proposal_application_status_history");
@@ -59,16 +60,19 @@ class ChatMessagingFlowTests {
         insertUser(101L, "bridge@example.com", "bridge-user", now);
         insertUser(102L, "guest@example.com", "guest-user", now);
         insertUser(103L, "viewer@example.com", "viewer-user", now);
+        insertUser(104L, "admin@example.com", "admin-user", now);
 
         insertRole(100L, "LOCAL", now);
         insertRole(101L, "BRIDGE", now);
         insertRole(102L, "USER", now);
         insertRole(103L, "USER", now);
+        insertRole(104L, "ADMIN", now);
 
         insertProposal(701L, 100L, 101L, now);
         insertApplication(801L, 701L, 102L, 901L, now);
         insertThread(901L, 102L, 100L, "LOCAL", 801L, "open", now);
         insertMessage(1001L, 901L, 102L, "USER", "First hello", now);
+        insertSupportRequest(950L, 102L, "/app/chat/901", now);
     }
 
     @Test
@@ -102,6 +106,67 @@ class ChatMessagingFlowTests {
                 .with(csrf())
                 .param("body", "Should not pass"))
             .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/app/chat/901").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("admin can open related chat only from support-side review flow with reason and access log")
+    void adminCanReviewRelatedChatWithReasonAndAccessLog() throws Exception {
+        mockMvc.perform(get("/app/support/950").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("関連チャットを確認（理由を記録）")))
+            .andExpect(content().string(containsString("/app/admin/chat-threads/901/review?supportRequestId=950")));
+
+        mockMvc.perform(get("/app/admin/chat-threads/901/review?supportRequestId=950")
+                .with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("問題対応のための限定閲覧です。")))
+            .andExpect(content().string(not(containsString("送信する"))));
+
+        mockMvc.perform(post("/app/admin/chat-threads/901/review")
+                .with(user("admin@example.com").roles("ADMIN"))
+                .with(csrf())
+                .param("supportRequestId", "950")
+                .param("reason", "   "))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/app/admin/chat-threads/901/review?reasonRequired&supportRequestId=950"));
+
+        mockMvc.perform(post("/app/admin/chat-threads/901/review")
+                .with(user("admin@example.com").roles("ADMIN"))
+                .with(csrf())
+                .param("supportRequestId", "950")
+                .param("reason", "通報内容の事実確認"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("First hello")))
+            .andExpect(content().string(containsString("記録した理由: 通報内容の事実確認")))
+            .andExpect(content().string(not(containsString("/app/chat/901/messages"))));
+
+        Integer accessLogCount = jdbcTemplate.queryForObject(
+            """
+                SELECT COUNT(*)
+                FROM access_logs
+                WHERE viewer_user_id = ?
+                  AND viewer_context = 'admin'
+                  AND target_type = 'chat_thread'
+                  AND target_id = ?
+                  AND view_reason = ?
+                """,
+            Integer.class,
+            104L,
+            901L,
+            "通報内容の事実確認"
+        );
+        Assertions.assertEquals(1, accessLogCount);
+    }
+
+    @Test
+    @DisplayName("non admin cannot use admin chat review route")
+    void nonAdminCannotUseAdminChatReviewRoute() throws Exception {
+        mockMvc.perform(get("/app/admin/chat-threads/901/review?supportRequestId=950")
+                .with(user("viewer@example.com").roles("USER")))
+            .andExpect(status().isNotFound());
     }
 
     @Test
@@ -134,7 +199,7 @@ class ChatMessagingFlowTests {
     void hostAndApplicantCanNotifyPartnerFromChatDetail() throws Exception {
         mockMvc.perform(get("/app/chat/901").with(user("guest@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("架け橋さんに知らせる")));
+            .andExpect(content().string(containsString("架け橋さんに通知")));
 
         mockMvc.perform(post("/app/chat/901/notify-partner")
                 .with(user("guest@example.com").roles("USER"))
@@ -329,6 +394,29 @@ class ChatMessagingFlowTests {
         );
     }
 
+    private void insertSupportRequest(long supportRequestId, long userId, String targetReference, Timestamp now) {
+        jdbcTemplate.update(
+            """
+                INSERT INTO support_requests (
+                    id, user_id, request_type, related_feature, target_reference, body,
+                    reply_preference, status, handled_by_user_id, created_at, updated_at, deleted_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            supportRequestId,
+            userId,
+            "chat",
+            "chat",
+            targetReference,
+            "通報内容の確認をお願いします",
+            "optional",
+            "received",
+            null,
+            now,
+            now,
+            null
+        );
+    }
+
     private void insertMessage(long messageId, long threadId, long senderId, String senderRole, String body, Timestamp now) {
         jdbcTemplate.update(
             """
@@ -348,3 +436,5 @@ class ChatMessagingFlowTests {
         );
     }
 }
+
+

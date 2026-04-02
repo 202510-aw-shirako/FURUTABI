@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,6 +24,7 @@ public class AppPageController {
     private final ProposalApplicationService proposalApplicationService;
     private final HostApplicationReviewService hostApplicationReviewService;
     private final ChatThreadMessagingService chatThreadMessagingService;
+    private final AdminChatReviewService adminChatReviewService;
     private final HistoryService historyService;
     private final NotificationCenterService notificationCenterService;
     private final SupportRequestService supportRequestService;
@@ -36,6 +38,7 @@ public class AppPageController {
             ProposalApplicationService proposalApplicationService,
             HostApplicationReviewService hostApplicationReviewService,
             ChatThreadMessagingService chatThreadMessagingService,
+            AdminChatReviewService adminChatReviewService,
             HistoryService historyService,
             NotificationCenterService notificationCenterService,
             SupportRequestService supportRequestService) {
@@ -47,6 +50,7 @@ public class AppPageController {
         this.proposalApplicationService = proposalApplicationService;
         this.hostApplicationReviewService = hostApplicationReviewService;
         this.chatThreadMessagingService = chatThreadMessagingService;
+        this.adminChatReviewService = adminChatReviewService;
         this.historyService = historyService;
         this.notificationCenterService = notificationCenterService;
         this.supportRequestService = supportRequestService;
@@ -165,6 +169,43 @@ public class AppPageController {
             return "app/support-detail";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Support request not found", ex);
+        }
+    }
+
+    @GetMapping("/admin/chat-threads/{id}/review")
+    public String adminChatReviewPage(
+            @PathVariable long id,
+            @RequestParam(required = false) Long supportRequestId,
+            Authentication authentication,
+            Model model) {
+        try {
+            model.addAttribute("pageData", adminChatReviewService.loadReviewGate(authentication.getName(), id, supportRequestId));
+            model.addAttribute("adminChatReviewForm", new AdminChatReviewForm());
+            return "app/admin-chat-thread-review";
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat thread review not found", ex);
+        }
+    }
+
+    @PostMapping("/admin/chat-threads/{id}/review")
+    public String openAdminChatReview(
+            @PathVariable long id,
+            @RequestParam(required = false) Long supportRequestId,
+            Authentication authentication,
+            @ModelAttribute("adminChatReviewForm") AdminChatReviewForm adminChatReviewForm,
+            Model model) {
+        try {
+            model.addAttribute("pageData", adminChatReviewService.openReview(authentication.getName(), id, supportRequestId, adminChatReviewForm));
+            model.addAttribute("adminChatReviewForm", adminChatReviewForm);
+            return "app/admin-chat-thread-review";
+        } catch (AdminChatReviewService.AdminChatReviewConflictException ex) {
+            String redirectUrl = "/app/admin/chat-threads/" + id + "/review?reasonRequired";
+            if (supportRequestId != null) {
+                redirectUrl += "&supportRequestId=" + supportRequestId;
+            }
+            return "redirect:" + redirectUrl;
+        } catch (IllegalStateException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Chat thread review not found", ex);
         }
     }
 

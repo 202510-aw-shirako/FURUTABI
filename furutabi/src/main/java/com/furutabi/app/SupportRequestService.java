@@ -134,6 +134,7 @@ public class SupportRequestService {
                                 rs.getString("handler_name"),
                                 rs.getString("handler_email")
                             ),
+                            admin ? buildAdminChatReviewEntryUrl(rs.getLong("id"), rs.getString("target_reference")) : null,
                             admin,
                             admin && canMoveToHandled(rs.getString("status")),
                             admin && canMoveToClosed(rs.getString("status"))
@@ -369,6 +370,47 @@ public class SupportRequestService {
         return relatedFeature + " / " + requester;
     }
 
+    private String buildAdminChatReviewEntryUrl(long supportRequestId, String targetReference) {
+        Long chatThreadId = extractChatThreadId(targetReference);
+        if (chatThreadId == null) {
+            return null;
+        }
+        return "/app/admin/chat-threads/" + chatThreadId + "/review?supportRequestId=" + supportRequestId;
+    }
+
+    private Long extractChatThreadId(String targetReference) {
+        if (targetReference == null) {
+            return null;
+        }
+        String normalized = targetReference.trim();
+        if (normalized.isEmpty()) {
+            return null;
+        }
+        String prefix = "/app/chat/";
+        if (!normalized.startsWith(prefix)) {
+            return null;
+        }
+        String suffix = normalized.substring(prefix.length());
+        int nextSlash = suffix.indexOf('/');
+        int query = suffix.indexOf('?');
+        int cutIndex = suffix.length();
+        if (nextSlash >= 0) {
+            cutIndex = Math.min(cutIndex, nextSlash);
+        }
+        if (query >= 0) {
+            cutIndex = Math.min(cutIndex, query);
+        }
+        String idToken = suffix.substring(0, cutIndex).trim();
+        if (idToken.isEmpty()) {
+            return null;
+        }
+        try {
+            return Long.parseLong(idToken);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
     private String labelForType(String requestType) {
         if (requestType == null) {
             return "相談";
@@ -440,6 +482,7 @@ public class SupportRequestService {
         String updatedAt,
         String requesterLabel,
         String handlerLabel,
+        String adminChatReviewEntryUrl,
         boolean adminView,
         boolean canMarkHandled,
         boolean canClose
