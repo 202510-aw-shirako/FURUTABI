@@ -488,10 +488,10 @@
         <p th:text="${'対象地域: ' + (pageData.regionSettings.regionId == 'default' ? 'default（既定）' : pageData.regionSettings.regionId) + ' / 設定件数: ' + pageData.regionSettings.settingCount}">
             region settings summary
         </p>
-        <p><a th:href="${pageData.regionSettings.settingsUrl}">地域設定画面（準備中）</a></p>
+        <p><a th:href="${pageData.regionSettings.settingsUrl}">地域設定サマリ</a></p>
     </section>
     <section>
-        <h2>10. Points</h2>
+        <h2>10. ポイント</h2>
         <p>制度イベントとしての manual / campaign 付与だけをここで扱います。主観評価ではなく、理由つきで user に付与します。</p>
         <form th:action="@{|/app/admin/users/${pageData.basicInfo.targetUserId}/points/grant|}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">

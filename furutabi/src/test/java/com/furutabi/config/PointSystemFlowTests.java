@@ -319,8 +319,8 @@ class PointSystemFlowTests {
 
         mockMvc.perform(get("/app/mypage").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Points")))
-            .andExpect(content().string(containsString("Current points")))
+            .andExpect(content().string(containsString("ポイント")))
+            .andExpect(content().string(containsString("現在ポイント")))
             .andExpect(content().string(containsString("12")))
             .andExpect(content().string(containsString("キャンペーン")));
     }

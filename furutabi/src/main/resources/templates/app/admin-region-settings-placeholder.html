@@ -2,20 +2,20 @@
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>地域設定画面（準備中）</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>地域設定サマリ | FURUTABI</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<main>
-    <!--
-      Java handoff note:
-      This placeholder exists so the admin detail page can point toward future region-scoped settings.
-      The settings UI itself is intentionally out of scope here.
-      Keep the distinction that admin is the actor and region is the scope.
-    -->
-    <h1>地域設定画面（準備中）</h1>
-    <p th:text="${regionId + ' の地域設定画面は準備中です。'}">
-        地域設定画面は現在準備中です。
-    </p>
+<main class="container" aria-label="地域設定サマリ">
+    <section style="max-width: 720px; margin: 48px auto;">
+        <h1>地域設定サマリ</h1>
+        <p th:text="${regionId + ' の地域設定は、この地域単位での運用対象を確認するための補助ページです。'}">
+            地域設定サマリ
+        </p>
+        <p>この画面では地域単位で設定を持つことだけを確認し、個別の設定編集は別工程で扱います。</p>
+        <p><a href="/app/admin">admin入口へ戻る</a></p>
+    </section>
 </main>
 </body>
 </html>

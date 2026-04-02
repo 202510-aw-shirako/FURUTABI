@@ -39,8 +39,27 @@ class MapRecordEngagementFlowTests {
     void setUp() {
         Timestamp now = Timestamp.from(Instant.parse("2026-04-02T00:00:00Z"));
 
+        jdbcTemplate.update("DELETE FROM chat_messages");
+        jdbcTemplate.update("DELETE FROM chat_threads");
+        jdbcTemplate.update("DELETE FROM notification_delivery_logs");
+        jdbcTemplate.update("DELETE FROM notifications");
+        jdbcTemplate.update("DELETE FROM access_logs");
+        jdbcTemplate.update("DELETE FROM permission_change_logs");
+        jdbcTemplate.update("DELETE FROM support_note_reports");
+        jdbcTemplate.update("DELETE FROM support_notes");
+        jdbcTemplate.update("DELETE FROM partner_assignments");
+        jdbcTemplate.update("DELETE FROM permission_rules");
+        jdbcTemplate.update("DELETE FROM role_policies");
+        jdbcTemplate.update("DELETE FROM user_role_states");
+        jdbcTemplate.update("DELETE FROM region_scoped_settings");
+        jdbcTemplate.update("DELETE FROM support_request_status_history");
+        jdbcTemplate.update("DELETE FROM support_requests");
         jdbcTemplate.update("DELETE FROM map_record_bookmarks");
         jdbcTemplate.update("DELETE FROM map_record_reactions");
+        jdbcTemplate.update("DELETE FROM proposal_application_status_history");
+        jdbcTemplate.update("DELETE FROM proposal_applications");
+        jdbcTemplate.update("DELETE FROM proposal_tags");
+        jdbcTemplate.update("DELETE FROM proposals");
         jdbcTemplate.update("DELETE FROM map_record_comments");
         jdbcTemplate.update("DELETE FROM map_record_images");
         jdbcTemplate.update("DELETE FROM map_records");
@@ -74,6 +93,12 @@ class MapRecordEngagementFlowTests {
     void tearDown() {
         jdbcTemplate.update("DELETE FROM map_record_bookmarks");
         jdbcTemplate.update("DELETE FROM map_record_reactions");
+        jdbcTemplate.update("DELETE FROM proposal_application_status_history");
+        jdbcTemplate.update("DELETE FROM proposal_applications");
+        jdbcTemplate.update("DELETE FROM proposal_tags");
+        jdbcTemplate.update("DELETE FROM proposals");
+        jdbcTemplate.update("DELETE FROM chat_messages");
+        jdbcTemplate.update("DELETE FROM chat_threads");
     }
 
     @Test
