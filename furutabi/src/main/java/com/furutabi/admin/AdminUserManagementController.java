@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,31 @@ public class AdminUserManagementController {
 
     public AdminUserManagementController(AdminUserManagementService adminUserManagementService) {
         this.adminUserManagementService = adminUserManagementService;
+    }
+
+    @GetMapping
+    public String adminHome(Authentication authentication, Model model) {
+        try {
+            model.addAttribute("pageData", adminUserManagementService.loadAdminHomePage(authentication.getName()));
+            return "app/admin-home";
+        } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);
+        }
+    }
+
+    @GetMapping("/users")
+    public String adminUserList(
+        @RequestParam(name = "q", required = false) String query,
+        @RequestParam(name = "page", required = false) Integer page,
+        Authentication authentication,
+        Model model
+    ) {
+        try {
+            model.addAttribute("pageData", adminUserManagementService.loadUserListPage(authentication.getName(), query, page));
+            return "app/admin-user-list";
+        } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);
+        }
     }
 
     @GetMapping("/users/{id}")

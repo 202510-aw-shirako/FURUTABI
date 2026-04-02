@@ -44,6 +44,92 @@ public class AdminUserManagementRepository {
         }
     }
 
+    public int countUsers() {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM users", Integer.class);
+        return count == null ? 0 : count;
+    }
+
+    public int countAdminTargets(String query) {
+        String normalizedQuery = query == null ? null : query.trim().toLowerCase();
+        boolean hasQuery = normalizedQuery != null && !normalizedQuery.isBlank();
+        String likeQuery = hasQuery ? "%" + normalizedQuery + "%" : null;
+        Integer count = jdbcTemplate.queryForObject(
+            """
+                SELECT COUNT(*)
+                FROM users u
+                WHERE (? IS NULL
+                       OR LOWER(CAST(u.id AS VARCHAR)) LIKE ?
+                       OR LOWER(u.email) LIKE ?
+                       OR LOWER(COALESCE(u.nickname, '')) LIKE ?
+                       OR LOWER(COALESCE(u.name, '')) LIKE ?)
+                """,
+            Integer.class,
+            hasQuery ? normalizedQuery : null,
+            likeQuery,
+            likeQuery,
+            likeQuery,
+            likeQuery
+        );
+        return count == null ? 0 : count;
+    }
+
+    public List<AdminUserSummaryRow> searchAdminTargets(String query, int limit, int offset) {
+        String normalizedQuery = query == null ? null : query.trim().toLowerCase();
+        boolean hasQuery = normalizedQuery != null && !normalizedQuery.isBlank();
+        String likeQuery = hasQuery ? "%" + normalizedQuery + "%" : null;
+        return jdbcTemplate.query(
+            """
+                SELECT u.id, u.email, u.nickname, u.name,
+                       up.region, up.interest_region,
+                       urs.role_name AS managed_role_name,
+                       urs.role_state,
+                       urs.region_id AS managed_region_id,
+                       (
+                           SELECT ur.role_name
+                           FROM user_roles ur
+                           WHERE ur.user_id = u.id
+                           ORDER BY CASE ur.role_name
+                               WHEN 'ADMIN' THEN 0
+                               WHEN 'BRIDGE' THEN 1
+                               WHEN 'LOCAL' THEN 2
+                               ELSE 3
+                           END, ur.id ASC
+                           LIMIT 1
+                       ) AS legacy_role_name
+                FROM users u
+                LEFT JOIN user_profiles up ON up.user_id = u.id
+                LEFT JOIN user_role_states urs ON urs.user_id = u.id
+                WHERE (? IS NULL
+                       OR LOWER(CAST(u.id AS VARCHAR)) LIKE ?
+                       OR LOWER(u.email) LIKE ?
+                       OR LOWER(COALESCE(u.nickname, '')) LIKE ?
+                       OR LOWER(COALESCE(u.name, '')) LIKE ?)
+                ORDER BY u.id DESC
+                LIMIT ?
+                OFFSET ?
+                """,
+            (rs, rowNum) -> new AdminUserSummaryRow(
+                rs.getLong("id"),
+                rs.getString("email"),
+                rs.getString("nickname"),
+                rs.getString("name"),
+                rs.getString("region"),
+                rs.getString("interest_region"),
+                rs.getString("managed_role_name"),
+                rs.getString("role_state"),
+                rs.getString("managed_region_id"),
+                rs.getString("legacy_role_name")
+            ),
+            hasQuery ? normalizedQuery : null,
+            likeQuery,
+            likeQuery,
+            likeQuery,
+            likeQuery,
+            limit,
+            offset
+        );
+    }
+
     public TargetUserRow requireTargetUser(long targetUserId) {
         try {
             return Objects.requireNonNull(
@@ -799,6 +885,7 @@ public class AdminUserManagementRepository {
     }
 
     public record UserRow(long userId, String email, String nickname, String name) {}
+    public record AdminUserSummaryRow(long userId, String email, String nickname, String name, String region, String interestRegion, String managedRoleName, String roleState, String managedRegionId, String legacyRoleName) {}
     public record TargetUserRow(long userId, String email, String nickname, String name, String region, String interestRegion, String ageRange) {}
     public record CurrentRoleStateRow(long userId, String roleName, String roleState, String regionId, String reason, Timestamp updatedAt) {}
     public record RolePolicyRow(String regionId, String roleName, boolean configured, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}

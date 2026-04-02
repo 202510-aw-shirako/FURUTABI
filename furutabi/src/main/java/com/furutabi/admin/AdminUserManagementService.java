@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.furutabi.app.UserPointService;
+import com.furutabi.admin.AdminUserManagementRepository.AdminUserSummaryRow;
 import com.furutabi.admin.AdminUserManagementRepository.AccessLogRow;
 import com.furutabi.admin.AdminUserManagementRepository.CurrentRoleStateRow;
 import com.furutabi.admin.AdminUserManagementRepository.PartnerCandidateRow;
@@ -35,6 +36,7 @@ import com.furutabi.visibility.VisibilityAccessService;
 public class AdminUserManagementService {
 
     private static final DateTimeFormatter PAGE_TIME = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+    private static final int ADMIN_USER_LIST_PAGE_SIZE = 20;
 
     private final AdminUserManagementRepository repository;
     private final ObjectMapper objectMapper;
@@ -56,6 +58,43 @@ public class AdminUserManagementService {
     public void requireAdminViewer(String viewerEmail) {
         UserRow viewer = repository.requireUserByEmail(viewerEmail);
         requireAdmin(viewer.userId());
+    }
+
+    public AdminHomePageData loadAdminHomePage(String viewerEmail) {
+        UserRow viewer = repository.requireUserByEmail(viewerEmail);
+        requireAdmin(viewer.userId());
+        return new AdminHomePageData(
+            repository.countUsers(),
+            "/app/admin/users",
+            "/app/support/admin"
+        );
+    }
+
+    public AdminUserListPageData loadUserListPage(String viewerEmail, String query, Integer page) {
+        UserRow viewer = repository.requireUserByEmail(viewerEmail);
+        requireAdmin(viewer.userId());
+        String normalizedQuery = normalizeSearchQuery(query);
+        int currentPage = normalizePage(page);
+        int totalCount = repository.countAdminTargets(normalizedQuery);
+        int totalPages = Math.max(1, (int) Math.ceil(totalCount / (double) ADMIN_USER_LIST_PAGE_SIZE));
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+        int offset = (currentPage - 1) * ADMIN_USER_LIST_PAGE_SIZE;
+        List<AdminUserListItem> users = repository.searchAdminTargets(normalizedQuery, ADMIN_USER_LIST_PAGE_SIZE, offset).stream()
+            .map(this::toAdminUserListItem)
+            .toList();
+        return new AdminUserListPageData(
+            normalizedQuery,
+            users,
+            repository.countUsers(),
+            totalCount,
+            users.size(),
+            currentPage,
+            totalPages,
+            currentPage > 1 ? currentPage - 1 : null,
+            currentPage < totalPages ? currentPage + 1 : null
+        );
     }
 
     @Transactional
@@ -424,6 +463,23 @@ public class AdminUserManagementService {
         return new PartnerCandidateItem(row.userId(), row.displayName(), roleState.roleName(), permission.active());
     }
 
+    private AdminUserListItem toAdminUserListItem(AdminUserSummaryRow row) {
+        String effectiveRoleName = row.managedRoleName() == null || row.managedRoleName().isBlank()
+            ? AdminRoleCatalog.canonicalRoleName(row.legacyRoleName())
+            : row.managedRoleName();
+        String regionId = normalizeRegionId(row.managedRegionId(), row.region(), row.interestRegion());
+        return new AdminUserListItem(
+            row.userId(),
+            displayName(row.nickname(), row.name(), row.email()),
+            row.email(),
+            effectiveRoleName,
+            AdminRoleCatalog.displayRoleLabel(effectiveRoleName),
+            row.roleState() == null || row.roleState().isBlank() ? "active" : row.roleState(),
+            regionId,
+            "/app/admin/users/" + row.userId()
+        );
+    }
+
     private Map<String, Object> permissionRuleMap(PermissionRuleRow row) {
         if (row == null) {
             return Map.of("state", "none");
@@ -530,6 +586,21 @@ public class AdminUserManagementService {
         return prefix + id;
     }
 
+    private String normalizeSearchQuery(String query) {
+        if (query == null) {
+            return null;
+        }
+        String normalized = query.trim();
+        return normalized.isBlank() ? null : normalized;
+    }
+
+    private int normalizePage(Integer page) {
+        if (page == null || page < 1) {
+            return 1;
+        }
+        return page;
+    }
+
     private String visibleProposalDetailUrl(long viewerUserId, Long proposalId, String prefix) {
         if (proposalId == null) {
             return null;
@@ -541,6 +612,9 @@ public class AdminUserManagementService {
     }
 
     public record AdminUserDetailPageData(BasicInfoSection basicInfo, RolePolicySection rolePolicy, List<PermissionItem> permissions, RoleStateSection roleState, List<AssignmentItem> assignments, List<PartnerCandidateItem> partnerCandidates, ProposalApplicationSection proposalApplication, List<PermissionChangeLogItem> permissionChangeLogs, List<AccessLogItem> accessLogs, RelatedLinksSection relatedLinks, RegionSettingsSection regionSettings) {}
+    public record AdminHomePageData(int totalUserCount, String userListUrl, String supportAdminUrl) {}
+    public record AdminUserListPageData(String query, List<AdminUserListItem> users, int totalUserCount, int matchedCount, int shownCount, int currentPage, int totalPages, Integer previousPage, Integer nextPage) {}
+    public record AdminUserListItem(long userId, String displayName, String email, String roleName, String roleLabel, String roleState, String regionId, String detailUrl) {}
     public record BasicInfoSection(long targetUserId, String displayName, String email, String ageRange, String roleName, String roleLabel, String roleState, String regionId, String legacyAuthRoleName, boolean roleSourceDiffers) {}
     public record RolePolicySection(String regionId, String roleName, boolean configured, boolean roleAssignable, boolean defaultHostPermission, boolean defaultPartnerPermission, boolean individualHostPermissionGrantAllowed, boolean individualPartnerPermissionGrantAllowed, boolean adminApprovalRequiredForPause, boolean adminApprovalRequiredForWithdrawal, boolean adminApprovalRequiredForRoleRestore) {}
     public record PermissionItem(String permissionName, boolean active, boolean defaultGranted, String ruleState, String effectiveState, String source, boolean manageable, String regionId, String effectiveFrom, String effectiveTo) {}

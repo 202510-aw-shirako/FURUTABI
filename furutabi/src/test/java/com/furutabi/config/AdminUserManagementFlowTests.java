@@ -132,9 +132,49 @@ class AdminUserManagementFlowTests {
     }
 
     @Test
+    @DisplayName("admin can open admin home and user list entry")
+    void adminCanOpenAdminHomeAndUserList() throws Exception {
+        mockMvc.perform(get("/app/admin").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("admin入口")))
+            .andExpect(content().string(containsString("/app/admin/users")));
+
+        mockMvc.perform(get("/app/admin/users").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("adminユーザー一覧")))
+            .andExpect(content().string(containsString("user#1")))
+            .andExpect(content().string(containsString("/app/admin/users/1")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(containsString("/app/mypage"))));
+    }
+
+    @Test
+    @DisplayName("admin user list search works for email and id")
+    void adminUserListSearchWorks() throws Exception {
+        mockMvc.perform(get("/app/admin/users").param("q", "local@example.com").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("local@example.com")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(containsString("bridge@example.com"))));
+
+        mockMvc.perform(get("/app/admin/users").param("q", "3").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("user#3")))
+            .andExpect(content().string(containsString("/app/admin/users/3")));
+    }
+
+    @Test
     @DisplayName("non admin cannot open admin user detail")
     void nonAdminCannotOpenDetail() throws Exception {
         mockMvc.perform(get("/app/admin/users/1").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("non admin cannot open admin home or list")
+    void nonAdminCannotOpenAdminHomeOrList() throws Exception {
+        mockMvc.perform(get("/app/admin").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/app/admin/users").with(user("user@example.com").roles("USER")))
             .andExpect(status().isForbidden());
     }
 

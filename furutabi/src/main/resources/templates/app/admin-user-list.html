@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>adminユーザー一覧 | FURUTABI</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<main class="container" aria-label="adminユーザー一覧">
+    <section style="margin: 32px auto; max-width: 980px;">
+        <header style="display:flex; justify-content:space-between; gap:16px; align-items:flex-end; flex-wrap:wrap;">
+            <div>
+                <h1>adminユーザー一覧</h1>
+                <p>一覧は入口です。支援メモや points の詳細は各ユーザーの管理ページで確認します。</p>
+                <p th:text="${'表示 ' + pageData.shownCount + ' / 検索一致 ' + pageData.matchedCount + ' / 全体 ' + pageData.totalUserCount}">表示 0 / 検索一致 0 / 全体 0</p>
+            </div>
+            <a class="btn ghost" href="/app/admin">admin入口へ戻る</a>
+        </header>
+
+        <form method="get" action="/app/admin/users" style="display:flex; gap:12px; flex-wrap:wrap; margin: 24px 0;">
+            <label style="flex:1 1 320px;">
+                <span>検索</span>
+                <input type="text" name="q" th:value="${pageData.query}" placeholder="名前 / メール / user id">
+            </label>
+            <div style="display:flex; gap:12px; align-items:flex-end;">
+                <button class="btn" type="submit">検索</button>
+                <a class="btn ghost" href="/app/admin/users">解除</a>
+            </div>
+        </form>
+
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+            <tr>
+                <th style="text-align:left; padding:10px 8px;">user</th>
+                <th style="text-align:left; padding:10px 8px;">メール</th>
+                <th style="text-align:left; padding:10px 8px;">役割</th>
+                <th style="text-align:left; padding:10px 8px;">状態</th>
+                <th style="text-align:left; padding:10px 8px;">地域</th>
+                <th style="text-align:left; padding:10px 8px;">導線</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(pageData.users)}">
+                <td colspan="6" style="padding:16px 8px;">一致するユーザーはいません。</td>
+            </tr>
+            <tr th:each="userItem : ${pageData.users}">
+                <td style="padding:10px 8px;">
+                    <strong th:text="${userItem.displayName}">display</strong>
+                    <div th:text="${'user#' + userItem.userId}">user#1</div>
+                </td>
+                <td style="padding:10px 8px;" th:text="${userItem.email}">user@example.com</td>
+                <td style="padding:10px 8px;">
+                    <strong th:text="${userItem.roleLabel}">一般ユーザー</strong>
+                    <div th:text="${userItem.roleName}">USER</div>
+                </td>
+                <td style="padding:10px 8px;" th:text="${userItem.roleState}">active</td>
+                <td style="padding:10px 8px;" th:text="${userItem.regionId}">default</td>
+                <td style="padding:10px 8px;">
+                    <a th:href="${userItem.detailUrl}">詳細管理へ</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <nav th:if="${pageData.totalPages > 1}" style="display:flex; gap:12px; justify-content:flex-end; align-items:center; margin-top:20px; flex-wrap:wrap;">
+            <a class="btn ghost"
+               th:if="${pageData.previousPage != null}"
+               th:href="@{/app/admin/users(q=${pageData.query},page=${pageData.previousPage})}">前へ</a>
+            <span th:text="${pageData.currentPage + ' / ' + pageData.totalPages}">1 / 1</span>
+            <a class="btn ghost"
+               th:if="${pageData.nextPage != null}"
+               th:href="@{/app/admin/users(q=${pageData.query},page=${pageData.nextPage})}">次へ</a>
+        </nav>
+    </section>
+</main>
+</body>
+</html>

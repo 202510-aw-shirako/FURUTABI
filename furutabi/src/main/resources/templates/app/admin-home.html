@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>admin入口 | FURUTABI</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<main class="container" aria-label="admin入口">
+    <section style="max-width: 720px; margin: 48px auto;">
+        <h1>admin入口</h1>
+        <p>このページは管理の本体ではなく、対象ユーザーを見つけて詳細管理ページへ入るための入口です。</p>
+        <dl>
+            <dt>登録ユーザー数</dt>
+            <dd th:text="${pageData.totalUserCount}">0</dd>
+        </dl>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top: 24px;">
+            <a class="btn" th:href="${pageData.userListUrl}">ユーザー一覧へ</a>
+            <a class="btn ghost" th:href="${pageData.supportAdminUrl}">support admin 一覧へ</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>
