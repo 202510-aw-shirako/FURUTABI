@@ -86,6 +86,35 @@ class MypageSettingsFlowTests {
         );
         jdbcTemplate.update(
             """
+                INSERT INTO users (
+                    id, email, password_hash, nickname, name, name_kana, birthday, gender,
+                    phone_number, address, sms_verified, additional_verification_status,
+                    created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            200L,
+            "admin@example.com",
+            "{noop}unused",
+            "admin-user",
+            "Admin Example",
+            "ADMIN EXAMPLE",
+            Date.valueOf("1988-05-10"),
+            "NO_ANSWER",
+            "090-9999-9999",
+            "Tokyo Chiyoda 9-9-9",
+            Boolean.TRUE,
+            "UNREQUESTED",
+            now,
+            now
+        );
+        jdbcTemplate.update(
+            "INSERT INTO user_roles (user_id, role_name, created_at) VALUES (?, ?, ?)",
+            200L,
+            "ADMIN",
+            now
+        );
+        jdbcTemplate.update(
+            """
                 INSERT INTO user_profiles (
                     user_id, bio, icon_path, region, interest_region, visit_history,
                     care_note, with_children, food_note, relation_note, age_range, created_at, updated_at
@@ -102,6 +131,27 @@ class MypageSettingsFlowTests {
             "Shellfish allergy",
             "Quiet places are easier for me.",
             "THIRTIES",
+            now,
+            now
+        );
+        jdbcTemplate.update(
+            """
+                INSERT INTO user_profiles (
+                    user_id, bio, icon_path, region, interest_region, visit_history,
+                    care_note, with_children, food_note, relation_note, age_range, created_at, updated_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+            200L,
+            "Admin profile",
+            null,
+            "Tokyo",
+            "Tokyo",
+            null,
+            null,
+            "UNSPECIFIED",
+            null,
+            null,
+            "FORTIES",
             now,
             now
         );
@@ -144,7 +194,17 @@ class MypageSettingsFlowTests {
             .andExpect(content().string(containsString("href=\"/app/history\"")))
             .andExpect(content().string(containsString("href=\"/app/chat\"")))
             .andExpect(content().string(containsString("href=\"/app/notifications\"")))
-            .andExpect(content().string(containsString("href=\"/app/map-records\"")));
+            .andExpect(content().string(containsString("href=\"/app/map-records\"")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(containsString("href=\"/app/admin\""))));
+    }
+
+    @Test
+    @DisplayName("admin mypage shows admin entry without mixing it into regular users")
+    void adminMypageShowsAdminEntry() throws Exception {
+        mockMvc.perform(get("/app/mypage").with(user("admin@example.com").roles("ADMIN")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("href=\"/app/admin\"")))
+            .andExpect(content().string(containsString("管理入口")));
     }
 
     @Test

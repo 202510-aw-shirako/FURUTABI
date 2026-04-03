@@ -16,6 +16,11 @@
     <header>
         <h1>管理者向けユーザー詳細</h1>
         <p>対象ユーザーの管理状態を確認するための基本表示です。操作系は段階的に追加しており、ここでは責務ごとのセクションを分けて表示しています。</p>
+        <p>
+            <a th:href="${pageData.relatedLinks.adminHomeUrl}">管理入口へ戻る</a>
+            <span> / </span>
+            <a th:href="${pageData.relatedLinks.userListUrl}">ユーザー一覧へ戻る</a>
+        </p>
     </header>
 
     <section th:if="${param.granted != null or param.suspended != null or param.resumed != null or param.revoked != null or param.blocked != null or param.assignmentCreated != null or param.assignmentPaused != null or param.assignmentResumed != null or param.assignmentEnded != null or param.roleSuspended != null or param.roleRestored != null or param.roleRevoked != null}">
@@ -492,31 +497,31 @@
     </section>
     <section>
         <h2>10. ポイント</h2>
-        <p>制度イベントとしての manual / campaign 付与だけをここで扱います。主観評価ではなく、理由つきで user に付与します。</p>
+        <p>制度イベントとしての manual / campaign 付与だけをここで扱います。主観評価ではなく、理由つきで対象ユーザーに付与します。</p>
         <form th:action="@{|/app/admin/users/${pageData.basicInfo.targetUserId}/points/grant|}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             <label>
-                mode
+                付与種別
                 <select name="sourceMode">
-                    <option value="manual">manual</option>
-                    <option value="campaign">campaign</option>
+                    <option value="manual">対象ユーザーに付与</option>
+                    <option value="campaign">キャンペーン付与</option>
                 </select>
             </label>
             <label>
-                region
+                地域
                 <input type="text" name="regionId" th:value="${pageData.basicInfo.regionId}">
             </label>
             <label>
-                points
+                ポイント
                 <input type="number" name="points" min="1" required>
             </label>
             <label>
-                reason
+                理由
                 <input type="text" name="reason" maxlength="500" required>
             </label>
-            <button type="submit">grant points</button>
+            <button type="submit">ポイントを付与</button>
         </form>
-        <p th:if="${param.pointsGranted != null}">points granted</p>
+        <p th:if="${param.pointsGranted != null}">ポイントを付与しました。</p>
     </section>
 </main>
 </body>

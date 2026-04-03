@@ -27,6 +27,15 @@ public class AppSettingsService {
         UserRow user = requireUser(email);
         UserProfileRow profile = loadProfileRow(user.id());
         UserPointService.UserPointSummary pointSummary = userPointService.loadUserPointSummary(user.id());
+        boolean adminViewer = exists(
+            """
+                SELECT COUNT(*)
+                FROM user_roles
+                WHERE user_id = ?
+                  AND UPPER(role_name) = 'ADMIN'
+                """,
+            user.id()
+        );
         return new MypageSummary(
             user.email(),
             user.nickname(),
@@ -38,7 +47,9 @@ public class AppSettingsService {
             profile != null && hasProfileContent(profile),
             pointSummary.currentPoints(),
             pointSummary.enabledForRegion(),
-            pointSummary.recentHistory()
+            pointSummary.recentHistory(),
+            adminViewer,
+            adminViewer ? "/app/admin" : null
         );
     }
 
@@ -345,7 +356,9 @@ public class AppSettingsService {
         boolean profileReady,
         int currentPoints,
         boolean pointsEnabledForRegion,
-        List<UserPointService.PointHistoryItem> pointHistory
+        List<UserPointService.PointHistoryItem> pointHistory,
+        boolean adminViewer,
+        String adminEntryUrl
     ) {
     }
 

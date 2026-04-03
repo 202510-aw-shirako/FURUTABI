@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>adminユーザー一覧 | FURUTABI</title>
+    <title>管理ユーザー一覧 | FURUTABI</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<main class="container" aria-label="adminユーザー一覧">
+<main class="container" aria-label="管理ユーザー一覧">
     <section style="margin: 32px auto; max-width: 980px;">
         <header style="display:flex; justify-content:space-between; gap:16px; align-items:flex-end; flex-wrap:wrap;">
             <div>
-                <h1>adminユーザー一覧</h1>
-                <p>一覧は入口です。支援メモや points の詳細は各ユーザーの管理ページで確認します。</p>
-                <p th:text="${'表示 ' + pageData.shownCount + ' / 検索一致 ' + pageData.matchedCount + ' / 全体 ' + pageData.totalUserCount}">表示 0 / 検索一致 0 / 全体 0</p>
+                <h1>管理ユーザー一覧</h1>
+                <p>一覧は入口です。支援メモやポイント制度の詳細確認は各ユーザーの詳細管理ページから行います。</p>
+                <p th:text="${'表示 ' + pageData.shownCount + ' / 検索結果 ' + pageData.matchedCount + ' / 全体 ' + pageData.totalUserCount}">表示 0 / 検索結果 0 / 全体 0</p>
             </div>
-            <a class="btn ghost" href="/app/admin">admin入口へ戻る</a>
+            <a class="btn ghost" href="/app/admin">管理入口へ戻る</a>
         </header>
 
         <form method="get" action="/app/admin/users" style="display:flex; gap:12px; flex-wrap:wrap; margin: 24px 0;">
             <label style="flex:1 1 320px;">
                 <span>検索</span>
-                <input type="text" name="q" th:value="${pageData.query}" placeholder="名前 / メール / user id">
+                <input type="text" name="q" th:value="${pageData.query}" placeholder="名前 / メール / ユーザーID">
             </label>
             <div style="display:flex; gap:12px; align-items:flex-end;">
                 <button class="btn" type="submit">検索</button>
@@ -32,7 +32,7 @@
         <table style="width:100%; border-collapse:collapse;">
             <thead>
             <tr>
-                <th style="text-align:left; padding:10px 8px;">user</th>
+                <th style="text-align:left; padding:10px 8px;">ユーザー</th>
                 <th style="text-align:left; padding:10px 8px;">メール</th>
                 <th style="text-align:left; padding:10px 8px;">役割</th>
                 <th style="text-align:left; padding:10px 8px;">状態</th>
@@ -42,7 +42,7 @@
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(pageData.users)}">
-                <td colspan="6" style="padding:16px 8px;">一致するユーザーはいません。</td>
+                <td colspan="6" style="padding:16px 8px;">一致するユーザーはありません。</td>
             </tr>
             <tr th:each="userItem : ${pageData.users}">
                 <td style="padding:10px 8px;">

@@ -10,11 +10,15 @@
 <main class="container" aria-label="地域設定サマリ">
     <section style="max-width: 720px; margin: 48px auto;">
         <h1>地域設定サマリ</h1>
-        <p th:text="${regionId + ' の地域設定は、この地域単位での運用対象を確認するための補助ページです。'}">
+        <p th:text="${regionId + ' の地域設定がある前提を確認するための補助ページです。詳細な編集UIは次作業へ送ります。'}">
             地域設定サマリ
         </p>
-        <p>この画面では地域単位で設定を持つことだけを確認し、個別の設定編集は別工程で扱います。</p>
-        <p><a href="/app/admin">admin入口へ戻る</a></p>
+        <p>この画面では、地域設定を本体UIとして編集するのではなく、地域単位の設定が存在することと戻り導線を確認します。</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top: 24px;">
+            <a class="btn ghost" th:href="${adminHomeUrl}">管理入口へ戻る</a>
+            <a class="btn ghost" th:href="${userListUrl}">ユーザー一覧へ戻る</a>
+            <a class="btn ghost" th:if="${fromUserDetailUrl != null}" th:href="${fromUserDetailUrl}">対象ユーザー詳細へ戻る</a>
+        </div>
     </section>
 </main>
 </body>

@@ -76,10 +76,19 @@ public class AdminUserManagementController {
     }
 
     @GetMapping("/regions/{regionId}")
-    public String adminRegionSettingsPlaceholder(@PathVariable String regionId, Authentication authentication, Model model) {
+    public String adminRegionSettingsPlaceholder(
+        @PathVariable String regionId,
+        @RequestParam(name = "fromUserId", required = false) Long fromUserId,
+        Authentication authentication,
+        Model model
+    ) {
         try {
             adminUserManagementService.requireAdminViewer(authentication.getName());
             model.addAttribute("regionId", regionId);
+            model.addAttribute("adminHomeUrl", "/app/admin");
+            model.addAttribute("userListUrl", "/app/admin/users");
+            model.addAttribute("fromUserId", fromUserId);
+            model.addAttribute("fromUserDetailUrl", fromUserId == null ? null : "/app/admin/users/" + fromUserId);
             return "app/admin-region-settings-placeholder";
         } catch (AdminUserManagementService.AdminUserManagementAccessDeniedException ex) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin access is required", ex);

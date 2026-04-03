@@ -89,6 +89,18 @@
           <p class="note" th:if="${#lists.isEmpty(summary.pointHistory)}">まだポイント履歴はありません。</p>
         </section>
 
+        <section class="mypageSection" th:if="${summary.adminViewer}">
+          <div class="sectionTitleRow">
+            <h2 class="h2">管理導線</h2>
+          </div>
+          <div class="mypageLinkGrid">
+            <a class="mypageLinkCard" th:href="${summary.adminEntryUrl}">
+              <h3 class="h2">管理入口</h3>
+              <p class="note">admin home / list / detail へ進むための入口です。通常の self-service 導線とは分けて表示します。</p>
+            </a>
+          </div>
+        </section>
+
         <section class="mypageSection">
           <div class="sectionTitleRow">
             <h2 class="h2">現在の状態</h2>
