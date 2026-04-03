@@ -9,6 +9,7 @@
   var stories = {
     '1': {
       id: '1',
+      authorKey: 'author-1',
       pinClass: 'topMapPin--a',
       title: '境内の風と、OOさんのおはぎ',
       meta: '生まれ育った町を静かに見返す人',
@@ -25,6 +26,7 @@
     },
     '2': {
       id: '2',
+      authorKey: 'author-2',
       pinClass: 'topMapPin--b',
       title: '小さな店先で、ひとこと教わる',
       meta: '暮らしの声をやわらかく受け取る人',
@@ -41,6 +43,7 @@
     },
     '3': {
       id: '3',
+      authorKey: 'author-3',
       pinClass: 'topMapPin--c',
       title: '朝の入り口で見つけた、町のやさしさ',
       meta: '朝の気配を静かに受け取った人',
@@ -121,7 +124,6 @@
       : ['public'];
     var label = options && options.meta ? options.meta : '— わたしの地図';
     var records;
-    var linksEnabled = !options || options.linksEnabled !== false;
 
     if (!interactions || typeof interactions.getMapRecords !== 'function') {
       return {};
@@ -136,6 +138,7 @@
       var id = 'map-' + String(pin.id || '');
       acc[id] = {
         id: id,
+        authorKey: pin.authorKey || pin.nickname || (pin.user_id ? String(pin.user_id) : id),
         title: pin.title || 'わたしの地図の記録',
         meta: label,
         summary: summarizeMapRecord(pin),
@@ -144,7 +147,7 @@
         year: pin.recordedYear || getYearFromDateString(recordedAt),
         category: pin.recordType || 'memo',
         body: [summarizeMapRecord(pin)],
-        link: linksEnabled ? (basePath || '#') : '#',
+        link: basePath || '#',
         aria: 'わたしの地図の記録',
         x: Number(pin.x),
         y: Number(pin.y)
@@ -195,13 +198,14 @@
     }).join('');
   }
 
-  function withBasePath(basePath, linksEnabled) {
+  function withBasePath(basePath) {
     // 画面ごとに public / app で相対パスが違うため、リンクだけここで吸収する。
     // Javaルーティング化したら `/stories/{id}` などの絶対パス生成に置き換える。
     return Object.keys(stories).reduce(function (acc, id) {
       var story = stories[id];
       acc[id] = {
         id: story.id,
+        authorKey: story.authorKey,
         title: story.title,
         meta: story.meta,
         summary: story.summary,
@@ -211,7 +215,7 @@
         category: story.category,
         pinClass: story.pinClass,
         body: story.body.slice(),
-        link: linksEnabled === false ? '#' : (basePath || '') + 'story.html?story=' + story.id,
+        link: (basePath || '') + 'story.html?story=' + story.id,
         aria: defaultLabel + ' ' + story.id
       };
       return acc;
@@ -313,6 +317,7 @@
     var filterYear;
     var filterSeason;
     var filterCategory;
+    var filterAuthorButton;
     var filterNote;
 
     if (!root || !card || !storyData) {
@@ -399,11 +404,13 @@
       '<label class="topMapFilterField"><span>\u5b63\u7bc0</span><select data-top-map-filter-season><option value="">\u3059\u3079\u3066</option><option value="spring">\u6625</option><option value="summer">\u590f</option><option value="autumn">\u79cb</option><option value="winter">\u51ac</option></select></label>' +
       '<label class="topMapFilterField"><span>\u8a18\u9332\u30bf\u30a4\u30d7</span><select data-top-map-filter-category><option value="">\u3059\u3079\u3066</option>' +
       buildFilterOptions(storyData, function (story) { return story.category || ''; }, getCategoryLabel) +
-      '</select></label>';
+      '</select></label>' +
+      '<button class="topMapFilterAction" type="button" data-top-map-filter-author aria-pressed="false">\u30ab\u30fc\u30c9\u306e\u65b9\u306e\u30d4\u30f3\u3092\u8868\u793a</button>';
 
     filterYear = filterWrap.querySelector('[data-top-map-filter-year]');
     filterSeason = filterWrap.querySelector('[data-top-map-filter-season]');
     filterCategory = filterWrap.querySelector('[data-top-map-filter-category]');
+    filterAuthorButton = filterWrap.querySelector('[data-top-map-filter-author]');
     filterNote = root.parentNode.querySelector('[data-top-map-filter-note]');
       if (!filterNote) {
         filterNote = document.createElement('p');
@@ -480,6 +487,10 @@
       var year = filterYear ? filterYear.value : '';
       var season = filterSeason ? filterSeason.value : '';
       var category = filterCategory ? filterCategory.value : '';
+      var selectedStory = storyData[selectedId];
+      var authorKey = filterAuthorButton && filterAuthorButton.dataset.authorPinned === 'true' && selectedStory
+        ? String(selectedStory.authorKey || '')
+        : '';
 
       return Object.keys(storyData).map(function (id) {
         return storyData[id];
@@ -493,8 +504,24 @@
         if (category && String(story.category || '') !== category) {
           return false;
         }
+        if (authorKey && String(story.authorKey || '') !== authorKey) {
+          return false;
+        }
         return true;
       });
+    }
+
+    function syncAuthorFilterButton() {
+      var selectedStory = storyData[selectedId];
+      var isPinned = !!(filterAuthorButton && filterAuthorButton.dataset.authorPinned === 'true');
+
+      if (!filterAuthorButton) {
+        return;
+      }
+
+      filterAuthorButton.disabled = !(selectedStory && selectedStory.authorKey);
+      filterAuthorButton.setAttribute('aria-pressed', isPinned ? 'true' : 'false');
+      filterAuthorButton.textContent = isPinned ? '固定解除' : 'カードの方のピンを表示';
     }
 
     function syncFilteredPins(visibleStories) {
@@ -557,6 +584,7 @@
 
       if (!visibleStories.length) {
         syncFilteredPins([]);
+        syncAuthorFilterButton();
         if (filterNote) {
           filterNote.hidden = false;
           filterNote.textContent = '条件に合うピンはまだありません。';
@@ -624,6 +652,7 @@
       }
 
       syncFilteredPins(visibleStories);
+      syncAuthorFilterButton();
       syncCard();
     }
 
@@ -774,6 +803,15 @@
         syncFilteredCard({ preferLatest: true });
       });
     });
+
+    if (filterAuthorButton) {
+      filterAuthorButton.addEventListener('click', function () {
+        var isPinned = filterAuthorButton.dataset.authorPinned === 'true';
+
+        filterAuthorButton.dataset.authorPinned = isPinned ? 'false' : 'true';
+        syncFilteredCard();
+      });
+    }
 
     document.addEventListener('pointermove', moveDrag);
     document.addEventListener('pointerup', endDrag);

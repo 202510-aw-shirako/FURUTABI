@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FURUTABI Wire | ちいきの入り口</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI｜郷旅</div>
+        <nav data-site-nav="public_gate"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="ちいきの入り口">
+    <section class="section section--hero" aria-label="ヒーローイメージ">
+      <div class="fullbleed">
+        <div class="ph ph--pageHero" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <section class="section fv">
+      <div class="sectionTitleRow">
+        <h1 class="h1">ちいきの入り口</h1>
+        <a class="sectionTitleLink" href="about.html#feature-gate">詳しく見る</a>
+      </div>
+      <p class="lead">旅人のはじめに、地域にどんな関わり方があるのかを穏やかに選ぶページです。</p>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="h2">ここからの流れ</div>
+        <ul class="aboutFeatureList" data-rule-list="gate"></ul>
+      </div>
+    </section>
+
+    <section class="section" aria-label="入口カード">
+      <div class="sectionTitleRow">
+        <h2 class="h2">入口カード</h2>
+      </div>
+      <p class="lead">下のカードと結びつく地図も見ながら、どの関わり方が自分に合うかを見られるようにしています。</p>
+      <div data-gate-map-root data-proposal-base="./" data-proposal-context="gate" style="margin-top:16px;"></div>
+    </section>
+
+    <section class="section" data-gate-public-guide>
+      <div class="denseBox">
+        <div>
+          <div class="h2">架け橋さんの登録後</div>
+          <p class="note">ワイヤ: 地域の人と実際に会い、架け橋さんが登録したあとに通常のログイン後ホームへ進みます。</p>
+        </div>
+        <a class="btn primary" href="/login">通常のログイン後画面へ</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/proposals.js"></script>
+  <script src="/assets/scripts/entry-carousel.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var guide = document.querySelector('[data-gate-public-guide]');
+      if (params.get('context') === 'app' && guide) {
+        guide.hidden = true;
+      }
+    }());
+  </script>
+</body>
+</html>

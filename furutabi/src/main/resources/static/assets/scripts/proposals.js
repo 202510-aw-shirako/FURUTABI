@@ -280,17 +280,6 @@
   }
 
   function buildDetailHref(type, id, basePath, context) {
-    if (context === 'app') {
-      if (type === 'gate') {
-        return '/app/gate';
-      }
-      if (type === 'okatte') {
-        return '/app/okatte';
-      }
-    }
-    if (!context || context === 'public') {
-      return '';
-    }
     var file = type === 'okatte' ? 'okatte-entry.html' : 'gate-entry.html';
     var href = basePath + file + '?proposal=' + encodeURIComponent(id);
     if (context) {
@@ -385,17 +374,6 @@
     return params.get('context') || '';
   }
 
-  function disableUnavailableLinks(root) {
-    root.querySelectorAll('a[href=""]').forEach(function (link) {
-      var label = (link.textContent || '').trim();
-      var disabled = document.createElement('span');
-      disabled.className = link.className + ' is-disabled';
-      disabled.setAttribute('aria-disabled', 'true');
-      disabled.textContent = label ? label + '（次段階）' : '次段階';
-      link.replaceWith(disabled);
-    });
-  }
-
   function renderList(root) {
     var type = root.getAttribute('data-proposal-list');
     var basePath = root.getAttribute('data-proposal-base') || './';
@@ -403,7 +381,6 @@
     root.innerHTML = getCollection(type).map(function (item) {
       return buildCard(type, item, basePath, { carousel: true, context: context });
     }).join('');
-    disableUnavailableLinks(root);
   }
 
   function renderGrid(root) {
@@ -413,7 +390,6 @@
     root.innerHTML = getCollection(type).map(function (item) {
       return buildCard(type, item, basePath, { context: context });
     }).join('');
-    disableUnavailableLinks(root);
   }
 
   function buildOverviewMapMarkup(type, basePath, context, activeId) {
@@ -428,7 +404,7 @@
               '<img class="topMapCanvas topMapCanvasImage" src="' + escapeHtml(mapImage) + '" alt="一覧の地図" data-proposal-overview-image />' +
               '<div class="myMapPinsLayer" aria-hidden="false" data-proposal-overview-pins-layer>' +
                 items.map(function (item, index) {
-                  return '<a class="topMapPin ' + escapeHtml(item.pinClass) + (item.id === activeId ? ' is-active' : '') + '" href="' + escapeHtml(buildDetailHref(type, item.id, basePath, context) || '#') + '" data-proposal-overview-pin="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(item.placeName) + '"><span>' + String(index + 1) + '</span></a>';
+                  return '<a class="topMapPin ' + escapeHtml(item.pinClass) + (item.id === activeId ? ' is-active' : '') + '" href="' + escapeHtml(buildDetailHref(type, item.id, basePath, context)) + '" data-proposal-overview-pin="' + escapeHtml(item.id) + '" aria-label="' + escapeHtml(item.placeName) + '"><span>' + String(index + 1) + '</span></a>';
                 }).join('') +
               '</div>' +
             '</div>' +

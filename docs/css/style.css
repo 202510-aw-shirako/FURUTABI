@@ -2680,8 +2680,8 @@ body.hasProposalModal {
 .topMapCards {
   position: absolute;
   top: -10px;
-  left: -20px;
-  width: min(396px, 100% - 40px);
+  left: 0;
+  width: min(396px, 100%);
   z-index: 4;
 }
 
@@ -2695,9 +2695,10 @@ body.hasProposalModal {
 
 .topMapFilters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 180px));
+  grid-template-columns: repeat(4, minmax(0, max-content));
   gap: 10px;
   margin: 0 0 10px;
+  align-items: end;
 }
 
 .appTopMapLayout[data-my-map] .topMapFilters {
@@ -2720,6 +2721,19 @@ body.hasProposalModal {
   background: #fff;
   font: inherit;
   color: #2f2a26;
+}
+
+.topMapFilterAction {
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid rgba(34, 34, 34, 0.1);
+  border-radius: 12px;
+  background: #fff;
+  color: #6b6258;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  justify-self: start;
 }
 
 .topMapFilterNote {

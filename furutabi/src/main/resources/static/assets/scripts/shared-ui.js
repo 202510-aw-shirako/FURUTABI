@@ -147,77 +147,78 @@
   var navConfigs = {
     public_main: {
       variant: 'public',
-      brandHref: 'index.html',
+      brandHref: '/index.html',
       mainLinks: [
-        { label: 'ちいきの入り口（次段階）', disabled: true },
-        { href: '#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { label: '私たちの目指すもの（次段階）', disabled: true },
-        { label: '地域の方へ（次段階）', disabled: true },
-        { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
+        { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
       utilityLinks: [
-        { href: 'bridge.html', label: 'ブリッジ' }
+        { href: '/bridge.html', label: 'ブリッジ' }
       ],
       action: [
-        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
-        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+        { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
+        { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
       ]
     },
     public_secondary: {
       variant: 'public',
-      brandHref: 'index.html',
+      brandHref: '/index.html',
       mainLinks: [
-        { label: 'ちいきの入り口（次段階）', disabled: true },
-        { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { label: '私たちの目指すもの（次段階）', disabled: true },
-        { label: '地域の方へ（次段階）', disabled: true },
-        { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
+        { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
       utilityLinks: [
-        { href: 'bridge.html', label: 'ブリッジ' }
+        { href: '/bridge.html', label: 'ブリッジ' }
       ],
       action: [
-        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
-        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+        { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
+        { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
       ]
     },
     public_gate: {
       variant: 'public',
-      brandHref: 'index.html',
+      brandHref: '/index.html',
       mainLinks: [
-        { label: 'ちいきの入り口（次段階）', disabled: true },
-        { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
-        { label: '私たちの目指すもの（次段階）', disabled: true },
-        { label: '地域の方へ（次段階）', disabled: true },
-        { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] }
+        { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
       utilityLinks: [
-        { href: 'bridge.html', label: 'ブリッジ' }
+        { href: '/bridge.html', label: 'ブリッジ' }
       ],
       action: [
-        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
-        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+        { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
+        { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
       ]
     },
     auth_login: {
       variant: 'public',
-      brandHref: '../public/index.html',
+      brandHref: '/index.html',
       mainLinks: [
-        { href: '../public/bridge.html', label: 'ブリッジ' },
-        { href: '../public/gate.html?context=app', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
-        { href: '../app/home.html?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home.html', 'index.html', 'story.html'] },
-        { href: '../public/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
-        { href: '../public/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
-        { href: '../public/faq.html?context=app', label: 'FAQ', currentMatchers: ['faq.html'] },
-        { href: '../public/safety.html?context=app', label: 'お問い合わせ', currentMatchers: ['safety.html', 'safety-complete.html'] }
+        { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
+        { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
+        { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '/local.html', label: '地域の方へ', currentMatchers: ['local.html'] },
+        { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
+        { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
-      utilityLinks: [],
+      utilityLinks: [
+        { href: '/bridge.html', label: 'ブリッジ' }
+      ],
       action: [
-        { href: '../auth/register.html', label: '新規登録', currentMatchers: ['register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
-        { href: '../auth/login.html', label: 'ログイン', currentMatchers: ['login.html'] }
+        { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
+        { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
       ]
     },
     app_home: {
@@ -290,21 +291,21 @@
 
   var footerConfig = {
     about: [
-      { href: 'index.html', label: 'FURUTABI' },
-      { label: '私たちの目指すもの（次段階）', disabled: true },
-      { label: 'FAQ（次段階）', disabled: true },
-      { label: 'お問い合わせ（次段階）', disabled: true }
+      { href: '/index.html', label: 'FURUTABI' },
+      { href: '/about.html', label: '私たちの目指すもの' },
+      { href: '/faq.html', label: 'FAQ' },
+      { href: '/contact.html', label: 'お問い合わせ' }
     ],
     usage: [
-      { label: 'ちいきの入り口（次段階）', disabled: true },
-      { href: 'index.html#top-footprints', label: 'ごひいきさんの足あと' },
-      { label: 'わたしの地図（次段階）', disabled: true },
-      { label: 'ちいきのおかって（次段階）', disabled: true }
+      { href: '/gate.html', label: 'ちいきの入り口' },
+      { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと' },
+      { href: '/map.html', label: 'わたしの地図' },
+      { href: '/okatte-entry.html?proposal=okatte-1', label: 'ちいきのおかって' }
     ],
     legal: [
-      { label: '利用規約（次段階）', disabled: true },
-      { label: 'プライバシーポリシー（次段階）', disabled: true },
-      { href: '../auth/login.html', label: 'ログイン' }
+      { href: '/terms.html', label: '利用規約' },
+      { href: '/privacy.html', label: 'プライバシーポリシー' },
+      { href: '/login', label: 'ログイン' }
     ]
   };
 
@@ -570,8 +571,8 @@
       || pathname === 'about.html'
       || pathname === 'story.html'
       || pathname === 'faq.html'
-      || pathname === 'safety.html'
-      || pathname === 'safety-complete.html') && context === 'app') {
+      || pathname === 'contact.html'
+      || pathname === 'contact-complete.html') && context === 'app') {
       key = 'app_home';
     }
     var config = navConfigs[key];
@@ -656,7 +657,7 @@
     var appContext = inApp || readQueryParam('context') === 'app';
     var resolvedHref = href;
     var pathname;
-    var appContextTargets = ['about.html', 'gate.html', 'gate-entry.html', 'index.html', 'story.html', 'faq.html', 'safety.html', 'safety-complete.html', 'okatte-entry.html'];
+    var appContextTargets = ['about.html', 'gate.html', 'gate-entry.html', 'index.html', 'story.html', 'faq.html', 'contact.html', 'contact-complete.html', 'okatte-entry.html'];
     var preferLocalMemberHome = /\/app\/local-(member-)?home(\.html)?/.test(path);
 
     if (href === '#') {

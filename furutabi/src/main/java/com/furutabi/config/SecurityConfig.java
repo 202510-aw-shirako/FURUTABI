@@ -20,6 +20,28 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 // Preview routes stay public until the real login / access design is implemented.
                 .requestMatchers("/preview/**").permitAll()
+                .requestMatchers(
+                    "/",
+                    "/bridge", "/bridge.html",
+                    "/index", "/index.html",
+                    "/about", "/about.html",
+                    "/faq", "/faq.html",
+                    "/gate", "/gate.html",
+                    "/gate-entry", "/gate-entry.html",
+                    "/local", "/local.html",
+                    "/story", "/story.html",
+                    "/notices", "/notices.html",
+                    "/notice", "/notice.html",
+                    "/okatte-entry", "/okatte-entry.html",
+                    "/terms", "/terms.html",
+                    "/privacy", "/privacy.html",
+                    "/contact", "/contact.html",
+                    "/contact-complete", "/contact-complete.html",
+                    "/map", "/map.html",
+                    "/safety", "/safety.html",
+                    "/safety-complete", "/safety-complete.html",
+                    "/tour", "/tour.html"
+                ).permitAll()
                 .requestMatchers("/login", "/register", "/register/**").permitAll()
                 // Preview pages depend on these static assets being readable without authentication.
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/assets/**").permitAll()
