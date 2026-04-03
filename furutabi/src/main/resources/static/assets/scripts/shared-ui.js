@@ -227,8 +227,8 @@
       mainLinks: [
         { href: '/preview/public/bridge.html', label: 'ブリッジ' },
         { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
-        { href: '/app/map-records', label: 'わたしの地図', currentMatchers: ['map-records'] },
-        { href: '/app/home', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
+        { href: '/app/home#tab-map', label: 'わたしの地図', currentMatchers: ['home', 'home.html'] },
+        { href: '/app/home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
         { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
@@ -248,8 +248,8 @@
       mainLinks: [
         { href: '/preview/public/bridge.html', label: 'ブリッジ' },
         { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
-        { href: '/app/map-records', label: 'わたしの地図', currentMatchers: ['map-records'] },
-        { href: '/app/local-member-home', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
+        { href: '/app/local-member-home#tab-map', label: 'わたしの地図', currentMatchers: ['local-member-home', 'local-member-home.html'] },
+        { href: '/app/local-member-home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
         { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
@@ -272,8 +272,8 @@
       mainLinks: [
         { href: '/preview/public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' },
         { href: '/app/gate', label: '\u3061\u3044\u304d\u306e\u5165\u308a\u53e3', currentMatchers: ['gate', 'gate.html'] },
-        { href: '/app/map-records', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['map-records'] },
-        { href: '/app/local-member-home', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home', 'local-member-home.html'] },
+        { href: '/app/local-member-home#tab-map', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['local-member-home', 'local-member-home.html'] },
+        { href: '/app/local-member-home?tab=footprints', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: '\u3061\u3044\u304d\u306e\u304a\u304b\u3063\u3066', currentMatchers: ['okatte', 'okatte.html'] },
         { href: '/app/support', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。

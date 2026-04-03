@@ -4,9 +4,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsString;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -355,14 +357,21 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated app route is available after passing security")
     void authenticatedAppRequestPassesSecurityBeforeMissingRoute() throws Exception {
         mockMvc.perform(get("/app/home").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("わたしの地図")))
+            .andExpect(content().string(containsString("ごひいきさんの足あと")))
+            .andExpect(content().string(containsString("data-map-tab=\"sub-footprints\"")))
+            .andExpect(content().string(containsString("data-my-map-record-list")));
     }
 
     @Test
     @DisplayName("Authenticated local member route is available after passing security")
     void authenticatedLocalMemberRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/local-member-home").with(user("local@example.com").roles("LOCAL")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("地域登録ユーザー向けログイン後ホーム")))
+            .andExpect(content().string(containsString("data-top-map-kind=\"footprints\"")))
+            .andExpect(content().string(containsString("data-my-map")));
     }
 
     @Test
