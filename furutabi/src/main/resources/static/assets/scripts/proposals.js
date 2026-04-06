@@ -273,6 +273,16 @@
     return collections[type] || [];
   }
 
+  function getDisplayCollection(type, context) {
+    var items = getCollection(type).slice();
+
+    if (type === 'gate' && context !== 'app') {
+      return items.slice(0, 3);
+    }
+
+    return items;
+  }
+
   function getProposal(type, id) {
     return getCollection(type).find(function (item) {
       return item.id === id;
@@ -378,7 +388,7 @@
     var type = root.getAttribute('data-proposal-list');
     var basePath = root.getAttribute('data-proposal-base') || './';
     var context = resolveCardContext(root.getAttribute('data-proposal-context') || '');
-    root.innerHTML = getCollection(type).map(function (item) {
+    root.innerHTML = getDisplayCollection(type, context).map(function (item) {
       return buildCard(type, item, basePath, { carousel: true, context: context });
     }).join('');
   }
@@ -393,7 +403,7 @@
   }
 
   function buildOverviewMapMarkup(type, basePath, context, activeId) {
-    var items = getCollection(type);
+    var items = getDisplayCollection(type, context);
     var mapImage = basePath + 'assets/images/凪咲町.svg';
 
     return '' +
@@ -439,8 +449,9 @@
     var type = 'gate';
     var basePath = root.getAttribute('data-proposal-base') || './';
     var context = resolveCardContext(root.getAttribute('data-proposal-context') || '');
-    var items = getCollection(type);
-    var requestedId = shared && shared.readQueryParam ? shared.readQueryParam('proposal') : '';
+    var items = getDisplayCollection(type, context);
+    var sharedUi = window.FURUTABI_SHARED_UI;
+    var requestedId = sharedUi && sharedUi.readQueryParam ? sharedUi.readQueryParam('proposal') : '';
     var activeId = (requestedId && getProposal(type, requestedId).id) || (items[0] && items[0].id);
     var stage;
     var viewport;
@@ -812,6 +823,7 @@
     buildDetailHref: buildDetailHref,
     getProposal: getProposal,
     getCollection: getCollection,
+    getDisplayCollection: getDisplayCollection,
     buildCard: buildCard,
     openPersonModal: openPersonModal,
     closePersonModal: closePersonModal

@@ -525,14 +525,20 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated gate list route is available after passing security")
     void authenticatedGateListRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/gate").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("href=\"/app/gate/20\"")))
+            .andExpect(content().string(containsString("topMapPin")));
     }
 
     @Test
     @DisplayName("Authenticated gate detail route is available after passing security")
     void authenticatedGateDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/gate/20").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("一覧へ戻る")))
+            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("href=\"/app/gate\"")));
     }
 
     @Test
@@ -560,14 +566,20 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated okatte list route is available after passing security")
     void authenticatedOkatteListRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/okatte").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("href=\"/app/okatte/21\"")))
+            .andExpect(content().string(containsString("topMapPin")));
     }
 
     @Test
     @DisplayName("Authenticated okatte detail route is available after passing security")
     void authenticatedOkatteDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/okatte/21").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("一覧へ戻る")))
+            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("href=\"/app/okatte\"")));
     }
 
     @Test

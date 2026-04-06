@@ -17,6 +17,12 @@ import com.furutabi.visibility.VisibilityScope;
 @Service
 public class OkatteService {
 
+    private static final String[] PIN_CLASSES = {
+        "okattePin--a",
+        "okattePin--b",
+        "okattePin--c"
+    };
+
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
 
@@ -31,7 +37,7 @@ public class OkatteService {
             .filter(item -> visibilityAccessService.canViewProposal(viewerUserId, item.proposalId()))
             .map(item -> item.withOwner(viewerUserId != null && viewerUserId == item.hostUserId()))
             .toList();
-        return new OkatteListPageData(visibleItems);
+        return new OkatteListPageData(assignPinClasses(visibleItems));
     }
 
     public OkatteDetailPageData loadVisibleOkatteDetail(String email, long proposalId) {
@@ -40,6 +46,8 @@ public class OkatteService {
         if (!visibilityAccessService.canViewProposal(viewerUserId, proposalId)) {
             throw new IllegalStateException("Okatte proposal is not visible: " + proposalId);
         }
+
+        List<OkatteSummary> relatedItems = loadVisibleOkatteList(email).items();
 
         return new OkatteDetailPageData(
             proposalId,
@@ -58,8 +66,30 @@ public class OkatteService {
             loadApplicationStatus(viewerUserId, proposalId),
             loadRelatedChatPath(viewerUserId, proposalId),
             "/app/history",
-            loadSupportNoteUrl(viewerUserId, row)
+            loadSupportNoteUrl(viewerUserId, row),
+            "/app/okatte",
+            relatedItems
         );
+    }
+
+    private List<OkatteSummary> assignPinClasses(List<OkatteSummary> items) {
+        List<OkatteSummary> assigned = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            OkatteSummary item = items.get(i);
+            assigned.add(new OkatteSummary(
+                item.proposalId(),
+                item.title(),
+                item.summary(),
+                item.locationName(),
+                item.durationMinutes(),
+                item.visibilityLabel(),
+                item.hostNickname(),
+                item.tags(),
+                item.owner(),
+                PIN_CLASSES[i % PIN_CLASSES.length]
+            ));
+        }
+        return assigned;
     }
 
     private boolean canApply(Long viewerUserId, OkatteDetailRow row) {
@@ -279,7 +309,8 @@ public class OkatteService {
         String visibilityLabel,
         String hostNickname,
         List<String> tags,
-        boolean owner
+        boolean owner,
+        String pinClass
     ) {
     }
 
@@ -300,7 +331,9 @@ public class OkatteService {
         String applicationStatus,
         String relatedChatPath,
         String historyPath,
-        String supportNoteUrl
+        String supportNoteUrl,
+        String listPath,
+        List<OkatteSummary> relatedItems
     ) {
     }
 
@@ -325,7 +358,8 @@ public class OkatteService {
                 VisibilityScope.fromDbValue(visibilityScope).name(),
                 hostNickname,
                 tags,
-                owner
+                owner,
+                PIN_CLASSES[0]
             );
         }
 

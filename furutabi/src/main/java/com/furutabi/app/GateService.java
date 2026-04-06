@@ -17,6 +17,14 @@ import com.furutabi.visibility.VisibilityScope;
 @Service
 public class GateService {
 
+    private static final String[] PIN_CLASSES = {
+        "gateEntryPin--a",
+        "gateEntryPin--b",
+        "gateEntryPin--c",
+        "gateEntryPin--d",
+        "gateEntryPin--e"
+    };
+
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
 
@@ -31,7 +39,7 @@ public class GateService {
             .filter(item -> visibilityAccessService.canViewProposal(viewerUserId, item.proposalId()))
             .map(item -> item.withOwner(viewerUserId != null && viewerUserId == item.hostUserId()))
             .toList();
-        return new GateListPageData(visibleItems);
+        return new GateListPageData(assignPinClasses(visibleItems));
     }
 
     public GateDetailPageData loadVisibleGateDetail(String email, long proposalId) {
@@ -40,6 +48,8 @@ public class GateService {
         if (!visibilityAccessService.canViewProposal(viewerUserId, proposalId)) {
             throw new IllegalStateException("Gate proposal is not visible: " + proposalId);
         }
+
+        List<GateSummary> relatedItems = loadVisibleGateList(email).items();
 
         return new GateDetailPageData(
             proposalId,
@@ -58,8 +68,30 @@ public class GateService {
             loadApplicationStatus(viewerUserId, proposalId),
             loadRelatedChatPath(viewerUserId, proposalId),
             "/app/history",
-            loadSupportNoteUrl(viewerUserId, row)
+            loadSupportNoteUrl(viewerUserId, row),
+            "/app/gate",
+            relatedItems
         );
+    }
+
+    private List<GateSummary> assignPinClasses(List<GateSummary> items) {
+        List<GateSummary> assigned = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            GateSummary item = items.get(i);
+            assigned.add(new GateSummary(
+                item.proposalId(),
+                item.title(),
+                item.summary(),
+                item.locationName(),
+                item.durationMinutes(),
+                item.visibilityLabel(),
+                item.hostNickname(),
+                item.tags(),
+                item.owner(),
+                PIN_CLASSES[i % PIN_CLASSES.length]
+            ));
+        }
+        return assigned;
     }
 
     private boolean canApply(Long viewerUserId, GateDetailRow row) {
@@ -279,7 +311,8 @@ public class GateService {
         String visibilityLabel,
         String hostNickname,
         List<String> tags,
-        boolean owner
+        boolean owner,
+        String pinClass
     ) {
     }
 
@@ -300,7 +333,9 @@ public class GateService {
         String applicationStatus,
         String relatedChatPath,
         String historyPath,
-        String supportNoteUrl
+        String supportNoteUrl,
+        String listPath,
+        List<GateSummary> relatedItems
     ) {
     }
 
@@ -325,7 +360,8 @@ public class GateService {
                 VisibilityScope.fromDbValue(visibilityScope).name(),
                 hostNickname,
                 tags,
-                owner
+                owner,
+                PIN_CLASSES[0]
             );
         }
 

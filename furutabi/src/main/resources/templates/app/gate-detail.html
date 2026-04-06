@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ちいきの入口 詳細 | FURUTABI</title>
+  <title>ちいきの入り口 詳細 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <main class="container" aria-label="ちいきの入口 詳細">
+  <main class="container" aria-label="ちいきの入り口 詳細">
     <section class="section section--hero" aria-label="ヒーロー">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -26,15 +26,14 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1" th:text="${pageData.title}">gate title</h1>
-        <a class="sectionTitleLink" href="/app/gate">一覧へ戻る</a>
+        <a class="sectionTitleLink" th:href="${pageData.listPath}">一覧へ戻る</a>
       </div>
       <div class="mypageNoticeBox" th:if="${param.applied}">
-        <p>申請を作成しました。受け入れ判断や chat 開始はまだ次段階です。</p>
+        <p>申請を受け付けました。必要があれば次の案内や chat 開通を待ってください。</p>
       </div>
       <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
         <span class="pill" th:text="${pageData.visibilityLabel}">PUBLIC</span>
-        <span class="pill pill--soft"
-              th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '所要時間は次段階で設定'}">60分</span>
+        <span class="pill pill--soft" th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '時間は次段で表示'}">45分</span>
       </div>
       <p class="lead" th:if="${pageData.summary != null}" th:text="${pageData.summary}">summary</p>
     </section>
@@ -42,39 +41,104 @@
     <section class="section">
       <div class="grid2">
         <article class="card">
-          <div class="h2">この入口について</div>
-          <p class="note" th:text="${pageData.body != null ? pageData.body : '詳細本文はまだ最小表示です。'}">body</p>
+          <div class="h2">この入り口について</div>
+          <p class="note" th:text="${pageData.body != null ? pageData.body : '詳しい本文は次段で表示します。'}">body</p>
           <p class="note" th:if="${pageData.locationName != null}" th:text="${'場所: ' + pageData.locationName}">場所</p>
-          <p class="note" th:text="${pageData.hostNickname != null ? '投稿者: ' + pageData.hostNickname : '投稿者は次段階で表示'}">投稿者</p>
-          <p class="note" th:if="${pageData.bridgeNickname != null}" th:text="${'ブリッジ: ' + pageData.bridgeNickname}">ブリッジ</p>
-          <p class="note" th:if="${pageData.createdAt != null}"
-             th:text="${'作成日時: ' + #temporals.format(pageData.createdAt, 'yyyy-MM-dd HH:mm')}">作成日時</p>
+          <p class="note" th:text="${pageData.hostNickname != null ? '受け入れ側: ' + pageData.hostNickname : '受け入れ側は次段で表示'}">受け入れ側</p>
+          <p class="note" th:if="${pageData.bridgeNickname != null}" th:text="${'架け橋さん: ' + pageData.bridgeNickname}">架け橋さん</p>
+          <p class="note" th:if="${pageData.createdAt != null}" th:text="${'作成日: ' + #temporals.format(pageData.createdAt, 'yyyy-MM-dd HH:mm')}">作成日</p>
         </article>
 
         <article class="card">
-          <div class="h2">タグ</div>
+          <div class="h2">使い方</div>
           <div class="proposalTags" th:if="${!pageData.tags.isEmpty()}">
             <span class="proposalTag" th:each="tag : ${pageData.tags}" th:text="${tag}">tag</span>
           </div>
           <p class="note" th:if="${pageData.tags.isEmpty()}">タグはまだ設定されていません。</p>
 
           <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
-            <span class="btn ghost" th:if="${pageData.owner}">投稿者として表示中</span>
+            <span class="btn ghost" th:if="${pageData.owner}">提案中</span>
             <a class="btn primary" th:if="${pageData.canApply}" th:href="@{/app/gate/{id}/apply(id=${pageData.proposalId})}">申請する</a>
           </div>
-          <p class="note" th:if="${pageData.applicationStatus != null}" style="margin-top:12px;"
-             th:text="${'あなたの申請状態: ' + pageData.applicationStatus}">申請状態</p>
-          <p class="note" style="margin-top:12px;">申請作成までは backend でつながりました。受け入れ判断と chat 開始はまだ次段階です。</p>
+          <p class="note" th:if="${pageData.applicationStatus != null}" style="margin-top:12px;" th:text="${'あなたの申請状態: ' + pageData.applicationStatus}">申請状態</p>
+          <p class="note" style="margin-top:12px;">申請後は、受け入れ側の判断と chat 開通を待ちます。</p>
           <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
             <a class="btn ghost" th:if="${pageData.relatedChatPath != null}" th:href="${pageData.relatedChatPath}">chat の続きへ</a>
-            <a class="btn ghost" th:if="${pageData.historyPath != null}" th:href="${pageData.historyPath}">関わりの記録へ</a>
-            <a class="btn ghost" th:if="${pageData.supportNoteUrl != null}" th:href="${pageData.supportNoteUrl}">終了後の支援メモを書く</a>
+            <a class="btn ghost" th:if="${pageData.historyPath != null}" th:href="${pageData.historyPath}">関わりの履歴へ</a>
+            <a class="btn ghost" th:if="${pageData.supportNoteUrl != null}" th:href="${pageData.supportNoteUrl}">支援メモを書く</a>
           </div>
         </article>
+      </div>
+    </section>
+
+    <section class="section" th:if="${not #lists.isEmpty(pageData.relatedItems)}">
+      <div class="sectionTitleRow">
+        <h2 class="h2">地図でもう一度見る</h2>
+        <span class="note">この提案の近くにも、別のひらき方があります。</span>
+      </div>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+        <a class="btn ghost" th:href="${pageData.listPath}">一覧へ戻る</a>
+      </div>
+
+      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout" style="margin-top:16px;">
+        <div class="myMapMain">
+          <div class="topMapStage" aria-label="ちいきの入り口の地図">
+            <div class="myMapViewport">
+              <img class="topMapCanvas topMapCanvasImage" src="/assets/images/凪咲町.svg" alt="ちいきの入り口の地図" />
+              <div class="myMapPinsLayer" aria-hidden="false">
+                <a
+                  class="topMapPin"
+                  th:classappend="${item.pinClass} + (${item.proposalId == pageData.proposalId} ? ' is-active' : '')"
+                  th:href="@{/app/gate/{id}(id=${item.proposalId})}"
+                  th:each="item, stat : ${pageData.relatedItems}">
+                  <span th:text="${stat.count}">1</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;">
+        <div class="entryCarouselStage">
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口"></button>
+          <div class="entryCarouselViewport">
+            <div class="entryCarouselTrack" data-entry-track>
+              <article
+                class="card proposalCard proposalCard--gate entryCarouselCard"
+                data-entry-card
+                th:classappend="${item.proposalId == pageData.proposalId} ? ' is-active' : ''"
+                th:each="item : ${pageData.relatedItems}">
+                <figure class="proposalPortrait">
+                  <div class="ph ph--thumb" aria-hidden="true"></div>
+                </figure>
+                <div class="proposalCardMeta">
+                  <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は次段で表示'}">45分</span>
+                  <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
+                </div>
+                <div class="proposalCardBody">
+                  <h3 class="proposalTitle" th:text="${item.title}">title</h3>
+                  <p class="proposalSummary" th:text="${item.summary != null ? item.summary : 'この入口の雰囲気を短く見られます。'}">summary</p>
+                  <div class="proposalTags">
+                    <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
+                    <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
+                    <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <a class="btn ghost proposalMore" th:href="@{/app/gate/{id}(id=${item.proposalId})}">詳細</a>
+                  <span class="btn ghost" th:if="${item.proposalId == pageData.proposalId}">表示中</span>
+                </div>
+              </article>
+            </div>
+          </div>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口"></button>
+        </div>
       </div>
     </section>
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/entry-carousel.js"></script>
 </body>
 </html>

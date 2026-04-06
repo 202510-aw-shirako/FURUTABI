@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FURUTABI Wire | ちいきの入り口</title>
+  <title>ちいきの入り口 | FURUTABI</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -17,7 +17,7 @@
   </header>
 
   <main class="container" aria-label="ちいきの入り口">
-    <section class="section section--hero" aria-label="ヒーローイメージ">
+    <section class="section section--hero" aria-label="ヒーロー">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
       </div>
@@ -26,33 +26,38 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきの入り口</h1>
-        <a class="sectionTitleLink" href="about.html#feature-gate">詳しく見る</a>
+        <a class="sectionTitleLink" href="./about.html#feature-gate">私たちの目指すもの</a>
       </div>
-      <p class="lead">旅人のはじめに、地域にどんな関わり方があるのかを穏やかに選ぶページです。</p>
+      <p class="lead">まずは、登録後に見られる入り口の一例を見られるページです。登録すると、地図からほかの入り口も見て選べます。</p>
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <span class="pill">一例</span>
+        <p class="note" style="margin:0;">ログイン前は固定3件だけ表示しています。新規登録後に、一覧と詳細をまとめて見られます。</p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="ちいきの入り口の一例">
+      <div class="sectionTitleRow">
+        <h2 class="h2">地図でもう一度見る</h2>
+        <span class="note">この提案の近くにも、別のひらき方があります。</span>
+      </div>
+      <p class="lead">ログイン前に見られるのは一例だけです。地図から選び、下のカードの `詳細` から一例の詳細を見られます。</p>
+      <div data-gate-map-root data-proposal-base="../" data-proposal-context="gate" style="margin-top:16px;"></div>
     </section>
 
     <section class="section">
       <div class="card">
-        <div class="h2">ここからの流れ</div>
-        <ul class="aboutFeatureList" data-rule-list="gate"></ul>
+        <div class="h2">ここから見られること</div>
+        <ul class="aboutFeatureList" data-rule-list="gate_public"></ul>
       </div>
-    </section>
-
-    <section class="section" aria-label="入口カード">
-      <div class="sectionTitleRow">
-        <h2 class="h2">入口カード</h2>
-      </div>
-      <p class="lead">下のカードと結びつく地図も見ながら、どの関わり方が自分に合うかを見られるようにしています。</p>
-      <div data-gate-map-root data-proposal-base="./" data-proposal-context="gate" style="margin-top:16px;"></div>
     </section>
 
     <section class="section" data-gate-public-guide>
       <div class="denseBox">
         <div>
-          <div class="h2">架け橋さんの登録後</div>
-          <p class="note">ワイヤ: 地域の人と実際に会い、架け橋さんが登録したあとに通常のログイン後ホームへ進みます。</p>
+          <div class="h2">登録後にできること</div>
+          <p class="note">固定3件ではなく、地域ごとの入り口を地図と一覧で見られます。気になる入り口へ申請するには、新規登録が必要です。</p>
         </div>
-        <a class="btn primary" href="../app/home.html">通常のログイン後画面へ</a>
+        <a class="btn primary" href="../auth/register.html">新規登録へ進む</a>
       </div>
     </section>
   </main>

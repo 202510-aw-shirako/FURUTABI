@@ -45,6 +45,10 @@
     return '../auth/login.html?returnTo=' + encodeURIComponent(buildMessagesHref(type, proposalId));
   }
 
+  function buildRegisterHref() {
+    return '../auth/register.html';
+  }
+
   function getAction(type, context, proposalId) {
     if (context === 'app') {
       return {
@@ -54,8 +58,8 @@
       };
     }
     return {
-      href: buildLoginHref(type, proposalId),
-      label: 'ログインして申し込む',
+      href: buildRegisterHref(),
+      label: '新規登録して申し込む',
       buttonClass: 'primary'
     };
   }
@@ -99,7 +103,7 @@
   }
 
   function orderMapCards(type, activeId) {
-    var ordered = proposals.getCollection(type).slice();
+    var ordered = (proposals.getDisplayCollection ? proposals.getDisplayCollection(type, getContext()) : proposals.getCollection(type)).slice();
     var index = ordered.findIndex(function (item) { return item.id === activeId; });
     var activeOffset;
 
@@ -312,7 +316,7 @@
     var prev = root.querySelector('[data-proposal-map-prev]');
     var next = root.querySelector('[data-proposal-map-next]');
     var currentId = activeId;
-    var list = proposals.getCollection(type);
+    var list = proposals.getDisplayCollection ? proposals.getDisplayCollection(type, context) : proposals.getCollection(type);
 
     function sync(id, fromPin) {
       var activeCard;
@@ -364,12 +368,21 @@
     var context = getContext();
     var item = proposals.getProposal(type, readProposalId(root, type));
     var action = getAction(type, context, item.id);
-    var consultHref = context === 'app' ? buildMessagesHref(type, item.id) : buildLoginHref(type, item.id);
+    var consultHref = context === 'app' ? buildMessagesHref(type, item.id) : buildRegisterHref();
     var pageLabel = type === 'okatte' ? 'ちいきのおかって' : 'ちいきの入り口';
+
+    var list = proposals.getDisplayCollection ? proposals.getDisplayCollection(type, context) : proposals.getCollection(type);
 
     shared.setPageTitle('FURUTABI Wire | ', item.title);
 
     root.innerHTML = '' +
+      (context === 'app' ? '' :
+        '<section class="section fv">' +
+          '<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">' +
+            '<span class="pill">一例</span>' +
+            '<p class="note" style="margin:0;">この詳細は、登録後に見られる入り口の一例です。新規登録後に一覧全体と申請導線を見られます。</p>' +
+          '</div>' +
+        '</section>') +
       '<section class="section fv proposalDetailLead">' +
         '<div class="proposalDetailHero">' +
           '<figure class="proposalDetailHeroMedia">' +
@@ -381,7 +394,7 @@
             ((type === 'okatte' || type === 'gate')
               ? '<div class="proposalDetailHeroAction">'
                   + '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>'
-                  + '<a class="btn ghost" href="' + proposals.escapeHtml(consultHref) + '">' + proposals.escapeHtml(context === 'app' ? '架け橋さんに相談する' : 'ログインして相談する') + '</a>'
+                  + '<a class="btn ghost" href="' + proposals.escapeHtml(consultHref) + '">' + proposals.escapeHtml(context === 'app' ? '架け橋さんに相談する' : '新規登録して相談する') + '</a>'
                 + '</div>'
               : '') +
             '<div class="proposalDetailMeta"><span class="proposalDuration">' + proposals.escapeHtml(item.duration) + '</span></div>' +
@@ -416,7 +429,7 @@
               '<div class="myMapViewport" data-proposal-map-viewport>' +
                 '<img class="topMapCanvas topMapCanvasImage" src="' + proposals.escapeHtml(mapImage) + '" alt="' + proposals.escapeHtml(pageLabel) + 'の地図" />' +
                 '<div class="myMapPinsLayer" aria-hidden="false" data-proposal-map-pins-layer>' +
-                  proposals.getCollection(type).map(function (entry, index) {
+                  list.map(function (entry, index) {
                     return '<a class="topMapPin ' + proposals.escapeHtml(entry.pinClass) + (entry.id === item.id ? ' is-active' : '') + '" href="' + proposals.escapeHtml(buildDetailHref(type, entry.id, basePath)) + '" data-proposal-map-pin="' + proposals.escapeHtml(entry.id) + '" aria-label="' + proposals.escapeHtml(entry.placeName) + '"><span>' + String(index + 1) + '</span></a>';
                   }).join('') +
                 '</div>' +
@@ -446,7 +459,7 @@
           '</div>' +
           '<div class="proposalDetailHeroAction">' +
             '<a class="btn ' + proposals.escapeHtml(action.buttonClass) + '" href="' + proposals.escapeHtml(action.href) + '">' + proposals.escapeHtml(action.label) + '</a>' +
-            '<a class="btn ghost" href="' + proposals.escapeHtml(consultHref) + '">' + proposals.escapeHtml(context === 'app' ? '架け橋さんに相談する' : 'ログインして相談する') + '</a>' +
+            '<a class="btn ghost" href="' + proposals.escapeHtml(consultHref) + '">' + proposals.escapeHtml(context === 'app' ? '架け橋さんに相談する' : '新規登録して相談する') + '</a>' +
           '</div>' +
         '</div>' +
       '</section>';
