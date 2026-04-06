@@ -361,7 +361,9 @@ class SecurityConfigBoundaryTests {
             .andExpect(content().string(containsString("わたしの地図")))
             .andExpect(content().string(containsString("ごひいきさんの足あと")))
             .andExpect(content().string(containsString("data-map-tab=\"sub-footprints\"")))
-            .andExpect(content().string(containsString("data-my-map-record-list")));
+            .andExpect(content().string(containsString("data-my-map-record-list")))
+            .andExpect(content().string(containsString("window.FURUTABI_APP_HOME_SEED")))
+            .andExpect(content().string(containsString("/app/footprints")));
     }
 
     @Test
@@ -491,14 +493,18 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated map record detail route is available after passing security")
     void authenticatedMapRecordDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/map-records/10").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("data-related-map")))
+            .andExpect(content().string(containsString("href=\"/app/home#tab-map\"")));
     }
 
     @Test
     @DisplayName("Authenticated footprint detail route is available after passing security")
     void authenticatedFootprintDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/footprints/10").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("data-related-map")))
+            .andExpect(content().string(containsString("href=\"/app/home?tab=footprints\"")));
     }
 
     @Test

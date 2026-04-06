@@ -231,9 +231,8 @@
         { href: '/app/home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
         { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
-        // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
-        { label: '私たちの目指すもの（次段階）', disabled: true },
-        { label: 'FAQ（次段階）', disabled: true },
+        { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
       ],
       utilityLinks: [],
       notificationsHref: '/app/notifications',
@@ -252,9 +251,8 @@
         { href: '/app/local-member-home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
         { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
-        // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
-        { label: '私たちの目指すもの（次段階）', disabled: true },
-        { label: 'FAQ（次段階）', disabled: true },
+        { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
+        { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
       ],
       utilityLinks: [],
       notificationsHref: '/app/notifications',

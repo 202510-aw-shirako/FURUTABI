@@ -158,8 +158,76 @@
         </div>
       </div>
     </section>
+    <section class="section" th:if="${not #lists.isEmpty(pageData.relatedStories)}">
+      <div class="sectionTitleRow">
+        <h2 class="h2">地図からほかの記録を見る</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn ghost" th:href="${pageData.homeMapPath}">ホームの地図へ戻る</a>
+          <a class="btn ghost" th:href="${pageData.homeFootprintsPath}">ごひいきさんの足あとへ戻る</a>
+        </div>
+      </div>
+      <div class="topMapLayout appTopMapLayout" data-related-map>
+        <div class="topMapCards" aria-label="関連する記録">
+          <article class="card topMapCard" aria-label="関連する記録" data-top-map-card>
+            <div class="topMapCardBody">
+              <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
+              <div class="topMapCardText">
+                <div class="topMapCardHead">
+                  <span class="pill" data-top-map-label-text>地図からほかの記録を見る</span>
+                  <span class="topMapMarker"><span data-top-map-marker>1</span></span>
+                </div>
+                <div class="topMapComment" data-top-map-comment="1">
+                  <div class="topMapCardTitle" data-top-map-title>関連する記録</div>
+                  <div data-top-map-comment-body>
+                    <p class="topMapCommentText topMapCommentText--clamp">地図上のピンから、別の記録へ移れます。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="topMapFooter">
+              <a class="btn ghost topMapMore" th:href="${pageData.homeMapPath}" data-top-map-link-anchor>地図へ戻る</a>
+            </div>
+          </article>
+        </div>
+        <div class="myMapMain">
+          <div class="topMapStage" aria-label="関連する記録" data-top-map-stage>
+            <div class="myMapViewport" data-top-map-viewport>
+              <img class="topMapCanvas topMapCanvasImage" src="/assets/images/凪咲町.svg" alt="関連する記録の地図" data-top-map-image />
+              <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer></div>
+            </div>
+          </div>
+        </div>
+        <div class="myMapZoomControls" aria-label="地図の拡大縮小">
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-in>＋</button>
+          <button class="btn ghost myMapZoomBtn" type="button" data-top-map-zoom-out>−</button>
+        </div>
+      </div>
+    </section>
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/footprints.js"></script>
+  <script th:inline="javascript">
+    (function () {
+      var root = document.querySelector('[data-related-map]');
+      var footprints = window.FURUTABI_FOOTPRINTS;
+      var relatedStories = /*[[${pageData.relatedStories}]]*/ [];
+      var storyMap;
+
+      if (!root || !footprints || !relatedStories.length) {
+        return;
+      }
+
+      storyMap = footprints.buildStoriesFromRecords(relatedStories, {
+        label: '地図からほかの記録を見る',
+        linkPrefix: '/app/footprints/'
+      });
+
+      footprints.initPreviewMap(root, storyMap, {
+        label: '地図からほかの記録を見る',
+        initialStoryId: Object.keys(storyMap)[0]
+      });
+    }());
+  </script>
 </body>
 </html>

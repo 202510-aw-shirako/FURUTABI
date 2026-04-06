@@ -100,6 +100,11 @@ public class MapRecordService {
         );
     }
 
+    public List<MapSurfaceStorySeed> loadHomeFootprintStories(String email) {
+        UserRow currentUser = requireUser(email);
+        return buildMapSurfaceStorySeeds(loadVisibleFootprintSummaries(currentUser, null), "/app/footprints/");
+    }
+
     public MapRecordDetailPageData loadVisibleMapRecordDetail(String email, long mapRecordId) {
         UserRow currentUser = requireUser(email);
         ViewerRoleContext viewerRoleContext = loadViewerRoleContext(currentUser.id());
@@ -151,7 +156,10 @@ public class MapRecordService {
                         currentUser.id() == ownerUserId,
                         scope != VisibilityScope.PRIVATE,
                         scope != VisibilityScope.PRIVATE ? "/app/footprints/" + rs.getLong("id") : null,
-                        "/app/history"
+                        "/app/history",
+                        resolveHomeTabPath(currentUser.id(), false),
+                        resolveHomeTabPath(currentUser.id(), true),
+                        buildMapSurfaceStorySeeds(loadVisibleFootprintSummaries(currentUser, ownerUserId), "/app/footprints/")
                     );
                 },
                 mapRecordId
@@ -520,6 +528,99 @@ public class MapRecordService {
             .toList();
     }
 
+    private List<MapRecordSummary> loadVisibleFootprintSummaries(UserRow currentUser, Long ownerUserIdFilter) {
+        return loadMapRecordSummaries(
+            currentUser,
+            """
+                SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
+                       u.email, u.nickname, u.name,
+                       (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                       (
+                           SELECT COUNT(*)
+                           FROM map_record_comments mc
+                           WHERE mc.map_record_id = mr.id AND mc.deleted_at IS NULL AND mc.is_hidden = FALSE
+                       ) AS comment_count
+                FROM map_records mr
+                JOIN users u ON u.id = mr.user_id
+                WHERE mr.deleted_at IS NULL
+                  AND mr.is_draft = FALSE
+                  AND mr.visibility IN ('public', 'limited')
+                  AND (? IS NULL OR mr.user_id = ?)
+                ORDER BY COALESCE(mr.visibility_updated_at, mr.updated_at, mr.created_at) DESC, mr.id DESC
+                """,
+            ownerUserIdFilter,
+            ownerUserIdFilter
+        );
+    }
+
+    private List<MapRecordSummary> loadMapRecordSummaries(UserRow currentUser, String sql, Object... params) {
+        List<MapRecordSummary> visibleRecords = jdbcTemplate.query(
+            sql,
+            (rs, rowNum) -> {
+                VisibilityScope scope = VisibilityScope.fromDbValue(rs.getString("visibility"));
+                long ownerUserId = rs.getLong("user_id");
+                return new MapRecordSummary(
+                    rs.getLong("id"),
+                    ownerUserId,
+                    rs.getString("title"),
+                    summarize(rs.getString("body")),
+                    rs.getString("location_name"),
+                    displayName(rs.getString("nickname"), rs.getString("name"), rs.getString("email")),
+                    formatTimestamp(rs.getTimestamp("created_at")),
+                    scope.name(),
+                    visibilityLabel(scope),
+                    rs.getInt("image_count"),
+                    rs.getInt("comment_count"),
+                    currentUser.id() == ownerUserId,
+                    null,
+                    null
+                );
+            },
+            params
+        ).stream()
+            .filter(record -> visibilityAccessService.canView(
+                VisibilityScope.fromDbValue(record.visibilityKey()),
+                currentUser.id(),
+                record.ownerUserId(),
+                false
+            ))
+            .toList();
+
+        ViewerRoleContext viewerRoleContext = loadViewerRoleContext(currentUser.id());
+        Map<Long, ViewerEngagement> engagementByRecordId = loadViewerEngagementByRecordIds(
+            currentUser.id(),
+            visibleRecords.stream().map(MapRecordSummary::id).toList(),
+            viewerRoleContext
+        );
+
+        return visibleRecords.stream()
+            .map(record -> record.withEngagement(
+                engagementByRecordId.getOrDefault(
+                    record.id(),
+                    ViewerEngagement.empty(viewerRoleContext.reactionType(), viewerRoleContext.reactionLabel())
+                ),
+                "/app/footprints?userId=" + record.ownerUserId()
+            ))
+            .toList();
+    }
+
+    private List<MapSurfaceStorySeed> buildMapSurfaceStorySeeds(List<MapRecordSummary> records, String detailBasePath) {
+        return records.stream()
+            .limit(8)
+            .map(record -> new MapSurfaceStorySeed(
+                record.id(),
+                record.ownerUserId(),
+                record.title(),
+                record.summary(),
+                record.ownerDisplayName(),
+                record.createdAt(),
+                record.visibilityKey(),
+                record.visibilityLabel(),
+                detailBasePath + record.id()
+            ))
+            .toList();
+    }
+
     private Map<Long, ViewerEngagement> loadViewerEngagementByRecordIds(
         long currentUserId,
         List<Long> mapRecordIds,
@@ -590,6 +691,20 @@ public class MapRecordService {
             return new ViewerRoleContext("thanks", "ありがとう");
         }
         return new ViewerRoleContext(null, null);
+    }
+
+    private String resolveHomeTabPath(long currentUserId, boolean footprintsTab) {
+        boolean localMember = jdbcTemplate.query(
+            """
+                SELECT role_name
+                FROM user_roles
+                WHERE user_id = ?
+                """,
+            (rs, rowNum) -> rs.getString("role_name"),
+            currentUserId
+        ).stream().anyMatch("LOCAL"::equals);
+        String basePath = localMember ? "/app/local-member-home" : "/app/home";
+        return footprintsTab ? basePath + "?tab=footprints" : basePath + "#tab-map";
     }
 
     private FootprintFilterState buildFootprintFilterState(Long ownerUserIdFilter, List<MapRecordSummary> records) {
@@ -748,7 +863,10 @@ public class MapRecordService {
         boolean ownerViewing,
         boolean footprintAvailable,
         String footprintDetailPath,
-        String historyPath
+        String historyPath,
+        String homeMapPath,
+        String homeFootprintsPath,
+        List<MapSurfaceStorySeed> relatedStories
     ) {
     }
 
@@ -777,6 +895,19 @@ public class MapRecordService {
         Long ownerUserId,
         String ownerDisplayName,
         String clearPath
+    ) {
+    }
+
+    public record MapSurfaceStorySeed(
+        long id,
+        long ownerUserId,
+        String title,
+        String summary,
+        String ownerDisplayName,
+        String createdAt,
+        String visibilityKey,
+        String visibilityLabel,
+        String detailPath
     ) {
     }
 

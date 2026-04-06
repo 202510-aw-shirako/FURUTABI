@@ -36,14 +36,6 @@
       </div>
     </section>
 
-    <section class="section fv" aria-label="メインタブ">
-      <div class="tabs">
-        <a class="tab is-on" href="#tab-proposals">ちいきのおかって</a>
-        <a class="tab" href="#tab-map">わたしの地図</a>
-        <a class="tab" href="#tab-contact">連絡</a>
-      </div>
-    </section>
-
     <!-- 提案 -->
     <section class="section" id="tab-proposals" aria-label="ちいきのおかって">
       <div class="sectionTitleRow">
@@ -383,6 +375,11 @@
   <script src="/assets/scripts/footprints.js"></script>
   <script src="/assets/scripts/notices.js"></script>
   <script src="/assets/scripts/interactions.js"></script>
+  <script th:inline="javascript">
+    window.FURUTABI_APP_HOME_SEED = {
+      footprints: /*[[${footprintStories}]]*/ []
+    };
+  </script>
   <script>
     (function () {
       var mapTabs = document.querySelectorAll('[data-map-tab]');
@@ -391,11 +388,12 @@
       var myMap = document.querySelector('[data-my-map]');
       var footprints = window.FURUTABI_FOOTPRINTS;
       var interactions = window.FURUTABI_INTERACTIONS;
+      var appHomeSeed = window.FURUTABI_APP_HOME_SEED || {};
       var footprintStories = footprints
-        ? footprints.mergeStories(
-            footprints.withBasePath('/'),
-            footprints.buildSharedMapStories('#sub-my', { visibility: 'public' })
-          )
+        ? footprints.buildStoriesFromRecords(appHomeSeed.footprints || [], {
+            label: 'ごひいきさんの足あと',
+            linkPrefix: '/app/footprints/'
+          })
         : null;
 
       var topMapConfigs = {
@@ -411,9 +409,16 @@
         },
         footprints: {
           label: 'ごひいきさんの足あと',
-          link: '/story.html?story=1',
+          link: '/app/footprints',
           reactions: { like: 12, thanks: 4 },
-          stories: footprintStories
+          stories: footprintStories && Object.keys(footprintStories).length
+            ? footprintStories
+            : (footprints
+                ? footprints.mergeStories(
+                    footprints.withBasePath('/'),
+                    footprints.buildSharedMapStories('#sub-my', { visibility: 'public' })
+                  )
+                : null)
         }
       };
 

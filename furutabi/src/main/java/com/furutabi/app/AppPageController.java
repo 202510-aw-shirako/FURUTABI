@@ -57,12 +57,14 @@ public class AppPageController {
     }
 
     @GetMapping({ "/home", "/home.html" })
-    public String home() {
+    public String home(Authentication authentication, Model model) {
+        model.addAttribute("footprintStories", mapRecordService.loadHomeFootprintStories(authentication.getName()));
         return "app/home";
     }
 
     @GetMapping({ "/local-member-home", "/local-member-home.html" })
-    public String localMemberHome() {
+    public String localMemberHome(Authentication authentication, Model model) {
+        model.addAttribute("footprintStories", mapRecordService.loadHomeFootprintStories(authentication.getName()));
         return "app/local-member-home";
     }
 
