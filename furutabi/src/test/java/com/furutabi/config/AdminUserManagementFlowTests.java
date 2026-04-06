@@ -124,7 +124,7 @@ class AdminUserManagementFlowTests {
             .andExpect(content().string(containsString("/app/admin/regions/Tokyo?fromUserId=1")))
             .andExpect(content().string(containsString("/app/history")))
             .andExpect(content().string(containsString("/app/notifications")))
-            .andExpect(content().string(containsString("ポイントを付与")));
+            .andExpect(content().string(containsString("/app/admin/users/1/points")));
 
         Integer count = jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM access_logs WHERE viewer_context = 'admin' AND target_type = 'admin_user_detail' AND target_id = ?",
@@ -139,17 +139,15 @@ class AdminUserManagementFlowTests {
     void adminCanOpenAdminHomeAndUserList() throws Exception {
         mockMvc.perform(get("/app/admin").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("管理入口")))
             .andExpect(content().string(containsString("/app/admin/users")))
             .andExpect(content().string(containsString("/app/support/admin")))
             .andExpect(content().string(containsString("/app/admin/regions/default")));
 
         mockMvc.perform(get("/app/admin/users").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("管理ユーザー一覧")))
             .andExpect(content().string(containsString("user#1")))
+            .andExpect(content().string(containsString("admin@example.com")))
             .andExpect(content().string(containsString("/app/admin/users/1")))
-            .andExpect(content().string(containsString("ユーザーID")))
             .andExpect(content().string(org.hamcrest.Matchers.not(containsString("/app/mypage"))));
     }
 

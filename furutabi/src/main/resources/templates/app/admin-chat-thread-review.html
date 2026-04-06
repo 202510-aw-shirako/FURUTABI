@@ -1,8 +1,8 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>関連チャット確認 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
@@ -16,19 +16,17 @@
     </div>
   </header>
 
-  <main class="container">
+  <main class="container safetyPage" aria-label="関連チャット確認">
     <section class="section fv">
       <div class="sectionTitleRow">
-        <h1 class="h1">関連チャットを確認（理由を記録）</h1>
-        <a class="sectionTitleLink"
-           th:if="${pageData.supportRequestId != null}"
-           th:href="@{/app/support/{id}(id=${pageData.supportRequestId})}">連絡・通報詳細へ戻る</a>
+        <div>
+          <h1 class="h1">関連チャットを確認する</h1>
+          <p class="lead">support の文脈で必要なときだけ開く限定閲覧です。理由を残し、access log に記録します。</p>
+        </div>
+        <a class="btn ghost" th:if="${pageData.supportRequestId != null}" th:href="@{/app/support/{id}(id=${pageData.supportRequestId})}">お問い合わせ詳細へ戻る</a>
       </div>
       <div class="mypageNoticeBox" th:if="${param.reasonRequired}">
-        <p>問題対応のため、閲覧理由を入力してください。</p>
-      </div>
-      <div class="mypageNoticeBox">
-        <p>問題対応のための限定閲覧です。閲覧理由は access_log に記録されます。</p>
+        <p>閲覧理由を入力してください。</p>
       </div>
     </section>
 
@@ -36,11 +34,12 @@
       <article class="card">
         <div class="sectionTitleRow">
           <div>
-            <p class="note" th:text="'スレッドID: ' + ${pageData.threadId}">スレッドID</p>
+            <p class="note" th:text="${'スレッドID: ' + pageData.threadId}">スレッドID</p>
             <h2 class="h2" th:text="${pageData.title}">チャットタイトル</h2>
           </div>
           <span class="pill pill--soft" th:text="${pageData.status}">open</span>
         </div>
+
         <div class="chipRow" style="margin-top:12px;">
           <span class="pill pill--soft" th:text="${pageData.participantOneLabel}">participant 1</span>
           <span class="pill pill--soft" th:text="${pageData.participantTwoLabel}">participant 2</span>
@@ -53,30 +52,22 @@
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <input type="hidden" name="supportRequestId" th:if="${pageData.supportRequestId != null}" th:value="${pageData.supportRequestId}" />
           <label class="fieldLabel" for="adminChatReviewReason">閲覧理由</label>
-          <textarea id="adminChatReviewReason"
-                    name="reason"
-                    rows="4"
-                    maxlength="500"
-                    placeholder="例: 通報内容の事実確認 / ハラスメント相談対応 / 安全確認"></textarea>
+          <textarea id="adminChatReviewReason" name="reason" rows="4" maxlength="500" placeholder="support の確認理由 / ハラスメント確認 / 対応判断の補足"></textarea>
           <div class="chatComposerActions" style="margin-top:12px;">
-            <button type="submit" class="btn primary">この理由で関連チャットを確認</button>
+            <button type="submit" class="btn primary">この理由で関連チャットを開く</button>
           </div>
         </form>
 
         <div th:if="${pageData.opened}" style="margin-top:16px;">
-          <p class="note" th:text="'記録した理由: ' + ${pageData.reason}">理由</p>
+          <p class="note" th:text="${'記録した理由: ' + pageData.reason}">理由</p>
           <section class="chatMessages" style="margin-top:16px;">
-            <article th:each="message : ${pageData.messages}"
-                     th:class="${message.systemMessage ? 'chatSystemMessage' : 'chatMessage'}">
+            <article th:each="message : ${pageData.messages}" th:class="${message.systemMessage ? 'chatSystemMessage' : 'chatMessage'}">
               <div th:if="${!message.systemMessage}" class="chatMessageMeta">
                 <span th:text="${message.senderNickname != null ? message.senderNickname : 'system'}">sender</span>
                 <span th:text="${message.senderRole}">role</span>
                 <time th:text="${#temporals.format(message.createdAt.toLocalDateTime(), 'yyyy-MM-dd HH:mm')}">2026-03-27 10:00</time>
               </div>
               <p class="chatMessageBody" th:text="${message.body}">message body</p>
-            </article>
-            <article class="chatAlert" th:if="${pageData.messages.isEmpty()}">
-              <p>まだメッセージはありません。</p>
             </article>
           </section>
         </div>

@@ -17,24 +17,24 @@
   </header>
 
   <main class="container safetyPage" aria-label="お問い合わせ一覧・詳細">
-    <section class="section safetyIntroSection" aria-label="一覧の導入">
+    <section class="section safetyIntroSection" aria-label="一覧の案内">
       <div class="safetyIntroLayout">
         <div class="safetyIntro">
           <h1 class="safetyTitle" th:text="${pageData.adminView} ? 'お問い合わせ管理' : 'お問い合わせ一覧・詳細'">お問い合わせ一覧・詳細</h1>
           <p class="safetyLead" th:if="${not pageData.adminView}">
-            送ったお問い合わせは、ここから一覧で確認できます。<br>
-            詳細を開くと、受付・対応中・完了の状態や送信内容を追えます。
+            送ったお問い合わせをここで一覧で確認できます。<br>
+            詳細を開くと、返信状況・対応中・完了の状態や関連メモを追えます。
           </p>
           <p class="safetyLead" th:if="${pageData.adminView}">
-            運営向けの問い合わせキューです。受付順や状態を見ながら対応します。
+            受け付けたお問い合わせの一覧です。必要なときだけ個別詳細を開き、対応中・完了の状態を更新します。
           </p>
         </div>
-        <div class="safetyAssistPanel" aria-label="導線">
+        <div class="safetyAssistPanel" aria-label="案内">
           <p class="safetyAssistTitle">次にできること</p>
           <div class="safetyFeatureLinks">
-            <a class="safetyFeatureLink" th:if="${not pageData.adminView}" href="/app/support/new">新しく問い合わせる</a>
+            <a class="safetyFeatureLink" th:if="${not pageData.adminView}" href="/app/support/new">新しくお問い合わせする</a>
             <a class="safetyFeatureLink" th:if="${not pageData.adminView}" href="/app/mypage">マイページへ戻る</a>
-            <a class="safetyFeatureLink" th:if="${pageData.adminView}" href="/admin">管理トップへ戻る</a>
+            <a class="safetyFeatureLink" th:if="${pageData.adminView}" href="/app/admin">管理入口へ戻る</a>
           </div>
         </div>
       </div>
