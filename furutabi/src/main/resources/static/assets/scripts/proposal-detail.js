@@ -420,7 +420,7 @@
       '</section>' +
       '<section class="section proposalDetailMapSection">' +
         '<div class="sectionTitleRow">' +
-          '<h2 class="h2">地図でもう一度見る</h2>' +
+          '<h2 class="h2">地図で見る</h2>' +
           '<span class="small">この提案の近くにも、別のひらき方があります。</span>' +
         '</div>' +
         '<div class="topMapLayout appTopMapLayout proposalDetailMapLayout" data-proposal-detail-map>' +

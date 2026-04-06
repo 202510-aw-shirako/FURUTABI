@@ -526,7 +526,7 @@ class SecurityConfigBoundaryTests {
     void authenticatedGateListRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/gate").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("地図で見る")))
             .andExpect(content().string(containsString("href=\"/app/gate/20\"")))
             .andExpect(content().string(containsString("topMapPin")));
     }
@@ -537,7 +537,7 @@ class SecurityConfigBoundaryTests {
         mockMvc.perform(get("/app/gate/20").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("一覧へ戻る")))
-            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("地図で見る")))
             .andExpect(content().string(containsString("href=\"/app/gate\"")));
     }
 
@@ -567,7 +567,7 @@ class SecurityConfigBoundaryTests {
     void authenticatedOkatteListRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/okatte").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("地図で見る")))
             .andExpect(content().string(containsString("href=\"/app/okatte/21\"")))
             .andExpect(content().string(containsString("topMapPin")));
     }
@@ -578,7 +578,7 @@ class SecurityConfigBoundaryTests {
         mockMvc.perform(get("/app/okatte/21").with(user("user@example.com").roles("USER")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("一覧へ戻る")))
-            .andExpect(content().string(containsString("地図でもう一度見る")))
+            .andExpect(content().string(containsString("地図で見る")))
             .andExpect(content().string(containsString("href=\"/app/okatte\"")));
     }
 
