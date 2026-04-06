@@ -101,9 +101,20 @@
           <div class="safetyReplyChoices">
             <label class="safetyChoice"><input type="radio" name="reply" value="yes" checked /> 返信がほしい</label>
             <label class="safetyChoice"><input type="radio" name="reply" value="no" /> 返信は不要</label>
-            <label class="safetyChoice"><input type="radio" name="reply" value="either" /> どちらでもよい</label>
           </div>
         </fieldset>
+
+        <div class="safetyField">
+          <label class="safetyLabel" for="safety-email">メールアドレス</label>
+          <input
+            class="safetyInput"
+            id="safety-email"
+            name="email"
+            type="email"
+            placeholder="example@example.com"
+            required
+          />
+        </div>
 
         <p class="safetyPrivateNote">ここに書いた内容は公開されません。運営が確認し、必要に応じて対応します。</p>
 
@@ -119,5 +130,31 @@
     </section>
   </main>
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script>
+    (function () {
+      var replyChoices = document.querySelectorAll('input[name="reply"]');
+      var emailInput = document.getElementById('safety-email');
+      if (!replyChoices.length || !emailInput) {
+        return;
+      }
+
+      function syncEmailRequirement() {
+        var selected = document.querySelector('input[name="reply"]:checked');
+        var wantsReply = selected && selected.value === 'yes';
+        emailInput.required = wantsReply;
+        if (wantsReply) {
+          emailInput.setAttribute('aria-required', 'true');
+        } else {
+          emailInput.removeAttribute('aria-required');
+          emailInput.value = '';
+        }
+      }
+
+      replyChoices.forEach(function (choice) {
+        choice.addEventListener('change', syncEmailRequirement);
+      });
+      syncEmailRequirement();
+    }());
+  </script>
 </body>
 </html>

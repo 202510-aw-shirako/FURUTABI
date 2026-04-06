@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>サポート送信 | FURUTABI</title>
+  <title>安心と連絡 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,52 +16,98 @@
     </div>
   </header>
 
-  <main class="container" aria-label="サポート送信">
-    <section class="section fv">
-      <div class="sectionTitleRow">
-        <h1 class="h1">サポート送信</h1>
+  <main class="container safetyPage" aria-label="安心と連絡">
+    <section class="section safetyIntroSection" aria-label="導入と確認導線">
+      <div class="safetyIntroLayout">
+        <div class="safetyIntro">
+          <a class="btn ghost" href="/app/support" style="margin-bottom:16px;">お問い合わせ一覧・詳細</a>
+          <h1 class="safetyTitle">安心と連絡</h1>
+          <p class="safetyLead">
+            公開の場に書きにくいこと、迷うこと、改善してほしいことがあるときは、こちらから非公開で送れます。<br>
+            ログイン後のお問い合わせは、送って終わりではなく、自分の一覧と詳細で状況を追えます。
+          </p>
+        </div>
+        <div class="safetyAssistPanel" aria-label="確認できること">
+          <p class="safetyAssistTitle">このページの使い方</p>
+          <div class="safetyFeatureLinks">
+            <a class="safetyFeatureLink" href="/faq.html?context=app">よくある質問を見る</a>
+            <a class="safetyFeatureLink" href="/app/support">自分のお問い合わせ一覧を見る</a>
+            <a class="safetyFeatureLink" href="/app/mypage">マイページへ戻る</a>
+          </div>
+        </div>
       </div>
-      <p class="lead">
-        公開 comments や chat に流しづらい相談は、非公開の support 窓口から送れます。
-      </p>
     </section>
 
-    <section class="section">
-      <article class="card">
-        <form action="/app/support" method="post">
-          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <section class="section safetyWhatSection" aria-label="このページでできること">
+      <div class="safetySectionHead">
+        <h2 class="h2">このページでできること</h2>
+      </div>
+      <div class="safetyWhatGrid">
+        <article class="safetyWhatCard">
+          <h3 class="h2">困ったことを伝える</h3>
+          <p class="note">公開の場に書きにくいことや、改善してほしいことを非公開で送れます。</p>
+        </article>
+        <article class="safetyWhatCard">
+          <h3 class="h2">対象ページを添えて知らせる</h3>
+          <p class="note">地図・足あと・チャット・提案/申請など、関係するページやIDを添えて送れます。</p>
+        </article>
+        <article class="safetyWhatCard">
+          <h3 class="h2">送った後も追える</h3>
+          <p class="note">送信後は一覧と詳細で、受付・対応中・完了の状態を追えます。</p>
+        </article>
+      </div>
+    </section>
 
-          <label class="note" for="requestType">種別</label>
-          <select id="requestType" name="requestType" style="width:100%;margin:8px 0 16px;">
-            <option value="general">一般相談</option>
-            <option value="account">アカウント</option>
-            <option value="map">地図 / 足あと</option>
-            <option value="chat">連絡</option>
-            <option value="proposal">提案 / 申請</option>
-          </select>
+    <section class="section safetyFormSection" aria-label="投稿フォーム">
+      <form class="safetyFormCard" action="/app/support" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-          <label class="note" for="relatedFeature">関連機能</label>
-          <input id="relatedFeature" name="relatedFeature" type="text" maxlength="50" style="width:100%;margin:8px 0 16px;" placeholder="例: わたしの地図 / おかって / 通知" />
+        <div class="safetySectionHead">
+          <h2 class="h2">こちらからお知らせください</h2>
+          <p class="note">ログイン後の問い合わせは、自分の一覧と詳細であとから確認できます。</p>
+        </div>
 
-          <label class="note" for="targetReference">対象のIDやURL</label>
-          <input id="targetReference" name="targetReference" type="text" maxlength="255" style="width:100%;margin:8px 0 16px;" placeholder="例: /app/chat/901" />
+        <fieldset class="safetyFieldset">
+          <legend class="safetyLegend">投稿の種類</legend>
+          <label class="safetyChoice"><input type="radio" name="requestType" value="general" checked /> 困ったことを伝えたい</label>
+          <label class="safetyChoice"><input type="radio" name="requestType" value="account" /> アカウントについて相談したい</label>
+          <label class="safetyChoice"><input type="radio" name="requestType" value="map" /> 地図や足あとについて知らせたい</label>
+          <label class="safetyChoice"><input type="radio" name="requestType" value="chat" /> チャットについて知らせたい</label>
+          <label class="safetyChoice"><input type="radio" name="requestType" value="proposal" /> 提案や申請について知らせたい</label>
+        </fieldset>
 
-          <label class="note" for="replyPreference">返信希望</label>
-          <select id="replyPreference" name="replyPreference" style="width:100%;margin:8px 0 16px;">
-            <option value="optional">任意</option>
-            <option value="required">返信希望</option>
-            <option value="none">返信不要</option>
-          </select>
+        <div class="safetyField">
+          <label class="safetyLabel" for="relatedFeature">関係する機能</label>
+          <input class="safetyInput" id="relatedFeature" name="relatedFeature" type="text" maxlength="50" placeholder="例）わたしの地図 / ちいきのおかって / チャット" />
+        </div>
 
-          <label class="note" for="body">内容</label>
-          <textarea id="body" name="body" rows="8" maxlength="4000" style="width:100%;margin:8px 0 16px;" placeholder="問題内容や相談内容を入力してください。支援メモの代用ではなく、運用へ届ける前提の内容に留めます。"></textarea>
+        <div class="safetyField">
+          <label class="safetyLabel" for="targetReference">気になる投稿やページがあれば教えてください</label>
+          <p class="safetyHint">投稿URL、相手の名前、ページ名、チャットURLなど、わかる範囲で構いません。</p>
+          <input class="safetyInput" id="targetReference" name="targetReference" type="text" maxlength="255" placeholder="例）/app/chat/901" />
+        </div>
 
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <button class="btn ghost" type="submit">送信する</button>
-            <a class="btn ghost" href="/app/support">一覧へ戻る</a>
+        <div class="safetyField">
+          <label class="safetyLabel" for="body">内容</label>
+          <textarea class="safetyTextarea" id="body" name="body" rows="8" maxlength="4000" placeholder="何があったか、気になったこと、困っていることを、わかる範囲で書いてください。&#10;公開の場に書きにくいことでも大丈夫です。"></textarea>
+        </div>
+
+        <fieldset class="safetyFieldset">
+          <legend class="safetyLegend">返信について</legend>
+          <div class="safetyReplyChoices">
+            <label class="safetyChoice"><input type="radio" name="replyPreference" value="required" /> 返信がほしい</label>
+            <label class="safetyChoice"><input type="radio" name="replyPreference" value="none" /> 返信は不要</label>
+            <label class="safetyChoice"><input type="radio" name="replyPreference" value="optional" checked /> どちらでもよい</label>
           </div>
-        </form>
-      </article>
+        </fieldset>
+
+        <p class="safetyPrivateNote">ここに書いた内容は公開されません。必要な人だけが確認し、対応状況は一覧と詳細で追えます。</p>
+
+        <div class="safetySubmitArea">
+          <button class="btn primary safetySubmitButton" type="submit">送信する</button>
+          <p class="note">送信後は、お問い合わせ一覧・詳細から状況を確認できます。</p>
+        </div>
+      </form>
     </section>
   </main>
 

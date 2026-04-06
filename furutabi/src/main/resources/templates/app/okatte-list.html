@@ -16,7 +16,7 @@
     </div>
   </header>
 
-  <main class="container" aria-label="ちいきのおかって候補">
+  <main class="container" aria-label="ちいきのおかって">
     <section class="section section--hero" aria-label="ヒーロー">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -26,34 +26,60 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきのおかって</h1>
+        <a class="sectionTitleLink" href="/about.html?context=app#feature-okatte">ご説明</a>
       </div>
-      <p class="lead">架け橋さんが提案したおかって候補を見て、申請したいものを選ぶための一覧です。地域側の最終判断と chat 開通はまだ次段階です。</p>
+      <p class="lead">少し関係ができた先で開かれる候補を、カードで静かに見比べられるページです。</p>
     </section>
 
-    <section class="section">
-      <div class="grid2" style="margin-top:16px;" th:if="${!pageData.items.isEmpty()}">
-        <article class="card" th:each="item : ${pageData.items}">
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-            <span class="pill" th:text="${item.visibilityLabel}">PUBLIC</span>
-            <span class="note" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要時間は次段階で整理'}">60分</span>
+    <section class="section" th:if="${!pageData.items.isEmpty()}">
+      <div class="sectionTitleRow">
+        <h2 class="h2">候補カード</h2>
+        <span class="note">気になる候補から詳細へ進めます。</span>
+      </div>
+      <div class="proposalGrid" style="margin-top:16px;">
+        <article class="card proposalCard proposalCard--okatte"
+                 th:each="item : ${pageData.items}">
+          <figure class="proposalVisual">
+            <div class="ph ph--pageHero" aria-hidden="true"></div>
+            <span class="proposalFaceChip">
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </span>
+          </figure>
+          <div class="proposalCardMeta">
+            <span class="proposalDuration"
+                  th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は相談'}">60分</span>
+            <span class="proposalPersonMini"
+                  th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
           </div>
-          <h2 class="h2" th:text="${item.title}">okatte title</h2>
-          <p class="note" th:text="${item.hostNickname != null ? '地域側: ' + item.hostNickname : '地域側は次段階で整理'}">地域側</p>
-          <p class="note" th:if="${item.locationName != null}" th:text="${'場所: ' + item.locationName}">場所</p>
-          <p class="note" th:if="${item.summary != null}" th:text="${item.summary}">summary</p>
-          <div class="proposalTags" th:if="${!item.tags.isEmpty()}">
-            <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+          <div class="proposalCardBody">
+            <h3 class="proposalTitle" th:text="${item.title}">候補名</h3>
+            <p class="proposalSummary"
+               th:text="${item.summary != null ? item.summary : '少し先の時間が想像できる候補です。'}">説明</p>
+            <div class="proposalTags">
+              <span class="proposalTag" th:text="${item.visibilityLabel}">公開</span>
+              <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">場所</span>
+              <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+            </div>
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
-            <a class="btn primary" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">候補を見る</a>
-            <span class="btn ghost" th:if="${item.owner}">投稿者として表示中</span>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <a class="btn ghost proposalMore" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">候補を見る</a>
+            <span class="btn ghost" th:if="${item.owner}">提案中</span>
           </div>
         </article>
       </div>
+    </section>
 
-      <div class="card" th:if="${pageData.items.isEmpty()}">
-        <div class="h2">まだ見えるおかって候補はありません</div>
-        <p class="note">架け橋さん側から提示された候補が、ここで backend 一覧として見えるようになります。候補提案の拡張は次段階です。</p>
+    <section class="section" th:if="${pageData.items.isEmpty()}">
+      <div class="card">
+        <div class="h2">まだ見えている候補はありません</div>
+        <p class="note">公開範囲や関係性に応じて、ここに候補カードが並びます。</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="h2">運用ルール</div>
+        <ul class="aboutFeatureList" data-rule-list="okatte"></ul>
       </div>
     </section>
   </main>

@@ -230,7 +230,7 @@
         { href: '/app/home#tab-map', label: 'わたしの地図', currentMatchers: ['home', 'home.html'] },
         { href: '/app/home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
+        { href: '/app/support/new', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
         { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
         { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
       ],
@@ -250,7 +250,7 @@
         { href: '/app/local-member-home#tab-map', label: 'わたしの地図', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/local-member-home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: 'ちいきのおかって', currentMatchers: ['okatte', 'okatte.html'] },
-        { href: '/app/support', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
+        { href: '/app/support/new', label: 'お問い合わせ', currentMatchers: ['support', 'support.html'] },
         { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
         { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
       ],
@@ -273,7 +273,7 @@
         { href: '/app/local-member-home#tab-map', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/local-member-home?tab=footprints', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/okatte', label: '\u3061\u3044\u304d\u306e\u304a\u304b\u3063\u3066', currentMatchers: ['okatte', 'okatte.html'] },
-        { href: '/app/support', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['support', 'support.html'] },
+        { href: '/app/support/new', label: '\u304a\u554f\u3044\u5408\u308f\u305b', currentMatchers: ['support', 'support.html'] },
         // route 実装時は disabled を外し、（次段階）も消して 1 行表示へ戻す。
         { label: '私たちの目指すもの（次段階）', disabled: true },
         { label: 'FAQ（次段階）', disabled: true },
@@ -319,19 +319,19 @@
     return {
       about: [
         { href: localApp ? '/app/local-member-home' : '/app/home', label: 'FURUTABI' },
-        { label: '私たちの目指すもの（次段階）', disabled: true },
-        { label: 'FAQ（次段階）', disabled: true },
-        { href: '/app/support', label: 'お問い合わせ' }
+        { href: '/about.html', label: '私たちの目指すもの' },
+        { href: '/faq.html', label: 'FAQ' },
+        { href: '/app/support/new', label: 'お問い合わせ' }
       ],
       usage: [
         { href: '/app/gate', label: 'ちいきの入り口' },
-        { href: localApp ? '/app/local-member-home' : '/app/home', label: 'ごひいきさんの足あと' },
-        { href: '/app/map-records', label: 'わたしの地図' },
+        { href: localApp ? '/app/local-member-home?tab=footprints' : '/app/home?tab=footprints', label: 'ごひいきさんの足あと' },
+        { href: localApp ? '/app/local-member-home#tab-map' : '/app/home#tab-map', label: 'わたしの地図' },
         { href: '/app/okatte', label: 'ちいきのおかって' }
       ],
       legal: [
-        { label: '利用規約（次段階）', disabled: true },
-        { label: 'プライバシーポリシー（次段階）', disabled: true },
+        { href: '/terms.html', label: '利用規約' },
+        { href: '/privacy.html', label: 'プライバシーポリシー' },
         { href: '/app/mypage', label: 'マイページ' }
       ]
     };
@@ -395,7 +395,7 @@
         return '<span class="' + className + ' is-disabled" aria-disabled="true">' + disabledLabel + '</span>';
       }
       var current = isCurrentLink(link);
-      return '<a class="' + className + (current ? ' is-current' : '') + '" href="' + escapeHtml(link.href) + '"' + (current ? ' aria-current="page"' : '') + '>' + escapeHtml(link.label) + '</a>';
+      return '<a class="' + className + (current ? ' is-current' : '') + '" href="' + escapeHtml(withBasePrefix(link.href)) + '"' + (current ? ' aria-current="page"' : '') + '>' + escapeHtml(link.label) + '</a>';
     }).join('');
   }
 
@@ -662,7 +662,15 @@
       return href;
     }
 
-    if (/^(\/|https?:)/.test(resolvedHref)) {
+    if (/^https?:/.test(resolvedHref)) {
+      return resolvedHref;
+    }
+
+    if (/^\//.test(resolvedHref)) {
+      pathname = getHrefPathname(resolvedHref);
+      if (appContext && appContextTargets.indexOf(pathname) !== -1) {
+        return appendQueryParam(resolvedHref, 'context', 'app');
+      }
       return resolvedHref;
     }
 

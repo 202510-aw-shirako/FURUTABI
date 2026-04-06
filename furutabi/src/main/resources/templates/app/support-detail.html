@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>連絡・通報詳細 | FURUTABI</title>
+  <title>お問い合わせ詳細 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,38 +16,88 @@
     </div>
   </header>
 
-  <main class="container" aria-label="連絡・通報詳細">
-    <section class="section fv">
-      <div class="sectionTitleRow">
-        <div>
-          <span class="pill pill--soft" th:text="${pageData.typeLabel}">一般</span>
-          <h1 class="h1">連絡・通報詳細</h1>
+  <main class="container safetyPage" aria-label="お問い合わせ詳細">
+    <section class="section safetyIntroSection" aria-label="詳細の導入">
+      <div class="safetyIntroLayout">
+        <div class="safetyIntro">
+          <h1 class="safetyTitle">お問い合わせ詳細</h1>
+          <p class="safetyLead">
+            送った内容と現在の状態をここで確認できます。<br>
+            ログイン後のお問い合わせは非公開で扱われ、一覧と詳細で追えます。
+          </p>
         </div>
-        <span class="pill" th:text="${pageData.statusLabel}">受付中</span>
+        <div class="safetyAssistPanel" aria-label="導線">
+          <p class="safetyAssistTitle">移動する</p>
+          <div class="safetyFeatureLinks">
+            <a class="safetyFeatureLink" href="/app/support">お問い合わせ一覧・詳細へ戻る</a>
+            <a class="safetyFeatureLink" th:if="${pageData.adminView}" href="/app/support/admin">管理一覧へ戻る</a>
+          </div>
+        </div>
       </div>
-      <p class="lead">support は admin が対応する窓口です。必要時のみ、関連チャットを理由つきで確認できます。</p>
     </section>
 
-    <section class="section">
-      <article class="card">
-        <p class="note" th:text="'作成: ' + ${pageData.createdAt}">作成</p>
-        <p class="note" th:if="${pageData.updatedAt != null}" th:text="'更新: ' + ${pageData.updatedAt}">更新</p>
-        <p class="note" th:text="'返信希望: ' + ${pageData.replyPreferenceLabel}">返信希望</p>
-        <p class="note" th:text="'関連機能: ' + (${pageData.relatedFeature} ?: '未設定')">関連機能</p>
-        <p class="note" th:text="'対象参照: ' + (${pageData.targetReference} ?: '未設定')">対象参照</p>
-        <p class="note" th:if="${pageData.adminView}" th:text="'依頼者: ' + (${pageData.requesterLabel} ?: '表示不可')">依頼者</p>
-        <p class="note" th:if="${pageData.adminView and pageData.handlerLabel != null}" th:text="'対応者: ' + ${pageData.handlerLabel}">対応者</p>
+    <section class="section safetyWhatSection" aria-label="状態">
+      <div class="safetyWhatGrid">
+        <article class="safetyWhatCard">
+          <h3 class="h2">種類</h3>
+          <p class="note" th:text="${pageData.typeLabel}">一般</p>
+        </article>
+        <article class="safetyWhatCard">
+          <h3 class="h2">状態</h3>
+          <p class="note" th:text="${pageData.statusLabel}">受付</p>
+        </article>
+        <article class="safetyWhatCard">
+          <h3 class="h2">返信について</h3>
+          <p class="note" th:text="${pageData.replyPreferenceLabel}">どちらでもよい</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section safetyFormSection" aria-label="内容">
+      <article class="safetyFormCard">
+        <div class="safetySectionHead">
+          <h2 class="h2">送信内容</h2>
+        </div>
+
+        <div class="safetyField">
+          <label class="safetyLabel">送信日時</label>
+          <p class="note" th:text="${pageData.createdAt}">2026.03.27 10:00</p>
+        </div>
+
+        <div class="safetyField" th:if="${pageData.updatedAt != null}">
+          <label class="safetyLabel">更新日時</label>
+          <p class="note" th:text="${pageData.updatedAt}">2026.03.27 11:00</p>
+        </div>
+
+        <div class="safetyField">
+          <label class="safetyLabel">関係する機能</label>
+          <p class="note" th:text="${pageData.relatedFeature} ?: '未設定'">未設定</p>
+        </div>
+
+        <div class="safetyField">
+          <label class="safetyLabel">対象URL / ID</label>
+          <p class="note" th:text="${pageData.targetReference} ?: '未設定'">未設定</p>
+        </div>
+
+        <div class="safetyField" th:if="${pageData.adminView}">
+          <label class="safetyLabel">送信者</label>
+          <p class="note" th:text="${pageData.requesterLabel} ?: '表示対象なし'">表示対象なし</p>
+        </div>
+
+        <div class="safetyField" th:if="${pageData.adminView and pageData.handlerLabel != null}">
+          <label class="safetyLabel">対応者</label>
+          <p class="note" th:text="${pageData.handlerLabel}">対応者</p>
+        </div>
 
         <div class="mypageNoticeBox" style="margin-top:16px;">
           <p th:text="${pageData.body}">body</p>
         </div>
 
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
-          <a class="btn ghost" href="/app/support">一覧へ戻る</a>
-          <a class="btn ghost" th:if="${pageData.adminView}" href="/app/support/admin">admin 一覧へ戻る</a>
+        <div class="safetySubmitArea">
+          <a class="btn ghost" href="/app/support">お問い合わせ一覧・詳細へ戻る</a>
           <a class="btn ghost"
              th:if="${pageData.adminView and pageData.adminChatReviewEntryUrl != null}"
-             th:href="${pageData.adminChatReviewEntryUrl}">関連チャットを確認（理由を記録）</a>
+             th:href="${pageData.adminChatReviewEntryUrl}">関係チャットを確認する</a>
 
           <form th:if="${pageData.canMarkHandled}" th:action="@{/app/support/{id}/handle(id=${pageData.supportRequestId})}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

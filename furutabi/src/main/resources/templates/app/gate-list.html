@@ -26,38 +26,71 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきの入り口</h1>
+        <a class="sectionTitleLink" href="/about.html?context=app#feature-gate">ご説明</a>
       </div>
-      <p class="lead">今のあなたから見えている gate の入口一覧です。申請や受け入れ判断はまだ次段階で、ここでは一覧と詳細の backend 接続だけを先に通しています。</p>
+      <p class="lead">今の自分から無理なく選べる入口カードを、静かに見比べられるページです。</p>
+    </section>
+
+    <section class="section" th:if="${!pageData.items.isEmpty()}">
+      <div class="sectionTitleRow">
+        <h2 class="h2">入口カード</h2>
+        <span class="note">気になったものから詳細へ進めます。</span>
+      </div>
+      <div class="entryCarousel" aria-label="地域の入り口カード" data-entry-carousel style="margin-top:16px;">
+        <div class="entryCarouselStage">
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
+          <div class="entryCarouselViewport">
+            <div class="entryCarouselTrack" data-entry-track>
+              <article class="card proposalCard proposalCard--gate entryCarouselCard"
+                       data-entry-card
+                       th:each="item : ${pageData.items}">
+                <figure class="proposalPortrait">
+                  <div class="ph ph--thumb" aria-hidden="true"></div>
+                </figure>
+                <div class="proposalCardMeta">
+                  <span class="proposalDuration"
+                        th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は相談'}">30分</span>
+                  <span class="proposalPersonMini"
+                        th:text="${item.hostNickname != null ? item.hostNickname : '案内役'}">案内役</span>
+                </div>
+                <div class="proposalCardBody">
+                  <h3 class="proposalTitle" th:text="${item.title}">入口カード名</h3>
+                  <p class="proposalSummary"
+                     th:text="${item.summary != null ? item.summary : 'その日の余力に合わせて選べる、やわらかな入口です。'}">説明</p>
+                  <div class="proposalTags">
+                    <span class="proposalTag" th:text="${item.visibilityLabel}">公開</span>
+                    <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">場所</span>
+                    <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <a class="btn ghost proposalMore" th:href="@{/app/gate/{id}(id=${item.proposalId})}">詳しく見る</a>
+                  <span class="btn ghost" th:if="${item.owner}">提案中</span>
+                </div>
+              </article>
+            </div>
+          </div>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" th:if="${pageData.items.isEmpty()}">
+      <div class="card">
+        <div class="h2">まだ見えている入口はありません</div>
+        <p class="note">公開範囲や関係性に応じて、ここに入口カードが並びます。</p>
+      </div>
     </section>
 
     <section class="section">
-      <div class="grid2" style="margin-top:16px;" th:if="${!pageData.items.isEmpty()}">
-        <article class="card" th:each="item : ${pageData.items}">
-          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-            <span class="pill" th:text="${item.visibilityLabel}">PUBLIC</span>
-            <span class="note" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要時間未設定'}">60分</span>
-          </div>
-          <h2 class="h2" th:text="${item.title}">gate title</h2>
-          <p class="note" th:text="${item.hostNickname != null ? '投稿者: ' + item.hostNickname : '投稿者未設定'}">投稿者</p>
-          <p class="note" th:if="${item.locationName != null}" th:text="${'場所: ' + item.locationName}">場所</p>
-          <p class="note" th:if="${item.summary != null}" th:text="${item.summary}">summary</p>
-          <div class="proposalTags" th:if="${!item.tags.isEmpty()}">
-            <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
-          </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px;">
-            <a class="btn primary" th:href="@{/app/gate/{id}(id=${item.proposalId})}">詳細を見る</a>
-            <span class="btn ghost" th:if="${item.owner}">投稿者として表示中</span>
-          </div>
-        </article>
-      </div>
-
-      <div class="card" th:if="${pageData.items.isEmpty()}">
-        <div class="h2">まだ見える入り口はありません</div>
-        <p class="note">公開範囲や関係性に応じて、ここに gate の入口が並びます。申請フローや受け入れ判断は次段階でつなぎます。</p>
+      <div class="card">
+        <div class="h2">運用ルール</div>
+        <ul class="aboutFeatureList" data-rule-list="gate"></ul>
       </div>
     </section>
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/entry-carousel.js"></script>
 </body>
 </html>
