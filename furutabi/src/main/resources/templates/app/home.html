@@ -175,10 +175,12 @@
                       <div class="topMapComment" data-my-map-menu-comment>
                         <p class="topMapCommentText topMapCommentText--clamp" data-my-map-menu-body>地図上のピンを選ぶと、ここで内容を見ながら記録できます。</p>
                       </div>
+                      <p class="note myMapMenuCommentInfo" data-my-map-menu-comments>コメント 0件</p>
                     </div>
                     <div class="topMapFooter myMapMenuFooter">
                       <div class="topMapActions myMapMenuActions">
-                        <button class="topMapActionBtn myMapRegisterBtn" type="button" data-my-map-create>＋ 新規作成</button>
+                        <a class="topMapActionBtn myMapRegisterBtn" href="#" data-my-map-detail hidden>詳細</a>
+                        <button class="topMapActionBtn myMapRegisterBtn" type="button" data-my-map-create hidden>＋ 新規作成</button>
                         <button class="topMapActionBtn myMapRegisterBtn myMapActionIcon" type="button" data-my-map-edit hidden aria-label="編集">✎</button>
                         <button class="topMapActionBtn myMapRegisterBtn myMapActionIcon" type="button" data-my-map-delete hidden aria-label="削除">×</button>
                       </div>
@@ -521,6 +523,7 @@
         var myMapPinsLayer = myMap.querySelector('[data-my-map-pins]');
         var myMapMenu = myMap.querySelector('[data-my-map-menu]');
         var myMapCreate = myMap.querySelector('[data-my-map-create]');
+        var myMapDetail = myMap.querySelector('[data-my-map-detail]');
         var myMapEdit = myMap.querySelector('[data-my-map-edit]');
         var myMapDelete = myMap.querySelector('[data-my-map-delete]');
         var myMapCreatePrompt = myMap.querySelector('[data-my-map-create-prompt]');
@@ -548,6 +551,7 @@
         var myMapMenuDate = myMap.querySelector('[data-my-map-menu-date]');
         var myMapMenuBody = myMap.querySelector('[data-my-map-menu-body]');
         var myMapMenuMarker = myMap.querySelector('[data-my-map-menu-marker]');
+        var myMapMenuComments = myMap.querySelector('[data-my-map-menu-comments]');
         var myMapRecordList = document.querySelector('[data-my-map-record-list]');
         var myMapFilterYear = myMap.querySelector('[data-my-map-filter-year]');
         var myMapFilterSeason = myMap.querySelector('[data-my-map-filter-season]');
@@ -573,6 +577,7 @@
         var myMapPanStartX = 0;
         var myMapPanStartY = 0;
         var myMapDefaultVisibility = 'private';
+        var myMapHomePath = '/app/home';
         var myMapTypeLabels = {
           stop: '立ち寄り',
           meal: '食事',
@@ -1026,7 +1031,6 @@
               renderMyMapPins();
               if (pin.registered) {
                 openMyMapMenu(pin);
-                openMyMapCreatePrompt(pin);
                 return;
               }
               openMyMapCreatePrompt(pin);
@@ -1040,6 +1044,7 @@
 
         function openMyMapMenu(pin) {
           var visibility;
+          var comments;
 
           if (!myMapMenu || !pin || !pin.registered) {
             return;
@@ -1047,11 +1052,13 @@
 
           closeMyMapCreatePrompt();
           myMapMenu.hidden = false;
-          if (myMapCreate) myMapCreate.hidden = false;
+          if (myMapCreate) myMapCreate.hidden = true;
+          if (myMapDetail) myMapDetail.hidden = false;
           if (myMapEdit) myMapEdit.hidden = false;
           if (myMapDelete) myMapDelete.hidden = false;
           if (myMapMenuMarker) myMapMenuMarker.textContent = getMyMapMenuMarkerText(pin);
           visibility = getVisibilityMeta(pin.visibility);
+          comments = interactions ? interactions.getComments('map_record', pin.id) : [];
           if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
           if (myMapMenuVisibility) {
             myMapMenuVisibility.textContent = visibility.label;
@@ -1060,6 +1067,14 @@
           if (myMapMenuFacets) myMapMenuFacets.textContent = getMyMapFacetText(pin);
           if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
           if (myMapMenuBody) myMapMenuBody.textContent = pin.body || 'まだ本文は入っていません。';
+          if (myMapMenuComments) {
+            myMapMenuComments.textContent = comments.length
+              ? 'コメント ' + comments.length + '件 / 最新: ' + comments[comments.length - 1].body
+              : 'コメント 0件';
+          }
+          if (myMapDetail) {
+            myMapDetail.setAttribute('href', '/app/my-map-records/' + encodeURIComponent(pin.id));
+          }
         }
 
         function openMyMapSheet(mode) {
@@ -1224,6 +1239,15 @@
         if (myMapEdit) {
           myMapEdit.addEventListener('click', function () {
             openMyMapSheet('edit');
+          });
+        }
+
+        if (myMapDetail) {
+          myMapDetail.addEventListener('click', function (event) {
+            var pin = getMyMapPin(myMapSelectedId);
+            if (!pin || !pin.registered) {
+              event.preventDefault();
+            }
           });
         }
 
@@ -1397,6 +1421,29 @@
             openMyMapMenu(latestPin);
           }());
         }
+        (function () {
+          var params = new URLSearchParams(window.location.search);
+          var editPin = params.get('editPin');
+          var pin;
+
+          if (!editPin) {
+            return;
+          }
+
+          pin = getMyMapPin(editPin);
+          if (!pin || !pin.registered) {
+            return;
+          }
+
+          myMapSelectedId = pin.id;
+          renderMyMapPins();
+          openMyMapMenu(pin);
+          openMyMapSheet('edit');
+          params.delete('editPin');
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, '', window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash);
+          }
+        }());
         syncMyMapZoom();
       }
 

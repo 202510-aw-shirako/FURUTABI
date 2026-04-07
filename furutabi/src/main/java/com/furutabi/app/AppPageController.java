@@ -466,6 +466,14 @@ public class AppPageController {
         }
     }
 
+    @GetMapping("/my-map-records/{clientId}")
+    public String myMapRecordDetail(@PathVariable String clientId, Authentication authentication, Model model) {
+        model.addAttribute("siteNavKey", isLocalViewer(authentication) ? "app_local_member" : "app_home");
+        model.addAttribute("homePath", isLocalViewer(authentication) ? "/app/local-member-home" : "/app/home");
+        model.addAttribute("clientId", clientId);
+        return "app/my-map-record-detail-wire";
+    }
+
     @GetMapping("/footprints/{id}")
     public String footprintDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
@@ -657,5 +665,11 @@ public class AppPageController {
             return returnTo;
         }
         return fallback;
+    }
+
+    private boolean isLocalViewer(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_LOCAL".equals(authority.getAuthority())
+                        || "ROLE_BRIDGE".equals(authority.getAuthority()));
     }
 }

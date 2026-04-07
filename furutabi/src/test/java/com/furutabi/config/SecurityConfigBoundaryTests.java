@@ -499,6 +499,15 @@ class SecurityConfigBoundaryTests {
     }
 
     @Test
+    @DisplayName("Authenticated wire my-map detail route is available after passing security")
+    void authenticatedWireMyMapDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/my-map-records/pin-1").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("data-my-map-wire-detail=\"pin-1\"")))
+            .andExpect(content().string(containsString("ホームの地図へ戻る")));
+    }
+
+    @Test
     @DisplayName("Authenticated footprint detail route is available after passing security")
     void authenticatedFootprintDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/footprints/10").with(user("user@example.com").roles("USER")))
