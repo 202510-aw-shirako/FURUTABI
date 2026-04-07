@@ -1384,9 +1384,55 @@ a.link {
   gap: 14px;
 }
 
+.proposalDetailHeroMediaWrap {
+  display: grid;
+  gap: 14px;
+}
+
+.proposalDetailHeroMedia img,
+.proposalDetailPersonMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.proposalDetailThumbRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.proposalDetailThumb {
+  padding: 0;
+  border: 1px solid rgba(34, 34, 34, 0.1);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f3efe8;
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+}
+
+.proposalDetailThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.proposalDetailThumb.is-active {
+  border-color: rgba(34, 34, 34, 0.36);
+}
+
 .proposalDetailTitle {
   font-size: clamp(30px, 4vw, 48px);
   line-height: 1.18;
+}
+
+.proposalDetailKicker {
+  margin: 0;
+  color: #817567;
+  font-size: 14px;
 }
 
 .proposalDetailIntro {
@@ -1399,6 +1445,53 @@ a.link {
 
 .proposalDetailHeroAction {
   margin: 2px 0 0;
+}
+
+.proposalDetailActionRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.proposalDetailMetaPanel {
+  display: grid;
+  gap: 14px;
+}
+
+.proposalDetailNoteList,
+.proposalDetailScheduleList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.proposalDetailNoteList li {
+  color: #4f4a44;
+  line-height: 1.8;
+}
+
+.proposalDetailScheduleList li {
+  display: grid;
+  grid-template-columns: minmax(80px, 110px) minmax(0, 1fr);
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.08);
+  color: #4f4a44;
+  line-height: 1.8;
+}
+
+.proposalDetailScheduleList li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.proposalDetailSupportLinks {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .proposalDetailTextSection {
@@ -1458,6 +1551,11 @@ a.link {
   display: grid;
   gap: 12px;
   align-content: start;
+}
+
+.proposalDetailPersonHeading {
+  display: grid;
+  gap: 10px;
 }
 
 .proposalDetailPersonRole,
@@ -1603,6 +1701,12 @@ a.link {
   margin: 0;
   line-height: 1.85;
   color: #4f4a44;
+}
+
+.proposalPersonModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
 }
 
 .proposalPersonModalList {

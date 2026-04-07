@@ -28,22 +28,25 @@
         <h1 class="h1">ちいきのおかって</h1>
         <a class="sectionTitleLink" href="/about.html?context=app#feature-okatte">ちいきのおかってについて</a>
       </div>
-      <p class="lead">地域との距離感が心地よく、少し先の時間を想像できる提案だけを静かに並べています。地図から場所を見て、気になる提案の詳細へ進めます。</p>
+      <p class="lead">
+        地域の暮らしの延長にあるお願いごとです。地図で位置を見て、
+        その下のカードから詳しく見られます。
+      </p>
     </section>
 
     <section class="section" th:if="${#lists.isEmpty(pageData.items)}">
       <div class="card">
-        <div class="h2">まだ提案はありません</div>
-        <p class="note">公開された提案が増えると、このページに地図とカードが並びます。</p>
+        <div class="h2">まだ候補はありません</div>
+        <p class="note">地域側の準備が進むと、ここに地図とカードが並びます。</p>
       </div>
     </section>
 
-    <section class="section" th:if="${not #lists.isEmpty(pageData.items)}">
+    <section class="section proposalDetailMapSection" th:if="${not #lists.isEmpty(pageData.items)}">
       <div class="sectionTitleRow">
         <h2 class="h2">地図で見る</h2>
-        <span class="note">この地域の近くで見つかる提案を、場所感とあわせて見られます。</span>
+        <span class="note">地図のピンと下のカードが対応しています。</span>
       </div>
-      <p class="lead">地図のピンや下のカードから、気になる提案の詳細へ進めます。</p>
+      <p class="lead">場所を見てから、気になるおかっての詳細へ進めます。</p>
 
       <div class="topMapLayout appTopMapLayout proposalDetailMapLayout" style="margin-top:16px;">
         <div class="myMapMain">
@@ -55,7 +58,8 @@
                   class="topMapPin"
                   th:classappend="${item.pinClass}"
                   th:href="@{/app/okatte/{id}(id=${item.proposalId})}"
-                  th:each="item, stat : ${pageData.items}">
+                  th:each="item, stat : ${pageData.items}"
+                  th:aria-label="${item.title}">
                   <span th:text="${stat.count}">1</span>
                 </a>
               </div>
@@ -64,52 +68,44 @@
         </div>
       </div>
 
-      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;">
-        <div class="entryCarouselStage">
-          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の提案"></button>
-          <div class="entryCarouselViewport">
-            <div class="entryCarouselTrack" data-entry-track>
-              <article class="card proposalCard proposalCard--okatte entryCarouselCard" data-entry-card th:each="item : ${pageData.items}">
-                <figure class="proposalVisual">
-                  <div class="ph ph--pageHero" aria-hidden="true"></div>
-                  <span class="proposalFaceChip">
-                    <div class="ph ph--avatar" aria-hidden="true"></div>
-                  </span>
-                </figure>
-                <div class="proposalCardMeta">
-                  <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要時間は準備中'}">60分</span>
-                  <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
-                </div>
-                <div class="proposalCardBody">
-                  <h3 class="proposalTitle" th:text="${item.title}">提案タイトル</h3>
-                  <p class="proposalSummary" th:text="${item.summary != null ? item.summary : '地域の関係が見えてくる提案です。'}">summary</p>
-                  <div class="proposalTags">
-                    <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
-                    <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
-                    <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
-                  </div>
-                </div>
-                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                  <a class="btn ghost proposalMore" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">詳細</a>
-                  <span class="btn ghost" th:if="${item.owner}">申請中</span>
-                </div>
-              </article>
+      <div class="proposalGrid" style="margin-top:16px;">
+        <article class="card proposalCard proposalCard--okatte" th:each="item, stat : ${pageData.items}">
+          <figure class="proposalVisual">
+            <div class="ph ph--pageHero" aria-hidden="true"></div>
+            <span class="proposalFaceChip">
+              <div class="ph ph--avatar" aria-hidden="true"></div>
+            </span>
+          </figure>
+          <div class="proposalCardMeta">
+            <span class="topMapMarker proposalCardMarker"><span th:text="${stat.count}">1</span></span>
+            <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は相談で調整'}">60分</span>
+            <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
+          </div>
+          <div class="proposalCardBody">
+            <h3 class="proposalTitle" th:text="${item.title}">おかってタイトル</h3>
+            <p class="proposalSummary" th:text="${item.summary != null ? item.summary : '地域の暮らしの中でお願いしたい内容を短くまとめています。'}">summary</p>
+            <div class="proposalTags">
+              <span class="proposalTag" th:text="${item.visibilityLabel}">公開範囲</span>
+              <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
+              <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
             </div>
           </div>
-          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の提案"></button>
-        </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <a class="btn ghost proposalMore" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">詳細</a>
+            <span class="btn ghost" th:if="${item.owner}">申込み中</span>
+          </div>
+        </article>
       </div>
     </section>
 
     <section class="section">
       <div class="card">
-        <div class="h2">運用ルール</div>
+        <div class="h2">知っておくこと</div>
         <ul class="aboutFeatureList" data-rule-list="okatte"></ul>
       </div>
     </section>
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
-  <script src="/assets/scripts/entry-carousel.js"></script>
 </body>
 </html>
