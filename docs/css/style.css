@@ -444,6 +444,241 @@ a.link {
   padding-top: 0;
 }
 
+.fvHero {
+  --fv-cycle: 42s;
+  position: relative;
+  min-height: calc(100svh - 78px);
+  overflow: hidden;
+  background: #15120f;
+  isolation: isolate;
+}
+
+.fvHeroSlides,
+.fvHeroOverlay {
+  position: absolute;
+  inset: 0;
+}
+
+.fvHeroSlides {
+  z-index: 0;
+}
+
+.fvHeroSlide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  animation: fvHeroFade var(--fv-cycle) linear infinite;
+  animation-delay: var(--fv-delay);
+}
+
+.fvHeroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.04);
+  animation: fvHeroPanA var(--fv-cycle) linear infinite;
+  animation-delay: var(--fv-delay);
+}
+
+.fvHeroSlide.is-pan-b .fvHeroImage {
+  animation-name: fvHeroPanB;
+}
+
+.fvHeroSlide.is-pan-c .fvHeroImage {
+  animation-name: fvHeroPanC;
+}
+
+.fvHeroOverlay {
+  z-index: 1;
+  display: none;
+}
+
+.fvHeroContentWrap {
+  position: relative;
+  z-index: 2;
+  min-height: inherit;
+  display: flex;
+  align-items: flex-end;
+  padding-top: 84px;
+  padding-bottom: clamp(28px, 5vh, 56px);
+}
+
+.fvHeroContent {
+  display: grid;
+  gap: 10px;
+  max-width: 420px;
+  color: #fff;
+}
+
+.fvHeroEyebrow {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 248, 238, 0.92);
+}
+
+.fvHeroTitle {
+  margin: 0;
+  font-size: clamp(28px, 4.6vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  text-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+}
+
+.fvHeroText {
+  margin: 0;
+  max-width: 360px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 249, 242, 0.88);
+  text-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+}
+
+.fvHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fvHeroLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(255, 251, 245, 0.82);
+  color: #2d261f;
+  text-decoration: none;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(10px);
+}
+
+.fvHeroLink--ghost {
+  background: rgba(30, 24, 20, 0.28);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.fvHeroLink:hover {
+  background: #fff;
+}
+
+.fvHeroLink--ghost:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+@keyframes fvHeroFade {
+  0% {
+    opacity: 0;
+  }
+  2% {
+    opacity: 1;
+  }
+  14% {
+    opacity: 1;
+  }
+  18% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fvHeroPanA {
+  0%,
+  18%,
+  100% {
+    transform: scale(1.03) translate3d(-1.5%, 0, 0);
+  }
+  14% {
+    transform: scale(1.11) translate3d(1.5%, -1.5%, 0);
+  }
+}
+
+@keyframes fvHeroPanB {
+  0%,
+  18%,
+  100% {
+    transform: scale(1.04) translate3d(1%, -1%, 0);
+  }
+  14% {
+    transform: scale(1.12) translate3d(-1.8%, 1.2%, 0);
+  }
+}
+
+@keyframes fvHeroPanC {
+  0%,
+  18%,
+  100% {
+    transform: scale(1.02) translate3d(0, 1%, 0);
+  }
+  14% {
+    transform: scale(1.1) translate3d(1.2%, -1.8%, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .fvHero {
+    min-height: calc(100svh - 72px);
+  }
+
+  .fvHeroContentWrap {
+    padding-top: 72px;
+    padding-bottom: 44px;
+  }
+
+  .fvHeroContent {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .fvHeroContentWrap {
+    align-items: flex-end;
+    padding-top: 64px;
+    padding-bottom: 34px;
+  }
+
+  .fvHeroTitle {
+    font-size: clamp(26px, 8vw, 38px);
+  }
+
+  .fvHeroText {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .fvHeroActions {
+    gap: 10px;
+  }
+
+  .fvHeroLink {
+    min-height: 34px;
+    padding: 0 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fvHeroSlide,
+  .fvHeroImage {
+    animation: none !important;
+  }
+
+  .fvHeroSlide {
+    opacity: 0;
+  }
+
+  .fvHeroSlide:first-child {
+    opacity: 1;
+  }
+}
+
 .h1 {
   margin: 0;
   font-size: 26px;
@@ -2695,7 +2930,7 @@ body.hasProposalModal {
 
 .topMapFilters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, max-content));
+  grid-template-columns: repeat(3, minmax(0, 180px));
   gap: 10px;
   margin: 0 0 10px;
   align-items: end;
@@ -2703,6 +2938,10 @@ body.hasProposalModal {
 
 .appTopMapLayout[data-my-map] .topMapFilters {
   grid-column: 1/-1;
+}
+
+.appTopMapLayout[data-top-map] .topMapFilters {
+  grid-template-columns: repeat(3, minmax(0, 180px)) max-content;
 }
 
 .topMapFilterField {
@@ -3001,7 +3240,7 @@ body.hasProposalModal {
 }
 
 .myMapOverlayCard {
-  width: min(100%, 360px);
+  width: min(396px, 100%);
   pointer-events: auto;
 }
 
@@ -3611,7 +3850,10 @@ body.hasProposalModal {
     margin-bottom: 18px;
   }
   .topMapFilters {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 160px));
+  }
+  .appTopMapLayout[data-top-map] .topMapFilters {
+    grid-template-columns: repeat(3, minmax(0, 160px)) max-content;
   }
   .topMapCard {
     min-height: 0;
@@ -3695,6 +3937,15 @@ body.hasProposalModal {
   .localSoftCard,
   .localContactCard {
     padding: 22px;
+  }
+}
+
+@media (max-width: 760px) {
+  .topMapFilters {
+    grid-template-columns: 1fr;
+  }
+  .appTopMapLayout[data-top-map] .topMapFilters {
+    grid-template-columns: 1fr;
   }
 }
 /* ===== Tabs (App) ===== */

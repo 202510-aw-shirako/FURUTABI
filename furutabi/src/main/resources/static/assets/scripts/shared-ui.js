@@ -149,6 +149,7 @@
       variant: 'public',
       brandHref: '/index.html',
       mainLinks: [
+        { href: '/bridge.html', label: 'ブリッジ' },
         { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
@@ -156,9 +157,7 @@
         { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
-      utilityLinks: [
-        { href: '/bridge.html', label: 'ブリッジ' }
-      ],
+      utilityLinks: [],
       action: [
         { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
@@ -168,6 +167,7 @@
       variant: 'public',
       brandHref: '/index.html',
       mainLinks: [
+        { href: '/bridge.html', label: 'ブリッジ' },
         { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
@@ -175,9 +175,7 @@
         { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
-      utilityLinks: [
-        { href: '/bridge.html', label: 'ブリッジ' }
-      ],
+      utilityLinks: [],
       action: [
         { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
@@ -187,6 +185,7 @@
       variant: 'public',
       brandHref: '/index.html',
       mainLinks: [
+        { href: '/bridge.html', label: 'ブリッジ' },
         { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
@@ -194,9 +193,7 @@
         { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
-      utilityLinks: [
-        { href: '/bridge.html', label: 'ブリッジ' }
-      ],
+      utilityLinks: [],
       action: [
         { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }
@@ -206,6 +203,7 @@
       variant: 'public',
       brandHref: '/index.html',
       mainLinks: [
+        { href: '/bridge.html', label: 'ブリッジ' },
         { href: '/gate.html', label: 'ちいきの入り口', currentMatchers: ['gate.html', 'gate-entry.html'] },
         { href: '/index.html#top-footprints', label: 'ごひいきさんの足あと', currentMatchers: ['index.html', 'story.html'] },
         { href: '/about.html', label: '私たちの目指すもの', currentMatchers: ['about.html'] },
@@ -213,9 +211,7 @@
         { href: '/faq.html', label: 'FAQ', currentMatchers: ['faq.html'] },
         { href: '/contact.html', label: 'お問い合わせ', currentMatchers: ['contact.html', 'contact-complete.html'] }
       ],
-      utilityLinks: [
-        { href: '/bridge.html', label: 'ブリッジ' }
-      ],
+      utilityLinks: [],
       action: [
         { href: '/register', label: '新規登録', currentMatchers: ['register', 'register.html', 'register-profile.html', 'register-complete.html', 'register-verify.html'] },
         { href: '/login', label: 'ログイン', currentMatchers: ['login', 'login.html'] }

@@ -21,7 +21,40 @@
     <!-- わたしの地図はログイン後専用機能として維持し、公開側とは責務を分けると分かりやすそうです。 -->
     <section class="section section--hero" aria-label="ヒーローイメージ">
       <div class="fullbleed">
-        <div class="ph ph--pageHero" aria-hidden="true"></div>
+        <div class="fvHero fvHero--app">
+          <div class="fvHeroSlides" aria-hidden="true">
+            <figure class="fvHeroSlide is-pan-a" style="--fv-delay: 0s;">
+              <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー1.png" alt="" fetchpriority="high" />
+            </figure>
+            <figure class="fvHeroSlide is-pan-b" style="--fv-delay: 7s;">
+              <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー2.png" alt="" />
+            </figure>
+            <figure class="fvHeroSlide is-pan-c" style="--fv-delay: 14s;">
+              <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー3.png" alt="" />
+            </figure>
+            <figure class="fvHeroSlide is-pan-a" style="--fv-delay: 21s;">
+              <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー4.png" alt="" />
+            </figure>
+            <figure class="fvHeroSlide is-pan-b" style="--fv-delay: 28s;">
+              <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー5.png" alt="" />
+            </figure>
+            <figure class="fvHeroSlide is-pan-c" style="--fv-delay: 35s;">
+              <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー6.png" alt="" />
+            </figure>
+          </div>
+          <div class="fvHeroOverlay"></div>
+          <div class="container fvHeroContentWrap">
+            <div class="fvHeroContent">
+              <p class="fvHeroEyebrow">ログイン後ホーム</p>
+              <h1 class="fvHeroTitle">今日の気になる景色から、旅の記録を開く。</h1>
+              <p class="fvHeroText">わたしの地図とごひいきさんの足あとを行き来しながら、次に見たい場所や記録へ自然につながる導入にします。</p>
+              <div class="fvHeroActions">
+                <a class="fvHeroLink" href="#tab-map">わたしの地図へ</a>
+                <a class="fvHeroLink fvHeroLink--ghost" href="#tab-proposals">ちいきのおかってへ</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -184,8 +217,8 @@
             <h2 class="h2">記録一覧</h2>
             <span class="note">公開状態をあとから見直せます</span>
           </div>
-          <div class="myMapRecordList" data-my-map-record-list>
-            <p class="note">まだ記録はありません。地図上を押して新しい記録を残せます。</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+            <a class="btn ghost" href="/app/map-records">一覧で管理</a>
           </div>
         </div>
 
@@ -278,18 +311,21 @@
       <div id="sub-footprints" style="margin-top:22px;" hidden>
         <div class="topMapLayout appTopMapLayout" data-top-map data-top-map-kind="footprints">
           <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
-            <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
+            <article class="card topMapCard"
+              th:with="currentFootprint=${#lists.isEmpty(footprintStories) ? null : footprintStories[0]}"
+              th:attr="aria-label=${currentFootprint != null ? 'ごひいきさんの足あと ' + currentFootprint.id() : '選択中のごひいきさんの足あと'}"
+              data-top-map-card>
               <div class="topMapCardBody">
                 <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
                 <div class="topMapCardText">
                   <div class="topMapCardHead">
                     <span class="pill" data-top-map-label-text>ごひいきさんの足あと</span>
-                    <span class="topMapMarker"><span data-top-map-marker>1</span></span>
+                    <span class="topMapMarker"><span data-top-map-marker th:text="${currentFootprint != null ? currentFootprint.id() : 1}">1</span></span>
                   </div>
-                  <div class="topMapComment" data-top-map-comment="1">
-                    <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                  <div class="topMapComment" th:attr="data-top-map-comment=${currentFootprint != null ? currentFootprint.id() : 1}">
+                    <div class="topMapCardTitle" data-top-map-title th:text="${currentFootprint != null ? currentFootprint.title() : 'ごひいきさんの足あと'}">境内の風と、OOさんのおはぎ</div>
                     <div data-top-map-comment-body>
-                      <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                      <p class="topMapCommentText topMapCommentText--clamp" th:text="${currentFootprint != null ? currentFootprint.summary() : '公開中の足あとが入ると、ここに概要が表示されます。'}">境内の風と、OOさんのおはぎ</p>
                     </div>
                   </div>
                 </div>
@@ -299,7 +335,7 @@
                     <button class="topMapActionBtn" type="button" data-top-map-like>いいね <span>12</span></button>
                     <button class="topMapActionBtn topMapActionBtn--thanks" type="button" data-top-map-thanks>ありがとう <span>4</span></button>
                   </div>
-                  <a class="btn ghost topMapMore" href="/story.html?story=1" data-top-map-link-anchor>続きは</a>
+                  <a class="btn ghost topMapMore" th:href="${currentFootprint != null ? currentFootprint.detailPath() : '/app/footprints'}" data-top-map-link-anchor>続きは</a>
                 </div>
             </article>
           </div>
@@ -309,9 +345,14 @@
               <div class="myMapViewport" data-top-map-viewport>
                 <img class="topMapCanvas topMapCanvasImage" src="/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" data-top-map-image />
                 <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
-                  <a class="topMapPin topMapPin--a is-active" href="/story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-                  <a class="topMapPin topMapPin--b" href="/story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-                  <a class="topMapPin topMapPin--c" href="/story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+                  <a class="topMapPin"
+                    th:each="item, stat : ${footprintStories}"
+                    th:if="${stat.count <= 3}"
+                    th:classappend="${stat.count == 1 ? ' topMapPin--a is-active' : (stat.count == 2 ? ' topMapPin--b' : ' topMapPin--c')}"
+                    th:href="${item.detailPath()}"
+                    th:attr="aria-label=${'ごひいきさんの足あと ' + item.id() + ' の場所'},data-top-map-pin=${item.id()}">
+                    <span th:text="${stat.count}">1</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -333,14 +374,14 @@
     <section class="section" id="tab-contact" aria-label="連絡">
       <div class="sectionTitleRow">
         <h2 class="h1">連絡（非公開）</h2>
-        <a class="sectionTitleLink" href="./messages.html">一覧へ</a>
+          <a class="sectionTitleLink" href="/app/chat">一覧へ</a>
       </div>
       <p class="lead">公開の空気を壊さず、困りごと・改善の連絡は非公開で届く。</p>
       <div class="grid2" style="margin-top:16px;">
         <div class="card">
           <div class="h2">連絡一覧</div>
           <p class="note">提案・申請、架け橋さん、地域の方、運営との非公開のやり取りを確認します。</p>
-          <a class="btn primary" href="./messages.html">連絡一覧を見る</a>
+            <a class="btn primary" href="/app/chat">連絡一覧を見る</a>
         </div>
         <div class="card">
           <div class="h2">困ったときは</div>
@@ -376,9 +417,9 @@
   <script src="/assets/scripts/notices.js"></script>
   <script src="/assets/scripts/interactions.js"></script>
   <script th:inline="javascript">
-    window.FURUTABI_APP_HOME_SEED = {
-      footprints: /*[[${footprintStories}]]*/ []
-    };
+      window.FURUTABI_APP_HOME_SEED = {
+        footprints: /*[[${footprintStories}]]*/ []
+      };
   </script>
   <script>
     (function () {
@@ -416,7 +457,7 @@
             : (footprints
                 ? footprints.mergeStories(
                     footprints.withBasePath('/'),
-                    footprints.buildSharedMapStories('#sub-my', { visibility: 'public' })
+                    footprints.buildSharedMapStories('/app/footprints/', { visibility: 'public' })
                   )
                 : null)
         }
