@@ -1,5 +1,7 @@
 /* SCSS entry point: split into tokens / base / components / legacy without changing the current visual output. */
 /* css/style.css (generated equivalent of scss/style.scss) */
+/* SCSS entry point: split into tokens / base / components / legacy without changing the current visual output. */
+/* SCSS entry point: split into tokens / base / components / legacy without changing the current visual output. */
 * {
   box-sizing: border-box;
 }
@@ -444,6 +446,7 @@ a.link {
   padding-top: 0;
 }
 
+/* SCSS entry point: split into tokens / base / components / legacy without changing the current visual output. */
 .h1 {
   margin: 0;
   font-size: 26px;
@@ -669,6 +672,7 @@ a.link {
   color: #666;
 }
 
+/* SCSS entry point: split into tokens / base / components / legacy without changing the current visual output. */
 .slider {
   display: grid;
   grid-auto-flow: column;

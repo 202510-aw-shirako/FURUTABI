@@ -1,3 +1,5 @@
+@use "tokens" as *;
+
 @mixin pill-frame($border-color: $color-line-dark-12, $background: $color-white, $radius: $radius-pill) {
   border: 1px solid $border-color;
   border-radius: $radius;

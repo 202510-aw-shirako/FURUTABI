@@ -1,6 +1,6 @@
 /* SCSS entry point: split into tokens / base / components / legacy without changing the current visual output. */
-@import "tokens";
-@import "mixins";
-@import "base";
-@import "components";
-@import "legacy";
+@use "tokens";
+@use "mixins";
+@use "base";
+@use "components";
+@use "legacy";
