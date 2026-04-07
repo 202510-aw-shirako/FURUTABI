@@ -25,6 +25,12 @@ a.link {
   color: #666;
 }
 
+.navSubLabel {
+  font-size: 11px;
+  color: #9a8f83;
+  white-space: nowrap;
+}
+
 .container {
   max-width: 1280px;
   margin: 0 auto;
@@ -362,6 +368,11 @@ a.link {
   background: #fff;
   color: #312c27;
   font-size: 13px;
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  line-break: strict;
+  writing-mode: horizontal-tb;
 }
 
 .siteHeaderAction:hover,
@@ -3688,58 +3699,170 @@ body.hasProposalModal {
   top: 58%;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1240px) {
   .topbar .inner {
-    gap: 12px;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
     padding: 12px 0;
   }
   .topbar .brand {
+    min-width: max-content;
     font-size: 12px;
     letter-spacing: 0.05em;
   }
+  .topbar .brandTag {
+    display: none;
+  }
   .siteHeaderNav {
-    flex: 0 0 auto;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+    align-self: center;
   }
   .siteHeaderToggle {
-    display: inline-flex;
+    display: none;
   }
   .siteHeaderMenu {
-    position: absolute;
-    top: calc(100% + 10px);
-    right: 28px;
-    left: 28px;
-    width: auto;
-    padding: 18px;
-    border: 1px solid rgba(34, 34, 34, 0.08);
-    border-radius: 22px;
-    background: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 18px 40px rgba(34, 34, 34, 0.08);
-    display: none;
-    gap: 14px;
+    position: static;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    align-items: center;
+    gap: 8px 12px;
   }
   .siteHeaderMenu.is-open {
     display: grid;
   }
-  .siteHeaderPrimary,
-  .siteHeaderUtility,
-  .siteHeaderActionWrap {
+  .siteHeaderLeftStack {
+    min-width: 0;
     display: grid;
+    gap: 6px;
+    justify-items: end;
+  }
+  .siteHeaderPrimary,
+  .siteHeaderUtility {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
     margin-left: 0;
+    min-width: 0;
+    justify-content: flex-end;
   }
-  .siteHeaderLink,
+  .siteHeaderActionWrap {
+    display: grid;
+    align-items: center;
+    justify-items: end;
+    align-self: center;
+    justify-self: end;
+    gap: 8px;
+    margin-left: 0;
+    width: max-content;
+    max-width: none;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderLeftStack {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px 18px;
+    align-self: center;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderPrimary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderLink {
+    font-size: 14px;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderActionWrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    align-self: center;
+  }
+  .siteHeaderNav--public .siteHeaderUtility {
+    gap: 6px;
+  }
+  .siteHeaderNav--app .siteHeaderActionWrap {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    justify-items: end;
+  }
+  .siteHeaderNav--app .siteHeaderLeftStack {
+    align-self: center;
+  }
+  .siteHeaderNav--app .siteHeaderPrimary,
+  .siteHeaderNav--app .siteHeaderUtility {
+    align-items: center;
+  }
+  .siteHeaderNav--app .siteHeaderNotice {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .siteHeaderNav--app .siteHeaderActionWrap > .siteHeaderAction:first-of-type {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .siteHeaderNav--app .siteHeaderActionWrap > .siteHeaderAction:last-of-type {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+  }
   .siteHeaderAction {
-    min-height: 42px;
-    padding: 10px 12px;
+    width: auto;
+    min-width: max-content;
+    min-height: 34px;
+    padding: 6px 9px;
     border: 1px solid rgba(34, 34, 34, 0.08);
-    border-radius: 14px;
+    border-radius: 999px;
     background: #fff;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    line-break: strict;
+    writing-mode: horizontal-tb;
+    font-size: 12px;
+  }
+  .siteHeaderLink {
+    min-height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+  .siteHeaderNav--app .siteHeaderLink {
+    font-size: 14px;
   }
   .siteHeaderLink.is-current::after {
     display: none;
   }
   .siteHeaderUtilityLink {
     padding: 4px 2px;
+    white-space: nowrap;
+  }
+  .siteHeaderNotice {
+    display: inline-flex;
+    justify-content: flex-end;
+  }
+  .siteHeaderNoticeButton {
+    width: 34px;
+    height: 34px;
   }
   .siteFooterGrid {
     grid-template-columns: 1fr;
@@ -3773,6 +3896,60 @@ body.hasProposalModal {
   .tourRelatedGrid,
   .proposalGrid,
   .proposalDetailTwoCol,
+  .proposalDetailHero,
+  .proposalDetailPersonCard,
+  .proposalDetailMapLayout,
+  .proposalPersonModalLayout,
+  .storyHero,
+  .storyMetaGrid,
+  .storyActionBar,
+  .storyDetailGrid,
+  .profileHero,
+  .profileTopicGrid,
+  .privacyScopeGrid,
+  .privacyStoryLayout,
+  .privacyQuickActions,
+  .activityTimeline,
+  .activityDetailLayout,
+  .supportHero,
+  .supportFormLayout,
+  .supportQueueLayout,
+  .supportDetailLayout,
+  .localMemberHero,
+  .localMemberHomeGrid,
+  .chatGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1040px) {
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderLeftStack {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px 16px;
+    align-self: center;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderPrimary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderActionWrap {
+    display: grid;
+    grid-auto-flow: row;
+    justify-items: end;
+    align-self: start;
+  }
+  .siteHeaderNav--public .siteHeaderMenu--public-simple .siteHeaderActionWrap {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 980px) {
   .proposalDetailPersonCard,
   .proposalPersonModalHeader {
     grid-template-columns: 1fr;

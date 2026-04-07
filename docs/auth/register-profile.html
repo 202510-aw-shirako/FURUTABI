@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta name="furutabi-export-target" content="docs" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>プロフィールを整える | FURUTABI</title>
+  <title>プロフィール入力 | FURUTABI</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -16,103 +17,88 @@
     </div>
   </header>
 
-  <main class="container authPage" aria-label="プロフィールを整える">
-    <!-- 登録後にゆっくり書く項目を分ける -->
+  <main class="container authPage" aria-label="プロフィール入力">
     <section class="authFlowShell">
       <div class="authFlowIntro">
         <p class="eyebrow">PROFILE</p>
         <h1 class="authFlowTitle">プロフィールを整える</h1>
-        <p class="authFlowLead">あとから変更できるので、今わかる範囲だけで大丈夫です。</p>
+        <p class="authFlowLead">ここでは最小の自己紹介と連絡設定だけを保存します。あとから変更して構いません。</p>
       </div>
 
       <ol class="authStepList" aria-label="登録ステップ">
         <li class="is-done"><span>1</span><strong>登録情報入力</strong></li>
-        <li class="is-current"><span>2</span><strong>初期設定</strong></li>
-        <li><span>3</span><strong>完了</strong></li>
+        <li class="is-done"><span>2</span><strong>SMS 認証</strong></li>
+        <li class="is-current"><span>3</span><strong>プロフィール</strong></li>
       </ol>
 
-      <div class="authFlowTopAction">
-        <a class="btn ghost" href="./register-complete.html">あとで設定する</a>
-      </div>
-
       <section class="authCard">
-        <div class="authBadgeRow">
-          <span class="pill">任意</span>
-          <span class="pill">あとで変更できます</span>
-        </div>
-
-        <form class="authForm" action="./register-complete.html">
-          <section class="authCardSection">
-            <h2 class="authCardTitle">自分について</h2>
-            <p class="authCardLead">入力しなくても始められます。必要になったときに、あとから記入できます。</p>
-          </section>
-
+        <form class="authForm" action="register/profile" th:object="${registerProfileForm}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <div class="authField">
-            <label for="profile-bio">自己紹介</label>
-            <textarea id="profile-bio" name="bio" rows="5" placeholder="好きな過ごし方や、この土地との関わり方を無理のない範囲で書けます。"></textarea>
+            <label for="bio">自己紹介</label>
+            <textarea id="bio" th:field="*{bio}" rows="4" placeholder="土地との関わり方を一言で書けます。"></textarea>
           </div>
 
           <div class="authField">
-            <label for="profile-icon">アイコン画像</label>
-            <input id="profile-icon" name="icon" type="file" />
+            <label for="region">今いる地域</label>
+            <input id="region" th:field="*{region}" type="text" placeholder="東京都 / 関西 / 東北 など" />
           </div>
 
           <div class="authField">
-            <label for="profile-region">居住地の大まかな地域</label>
-            <input id="profile-region" name="region" type="text" placeholder="例）東京都 / 関東 / 九州" />
+            <label for="interestRegion">関心のある地域</label>
+            <input id="interestRegion" th:field="*{interestRegion}" type="text" placeholder="興味のある地域" />
           </div>
 
           <div class="authField">
-            <label for="profile-interest-region">興味のある地域</label>
-            <input id="profile-interest-region" name="interest_region" type="text" placeholder="例）海辺の地域 / 梅のある地域" />
+            <label for="visitHistory">訪問歴</label>
+            <textarea id="visitHistory" th:field="*{visitHistory}" rows="3"></textarea>
           </div>
 
           <div class="authField">
-            <label for="profile-history">過去の訪問歴</label>
-            <textarea id="profile-history" name="visit_history" rows="3" placeholder="訪れたことのある地域や、印象に残っている時間があれば書けます。"></textarea>
+            <label for="careNote">配慮してほしいこと</label>
+            <textarea id="careNote" th:field="*{careNote}" rows="3"></textarea>
           </div>
 
           <div class="authField">
-            <label for="profile-care">配慮してほしいこと</label>
-            <textarea id="profile-care" name="care" rows="3" placeholder="移動、会話、体調など、気になることがあれば書けます。"></textarea>
-          </div>
-
-          <div class="authField">
-            <label for="profile-with-children">子ども連れかどうか</label>
-            <select id="profile-with-children" name="with_children">
+            <label for="withChildren">子ども連れかどうか</label>
+            <select id="withChildren" th:field="*{withChildren}">
               <option value="">選択してください</option>
-              <option>子ども連れ</option>
-              <option>子ども連れではない</option>
-              <option>状況によって変わる</option>
+              <option value="WITH_CHILDREN">子ども連れ</option>
+              <option value="WITHOUT_CHILDREN">子ども連れではない</option>
+              <option value="UNSPECIFIED">状況による</option>
             </select>
           </div>
 
           <div class="authField">
-            <label for="profile-food">食事制限 / アレルギーなど</label>
-            <textarea id="profile-food" name="food" rows="3" placeholder="食べられないものや、先に伝えておきたいことがあれば書けます。"></textarea>
+            <label for="foodNote">食の配慮</label>
+            <textarea id="foodNote" th:field="*{foodNote}" rows="3"></textarea>
           </div>
 
           <div class="authField">
-            <label for="profile-note">関わり方のメモ</label>
-            <textarea id="profile-note" name="note" rows="3" placeholder="ゆっくり話したい、景色を見たい、少人数が安心など。"></textarea>
+            <label for="relationNote">関わり方メモ</label>
+            <textarea id="relationNote" th:field="*{relationNote}" rows="3"></textarea>
           </div>
 
-          <section class="authCardSection">
-            <h2 class="authCardTitle">関わり方について</h2>
-            <p class="authCardLead">通知設定ではなく、連絡を受けるかどうかの初期設定です。あとから変更できます。</p>
-          </section>
-
           <fieldset class="authField authFieldset">
-            <legend>連絡の受け取り方</legend>
+            <legend>連絡設定</legend>
             <div class="authChoiceList">
-              <label><input type="checkbox" checked />運営からのお知らせを受け取る</label>
-              <label><input type="checkbox" checked />架け橋さん経由の連絡を受け取る</label>
-              <label><input type="checkbox" />地域の方からの連絡を受け取る</label>
+              <label><input th:field="*{receiveOperationNotice}" type="checkbox" />運営からのお知らせ</label>
+              <label><input th:field="*{receiveSecurityNotice}" type="checkbox" />セキュリティ通知</label>
+              <label><input th:field="*{receiveBridgeContact}" type="checkbox" />Bridge からの連絡</label>
+              <label><input th:field="*{receiveLocalContact}" type="checkbox" />Local からの連絡</label>
+              <label><input th:field="*{receiveEmailNotice}" type="checkbox" />メール通知</label>
+              <label><input th:field="*{receiveSmsNotice}" type="checkbox" />SMS 通知</label>
             </div>
           </fieldset>
 
-          <div class="authFormActions authFormActions--center">
-            <button class="btn primary" type="submit">はじめる</button>
+          <div class="authFormActions">
+            <button class="btn primary" type="submit">登録を保存する</button>
+          </div>
+        </form>
+        <form class="authForm" action="register/profile/skip" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <div class="authFormActions">
+            <button class="btn ghost" type="submit">あとで設定する</button>
           </div>
         </form>
       </section>
@@ -120,14 +106,5 @@
   </main>
 
   <script src="../public/assets/scripts/shared-ui.js"></script>
-  <script>
-    // Java実装時の目印:
-    // ここは仮登録とは分けて保存する任意プロフィール / 初期設定の画面です。
-    // UserProfile と ContactPreference を分けると、あとから変更しやすくなりそうです。
-    // 入力なしでも完了できる前提なので、null / empty をそのまま許容できる設計がおすすめです。
-  </script>
-  <!-- Current handoff note:
-       The rough home-region field is now treated as provisional wire content and is a candidate to remove in backend-facing implementation.
-       Keep the profile focus on interest_region, visit_history, care, with_children, food, note, and gender with "prefer not to say" retained. -->
 </body>
 </html>

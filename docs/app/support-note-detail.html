@@ -1,0 +1,141 @@
+﻿<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta name="furutabi-export-target" content="docs" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>支援メモ詳細 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="支援メモ詳細">
+    <section class="section fv">
+      <div class="sectionTitleRow">
+        <div>
+          <h1 class="h1" th:text="${pageData.targetUserLabel + ' さんの支援メモ'}">支援メモ詳細</h1>
+          <p class="lead">引き継ぎに役立つ内容を、留意点と本文に分けて確認します。</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span class="pill" th:text="${pageData.noteStatusLabel}">有効</span>
+          <span class="pill" th:if="${pageData.hidden}">非表示</span>
+        </div>
+      </div>
+      <p class="note" th:text="${'作成: ' + pageData.createdByLabel + ' / ' + pageData.createdAt}">作成</p>
+      <p class="note" th:if="${pageData.updatedAt != null}" th:text="${'更新: ' + pageData.updatedByLabel + ' / ' + pageData.updatedAt}">更新</p>
+      <p class="note" th:text="${'対象地域: ' + (pageData.regionId == 'default' ? 'default（既定）' : pageData.regionId)}">対象地域</p>
+      <p class="note" th:if="${pageData.hidden}" th:text="${'非表示理由: ' + pageData.hiddenReason + (pageData.hiddenAt != null ? ' / ' + pageData.hiddenAt : '')}">非表示</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+        <a class="btn ghost" th:href="${pageData.listUrl}">一覧へ戻る</a>
+        <a class="btn ghost" th:href="${pageData.adminDetailUrl}">管理者向けユーザー詳細へ戻る</a>
+      </div>
+    </section>
+
+    <section th:if="${param.created != null or param.saved != null or param.hidden != null or param.unhidden != null or param.reported != null or param.blocked != null}" class="section">
+      <article class="card">
+        <h2 class="h2">結果</h2>
+        <p th:if="${param.created != null}">支援メモを作成しました。</p>
+        <p th:if="${param.saved != null}">支援メモを更新しました。</p>
+        <p th:if="${param.hidden != null}">支援メモを非表示にしました。</p>
+        <p th:if="${param.unhidden != null}">支援メモの非表示を解除しました。</p>
+        <p th:if="${param.reported != null}">支援メモを通報しました。</p>
+        <p th:if="${param.blocked != null}">入力内容を確認してください。</p>
+      </article>
+    </section>
+
+    <section class="section" th:if="${pageData.relatedCard != null}">
+      <article class="card">
+        <h2 class="h2">関連カード</h2>
+        <p th:text="${pageData.relatedCard.cardLabel}">関連カード</p>
+        <p class="note" th:text="${'訪問日: ' + (pageData.relatedCard.visitDate == null ? '未記録' : pageData.relatedCard.visitDate)}">訪問日</p>
+        <p class="note" th:text="${'関係する場面: ' + pageData.relatedCard.relatedScene}">場面</p>
+        <p class="note">支援メモの文脈理解に必要な範囲だけを表示しています。</p>
+        <p th:if="${pageData.relatedCard.cardUrl != null}"><a th:href="${pageData.relatedCard.cardUrl}">関連記録を見る</a></p>
+        <p th:if="${pageData.relatedCard.proposalDetailUrl != null}"><a th:href="${pageData.relatedCard.proposalDetailUrl}">通常の proposal 詳細を見る</a></p>
+      </article>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2 class="h2">留意点</h2>
+        <p class="note">特に大切な引き継ぎ内容を記載しています。</p>
+        <div class="mypageNoticeBox">
+          <p style="white-space:pre-wrap;" th:text="${pageData.carePoints}">care points</p>
+        </div>
+        <h2 class="h2" style="margin-top:20px;">本文</h2>
+        <div class="mypageNoticeBox">
+          <p style="white-space:pre-wrap;" th:text="${pageData.body}">body</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <h2 class="h2">書き方の注意</h2>
+        <ul>
+          <li>氏名や住所など、個人を特定しやすい情報は書かないでください。</li>
+          <li>否定的なラベリングではなく、起きた事実と次に役立つ視点を書いてください。</li>
+          <li>留意点には、その場で困りやすかったことや次に気をつけたいことを書いてください。</li>
+          <li>前の記述と反対の記述が見えても、その時点の内容として残して構いません。</li>
+          <li>一人の人物像にまとめず、次に関わる人への橋渡しを意識してください。</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section" th:if="${pageData.canEdit}">
+      <article class="card">
+        <h2 class="h2">編集</h2>
+        <a class="btn ghost" th:href="${pageData.editUrl}">支援メモを編集</a>
+      </article>
+    </section>
+
+    <section class="section" th:if="${pageData.canModerate}">
+      <article class="card">
+        <h2 class="h2">表示管理</h2>
+        <form th:if="${!pageData.hidden}" th:action="@{/app/support-notes/{id}/hide(id=${pageData.noteId})}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <label class="note" for="hideReason">非表示理由</label>
+          <input id="hideReason" name="reason" type="text" maxlength="500" required style="width:100%;margin:8px 0 16px;" />
+          <button class="btn ghost" type="submit">非表示にする</button>
+        </form>
+        <form th:if="${pageData.hidden}" th:action="@{/app/support-notes/{id}/unhide(id=${pageData.noteId})}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <button class="btn ghost" type="submit">非表示を解除する</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="section" th:if="${pageData.canReport}">
+      <article class="card">
+        <h2 class="h2">通報</h2>
+        <p class="note">通報はメモ全体に対して行います。備考に問題箇所を書いてください。</p>
+        <form th:action="@{/app/support-notes/{id}/reports(id=${pageData.noteId})}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          <label class="note" for="reportNote">備考</label>
+          <textarea id="reportNote" name="reportNote" rows="4" maxlength="1000" required style="width:100%;margin:8px 0 16px;"></textarea>
+          <button class="btn ghost" type="submit">通報する</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="section" th:if="${not #lists.isEmpty(pageData.reports)}">
+      <article class="card">
+        <h2 class="h2">通報履歴</h2>
+        <ul>
+          <li th:each="report : ${pageData.reports}" th:text="${report.reportedAt + ' / ' + report.reportedByLabel + ' / ' + report.reportNote}">report</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

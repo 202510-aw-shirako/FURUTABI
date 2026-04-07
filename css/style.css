@@ -1251,7 +1251,7 @@ a.link {
 }
 
 .proposalDetailMapLayout .topMapStage {
-  aspect-ratio: 6 / 5;
+  aspect-ratio: 6/5;
   width: min(100%, 672px);
   margin-inline: auto;
   height: auto;
@@ -3039,15 +3039,15 @@ body.hasProposalModal {
   color: #7b7064;
 }
 
-.myMapOverlayCard[hidden] {
-  display: none !important;
-}
-
 .myMapRegisterBtn {
   min-height: 38px;
   padding: 0 16px;
   border-radius: 999px;
   background: #fff;
+}
+
+.myMapOverlayCard[hidden] {
+  display: none !important;
 }
 
 .myMapMenuFooter {

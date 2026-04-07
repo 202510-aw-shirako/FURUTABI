@@ -46,7 +46,7 @@
   }
 
   function buildRegisterHref() {
-    return '../auth/register.html';
+    return '/register';
   }
 
   function getAction(type, context, proposalId) {

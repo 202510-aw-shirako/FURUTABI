@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta name="furutabi-export-target" content="docs" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>追加の本人確認 | FURUTABI</title>
+  <title>追加本人確認の案内 | FURUTABI</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
@@ -16,50 +17,38 @@
     </div>
   </header>
 
-  <main class="container authPage authPage--centered" aria-label="追加の本人確認">
-    <!-- 追加本人確認は通常非表示、必要時のみ外部本人確認APIを起動する -->
+  <main class="container authPage authPage--centered" aria-label="追加本人確認の案内">
     <section class="authCompleteCard authCompleteCard--verify">
       <p class="eyebrow">ADDITIONAL VERIFY</p>
-      <h1 class="authFlowTitle">追加の本人確認をお願いします</h1>
-      <p class="authFlowLead">安心して関われる場を守るために、追加の確認をお願いしています。</p>
+      <h1 class="authFlowTitle">登録はここまで完了しました</h1>
+      <p class="authFlowLead">
+        <span th:text="${email}">name@example.com</span>
+        で登録されました。追加本人確認は次段階の案内ページとして保持し、今回は詳細実装しません。
+      </p>
 
       <div class="authVerifyGrid">
         <section class="authCompletePanel">
-          <h2>なぜ必要か</h2>
+          <h2>今回できたこと</h2>
           <ul class="authList">
-            <li>通報が入ったとき</li>
-            <li>登録情報に不整合があるとき</li>
-            <li>ちいきのおかって利用前に必要と判断されたとき</li>
-            <li>架け橋さん / 管理者が追加確認を必要としたとき</li>
-            <li>安全上の懸念が出たとき</li>
+            <li>登録情報の保存</li>
+            <li>SMS 認証の完了</li>
+            <li>プロフィールと連絡設定の初期保存</li>
           </ul>
         </section>
         <section class="authCompletePanel">
-          <h2>提出期限</h2>
-          <p class="authParagraph">案内から 7 日以内を目安にお願いしています。事情がある場合は、先にご連絡ください。</p>
-        </section>
-        <section class="authCompletePanel">
-          <h2>提出方法</h2>
-          <p class="authParagraph">外部の本人確認サービスへ移動し、画面の案内に沿って確認を進めます。</p>
-        </section>
-        <section class="authCompletePanel">
-          <h2>注意事項</h2>
-          <p class="authParagraph">書類情報は外部の本人確認サービスで扱われます。管理者が生の書類画像を直接扱わない設計を優先します。</p>
+          <h2>今回まだやっていないこと</h2>
+          <p class="authParagraph">追加本人確認の審査フロー本体、proposal / okatte / chat 導線、認可の詳細は次の工程で扱います。</p>
         </section>
       </div>
 
       <div class="authFormActions authFormActions--center">
-        <a class="btn primary" href="#">本人確認をはじめる</a>
+        <a class="btn primary" th:href="@{/login(returnTo=${nextPath})}" th:text="${nextLabel}">ログインしてホームへ進む</a>
+        <a class="btn ghost" href="login.html">通常のログインへ</a>
       </div>
+      <p class="note" th:if="${profileSkipped}">プロフィールはあとで設定できます。今回はマイページへ戻る前提の最小導線でつないでいます。</p>
     </section>
   </main>
 
   <script src="../public/assets/scripts/shared-ui.js"></script>
-  <script>
-    // Java実装時の目印:
-    // この画面は通常は表示せず、Admin 側フラグで verifyRequired=true になったときだけ見せる形が整理しやすそうです。
-    // 追加本人確認ステータスは UNREQUESTED / REQUESTED / SUBMITTED / REVIEWING / APPROVED / RETURNED / REJECTED のように持てると扱いやすそうです。
-    // 本人確認開始ボタンは、外部本人確認APIの申請IDを発行して遷移するイメージです。
-  </script>
 </body>
 </html>

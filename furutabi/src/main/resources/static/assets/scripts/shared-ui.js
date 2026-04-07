@@ -346,6 +346,127 @@
     return window.location.pathname.split('/').pop() || 'index.html';
   }
 
+  function isDocsExportRuntime() {
+    var marker = document.querySelector('meta[name="furutabi-export-target"]');
+    return !!(marker && marker.getAttribute('content') === 'docs');
+  }
+
+  function getDocsSection() {
+    var path = window.location.pathname.replace(/\\/g, '/');
+    if (/\/app\//.test(path)) {
+      return 'app';
+    }
+    if (/\/auth\//.test(path)) {
+      return 'auth';
+    }
+    return 'public';
+  }
+
+  var docsRouteTargets = {
+    '/about.html': 'public/about.html',
+    '/bridge.html': 'public/bridge.html',
+    '/contact-complete.html': 'public/contact-complete.html',
+    '/contact.html': 'public/contact.html',
+    '/faq.html': 'public/faq.html',
+    '/gate-entry.html': 'public/gate-entry.html',
+    '/gate.html': 'public/gate.html',
+    '/index.html': 'public/index.html',
+    '/local.html': 'public/local.html',
+    '/notice.html': 'public/notice.html',
+    '/notices.html': 'public/notices.html',
+    '/okatte-entry.html': 'public/okatte-entry.html',
+    '/privacy.html': 'public/privacy.html',
+    '/story.html': 'public/story.html',
+    '/terms.html': 'public/terms.html',
+    '/tour-preview.html': 'public/tour-preview.html',
+    '/tour.html': 'public/tour.html',
+    '/login': 'auth/login.html',
+    '/login.html': 'auth/login.html',
+    '/register': 'auth/register.html',
+    '/register.html': 'auth/register.html',
+    '/register-profile': 'auth/register-profile.html',
+    '/register-profile.html': 'auth/register-profile.html',
+    '/register-sms': 'auth/register-sms.html',
+    '/register-sms.html': 'auth/register-sms.html',
+    '/register-verify': 'auth/register-verify.html',
+    '/register-verify.html': 'auth/register-verify.html',
+    '/app/home': 'app/home.html',
+    '/app/home.html': 'app/home.html',
+    '/app/local-member-home': 'app/local-member-home.html',
+    '/app/local-member-home.html': 'app/local-member-home.html',
+    '/app/map-records': 'app/map-records.html',
+    '/app/map-records.html': 'app/map-records.html',
+    '/app/footprints': 'app/footprint-list.html',
+    '/app/footprints.html': 'app/footprint-list.html',
+    '/app/gate': 'app/gate-list.html',
+    '/app/gate.html': 'app/gate-list.html',
+    '/app/okatte': 'app/okatte-list.html',
+    '/app/okatte.html': 'app/okatte-list.html',
+    '/app/chat': 'app/chat-thread-list.html',
+    '/app/chat.html': 'app/chat-thread-list.html',
+    '/app/history': 'app/history-list.html',
+    '/app/history.html': 'app/history-list.html',
+    '/app/notifications': 'app/notification-list.html',
+    '/app/notifications.html': 'app/notification-list.html',
+    '/app/mypage': 'app/mypage.html',
+    '/app/mypage.html': 'app/mypage.html',
+    '/app/account': 'app/account.html',
+    '/app/account.html': 'app/account.html',
+    '/app/profile': 'app/profile.html',
+    '/app/profile.html': 'app/profile.html',
+    '/app/privacy-settings': 'app/privacy-settings.html',
+    '/app/privacy-settings.html': 'app/privacy-settings.html',
+    '/app/support': 'app/support-list.html',
+    '/app/support.html': 'app/support-list.html',
+    '/app/support/new': 'app/support-form.html',
+    '/app/admin': 'app/admin-home.html',
+    '/app/admin/users': 'app/admin-user-list.html'
+  };
+
+  function relativeDocsPath(targetPath) {
+    var section = getDocsSection();
+    if (section === 'public') {
+      if (targetPath.indexOf('public/') === 0) {
+        return targetPath.slice('public/'.length);
+      }
+      return '../' + targetPath;
+    }
+
+    if (targetPath.indexOf(section + '/') === 0) {
+      return targetPath.slice(section.length + 1);
+    }
+
+    return '../' + targetPath;
+  }
+
+  function convertDocsAbsoluteUrl(rawValue) {
+    if (!isDocsExportRuntime() || !rawValue || rawValue.charAt(0) !== '/') {
+      return rawValue;
+    }
+
+    if (rawValue.indexOf('/css/') === 0) {
+      return relativeDocsPath(rawValue.slice(1));
+    }
+
+    if (rawValue.indexOf('/assets/') === 0) {
+      return relativeDocsPath('public/' + rawValue.slice(1));
+    }
+
+    var hashIndex = rawValue.indexOf('#');
+    var queryIndex = rawValue.indexOf('?');
+    var cutIndexes = [hashIndex, queryIndex].filter(function (index) { return index >= 0; });
+    var cut = cutIndexes.length ? Math.min.apply(Math, cutIndexes) : rawValue.length;
+    var pathname = rawValue.slice(0, cut);
+    var suffix = rawValue.slice(cut);
+    var targetPath = docsRouteTargets[pathname];
+
+    if (!targetPath) {
+      return rawValue.slice(1);
+    }
+
+    return relativeDocsPath(targetPath) + suffix;
+  }
+
   function getHrefPathname(href) {
     if (!href || href.charAt(0) === '#') {
       return getCurrentPathname();
@@ -429,7 +550,7 @@
           '</div>' +
           '<div class="siteHeaderNoticeList" data-header-notice-list></div>' +
           '<div class="siteHeaderNoticeFoot">' +
-            '<a href="' + escapeHtml(config.notificationsHref || '../app/notification-center.html') + '">すべて見る</a>' +
+            '<a href="' + escapeHtml(withBasePrefix(config.notificationsHref || '../app/notification-center.html')) + '">すべて見る</a>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -458,7 +579,7 @@
           '<div class="siteHeaderImportantNoticeTitle">' + escapeHtml(importantItem.title) + '</div>' +
           '<p class="siteHeaderImportantNoticeText">' + escapeHtml(importantItem.body) + '</p>' +
           '<div class="siteHeaderImportantNoticeActions">' +
-            '<a href="' + escapeHtml(importantItem.related_url) + '">' + escapeHtml(importantItem.action_label || '確認する') + '</a>' +
+            '<a href="' + escapeHtml(withBasePrefix(importantItem.related_url)) + '">' + escapeHtml(importantItem.action_label || '確認する') + '</a>' +
           '</div>' +
         '</div>' +
         '<button class="siteHeaderImportantNoticeClose" type="button" aria-label="通知を閉じる">×</button>' +
@@ -467,7 +588,7 @@
 
   function formatNotificationItem(item, className) {
     return '' +
-      '<a class="' + className + (item.is_read ? '' : ' is-unread') + '" href="' + escapeHtml(item.related_url) + '" data-notification-id="' + escapeHtml(item.notification_id) + '">' +
+      '<a class="' + className + (item.is_read ? '' : ' is-unread') + '" href="' + escapeHtml(withBasePrefix(item.related_url)) + '" data-notification-id="' + escapeHtml(item.notification_id) + '">' +
         '<div class="siteHeaderNoticeMeta">' +
           '<span class="pill">' + escapeHtml(item.kindLabel) + '</span>' +
           '<time>' + escapeHtml(item.created_at) + '</time>' +
@@ -580,9 +701,9 @@
     if (brand) {
       var brandNode = brand.querySelector('.brand');
       if (brandNode && brandNode.tagName !== 'A') {
-        brandNode.outerHTML = '<a class="brand" href="' + escapeHtml(config.brandHref) + '">FURUTABI｜郷旅</a>';
+        brandNode.outerHTML = '<a class="brand" href="' + escapeHtml(withBasePrefix(config.brandHref)) + '">FURUTABI｜郷旅</a>';
       } else if (brandNode) {
-        brandNode.setAttribute('href', config.brandHref);
+        brandNode.setAttribute('href', withBasePrefix(config.brandHref));
       }
       var activeBrandNode = brand.querySelector('.brand');
       var existingBrandTag = brand.querySelector('.brandTag');
@@ -663,6 +784,15 @@
     }
 
     if (/^\//.test(resolvedHref)) {
+      resolvedHref = convertDocsAbsoluteUrl(resolvedHref);
+      if (!/^\//.test(resolvedHref)) {
+        pathname = getHrefPathname(resolvedHref);
+        if (appContext && appContextTargets.indexOf(pathname) !== -1) {
+          return appendQueryParam(resolvedHref, 'context', 'app');
+        }
+        return resolvedHref;
+      }
+
       pathname = getHrefPathname(resolvedHref);
       if (appContext && appContextTargets.indexOf(pathname) !== -1) {
         return appendQueryParam(resolvedHref, 'context', 'app');

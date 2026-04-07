@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta name="furutabi-export-target" content="docs" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>マイページ | FURUTABI</title>
@@ -10,36 +11,26 @@
   <header class="topbar">
     <div class="container">
       <div class="inner">
-        <div class="brand">FURUTABI｜郷旅</div>
+        <div class="brand">FURUTABI</div>
         <nav data-site-nav="app_home"></nav>
       </div>
     </div>
   </header>
 
   <main class="container mypagePage" aria-label="マイページ">
-    <!-- 個人情報とプロフィールは分ける -->
-    <!-- 実名・住所・電話番号などは管理者のみ閲覧 -->
-    <!-- 性別は必須項目で、「回答しない」を選べる -->
-    <!-- 性別と年齢層は、必要に応じて架け橋さん / ちいきのおかって受け入れ側が確認することがある -->
-    <!-- 地域の方、旅人の方の双方が安心して関われるようにするために、必要な範囲で情報を扱う -->
-    <!-- ニックネームに実名を書くのは禁止 -->
-    <!-- わたしの地図は本人のみを初期値にする -->
-    <!-- 通知設定と、連絡を受ける許可は分ける -->
-    <!-- 困りごとや改善点は非公開導線へ送る -->
-    <!-- 追加本人確認は通常は休眠機能で、必要時のみ外部本人確認APIを使う -->
     <section class="mypageShell">
       <aside class="mypageSidebar" aria-label="マイページナビゲーション">
         <div class="mypageSidebarInner">
           <h2 class="mypageSidebarTitle">アカウント</h2>
           <nav class="mypageNav">
-            <a class="mypageNavLink is-current" href="./mypage.html" aria-current="page">マイページ</a>
-            <a class="mypageNavLink" href="./account.html">アカウント情報</a>
-            <a class="mypageNavLink" href="./profile.html">プロフィール編集</a>
-            <a class="mypageNavLink" href="./privacy-settings.html">公開範囲とプライバシー</a>
-            <a class="mypageNavLink" href="./notifications.html">通知と連絡設定</a>
-            <a class="mypageNavLink" href="./history.html">関わりの履歴</a>
-            <a class="mypageNavLink" href="./security.html">ログインとセキュリティ</a>
-            <a class="mypageNavLink" href="./support.html">安心とサポート</a>
+            <a class="mypageNavLink is-current" href="mypage.html" aria-current="page">マイページ</a>
+            <a class="mypageNavLink" href="history-list.html">関わりの記録</a>
+            <a class="mypageNavLink" href="map-records.html">わたしの地図</a>
+            <a class="mypageNavLink" href="gate-list.html">ちいきの入り口</a>
+            <a class="mypageNavLink" href="account.html">アカウント情報</a>
+            <a class="mypageNavLink" href="profile.html">プロフィール</a>
+            <a class="mypageNavLink" href="privacy-settings.html">公開範囲とプライバシー</a>
+            <span class="mypageNavLink">運用系の設定は次段階です</span>
           </nav>
         </div>
       </aside>
@@ -47,7 +38,10 @@
       <section class="mypageMain">
         <div class="mypageHead">
           <h1 class="h1">マイページ</h1>
-          <p class="lead">ここから、自分の情報や公開設定、関わりの履歴を確認できます。</p>
+          <p class="lead">
+            register 後の基本情報や、ログイン後に使う画面への導線をまとめています。
+            backend 側でつながった最小機能をここから確認できます。
+          </p>
         </div>
 
         <section class="mypageProfileCard">
@@ -55,9 +49,56 @@
             <div class="ph ph--thumb mypageAvatar" aria-hidden="true"></div>
           </div>
           <div class="mypageProfileBody">
-            <p class="mypageEyebrow">公開名</p>
-            <h2 class="h2">なぎさの旅人</h2>
-            <p class="mypageText">海辺の光や、誰かと少し歩く時間が好きです。無理のない入口から、この地域との関わりをゆっくり育てています。</p>
+            <p class="mypageEyebrow">ログイン中のアカウント</p>
+            <h2 class="h2" th:text="${summary.nickname} ?: ${summary.name}">furutabi-user</h2>
+            <p class="mypageText">
+              メールアドレス:
+              <strong th:text="${summary.email}">user@example.com</strong>
+            </p>
+            <p class="mypageText">
+              関心のある地域:
+              <span th:text="${summary.interestRegion} ?: 'まだ未設定です'">まだ未設定です</span>
+            </p>
+          </div>
+        </section>
+
+        <section class="mypageSection">
+          <div class="sectionTitleRow">
+            <h2 class="h2">ポイント</h2>
+          </div>
+          <div class="mypageStatusGrid">
+            <article class="mypageStatusCard">
+              <p class="mypageStatusLabel">現在ポイント</p>
+              <div class="mypageStatusValue">
+                <strong th:text="${summary.currentPoints}">0</strong>
+              </div>
+              <p class="note" th:text="${summary.pointsEnabledForRegion} ? '制度イベントに応じて加算されます。' : 'この地域ではポイント制度はまだ有効ではありません。'">制度イベントに応じて加算されます。</p>
+            </article>
+          </div>
+          <div class="mypageLinkGrid" th:if="${!#lists.isEmpty(summary.pointHistory)}">
+            <article class="mypageLinkCard" th:each="pointEvent : ${summary.pointHistory}">
+              <h3 class="h2">
+                <span th:text="${pointEvent.label}">登録</span>
+                <span th:text="${' +' + pointEvent.points}">+0</span>
+              </h3>
+              <p class="note">
+                <span th:text="${pointEvent.awardedAt}">2026.04.02</span>
+                <span th:text="${' / ' + pointEvent.regionId}">/ default</span>
+              </p>
+            </article>
+          </div>
+          <p class="note" th:if="${#lists.isEmpty(summary.pointHistory)}">まだポイント履歴はありません。</p>
+        </section>
+
+        <section class="mypageSection" th:if="${summary.adminViewer}">
+          <div class="sectionTitleRow">
+            <h2 class="h2">管理導線</h2>
+          </div>
+          <div class="mypageLinkGrid">
+            <a class="mypageLinkCard" th:href="${summary.adminEntryUrl}">
+              <h3 class="h2">管理入口</h3>
+              <p class="note">admin home / list / detail へ進むための入口です。通常の self-service 導線とは分けて表示します。</p>
+            </a>
           </div>
         </section>
 
@@ -68,70 +109,78 @@
           <div class="mypageStatusGrid">
             <article class="mypageStatusCard">
               <p class="mypageStatusLabel">SMS認証状態</p>
-              <div class="mypageStatusValue"><span class="pill pill--soft">認証済み</span></div>
-              <p class="note">ログインの土台になる確認は完了しています。</p>
+              <div class="mypageStatusValue">
+                <span class="pill pill--soft" th:text="${summary.smsVerified} ? '認証済み' : '未認証'">認証済み</span>
+              </div>
+              <p class="note">register 中の認証状態を、そのまま account 画面でも確認できます。</p>
             </article>
             <article class="mypageStatusCard">
-              <p class="mypageStatusLabel">追加本人確認状態</p>
-              <div class="mypageStatusValue"><span class="pill">未要求</span></div>
-              <p class="note">通常は休眠状態です。必要時のみ追加確認に進みます。</p>
+              <p class="mypageStatusLabel">プロフィール入力</p>
+              <div class="mypageStatusValue">
+                <span class="pill" th:text="${summary.profileReady} ? '入力済み' : 'あとで設定可能'">あとで設定可能</span>
+              </div>
+              <p class="note">プロフィール項目は `/app/profile` から更新できます。</p>
             </article>
             <article class="mypageStatusCard">
-              <p class="mypageStatusLabel">地図の公開設定</p>
-              <div class="mypageStatusValue"><span class="pill">本人のみ</span></div>
-              <p class="note">わたしの地図は、本人のみを初期値にしています。</p>
-            </article>
-            <article class="mypageStatusCard">
-              <p class="mypageStatusLabel">連絡許可設定</p>
-              <div class="mypageStatusValue"><span class="pill pill--soft">架け橋さんのみ</span></div>
-              <p class="note">地域の方からの直接連絡は現在オフです。</p>
+              <p class="mypageStatusLabel">追加本人確認</p>
+              <div class="mypageStatusValue">
+                <span class="pill" th:text="${summary.additionalVerificationStatus}">UNREQUESTED</span>
+              </div>
+              <p class="note">ここでは状態表示のみです。追加本人確認の本体は次段階です。</p>
             </article>
           </div>
         </section>
 
         <section class="mypageSection">
           <div class="sectionTitleRow">
-            <h2 class="h2">設定と確認</h2>
+            <h2 class="h2">次に進めること</h2>
           </div>
           <div class="mypageLinkGrid">
-            <a class="mypageLinkCard" href="./account.html">
+            <a class="mypageLinkCard" href="history-list.html">
+              <h3 class="h2">関わりの記録</h3>
+              <p class="note">申請・chat・地図・足あとなど、自分の関わりを最小一覧で確認できます。</p>
+            </a>
+            <a class="mypageLinkCard" href="chat-thread-list.html">
+              <h3 class="h2">chat</h3>
+              <p class="note">承認後に開いた thread を見て、proposal や申請の続きへ戻れます。</p>
+            </a>
+            <a class="mypageLinkCard" href="notification-list.html">
+              <h3 class="h2">通知</h3>
+              <p class="note">申請返答、chat 新着、comment 追加などの気づきから元の詳細へ戻れます。</p>
+            </a>
+            <a class="mypageLinkCard" href="account.html">
               <h3 class="h2">アカウント情報</h3>
-              <p class="note">管理情報と公開名、見える範囲を確認します。</p>
+              <p class="note">ニックネーム、補足確認、住所など `users` の基本情報を更新できます。</p>
             </a>
-            <a class="mypageLinkCard" href="./profile.html">
-              <h3 class="h2">プロフィール編集</h3>
-              <p class="note">公開名で見える自己紹介や、関わり方のメモを整えます。</p>
+            <a class="mypageLinkCard" href="map-records.html">
+              <h3 class="h2">わたしの地図</h3>
+              <p class="note">公開済み map 記録の一覧、詳細、CRUD を backend 側導線で確認できます。</p>
             </a>
-            <a class="mypageLinkCard" href="./privacy-settings.html">
+            <a class="mypageLinkCard" href="gate-list.html">
+              <h3 class="h2">ちいきの入り口</h3>
+              <p class="note">入り口 proposal の一覧と詳細を確認できます。申請フローは別導線です。</p>
+            </a>
+            <a class="mypageLinkCard" href="profile.html">
+              <h3 class="h2">プロフィール</h3>
+              <p class="note">関心や基本情報など `user_profiles` を更新できます。</p>
+            </a>
+            <a class="mypageLinkCard" href="privacy-settings.html">
               <h3 class="h2">公開範囲とプライバシー</h3>
-              <p class="note">公開 / 非公開の初期値や位置の見せ方を管理します。</p>
+              <p class="note">`contact_preferences` を使った連絡・公開設定を更新できます。</p>
             </a>
-            <a class="mypageLinkCard" href="./notifications.html">
-              <h3 class="h2">通知と連絡設定</h3>
-              <p class="note">通知と、連絡を受ける許可を分けて見直せます。</p>
-            </a>
-            <a class="mypageLinkCard" href="./history.html">
-              <h3 class="h2">関わりの履歴</h3>
-              <p class="note">これまでの積み上がりを、あとから静かに見返せます。</p>
-            </a>
-            <a class="mypageLinkCard" href="./security.html">
-              <h3 class="h2">ログインとセキュリティ</h3>
-              <p class="note">認証状態、ログイン履歴、追加本人確認の状態を確認します。</p>
-            </a>
-            <a class="mypageLinkCard" href="./support.html">
-              <h3 class="h2">安心とサポート</h3>
-              <p class="note">FAQ、非公開の相談導線、規約類をまとめて見られます。</p>
-            </a>
-            <!-- Java移行時メモ: ここはワイヤでは login.html に戻すだけですが、本実装では Spring Security の logout 処理へ差し替える想定です。 -->
-            <a class="mypageLinkCard" href="../auth/login.html">
-              <h3 class="h2">ログアウト</h3>
-              <p class="note">いったんログイン画面へ戻ります。本実装ではここでセッションを終了します。</p>
-            </a>
+            <form class="mypageLinkCard" action="logout" method="post">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <button type="submit" style="all:unset; display:block; width:100%; cursor:pointer;">
+                <h3 class="h2">ログアウト</h3>
+                <p class="note">現在の logout 導線へ移動します。</p>
+              </button>
+            </form>
           </div>
         </section>
       </section>
     </section>
   </main>
+
   <script src="../public/assets/scripts/shared-ui.js"></script>
 </body>
 </html>

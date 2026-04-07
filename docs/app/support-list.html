@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta name="furutabi-export-target" content="docs" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>お問い合わせ一覧・詳細 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container safetyPage" aria-label="お問い合わせ一覧・詳細">
+    <section class="section safetyIntroSection" aria-label="一覧の案内">
+      <div class="safetyIntroLayout">
+        <div class="safetyIntro">
+          <h1 class="safetyTitle" th:text="${pageData.adminView} ? 'お問い合わせ管理' : 'お問い合わせ一覧・詳細'">お問い合わせ一覧・詳細</h1>
+          <p class="safetyLead" th:if="${not pageData.adminView}">
+            送ったお問い合わせをここで一覧で確認できます。<br>
+            詳細を開くと、返信状況・対応中・完了の状態や関連メモを追えます。
+          </p>
+          <p class="safetyLead" th:if="${pageData.adminView}">
+            受け付けたお問い合わせの一覧です。必要なときだけ個別詳細を開き、対応中・完了の状態を更新します。
+          </p>
+        </div>
+        <div class="safetyAssistPanel" aria-label="案内">
+          <p class="safetyAssistTitle">次にできること</p>
+          <div class="safetyFeatureLinks">
+            <a class="safetyFeatureLink" th:if="${not pageData.adminView}" href="support-form.html">新しくお問い合わせする</a>
+            <a class="safetyFeatureLink" th:if="${not pageData.adminView}" href="mypage.html">マイページへ戻る</a>
+            <a class="safetyFeatureLink" th:if="${pageData.adminView}" href="admin-home.html">管理入口へ戻る</a>
+          </div>
+        </div>
+      </div>
+      <div class="mypageNoticeBox" th:if="${pageData.items.isEmpty()}">
+        <p th:text="${pageData.adminView ? '現在、対応待ちのお問い合わせはありません。' : 'まだお問い合わせはありません。必要なときは新しく送れます。'}">まだお問い合わせはありません。</p>
+      </div>
+    </section>
+
+    <section class="section" th:if="${not #lists.isEmpty(pageData.items)}" aria-label="一覧">
+      <div class="grid2">
+        <article class="card" th:each="item : ${pageData.items}">
+          <div class="sectionTitleRow">
+            <div>
+              <span class="pill pill--soft" th:text="${item.typeLabel}">種類</span>
+              <h2 class="h2" th:text="${item.summary}">summary</h2>
+            </div>
+            <span class="pill" th:text="${item.statusLabel}">状態</span>
+          </div>
+          <p class="note" th:text="${item.createdAt}">2026.03.27 10:00</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
+            <a class="btn ghost" th:href="${item.detailUrl}">詳細を見る</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

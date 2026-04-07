@@ -1,6 +1,7 @@
-﻿<!doctype html>
-<html lang="ja">
+<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta name="furutabi-export-target" content="docs" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FURUTABI Wire | Login</title>
@@ -17,9 +18,6 @@
   </header>
 
   <main class="container" aria-label="ログイン">
-    <!-- Java移行時メモ: 一般の方 / 地域の方 / 管理者で認証後の遷移先と権限を分けると整理しやすそうです。 -->
-    <!-- 新規登録は別フローへ切り出し、ログイン画面は既存アカウントの入口として保つイメージです。 -->
-    <!-- Java移行時メモ: 地域の方のログイン先は public/local.html ではなく、登録済み地域ユーザー向けの local-member-home です。 -->
     <section class="section section--hero" aria-label="ヒーローイメージ">
       <div class="fullbleed">
         <div class="ph ph--pageHero" aria-hidden="true"></div>
@@ -28,82 +26,74 @@
 
     <section class="section fv">
       <h1 class="h1">ログイン</h1>
-      <p class="lead">一般の方、地域の方、管理者で入口を分けています。</p>
+      <p class="lead">ここでは既存アカウントのログインだけを最小実装しています。</p>
     </section>
 
     <section class="section">
-      <div class="grid3 loginRoleGrid">
+      <div class="grid2 loginRoleGrid">
         <div class="card">
-          <div class="h2">一般の方</div>
-          <p class="note">ごひいきさんとして地域に入る方のログインです。</p>
-          <div style="display:grid; gap:12px; margin-top:12px;">
+          <div class="h2">既存アカウントでログイン</div>
+          <p class="note">今の段階では <code>/login</code> と <code>/logout</code> の最小実装だけを接続しています。</p>
+
+          <div class="denseBox" th:if="${param.error}" style="margin-top:16px;">
             <div>
-              <div class="small">メール</div>
-              <div class="ph ph--line w-90" style="height:42px; border-radius:12px;"></div>
-            </div>
-            <div>
-              <div class="small">パスワード</div>
-              <div class="ph ph--line w-80" style="height:42px; border-radius:12px;"></div>
+              <div class="h2">ログインに失敗しました</div>
+              <p class="note">メールアドレスまたはパスワードを確認してください。</p>
             </div>
           </div>
-          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn primary" href="../app/home.html" data-login-wire-link>ログイン（ワイヤ）</a>
-            <a class="btn ghost" href="#">パスワードを忘れた（ワイヤ）</a>
+
+          <div class="denseBox" th:if="${param.logout}" style="margin-top:16px;">
+            <div>
+              <div class="h2">ログアウトしました</div>
+              <p class="note">セッションを終了しました。</p>
+            </div>
           </div>
+
+          <form action="login.html" method="post" style="display:grid; gap:12px; margin-top:16px;">
+            <div>
+              <label class="small" for="email">メールアドレス</label>
+              <input id="email" name="email" type="email" class="input" autocomplete="username" required />
+            </div>
+            <div>
+              <label class="small" for="password">パスワード</label>
+              <input id="password" name="password" type="password" class="input" autocomplete="current-password" required />
+            </div>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="returnTo" th:if="${returnTo != null}" th:value="${returnTo}" />
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn primary" type="submit">ログイン</button>
+              <a class="btn ghost" href="preview/login">preview を見る</a>
+            </div>
+          </form>
+
           <div class="denseBox" style="margin-top:16px;">
             <div>
               <div class="h2">はじめての方</div>
-              <p class="note">まだ登録していない方は、こちらから新規登録へ進めます。</p>
+              <p class="note">新規登録や SMS 認証は次の作業で接続します。</p>
             </div>
-            <a class="btn ghost" href="./register.html">新規登録へ</a>
-          </div>
-        </div>
-
-        <div class="card" id="login-local">
-          <div class="h2">地域の方</div>
-          <p class="note">協力したい方、ちいきのおかってをひらきたい方、場に手を貸したい方向けの入口です。</p>
-          <div style="display:grid; gap:10px; margin-top:12px;">
-            <a class="btn ghost" href="../app/local-member-home.html" data-login-local-link>地域アカウントでログイン（ワイヤ）</a>
-            <a class="btn ghost" href="#">地域アカウント登録（ワイヤ）</a>
-          </div>
-          <div class="denseBox" style="margin-top:16px;">
-            <div>
-              <div class="h2">ログイン後に見られるもの</div>
-              <p class="note">詳しい募集内容、提案フォーム、関わり方の設計相談。</p>
-            </div>
-            <a class="btn primary" href="../app/local-member-home.html">地域アカウントへ（ワイヤ）</a>
+            <a class="btn ghost" href="register.html">新規登録へ</a>
           </div>
         </div>
 
         <div class="card">
-          <div class="h2">管理者</div>
-          <p class="note">観光協会や運営側の管理用ログインです。</p>
-          <div style="display:grid; gap:10px; margin-top:12px;">
-            <a class="btn ghost" href="#">管理画面へ（ワイヤ）</a>
-            <a class="btn ghost" href="#">SSOで続行（ワイヤ）</a>
-          </div>
+          <div class="h2">まだ実装していないもの</div>
+          <ul class="aboutFeatureList" style="margin-top:12px;">
+            <li><code>returnTo</code> の許可範囲の詳細調整</li>
+            <li>ログイン成功後の role 別遷移</li>
+            <li>地域の方 / 管理者向けの個別認証導線</li>
+            <li>register / SMS は最小実装済み、proposal / chat はまだ未実装</li>
+          </ul>
           <div class="denseBox" style="margin-top:16px;">
             <div>
-              <div class="h2">管理項目</div>
-              <p class="note">架け橋さん、提案、地域アカウント、相談導線の管理。</p>
+              <div class="h2">位置づけ</div>
+              <p class="note"><code>/preview/login</code> は preview route のまま残し、<code>/login</code> は本実装の最小入口として分けています。</p>
             </div>
-            <a class="btn ghost" href="#">確認する</a>
           </div>
         </div>
       </div>
     </section>
-
   </main>
+
   <script src="../public/assets/scripts/shared-ui.js"></script>
-  <script>
-    (function () {
-      var params = new URLSearchParams(window.location.search);
-      var returnTo = params.get('returnTo');
-      var userLink = document.querySelector('[data-login-wire-link]');
-      if (returnTo && userLink) {
-        userLink.setAttribute('href', returnTo);
-      }
-    })();
-  </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 ﻿<!doctype html>
 <html lang="ja">
 <head>
+  <meta name="furutabi-export-target" content="docs" />
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FURUTABI Wire | Local Member App</title>
@@ -26,22 +27,22 @@
         <div class="fvHero fvHero--app">
           <div class="fvHeroSlides" aria-hidden="true">
             <figure class="fvHeroSlide is-pan-a" style="--fv-delay: 0s;">
-              <img class="fvHeroImage" src="../../furutabi/src/main/resources/static/assets/images/ファーストビュー/ファーストビュー1.png" alt="" fetchpriority="high" />
+              <img class="fvHeroImage" src="../public/assets/images/ファーストビュー/ファーストビュー1.png" alt="" fetchpriority="high" />
             </figure>
             <figure class="fvHeroSlide is-pan-b" style="--fv-delay: 7s;">
-              <img class="fvHeroImage" src="../../furutabi/src/main/resources/static/assets/images/ファーストビュー/ファーストビュー2.png" alt="" />
+              <img class="fvHeroImage" src="../public/assets/images/ファーストビュー/ファーストビュー2.png" alt="" />
             </figure>
             <figure class="fvHeroSlide is-pan-c" style="--fv-delay: 14s;">
-              <img class="fvHeroImage" src="../../furutabi/src/main/resources/static/assets/images/ファーストビュー/ファーストビュー3.png" alt="" />
+              <img class="fvHeroImage" src="../public/assets/images/ファーストビュー/ファーストビュー3.png" alt="" />
             </figure>
             <figure class="fvHeroSlide is-pan-a" style="--fv-delay: 21s;">
-              <img class="fvHeroImage" src="../../furutabi/src/main/resources/static/assets/images/ファーストビュー/ファーストビュー4.png" alt="" />
+              <img class="fvHeroImage" src="../public/assets/images/ファーストビュー/ファーストビュー4.png" alt="" />
             </figure>
             <figure class="fvHeroSlide is-pan-b" style="--fv-delay: 28s;">
-              <img class="fvHeroImage" src="../../furutabi/src/main/resources/static/assets/images/ファーストビュー/ファーストビュー5.png" alt="" />
+              <img class="fvHeroImage" src="../public/assets/images/ファーストビュー/ファーストビュー5.png" alt="" />
             </figure>
             <figure class="fvHeroSlide is-pan-c" style="--fv-delay: 35s;">
-              <img class="fvHeroImage" src="../../furutabi/src/main/resources/static/assets/images/ファーストビュー/ファーストビュー6.png" alt="" />
+              <img class="fvHeroImage" src="../public/assets/images/ファーストビュー/ファーストビュー6.png" alt="" />
             </figure>
           </div>
           <div class="fvHeroOverlay"></div>
@@ -67,7 +68,7 @@
           <h2 class="topicsPanelTitle">トピックス</h2>
           <a class="topicsPanelLink" href="../public/notices.html">一覧</a>
         </div>
-        <div class="topicsPanel" data-notice-topics-items data-notice-base="../public/" data-notice-max="5"></div>
+        <div class="topicsPanel" data-notice-topics-items data-notice-base="/" data-notice-max="5"></div>
       </div>
     </section>
 
@@ -78,7 +79,7 @@
         <a class="sectionTitleLink" href="../public/about.html#feature-okatte">ご説明</a>
       </div>
       <p class="lead">見て楽しく、少し先の時間が想像できる提案だけを静かに並べます。</p>
-      <div class="proposalGrid" style="margin-top:16px;" data-proposal-grid="okatte" data-proposal-base="../public/" data-proposal-context="app"></div>
+      <div class="proposalGrid" style="margin-top:16px;" data-proposal-grid="okatte" data-proposal-base="/" data-proposal-context="app"></div>
       <div class="card" style="margin-top:18px;">
         <div class="h2">運用ルール</div>
         <ul class="aboutFeatureList" data-rule-list="okatte"></ul>
@@ -151,7 +152,8 @@
             </label>
           </div>
           <div class="myMapMain">
-            <div class="myMapRegisterPrompt" hidden data-my-map-menu>
+            <div class="topMapCards myMapOverlayCards">
+              <article class="card topMapCard myMapOverlayCard" hidden data-my-map-menu aria-label="選択中のわたしの地図の記録">
               <!-- わたしの地図の公開範囲は機能の中核 -->
               <!-- 初期値は必ず「本人のみ」 -->
               <!-- 公開範囲は記録ごとに選べる -->
@@ -159,17 +161,36 @@
               <!-- 一覧や地図上で現在の公開状態が分かるようにする -->
               <!-- 位置は必要以上に細かく見せない -->
               <!-- 公開してよいか迷う情報は、まずは本人のみで残せるようにする -->
-              <div class="myMapMenuSummary" data-my-map-menu-summary hidden>
-                <div class="myMapMenuTitle" data-my-map-menu-title>記録のタイトル</div>
-                <div class="myMapMenuMeta">
-                  <span class="myMapVisibilityBadge" data-my-map-menu-visibility>本人のみ</span>
-                  <span class="myMapMenuFacet" data-my-map-menu-facets></span>
-                  <span class="myMapMenuDate" data-my-map-menu-date></span>
+                <div class="topMapCardBody">
+                  <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
+                  <div class="topMapCardText">
+                    <div class="topMapCardHead">
+                      <span class="pill">わたしの地図</span>
+                      <span class="topMapMarker"><span data-my-map-menu-marker>1</span></span>
+                    </div>
+                    <div class="myMapMenuSummary" data-my-map-menu-summary>
+                      <div class="myMapMenuTitle" data-my-map-menu-title>記録のタイトル</div>
+                      <div class="myMapMenuMeta">
+                        <span class="myMapVisibilityBadge" data-my-map-menu-visibility>本人のみ</span>
+                        <span class="myMapMenuFacet" data-my-map-menu-facets></span>
+                        <span class="myMapMenuDate" data-my-map-menu-date></span>
+                      </div>
+                      <div class="topMapComment">
+                        <p class="topMapCommentText topMapCommentText--clamp" data-my-map-menu-body>地図上のピンを選ぶと、ここで内容を見ながら記録できます。</p>
+                      </div>
+                      <p class="note myMapMenuCommentInfo" data-my-map-menu-comments>コメント 0件</p>
+                    </div>
+                    <div class="topMapFooter myMapMenuFooter">
+                      <div class="topMapActions myMapMenuActions">
+                        <a class="topMapActionBtn myMapRegisterBtn" href="#" data-my-map-detail hidden>詳細</a>
+                        <button class="topMapActionBtn myMapRegisterBtn" type="button" data-my-map-create hidden>＋ 新規作成</button>
+                        <button class="topMapActionBtn myMapRegisterBtn myMapActionIcon" type="button" data-my-map-edit hidden aria-label="編集">✎</button>
+                        <button class="topMapActionBtn myMapRegisterBtn myMapActionIcon" type="button" data-my-map-delete hidden aria-label="削除">×</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-create>新規登録</button>
-              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-edit hidden>編集</button>
-              <button class="btn ghost myMapRegisterBtn" type="button" data-my-map-delete hidden>削除</button>
+              </article>
             </div>
             <div class="topMapStage" aria-label="わたしの地図">
               <div class="myMapViewport" data-my-map-viewport>
@@ -194,8 +215,8 @@
             <h2 class="h2">記録一覧</h2>
             <span class="note">公開状態をあとから見直せます</span>
           </div>
-          <div class="myMapRecordList" data-my-map-record-list>
-            <p class="note">まだ記録はありません。地図上を押して新しい記録を残せます。</p>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+            <a class="btn ghost" href="map-records.html">一覧で管理</a>
           </div>
         </div>
 
@@ -288,18 +309,21 @@
       <div id="sub-footprints" style="margin-top:22px;" hidden>
         <div class="topMapLayout appTopMapLayout" data-top-map data-top-map-kind="footprints">
           <div class="topMapCards" aria-label="選択中のごひいきさんの足あと">
-            <article class="card topMapCard" aria-label="ごひいきさんの足あと 1" data-top-map-card>
+            <article class="card topMapCard"
+              th:with="currentFootprint=${#lists.isEmpty(footprintStories) ? null : footprintStories[0]}"
+              th:attr="aria-label=${currentFootprint != null ? 'ごひいきさんの足あと ' + currentFootprint.id() : '選択中のごひいきさんの足あと'}"
+              data-top-map-card>
               <div class="topMapCardBody">
                 <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
                 <div class="topMapCardText">
                   <div class="topMapCardHead">
                     <span class="pill" data-top-map-label-text>ごひいきさんの足あと</span>
-                    <span class="topMapMarker"><span data-top-map-marker>1</span></span>
+                    <span class="topMapMarker"><span data-top-map-marker th:text="${currentFootprint != null ? currentFootprint.id() : 1}">1</span></span>
                   </div>
-                  <div class="topMapComment" data-top-map-comment="1">
-                    <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                  <div class="topMapComment" th:attr="data-top-map-comment=${currentFootprint != null ? currentFootprint.id() : 1}">
+                    <div class="topMapCardTitle" data-top-map-title th:text="${currentFootprint != null ? currentFootprint.title() : 'ごひいきさんの足あと'}">境内の風と、OOさんのおはぎ</div>
                     <div data-top-map-comment-body>
-                      <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                      <p class="topMapCommentText topMapCommentText--clamp" th:text="${currentFootprint != null ? currentFootprint.summary() : '公開中の足あとが入ると、ここに概要が表示されます。'}">境内の風と、OOさんのおはぎ</p>
                     </div>
                   </div>
                 </div>
@@ -309,7 +333,7 @@
                     <button class="topMapActionBtn" type="button" data-top-map-like>いいね <span>12</span></button>
                     <button class="topMapActionBtn topMapActionBtn--thanks" type="button" data-top-map-thanks>ありがとう <span>4</span></button>
                   </div>
-                  <a class="btn ghost topMapMore" href="../public/story.html?story=1" data-top-map-link-anchor>続きは</a>
+                  <a class="btn ghost topMapMore" th:href="${currentFootprint != null ? currentFootprint.detailPath() : '/app/footprints'}" data-top-map-link-anchor>続きは</a>
                 </div>
             </article>
           </div>
@@ -319,9 +343,14 @@
               <div class="myMapViewport" data-top-map-viewport>
                 <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="ごひいきさんの足あと地図" data-top-map-image />
                 <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
-                  <a class="topMapPin topMapPin--a is-active" href="../public/story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-                  <a class="topMapPin topMapPin--b" href="../public/story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-                  <a class="topMapPin topMapPin--c" href="../public/story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+                  <a class="topMapPin"
+                    th:each="item, stat : ${footprintStories}"
+                    th:if="${stat.count <= 3}"
+                    th:classappend="${stat.count == 1 ? ' topMapPin--a is-active' : (stat.count == 2 ? ' topMapPin--b' : ' topMapPin--c')}"
+                    th:href="${item.detailPath()}"
+                    th:attr="aria-label=${'ごひいきさんの足あと ' + item.id() + ' の場所'},data-top-map-pin=${item.id()}">
+                    <span th:text="${stat.count}">1</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -343,19 +372,19 @@
     <section class="section" id="tab-contact" aria-label="連絡">
       <div class="sectionTitleRow">
         <h2 class="h1">連絡（非公開）</h2>
-        <a class="sectionTitleLink" href="./messages.html">一覧へ</a>
+          <a class="sectionTitleLink" href="chat-thread-list.html">一覧へ</a>
       </div>
       <p class="lead">公開の空気を壊さず、困りごと・改善の連絡は非公開で届く。</p>
       <div class="grid2" style="margin-top:16px;">
         <div class="card">
           <div class="h2">連絡一覧</div>
           <p class="note">提案・申請、架け橋さん、地域の方、運営との非公開のやり取りを確認します。</p>
-          <a class="btn primary" href="./messages.html">連絡一覧を見る</a>
+            <a class="btn primary" href="chat-thread-list.html">連絡一覧を見る</a>
         </div>
         <div class="card">
           <div class="h2">困ったときは</div>
           <p class="note">公開の場に書きにくいこと、通報や改善点は、安心と連絡ページから非公開で送れます。</p>
-          <a class="btn ghost" href="../public/safety.html">安心と連絡へ</a>
+          <a class="btn ghost" href="safety.html">安心と連絡へ</a>
         </div>
       </div>
 
@@ -370,7 +399,7 @@
           <div class="entryCarouselStage">
             <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入口カード"></button>
             <div class="entryCarouselViewport">
-              <div class="entryCarouselTrack" data-entry-track data-proposal-list="gate" data-proposal-base="../public/" data-proposal-context="app"></div>
+              <div class="entryCarouselTrack" data-entry-track data-proposal-list="gate" data-proposal-base="/" data-proposal-context="app"></div>
             </div>
             <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入口カード"></button>
           </div>
@@ -385,6 +414,11 @@
   <script src="../public/assets/scripts/footprints.js"></script>
   <script src="../public/assets/scripts/notices.js"></script>
   <script src="../public/assets/scripts/interactions.js"></script>
+  <script th:inline="javascript">
+      window.FURUTABI_APP_HOME_SEED = {
+        footprints: /*[[${footprintStories}]]*/ []
+      };
+  </script>
   <script>
     (function () {
       var mapTabs = document.querySelectorAll('[data-map-tab]');
@@ -393,11 +427,12 @@
       var myMap = document.querySelector('[data-my-map]');
       var footprints = window.FURUTABI_FOOTPRINTS;
       var interactions = window.FURUTABI_INTERACTIONS;
+      var appHomeSeed = window.FURUTABI_APP_HOME_SEED || {};
       var footprintStories = footprints
-        ? footprints.mergeStories(
-            footprints.withBasePath('../public/'),
-            footprints.buildSharedMapStories('#sub-footprints', { visibility: ['limited', 'public'] })
-          )
+        ? footprints.buildStoriesFromRecords(appHomeSeed.footprints || [], {
+            label: 'ごひいきさんの足あと',
+            linkPrefix: '/app/footprints/'
+          })
         : null;
 
       var topMapConfigs = {
@@ -413,9 +448,16 @@
         },
         footprints: {
           label: 'ごひいきさんの足あと',
-          link: '../public/story.html?story=1',
+          link: '/app/footprints',
           reactions: { like: 12, thanks: 4 },
-          stories: footprintStories
+          stories: footprintStories && Object.keys(footprintStories).length
+            ? footprintStories
+            : (footprints
+                ? footprints.mergeStories(
+                    footprints.withBasePath('/'),
+                    footprints.buildSharedMapStories('/app/footprints/', { visibility: ['limited', 'public'] })
+                  )
+                : null)
         }
       };
 
@@ -477,6 +519,7 @@
         var myMapPinsLayer = myMap.querySelector('[data-my-map-pins]');
         var myMapMenu = myMap.querySelector('[data-my-map-menu]');
         var myMapCreate = myMap.querySelector('[data-my-map-create]');
+        var myMapDetail = myMap.querySelector('[data-my-map-detail]');
         var myMapEdit = myMap.querySelector('[data-my-map-edit]');
         var myMapDelete = myMap.querySelector('[data-my-map-delete]');
         var myMapSheetWrap = document.querySelector('[data-my-map-sheet-wrap]');
@@ -498,6 +541,7 @@
         var myMapMenuVisibility = myMap.querySelector('[data-my-map-menu-visibility]');
         var myMapMenuFacets = myMap.querySelector('[data-my-map-menu-facets]');
         var myMapMenuDate = myMap.querySelector('[data-my-map-menu-date]');
+        var myMapMenuComments = myMap.querySelector('[data-my-map-menu-comments]');
         var myMapRecordList = document.querySelector('[data-my-map-record-list]');
         var myMapFilterYear = myMap.querySelector('[data-my-map-filter-year]');
         var myMapFilterSeason = myMap.querySelector('[data-my-map-filter-season]');
@@ -575,7 +619,40 @@
           pin.recordedYear = pin.recordedYear || getRecordedYear(pin.recordedAt);
           pin.season = pin.season || getSeasonFromDateString(pin.recordedAt);
           pin.recordType = pin.recordType || 'stop';
+          pin.isDraft = !!pin.isDraft;
           return pin;
+        }
+
+        function getMyMapFormState() {
+          return {
+            title: myMapTitleInput ? myMapTitleInput.value : '',
+            photoNote: myMapPhotoInput ? myMapPhotoInput.value : '',
+            body: myMapBodyInput ? myMapBodyInput.value : '',
+            season: myMapSeasonInput ? myMapSeasonInput.value : '',
+            recordType: myMapTypeInput ? myMapTypeInput.value : '',
+            visibility: getSelectedVisibility()
+          };
+        }
+
+        function buildMyMapFormState(pin) {
+          return JSON.stringify({
+            title: pin && pin.title ? pin.title : '',
+            photoNote: pin && pin.photoNote ? pin.photoNote : '',
+            body: pin && pin.body ? pin.body : '',
+            season: pin && pin.season ? pin.season : getSeasonFromDateString(pin && pin.recordedAt),
+            recordType: pin && pin.recordType ? pin.recordType : 'stop',
+            visibility: pin && pin.visibility ? pin.visibility : myMapDefaultVisibility
+          });
+        }
+
+        function isMyMapSheetDirty() {
+          var pin = getMyMapPin(myMapEditingId);
+
+          if (!pin || !myMapSheetWrap || myMapSheetWrap.hidden) {
+            return false;
+          }
+
+          return JSON.stringify(getMyMapFormState()) !== buildMyMapFormState(pin);
         }
 
         function getMyMapImageFrame() {
@@ -667,7 +744,23 @@
         }
 
         function isVisibleOnLocalMemberMap() {
-          return false;
+          return true;
+        }
+
+        function getVisibleMyMapPins() {
+          return myMapPinsData.filter(function (pin) {
+            return isVisibleOnLocalMemberMap(pin) && matchesMyMapFilters(pin);
+          });
+        }
+
+        function getLatestRegisteredMyMapPin() {
+          return myMapPinsData
+            .filter(function (pin) {
+              return pin.registered && isVisibleOnLocalMemberMap(pin) && matchesMyMapFilters(pin);
+            })
+            .sort(function (a, b) {
+              return new Date(b.recordedAt || 0).getTime() - new Date(a.recordedAt || 0).getTime();
+            })[0] || null;
         }
 
         function populateMyMapFilterYears() {
@@ -878,9 +971,7 @@
           }
 
           myMapPinsLayer.innerHTML = '';
-          myMapPinsData.filter(function (pin) {
-            return isVisibleOnLocalMemberMap(pin) && matchesMyMapFilters(pin);
-          }).forEach(function (pin, index) {
+          getVisibleMyMapPins().forEach(function (pin, index) {
             var button = document.createElement('button');
             var inner = document.createElement('span');
 
@@ -916,15 +1007,15 @@
           var editVisible = !isLocalMemberSharedMapView && !!pin && pin.registered;
           var summaryVisible = !!pin && (pin.registered || isVisibleOnLocalMemberMap(pin));
           var visibility;
+          var comments;
 
           if (!myMapMenu || !pin) {
             return;
           }
 
           myMapMenu.hidden = false;
-          myMapMenu.style.left = pin.x + '%';
-          myMapMenu.style.top = pin.y + '%';
           if (myMapCreate) myMapCreate.hidden = !createVisible;
+          if (myMapDetail) myMapDetail.hidden = !summaryVisible;
           if (myMapEdit) myMapEdit.hidden = !editVisible;
           if (myMapDelete) myMapDelete.hidden = !editVisible;
           if (myMapMenuSummary) myMapMenuSummary.hidden = !summaryVisible;
@@ -939,6 +1030,7 @@
           }
           if (editVisible) {
             visibility = getVisibilityMeta(pin.visibility);
+            comments = interactions ? interactions.getComments('map_record', pin.id) : [];
             if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
             if (myMapMenuVisibility) {
               myMapMenuVisibility.textContent = visibility.label;
@@ -946,6 +1038,14 @@
             }
             if (myMapMenuFacets) myMapMenuFacets.textContent = getMyMapFacetText(pin);
             if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
+            if (myMapMenuComments) {
+              myMapMenuComments.textContent = comments.length
+                ? 'コメント ' + comments.length + '件 / 最新: ' + comments[comments.length - 1].body
+                : 'コメント 0件';
+            }
+            if (myMapDetail) {
+              myMapDetail.setAttribute('href', '/app/my-map-records/' + encodeURIComponent(pin.id));
+            }
           }
         }
 
@@ -1119,6 +1219,15 @@
           });
         }
 
+        if (myMapDetail) {
+          myMapDetail.addEventListener('click', function (event) {
+            var pin = getMyMapPin(myMapSelectedId);
+            if (!pin || !pin.registered) {
+              event.preventDefault();
+            }
+          });
+        }
+
         if (myMapDelete) {
           myMapDelete.addEventListener('click', function () {
             openMyMapConfirm();
@@ -1131,7 +1240,11 @@
             if (!pin) {
               return;
             }
+            if (!window.confirm('この内容で登録を完了しますか？')) {
+              return;
+            }
             pin.registered = true;
+            pin.isDraft = false;
             pin.title = myMapTitleInput ? myMapTitleInput.value : '';
             pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
             pin.body = myMapBodyInput ? myMapBodyInput.value : '';
@@ -1163,6 +1276,7 @@
               pin.season = myMapSeasonInput ? myMapSeasonInput.value : getSeasonFromDateString(pin.recordedAt);
               pin.recordType = myMapTypeInput ? myMapTypeInput.value : 'stop';
               pin.registered = true;
+              pin.isDraft = true;
               persistMyMapPins();
               populateMyMapFilterYears();
               closeMyMapSheet(false);
@@ -1176,6 +1290,9 @@
 
         if (myMapClose) {
           myMapClose.addEventListener('click', function () {
+            if (isMyMapSheetDirty() && !window.confirm('入力中の内容を閉じますか？ 保存していない変更は反映されません。')) {
+              return;
+            }
             closeMyMapSheet(true);
           });
         }
@@ -1229,6 +1346,14 @@
               myMapSelectedId = null;
             }
             renderMyMapPins();
+            if (!myMapSelectedId) {
+              selectedPin = getLatestRegisteredMyMapPin();
+              if (selectedPin) {
+                myMapSelectedId = selectedPin.id;
+                renderMyMapPins();
+                openMyMapMenu(selectedPin);
+              }
+            }
           });
         });
 
@@ -1254,22 +1379,45 @@
 
         document.addEventListener('click', function (event) {
           if (!myMap.contains(event.target) && myMapSheetWrap && !myMapSheetWrap.contains(event.target) && myMapConfirmWrap && !myMapConfirmWrap.contains(event.target)) {
-            closeMyMapMenu();
             return;
-          }
-
-          if (
-            myMapMenu &&
-            !myMapMenu.hidden &&
-            !myMapMenu.contains(event.target) &&
-            !(myMapSheetWrap && myMapSheetWrap.contains(event.target)) &&
-            !event.target.closest('[data-my-map-pin-id]')
-          ) {
-            closeMyMapMenu();
           }
         });
 
         renderMyMapPins();
+        if (!myMapSelectedId) {
+          (function () {
+            var latestPin = getLatestRegisteredMyMapPin();
+            if (!latestPin) {
+              return;
+            }
+            myMapSelectedId = latestPin.id;
+            renderMyMapPins();
+            openMyMapMenu(latestPin);
+          }());
+        }
+        (function () {
+          var params = new URLSearchParams(window.location.search);
+          var editPin = params.get('editPin');
+          var pin;
+
+          if (!editPin) {
+            return;
+          }
+
+          pin = getMyMapPin(editPin);
+          if (!pin || !pin.registered) {
+            return;
+          }
+
+          myMapSelectedId = pin.id;
+          renderMyMapPins();
+          openMyMapMenu(pin);
+          openMyMapSheet('edit');
+          params.delete('editPin');
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, '', window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash);
+          }
+        }());
         syncMyMapZoom();
       }
 
@@ -1295,8 +1443,8 @@
           mapDetailLink.setAttribute(
             'href',
             targetId === 'sub-footprints'
-              ? '../public/about.html#feature-footprints'
-              : '../public/about.html#feature-map'
+              ? '/about.html#feature-footprints'
+              : '/about.html#feature-map'
           );
         }
       }

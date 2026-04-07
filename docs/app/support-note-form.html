@@ -1,0 +1,84 @@
+﻿<!doctype html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta name="furutabi-export-target" content="docs" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>支援メモ入力 | FURUTABI</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="inner">
+        <div class="brand">FURUTABI</div>
+        <nav data-site-nav="app_home"></nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" aria-label="支援メモ入力">
+    <section class="section fv">
+      <div class="sectionTitleRow">
+        <h1 class="h1" th:text="${pageData.pageTitle}">支援メモを入力</h1>
+      </div>
+      <p class="lead" th:text="${pageData.targetUserLabel + ' さんに関する支援メモです。引き継ぎに役立つ内容を中心に書いてください。'}">支援メモ入力</p>
+    </section>
+
+    <section th:if="${param.blocked != null}" class="section">
+      <article class="card">
+        <p>入力内容を確認してください。</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <article class="card">
+        <form th:action="${pageData.submitUrl}" method="post">
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+          <label class="note" for="noteStatus">状態</label>
+          <select id="noteStatus" name="noteStatus" style="width:100%;margin:8px 0 16px;">
+            <option value="active" th:selected="${supportNoteForm.noteStatus == null or supportNoteForm.noteStatus == 'active'}">有効</option>
+            <option value="archived" th:selected="${supportNoteForm.noteStatus == 'archived'}">保管</option>
+          </select>
+
+          <label class="note" for="relatedCardId">関連する入り口・来訪カード</label>
+          <p class="note" style="margin:8px 0 8px;">その時の入り口や来訪に対応するカードが分かる場合だけ選んでください。終了後のボタンから入ったときは自動で選ばれます。</p>
+          <select id="relatedCardId" name="relatedCardId" style="width:100%;margin:8px 0 16px;">
+            <option value="">選ばない</option>
+            <option th:each="card : ${pageData.relatedCardCandidates}"
+                    th:value="${card.cardId}"
+                    th:selected="${supportNoteForm.relatedCardId != null and supportNoteForm.relatedCardId == card.cardId}"
+                    th:text="${card.cardLabel}">カード</option>
+          </select>
+
+          <label class="note" for="carePoints">留意点</label>
+          <p class="note" style="margin:8px 0 8px;">特に大切な引き継ぎ内容を記載してください。</p>
+          <textarea id="carePoints" name="carePoints" rows="6" maxlength="4000" style="width:100%;margin:8px 0 16px;" th:text="${supportNoteForm.carePoints}"></textarea>
+
+          <label class="note" for="body">本文</label>
+          <p class="note" style="margin:8px 0 8px;">使わない見出しは消して構いません。固定フォームではなく、書きやすさを優先してください。</p>
+          <textarea id="body" name="body" rows="16" maxlength="4000" required style="width:100%;margin:8px 0 16px;" th:text="${supportNoteForm.body}"></textarea>
+
+          <div class="mypageNoticeBox" style="margin:0 0 16px;">
+            <ul>
+              <li>氏名や住所など、個人を特定しやすい情報は書かないでください。</li>
+              <li>否定的なラベリングではなく、起きた事実と次に役立つ視点を書いてください。</li>
+              <li>留意点には、その場で困りやすかったことや次に気をつけたいことを書いてください。</li>
+              <li>前の記述と反対の記述が見えても、その時点の内容として残して構いません。</li>
+              <li>一人の人物像にまとめず、次に関わる人への橋渡しを意識してください。</li>
+            </ul>
+          </div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn ghost" type="submit">保存する</button>
+            <a class="btn ghost" th:href="${pageData.backUrl}">戻る</a>
+          </div>
+        </form>
+      </article>
+    </section>
+  </main>
+
+  <script src="../public/assets/scripts/shared-ui.js"></script>
+</body>
+</html>

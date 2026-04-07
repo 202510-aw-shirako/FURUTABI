@@ -222,6 +222,45 @@
     }, {});
   }
 
+  function buildStoriesFromRecords(records, options) {
+    var pinClasses = ['topMapPin--a', 'topMapPin--b', 'topMapPin--c', 'topMapPin--d', 'topMapPin--e'];
+    var positions = [
+      { x: 22, y: 28 },
+      { x: 61, y: 33 },
+      { x: 47, y: 62 },
+      { x: 29, y: 71 },
+      { x: 72, y: 56 }
+    ];
+    var label = options && options.label ? options.label : defaultLabel;
+    var linkPrefix = options && options.linkPrefix ? options.linkPrefix : '#';
+
+    return (records || []).reduce(function (acc, record, index) {
+      var pinClass = pinClasses[index % pinClasses.length];
+      var position = positions[index % positions.length];
+      var recordedAt = record.createdAt || '';
+      var id = 'record-' + String(record.id);
+
+      acc[id] = {
+        id: id,
+        authorKey: record.ownerUserId ? String(record.ownerUserId) : id,
+        title: record.title || label,
+        meta: record.ownerDisplayName ? ('— ' + record.ownerDisplayName) : label,
+        summary: record.summary || '',
+        recordedAt: recordedAt,
+        season: getSeasonFromDateString(recordedAt),
+        year: getYearFromDateString(recordedAt),
+        category: 'memo',
+        pinClass: pinClass,
+        body: [record.summary || ''],
+        link: record.detailPath || (linkPrefix + record.id),
+        aria: label + ' ' + String(index + 1),
+        x: position.x,
+        y: position.y
+      };
+      return acc;
+    }, {});
+  }
+
   function renderPreviewBody(container, story) {
     if (!container || !story) {
       return;
@@ -834,6 +873,7 @@
     stories: stories,
     getFacetText: getFacetText,
     withBasePath: withBasePath,
+    buildStoriesFromRecords: buildStoriesFromRecords,
     buildSharedMapStories: buildSharedMapStories,
     mergeStories: mergeStories,
     renderPreviewBody: renderPreviewBody,

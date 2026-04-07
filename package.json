@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build:css": "sass --no-source-map scss/style.scss css/style.css",
+    "build:docs": "npm run build:css && npm run export:docs",
     "watch:css": "sass --watch --no-source-map scss/style.scss css/style.css",
+    "export:docs": "node tools/export-docs.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
