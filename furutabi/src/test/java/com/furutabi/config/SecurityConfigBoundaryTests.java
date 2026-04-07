@@ -479,7 +479,9 @@ class SecurityConfigBoundaryTests {
     @DisplayName("Authenticated map record list route is available after passing security")
     void authenticatedMapRecordListRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/map-records").with(user("user@example.com").roles("USER")))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("data-my-map-record-list-page")))
+            .andExpect(content().string(containsString("ホーム地図で残した自分の記録")));
     }
 
     @Test

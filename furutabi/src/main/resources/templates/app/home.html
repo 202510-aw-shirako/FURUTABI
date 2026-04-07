@@ -629,7 +629,40 @@
           pin.recordedYear = pin.recordedYear || getRecordedYear(pin.recordedAt);
           pin.season = pin.season || getSeasonFromDateString(pin.recordedAt);
           pin.recordType = pin.recordType || 'stop';
+          pin.isDraft = !!pin.isDraft;
           return pin;
+        }
+
+        function getMyMapFormState() {
+          return {
+            title: myMapTitleInput ? myMapTitleInput.value : '',
+            photoNote: myMapPhotoInput ? myMapPhotoInput.value : '',
+            body: myMapBodyInput ? myMapBodyInput.value : '',
+            season: myMapSeasonInput ? myMapSeasonInput.value : '',
+            recordType: myMapTypeInput ? myMapTypeInput.value : '',
+            visibility: getSelectedVisibility()
+          };
+        }
+
+        function buildMyMapFormState(pin) {
+          return JSON.stringify({
+            title: pin && pin.title ? pin.title : '',
+            photoNote: pin && pin.photoNote ? pin.photoNote : '',
+            body: pin && pin.body ? pin.body : '',
+            season: pin && pin.season ? pin.season : getSeasonFromDateString(pin && pin.recordedAt),
+            recordType: pin && pin.recordType ? pin.recordType : 'stop',
+            visibility: pin && pin.visibility ? pin.visibility : myMapDefaultVisibility
+          });
+        }
+
+        function isMyMapSheetDirty() {
+          var pin = getMyMapPin(myMapEditingId);
+
+          if (!pin || !myMapSheetWrap || myMapSheetWrap.hidden) {
+            return false;
+          }
+
+          return JSON.stringify(getMyMapFormState()) !== buildMyMapFormState(pin);
         }
 
         function getMyMapImageFrame() {
@@ -1263,7 +1296,11 @@
             if (!pin) {
               return;
             }
+            if (!window.confirm('この内容で登録を完了しますか？')) {
+              return;
+            }
             pin.registered = true;
+            pin.isDraft = false;
             pin.title = myMapTitleInput ? myMapTitleInput.value : '';
             pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
             pin.body = myMapBodyInput ? myMapBodyInput.value : '';
@@ -1295,6 +1332,7 @@
               pin.season = myMapSeasonInput ? myMapSeasonInput.value : getSeasonFromDateString(pin.recordedAt);
               pin.recordType = myMapTypeInput ? myMapTypeInput.value : 'stop';
               pin.registered = true;
+              pin.isDraft = true;
               persistMyMapPins();
               populateMyMapFilterYears();
               closeMyMapSheet(false);
@@ -1308,6 +1346,9 @@
 
         if (myMapClose) {
           myMapClose.addEventListener('click', function () {
+            if (isMyMapSheetDirty() && !window.confirm('入力中の内容を閉じますか？ 保存していない変更は反映されません。')) {
+              return;
+            }
             closeMyMapSheet(true);
           });
         }

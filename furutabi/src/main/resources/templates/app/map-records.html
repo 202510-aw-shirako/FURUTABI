@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>わたしの地図の記録 | FURUTABI</title>
+  <title>わたしの地図の一覧で管理 | FURUTABI</title>
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -16,79 +16,137 @@
     </div>
   </header>
 
-  <main class="container" aria-label="わたしの地図の記録一覧">
-    <section class="section section--hero" aria-label="ページ案内">
-      <div class="fullbleed">
-        <div class="ph ph--pageHero" aria-hidden="true"></div>
-      </div>
-    </section>
-
+  <main class="container" aria-label="わたしの地図の一覧で管理" data-my-map-record-list-page>
     <section class="section">
       <div class="sectionTitleRow">
-        <h1 class="h1">わたしの地図の記録</h1>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <a class="sectionTitleLink" href="/app/home#tab-map">ホームの地図へ戻る</a>
-          <a class="btn primary" href="/app/map-records/new">新しい記録を追加</a>
+        <h1 class="h1">一覧で管理</h1>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn ghost" href="/app/home#tab-map">ホームの地図へ戻る</a>
         </div>
       </div>
-      <p class="lead">
-        <strong th:text="${pageData.currentUserLabel}">furutabi-user</strong>
-        さんから見えている地図記録を一覧で見渡せるページです。owner の記録はここから編集できます。
-      </p>
+      <p class="lead">ホーム地図で残した自分の記録を、一覧で見直すための補助管理面です。主な作成と編集は地図上から行います。</p>
       <div class="mypageNoticeBox" th:if="${param.deleted}">
         <p>記録を一覧から外しました。</p>
       </div>
     </section>
 
     <section class="section">
-      <div class="grid2" th:if="${not #lists.isEmpty(pageData.records)}">
-        <article class="card" th:each="record : ${pageData.records}">
-          <div class="sectionTitleRow">
-            <h2 class="h2" th:text="${record.title}">記録タイトル</h2>
-            <span class="pill" th:text="${record.visibilityLabel}">本人のみ</span>
-          </div>
-          <p class="note">
-            <span th:text="${record.locationName} ?: '場所メモはまだありません'">場所メモ</span>
-            <span th:if="${record.createdAt != null}" th:text="' / ' + ${record.createdAt}"> / 2026.03.25</span>
-          </p>
-          <p class="lead" th:text="${record.summary}">記録の要約</p>
-          <p class="note" th:text="'記録した人: ' + ${record.ownerDisplayName}">記録した人: furutabi-user</p>
-          <div class="sectionTitleRow" style="margin-top:12px;">
-            <span class="note" th:text="'画像 ' + ${record.imageCount} + ' 枚'">画像 0 枚</span>
-            <span class="note" th:text="'コメント ' + ${record.commentCount} + ' 件'">コメント 0 件</span>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;">
-            <span class="note" th:text="'いいね ' + ${record.engagement.likeCount}">いいね 0</span>
-            <span class="note" th:text="'ありがとう ' + ${record.engagement.thanksCount}">ありがとう 0</span>
-            <form th:if="${record.engagement.reactionAllowed}" th:action="@{/app/map-records/{id}/reaction(id=${record.id})}" method="post" style="display:inline;">
-              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-              <input type="hidden" name="returnTo" value="/app/map-records" />
-              <button class="btn ghost" type="submit" th:text="${record.engagement.reactionActive} ? ${record.engagement.reactionLabel + 'を解除'} : ${record.engagement.reactionLabel}">いいね</button>
-            </form>
-            <form th:action="@{/app/map-records/{id}/bookmark(id=${record.id})}" method="post" style="display:inline;">
-              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-              <input type="hidden" name="returnTo" value="/app/map-records" />
-              <button class="btn ghost" type="submit" th:text="${record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>
-            </form>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
-            <a class="btn ghost" th:href="@{/app/map-records/{id}(id=${record.id})}">詳細を読む</a>
-            <a class="btn ghost" th:if="${record.owner}" th:href="@{/app/map-records/{id}/edit(id=${record.id})}">編集する</a>
-          </div>
-        </article>
-      </div>
-
-      <div class="card" th:if="${#lists.isEmpty(pageData.records)}">
-        <div class="h2">まだ見える地図の記録はありません</div>
-        <p class="note">公開中の記録や、自分で投稿した記録がここに並びます。まずは最初の記録を追加してください。</p>
+      <div class="grid2" data-my-map-record-list-grid></div>
+      <div class="card" data-my-map-record-list-empty hidden>
+        <div class="h2">まだ記録はありません</div>
+        <p class="note">ホーム地図の空き位置を押すと、新しい記録を残せます。</p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">
-          <a class="btn primary" href="/app/map-records/new">最初の記録を追加</a>
-          <a class="btn ghost" href="/app/home#tab-map">ホームの地図へ戻る</a>
+          <a class="btn primary" href="/app/home#tab-map">ホームの地図から始める</a>
         </div>
       </div>
     </section>
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/interactions.js"></script>
+  <script>
+    (function () {
+      var root = document.querySelector('[data-my-map-record-list-page]');
+      var interactions = window.FURUTABI_INTERACTIONS;
+      var grid;
+      var empty;
+      var typeLabels = {
+        stop: '立ち寄り',
+        meal: '食事',
+        scenery: '景色',
+        stay: '滞在',
+        experience: '体験',
+        memo: 'メモ'
+      };
+      var seasonLabels = {
+        spring: '春',
+        summer: '夏',
+        autumn: '秋',
+        winter: '冬',
+        all: 'いつでも'
+      };
+
+      if (!root || !interactions) {
+        return;
+      }
+
+      grid = root.querySelector('[data-my-map-record-list-grid]');
+      empty = root.querySelector('[data-my-map-record-list-empty]');
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function visibilityMeta(value) {
+        if (value === 'limited') {
+          return '地域の方まで';
+        }
+        if (value === 'public') {
+          return '一般に公開';
+        }
+        return '本人のみ';
+      }
+
+      function facetText(record) {
+        var parts = [];
+        if (record.recordedYear) {
+          parts.push(record.recordedYear === 'earlier' ? 'それ以前' : record.recordedYear + '年');
+        }
+        parts.push(seasonLabels[record.season] || seasonLabels.all);
+        parts.push(typeLabels[record.recordType] || typeLabels.stop);
+        return parts.join(' / ');
+      }
+
+      function render() {
+        var records = interactions.getMapRecords()
+          .filter(function (record) {
+            return record && record.registered;
+          })
+          .sort(function (a, b) {
+            return new Date(b.recordedAt || 0).getTime() - new Date(a.recordedAt || 0).getTime();
+          });
+
+        if (!records.length) {
+          grid.innerHTML = '';
+          empty.hidden = false;
+          return;
+        }
+
+        empty.hidden = true;
+        grid.innerHTML = records.map(function (record, index) {
+          var stateLabel = record.isDraft ? '下書き' : '公開中';
+          var detailHref = '/app/my-map-records/' + encodeURIComponent(record.id);
+          var editHref = '/app/home?editPin=' + encodeURIComponent(record.id) + '#tab-map';
+
+          return [
+            '<article class="card">',
+            '  <div class="sectionTitleRow">',
+            '    <h2 class="h2">' + escapeHtml(record.title || 'タイトル未設定') + '</h2>',
+            '    <div style="display:flex;gap:8px;flex-wrap:wrap;">',
+            '      <span class="pill">' + escapeHtml(stateLabel) + '</span>',
+            '      <span class="pill">' + escapeHtml(visibilityMeta(record.visibility)) + '</span>',
+            '    </div>',
+            '  </div>',
+            '  <p class="note">記録 ' + String(index + 1) + ' / ' + escapeHtml(facetText(record)) + '</p>',
+            '  <p class="note">' + escapeHtml(record.locationName || '地図上で選んだ位置') + (record.recordedAt ? ' / ' + escapeHtml(record.recordedAt) : '') + '</p>',
+            '  <p class="lead">' + escapeHtml(record.body || 'まだ本文は入っていません。') + '</p>',
+            '  <p class="note">コメントはごひいきさんの足あと側で反映されます。</p>',
+            '  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;">',
+            '    <a class="btn ghost" href="' + detailHref + '">詳細を見る</a>',
+            '    <a class="btn ghost" href="' + editHref + '">ホーム地図で編集</a>',
+            '  </div>',
+            '</article>'
+          ].join('');
+        }).join('');
+      }
+
+      render();
+    })();
+  </script>
 </body>
 </html>
