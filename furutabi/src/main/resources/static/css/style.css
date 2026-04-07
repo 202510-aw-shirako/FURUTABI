@@ -3322,6 +3322,28 @@ body.hasProposalModal {
   justify-content: flex-start;
 }
 
+.myMapMediaColumn {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  align-self: start;
+}
+
+.myMapMediaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.myMapMediaActions .topMapActionBtn {
+  min-height: 34px;
+}
+
+.myMapMediaActions [data-my-map-detail],
+.myMapMediaActions [data-my-map-create] {
+  flex: 1 1 100%;
+}
+
 .myMapActionIcon {
   width: 38px;
   min-width: 38px;
