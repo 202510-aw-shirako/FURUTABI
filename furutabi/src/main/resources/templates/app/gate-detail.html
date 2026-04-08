@@ -92,6 +92,7 @@
               <li>開きやすい時間：日中</li>
               <li>歩きやすい服装推奨</li>
               <li>天候により変更あり</li>
+              <li>詳しい場所は承認後にチャットでお伝えします。</li>
             </ul>
             <ul class="proposalDetailNoteList" th:if="${isItoFlower}">
               <li>目安：1時間</li>
@@ -99,6 +100,7 @@
               <li>開きやすい時期：春〜秋</li>
               <li>汚れてもよい服装推奨</li>
               <li>軍手など必要なものはご案内します</li>
+              <li>詳しい場所は承認後にチャットでお伝えします。</li>
             </ul>
             <ul class="proposalDetailNoteList" th:if="${isHasegawa}">
               <li>目安：40分</li>
@@ -106,10 +108,12 @@
               <li>開きやすい時間：日中</li>
               <li>コーヒー代込み</li>
               <li>天候に左右されず開きやすいです</li>
+              <li>詳しい場所は承認後にチャットでお伝えします。</li>
             </ul>
             <ul class="proposalDetailNoteList" th:if="${!isKnownTemplate}">
               <li th:text="${'目安：' + (pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '調整中')}">目安：調整中</li>
               <li th:text="${pageData.locationName != null ? '場所：' + pageData.locationName : '場所：調整中'}">場所：調整中</li>
+              <li>詳しい場所は承認後にチャットでお伝えします。</li>
             </ul>
             <div class="proposalTags proposalDetailTags" th:if="${!pageData.tags.isEmpty()}">
               <span class="proposalTag" th:text="${pageData.visibilityLabel}">PUBLIC</span>

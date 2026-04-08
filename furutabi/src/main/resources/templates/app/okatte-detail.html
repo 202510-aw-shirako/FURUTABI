@@ -101,14 +101,15 @@
               <li th:if="${isHasegawa}" th:text="${pageData.title != null and #strings.contains(pageData.title, '菊')} ? '開きやすい時期: 菊の時期' : '開きやすい時期: 季節により調整'">開きやすい時期: 季節により調整</li>
               <li th:if="${isGenericOkatte}" th:text="${'場所: ' + (pageData.locationName != null ? pageData.locationName : '調整中')}">場所: 調整中</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">長谷川さんは同席しないことがあります</li>
-              <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">試飲は少量です</li>
+              <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">ワイン向けと一般向けの葡萄の食べ比べとぶどうジュースの試飲で飲み比べ、ワインの試飲もあります。</li>
               <li th:if="${isIto}">飲み物・追加注文は別料金</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">汚れてもよい服装がおすすめです</li>
-              <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">以前の葡萄のおかって参加者は、自分の葡萄を食べられることがあります</li>
+              <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">以前葡萄を植えるおかってご参加の方は、その葡萄も食べられます。</li>
               <li th:if="${isIto}">内容はその日の海や食材の状況により少し変わります</li>
               <li th:if="${isGenericOkatte}">内容はその日の状況により変わることがあります</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">この土地の挑戦の途中に触れ、応援できるのはこのサイトならではです</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">内容は花の状態や時期により変わります</li>
+              <li>詳しい場所は承認後にチャットでお伝えします。</li>
             </ul>
             <div class="proposalTags proposalDetailTags" th:if="${!pageData.tags.isEmpty()}">
               <span class="proposalTag" th:text="${pageData.visibilityLabel}">PUBLIC</span>

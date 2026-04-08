@@ -59,12 +59,16 @@ public class AppPageController {
     @GetMapping({ "/home", "/home.html" })
     public String home(Authentication authentication, Model model) {
         model.addAttribute("footprintStories", mapRecordService.loadHomeFootprintStories(authentication.getName()));
+        model.addAttribute("gatePageData", gateService.loadVisibleGateList(authentication.getName()));
+        model.addAttribute("okattePageData", okatteService.loadVisibleOkatteList(authentication.getName()));
         return "app/home";
     }
 
     @GetMapping({ "/local-member-home", "/local-member-home.html" })
     public String localMemberHome(Authentication authentication, Model model) {
         model.addAttribute("footprintStories", mapRecordService.loadHomeFootprintStories(authentication.getName()));
+        model.addAttribute("gatePageData", gateService.loadVisibleGateList(authentication.getName()));
+        model.addAttribute("okattePageData", okatteService.loadVisibleOkatteList(authentication.getName()));
         return "app/local-member-home";
     }
 
