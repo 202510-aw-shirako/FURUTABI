@@ -17,10 +17,15 @@
   </header>
 
   <main class="container" aria-label="ちいきのおかって 詳細"
-        th:with="isHasegawa=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '長谷川')) or (pageData.title != null and (#strings.contains(pageData.title, '葡萄') or #strings.contains(pageData.title, '菊')))}">
+        th:with="isHasegawa=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '長谷川')) or (pageData.title != null and (#strings.contains(pageData.title, '葡萄') or #strings.contains(pageData.title, '菊')))},
+                 isIto=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '伊藤')) or (pageData.title != null and (#strings.contains(pageData.title, '牡蠣小屋') or #strings.contains(pageData.title, '牡蠣') or #strings.contains(pageData.title, '港')))},
+                 isGenericOkatte=${!isHasegawa and !isIto}">
     <section class="section proposalDetailLead">
       <div class="sectionTitleRow">
-        <h1 class="h1" th:text="${pageData.title}">牡蠣小屋で、海のものを囲む時間</h1>
+        <h1 class="h1" th:if="${isIto}">牡蠣小屋で、海のものを囲む時間</h1>
+        <h1 class="h1" th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">葡萄を通して、地域の挑戦の途中にふれる</h1>
+        <h1 class="h1" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">菊の仕事場に、少し通してもらう</h1>
+        <h1 class="h1" th:if="${isGenericOkatte}" th:text="${pageData.title}">ちいきのおかって</h1>
         <a class="sectionTitleLink" th:href="${pageData.listPath}">一覧へ戻る</a>
       </div>
       <div class="mypageNoticeBox" th:if="${param.applied}">
@@ -55,10 +60,25 @@
 
         <article class="proposalDetailHeroCopy">
           <p class="proposalDetailKicker">ちいきのおかって</p>
-          <h2 class="proposalDetailTitle" th:text="${pageData.title}">牡蠣小屋で、海のものを囲む時間</h2>
-          <p class="proposalDetailIntro"
-             th:text="${pageData.summary != null ? pageData.summary : '海のそばの食卓に、少し入れてもらうように過ごす時間です。'}">
-            海辺の素朴な食卓に少し入れてもらうような時間です。
+          <h2 class="proposalDetailTitle" th:if="${isIto}">牡蠣小屋で、海のものを囲む時間</h2>
+          <h2 class="proposalDetailTitle" th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">葡萄を通して、地域の挑戦の途中にふれる</h2>
+          <h2 class="proposalDetailTitle" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">菊の仕事場に、少し通してもらう</h2>
+          <h2 class="proposalDetailTitle" th:if="${isGenericOkatte}" th:text="${pageData.title}">ちいきのおかって</h2>
+          <p class="proposalDetailIntro" th:if="${isIto}">
+            海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。
+            気取った食事ではなく、海のそばの暮らしの延長にある食卓に少し入れてもらうようなおかってです。
+          </p>
+          <p class="proposalDetailIntro" th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">
+            葡萄にふれながら、この土地で進んでいる挑戦の途中を少し見せてもらう時間です。
+            完成したワインや商品を見るだけではなく、その手前の育てる現場や考えていることに触れられるおかってです。
+          </p>
+          <p class="proposalDetailIntro" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">
+            菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。
+            長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。
+          </p>
+          <p class="proposalDetailIntro" th:if="${isGenericOkatte}"
+             th:text="${pageData.summary != null ? pageData.summary : 'この土地の食卓や手仕事の空気を、少し近くで感じる時間です。'}">
+            この土地の食卓や手仕事の空気を、少し近くで感じる時間です。
           </p>
 
           <div class="proposalDetailHeroAction">
@@ -72,15 +92,21 @@
           <div class="denseBox proposalDetailPanel proposalDetailMetaPanel">
             <h3 class="proposalDetailSectionTitle">備考</h3>
             <ul class="proposalDetailNoteList">
-              <li>目安: <span th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '2時間ほど'}">2時間ほど</span></li>
+              <li th:if="${isIto}">目安: 2時間</li>
+              <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">目安: 2時間</li>
+              <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">目安: 1.5時間</li>
+              <li th:if="${isGenericOkatte}">目安: <span th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '2時間ほど'}">2時間ほど</span></li>
               <li th:text="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')} ? '料金: 1,500円 / 人' : '料金: 3,500円 / 人'">料金: 3,500円 / 人</li>
-              <li th:text="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')} ? '開きやすい時期: 菊の時期' : '開きやすい時期: 季節により調整します'">開きやすい時期: 季節により調整します</li>
+              <li th:if="${isIto}" th:text="'開きやすい時期: 季節により調整'">開きやすい時期: 季節により調整</li>
+              <li th:if="${isHasegawa}" th:text="${pageData.title != null and #strings.contains(pageData.title, '菊')} ? '開きやすい時期: 菊の時期' : '開きやすい時期: 季節により調整'">開きやすい時期: 季節により調整</li>
+              <li th:if="${isGenericOkatte}" th:text="${'場所: ' + (pageData.locationName != null ? pageData.locationName : '調整中')}">場所: 調整中</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">長谷川さんは同席しないことがあります</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">試飲は少量です</li>
-              <li th:if="${!isHasegawa}">飲み物や追加注文は別料金になることがあります</li>
+              <li th:if="${isIto}">飲み物・追加注文は別料金</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">汚れてもよい服装がおすすめです</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">以前の葡萄のおかって参加者は、自分の葡萄を食べられることがあります</li>
-              <li th:if="${!isHasegawa}">その日の海や食材の様子で内容が少し変わることがあります</li>
+              <li th:if="${isIto}">内容はその日の海や食材の状況により少し変わります</li>
+              <li th:if="${isGenericOkatte}">内容はその日の状況により変わることがあります</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">この土地の挑戦の途中に触れ、応援できるのはこのサイトならではです</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">内容は花の状態や時期により変わります</li>
             </ul>
@@ -107,27 +133,52 @@
       <div class="proposalDetailTwoCol">
         <article class="denseBox proposalDetailPanel proposalDetailPanel--schedule">
           <h2 class="proposalDetailSectionTitle">時間帯別 仮スケジュール</h2>
-          <ul class="proposalDetailScheduleList">
-            <li><span>集合</span><span>海の近くで待ち合わせます</span></li>
-            <li><span>食卓へ</span><span>牡蠣小屋や海のものを囲む場へ向かいます</span></li>
-            <li><span>囲んで過ごす</span><span>食べながら少しずつ話します</span></li>
-            <li><span>解散</span><span>海辺の食卓の余韻を残して終えます</span></li>
+          <ul class="proposalDetailScheduleList" th:if="${isIto}">
+            <li><span>集合</span><span></span></li>
+            <li><span>牡蠣小屋へ</span><span>移動</span></li>
+            <li><span>海のものを囲んで</span><span>過ごす</span></li>
+            <li><span>少し</span><span>話す</span></li>
+            <li><span>解散</span><span></span></li>
+          </ul>
+          <ul class="proposalDetailScheduleList" th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">
+            <li><span>集合</span><span></span></li>
+            <li><span>葡萄の話を</span><span>聞く</span></li>
+            <li><span>畑や育ち方を</span><span>見る</span></li>
+            <li><span>少し</span><span>味わう</span></li>
+            <li><span>解散</span><span></span></li>
+          </ul>
+          <ul class="proposalDetailScheduleList" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">
+            <li><span>集合</span><span></span></li>
+            <li><span>菊の仕事場へ</span><span>向かう</span></li>
+            <li><span>花や手入れの話を</span><span>聞く</span></li>
+            <li><span>少し作業や場の空気に</span><span>触れる</span></li>
+            <li><span>解散</span><span></span></li>
+          </ul>
+          <ul class="proposalDetailScheduleList" th:if="${isGenericOkatte}">
+            <li><span>集合</span><span>場の様子を確かめます</span></li>
+            <li><span>おかってへ</span><span>向かいます</span></li>
+            <li><span>食卓や場の空気に</span><span>少し触れます</span></li>
+            <li><span>解散</span><span>余韻を残して終えます</span></li>
           </ul>
         </article>
 
         <article class="denseBox proposalDetailPanel">
           <h2 class="proposalDetailSectionTitle">どんな時間か</h2>
           <div class="proposalDetailCopy">
-            <p th:if="${pageData.body != null}" th:text="${pageData.body}">この時間についての本文。</p>
-            <p th:if="${!isHasegawa}">
-              豪華な海鮮体験というより、海のそばの食卓に少し入れてもらうような時間です。観光の場ではなく、関係の入口として食卓がひらかれていきます。
-            </p>
+            <p th:if="${pageData.body != null and isHasegawa}" th:text="${pageData.body}">この時間についての本文。</p>
+            <p th:if="${isIto}">このおかっては、豪華な海鮮体験ではありません。</p>
+            <p th:if="${isIto}">海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の食卓のあたたかさに少し入れてもらう時間です。</p>
+            <p th:if="${isIto}">伊藤さんがいることで、外から来た人も無理なくその場に入っていけます。</p>
+            <p th:if="${isIto}">観光向けに整えられた食事ではなく、海のそばの人たちが大事にしてきた食べ方や場の空気が、そのまま少しひらかれている感じが魅力です。</p>
+            <p th:if="${isIto}">海を見て終わるのではなく、最後に食卓までつながる伊藤さんらしいおかってです。</p>
             <p th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">
               このおかってでは、葡萄を通して、この土地で進んでいる挑戦の途中にふれます。完成したものを見るのではなく、まだ育っている途中のもの、試している途中のものに少し触れられるのが魅力です。
             </p>
             <p th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">
               このおかっては、華やかな花体験ではありません。菊がどう育てられ、どう手をかけられているのか、その仕事場の空気に少し通してもらう時間です。
             </p>
+            <p th:if="${isGenericOkatte and pageData.body != null}" th:text="${pageData.body}">この時間についての本文。</p>
+            <p th:if="${isGenericOkatte and pageData.body == null}" th:text="${pageData.summary != null ? pageData.summary : 'この土地のおかってを近くで感じる時間です。'}">この土地のおかってを近くで感じる時間です。</p>
           </div>
         </article>
       </div>
@@ -142,19 +193,20 @@
         <div class="proposalDetailPersonBody">
           <p class="proposalDetailPersonRole">この時間をひらく方</p>
           <div class="proposalDetailPersonHeading">
-            <h2 class="proposalDetailPersonName" th:text="${isHasegawa ? '長谷川さん' : '伊藤 朗士さん'}">伊藤 朗士さん</h2>
+            <h2 class="proposalDetailPersonName" th:text="${isHasegawa ? '長谷川さん' : (isIto ? '伊藤 朗士さん' : (pageData.hostNickname != null ? pageData.hostNickname : '地域の方'))}">伊藤 朗士さん</h2>
             <div class="proposalTags proposalDetailTags">
-              <span class="proposalTag" th:text="${isHasegawa ? '若い世代のつなぎ役' : '地域のまとめ役'}">地域のまとめ役</span>
-              <span class="proposalTag" th:text="${isHasegawa ? '地域の挑戦の途中' : '長く信頼されてきた人'}">長く信頼されてきた人</span>
-              <span class="proposalTag" th:text="${isHasegawa ? '葡萄と菊の人' : '頼れる受け皿'}">頼れる受け皿</span>
+              <span class="proposalTag" th:text="${isHasegawa ? '若い世代のつなぎ役' : (isIto ? '地域のまとめ役' : 'おかってをひらく方')}">地域のまとめ役</span>
+              <span class="proposalTag" th:text="${isHasegawa ? '地域の挑戦の途中' : (isIto ? '長く信頼されてきた人' : '場をひらく人')}">長く信頼されてきた人</span>
+              <span class="proposalTag" th:text="${isHasegawa ? '葡萄と菊の人' : (isIto ? '頼れる受け皿' : '地域の時間')}">頼れる受け皿</span>
             </div>
           </div>
-          <p class="proposalDetailPersonSummary" th:if="${!isHasegawa}">
-            伊藤さんは、この土地の景色や人のつながりを長く見てきた方です。頼れるけれど押しつけがましくなく、地域の人と外から来た人のあいだに、ちょうどよい橋をかけられます。
-          </p>
+          <p class="proposalDetailPersonSummary" th:if="${isIto}">伊藤さんは、この土地の景色や人のつながりを長く見てきた方です。</p>
+          <p class="proposalDetailPersonSummary" th:if="${isIto}">頼れるけれど押しつけがましくなく、地域の人と外から来た人のあいだに、ちょうどよい橋をかけられます。</p>
+          <p class="proposalDetailPersonSummary" th:if="${isIto}">この方がいることで、海の食卓も、観光の場ではなく、関係のはじまりとしてひらかれます。</p>
           <p class="proposalDetailPersonSummary" th:if="${isHasegawa}">
             地域で働きながら、少しずつ新しい風も入れている若い世代の方です。葡萄やワイン、菊などを通して、この土地の手仕事や挑戦の途中に触れさせてくれます。
           </p>
+          <p class="proposalDetailPersonSummary" th:if="${isGenericOkatte}" th:text="${pageData.summary != null ? pageData.summary : 'この時間をひらく地域の方です。'}">この時間をひらく地域の方です。</p>
           <div class="proposalDetailActionRow">
             <button class="btn ghost" type="button" data-host-modal-trigger>詳細はこちら</button>
           </div>
@@ -187,7 +239,7 @@
                   th:classappend="${item.pinClass} + (item.proposalId == pageData.proposalId ? ' is-active' : '')"
                   th:attr="data-proposal-id=${item.proposalId},aria-label=${item.title}"
                   th:each="item, stat : ${pageData.relatedItems}">
-                  <span th:text="${stat.count}">1</span>
+                  <span th:text="${item.displayNumber}">1</span>
                 </button>
               </div>
             </div>
@@ -206,21 +258,33 @@
                 data-proposal-sync-item
                 th:classappend="${item.proposalId == pageData.proposalId} ? ' is-active' : ''"
                 th:attr="data-proposal-id=${item.proposalId}"
+                th:with="itemIsHasegawa=${(item.hostNickname != null and #strings.contains(item.hostNickname, '長谷川')) or (item.title != null and (#strings.contains(item.title, '葡萄') or #strings.contains(item.title, '菊')))},
+                         itemIsIto=${(item.hostNickname != null and #strings.contains(item.hostNickname, '伊藤')) or (item.title != null and (#strings.contains(item.title, '牡蠣小屋') or #strings.contains(item.title, '牡蠣') or #strings.contains(item.title, '港')))},
+                         itemIsChrysanthemum=${item.title != null and #strings.contains(item.title, '菊')},
+                         itemIsGenericOkatte=${!itemIsHasegawa and !itemIsIto}"
                 th:each="item, stat : ${pageData.relatedItems}">
                 <figure class="proposalVisual">
-                  <div class="ph ph--pageHero" aria-hidden="true"></div>
+                  <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (itemIsIto ? '/assets/images/伊藤さん写真/ito3.png' : '/assets/images/伊藤さん写真/ito5.png')}"
+                       th:alt="${item.title}" />
                   <span class="proposalFaceChip">
-                    <div class="ph ph--avatar" aria-hidden="true"></div>
+                    <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : '/assets/images/伊藤さん写真/ito1.png'}"
+                         th:alt="${itemIsHasegawa ? '長谷川さん' : (itemIsIto ? '伊藤 朗士さん' : '地域の方')}" />
                   </span>
                 </figure>
                 <div class="proposalCardMeta">
-                  <span class="topMapMarker proposalCardMarker"><span th:text="${stat.count}">1</span></span>
+                  <span class="topMapMarker proposalCardMarker"><span th:text="${item.displayNumber}">1</span></span>
                   <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は相談のうえで調整'}">60分</span>
-                  <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
+                  <span class="proposalPersonMini" th:text="${item.hostNickname != null and #strings.contains(item.hostNickname, 'bridge') ? '架け橋さん' : (item.hostNickname != null and #strings.contains(item.hostNickname, 'local') ? '地域の方' : 'ごひいきさん')}">地域の方</span>
                 </div>
                 <div class="proposalCardBody">
-                  <h3 class="proposalTitle" th:text="${item.title}">title</h3>
-                  <p class="proposalSummary" th:text="${item.summary != null ? item.summary : 'この食卓の空気を短く伝える紹介文です。'}">summary</p>
+                  <h3 class="proposalTitle" th:if="${itemIsIto}">牡蠣小屋で、海のものを囲む時間</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsHasegawa and !itemIsChrysanthemum}">葡萄を通して、地域の挑戦の途中にふれる</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsHasegawa and itemIsChrysanthemum}">菊の仕事場に、少し通してもらう</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsGenericOkatte}" th:text="${item.title}">title</h3>
+                  <p class="proposalSummary" th:if="${itemIsIto}">海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。気取った食事ではなく、海のそばの暮らしの延長にある食卓に少し入れてもらうようなおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsHasegawa and !itemIsChrysanthemum}">葡萄にふれながら、この土地で進んでいる挑戦の途中を少し見せてもらう時間です。完成したワインや商品を見るだけではなく、その手前の育てる現場や考えていることに触れられるおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsHasegawa and itemIsChrysanthemum}">菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsGenericOkatte}" th:text="${item.summary != null ? item.summary : 'この土地のおかっての空気に少し触れる時間です。'}">summary</p>
                   <div class="proposalTags">
                     <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
                     <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
@@ -276,7 +340,7 @@
         <section class="proposalPersonModalSection" th:if="${!isHasegawa}">
           <h3 class="proposalPersonModalHeading">人をつなげるのは…</h3>
           <div class="proposalPersonModalText">
-            <p>伊藤さんのよさは、地域の中だけに閉じていないことです。土地の人とも、外から来た人とも、世代の違う人とも自然につながれます。</p>
+            <p>伊藤さんのよさは、地域の中だけに閉じていないことです。土地の人とも、外から来た人とも、世代の違う人とも自然につながれる。</p>
             <p>だからこそ、この方がひらく時間には、観光情報ではなく、地域との関係の入口のような厚みがあります。</p>
           </div>
         </section>

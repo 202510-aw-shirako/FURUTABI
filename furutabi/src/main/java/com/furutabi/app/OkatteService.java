@@ -37,6 +37,7 @@ public class OkatteService {
         Long viewerUserId = findUserIdByEmail(email);
         List<OkatteSummary> visibleItems = loadOkatteCandidates().stream()
             .filter(item -> visibilityAccessService.canViewProposal(viewerUserId, item.proposalId()))
+            .filter(item -> isCanonicalOkatteProposal(item.title(), item.hostNickname()))
             .map(item -> item.withOwner(viewerUserId != null && viewerUserId == item.hostUserId()))
             .toList();
         return new OkatteListPageData(assignPinClasses(visibleItems));
@@ -49,7 +50,23 @@ public class OkatteService {
             throw new IllegalStateException("Okatte proposal is not visible: " + proposalId);
         }
 
-        List<OkatteSummary> relatedItems = loadVisibleOkatteList(email).items();
+        List<OkatteSummary> relatedItems = new ArrayList<>(loadVisibleOkatteList(email).items());
+        boolean currentIncluded = relatedItems.stream().anyMatch(item -> item.proposalId() == proposalId);
+        if (!currentIncluded) {
+            relatedItems.add(0, new OkatteSummary(
+                proposalId,
+                row.title(),
+                nullableText(row.summary()),
+                nullableText(row.locationName()),
+                row.durationMinutes(),
+                VisibilityScope.fromDbValue(row.visibilityScope()).name(),
+                nullableText(row.hostNickname()),
+                loadTags(proposalId),
+                viewerUserId != null && viewerUserId == row.hostUserId(),
+                PIN_CLASSES[0],
+                1
+            ));
+        }
 
         return new OkatteDetailPageData(
             proposalId,
@@ -88,7 +105,8 @@ public class OkatteService {
                 item.hostNickname(),
                 item.tags(),
                 item.owner(),
-                PIN_CLASSES[i % PIN_CLASSES.length]
+                PIN_CLASSES[i % PIN_CLASSES.length],
+                i + 1
             ));
         }
         return assigned;
@@ -105,6 +123,20 @@ public class OkatteService {
             return false;
         }
         return loadApplicationStatus(viewerUserId, row.proposalId()) == null;
+    }
+
+    private boolean isCanonicalOkatteProposal(String title, String hostNickname) {
+        if (hostNickname != null && (hostNickname.contains("伊藤") || hostNickname.contains("長谷川"))) {
+            return true;
+        }
+        if (title == null) {
+            return false;
+        }
+        return title.contains("牡蠣小屋")
+            || title.contains("牡蠣")
+            || title.contains("港")
+            || title.contains("葡萄")
+            || title.contains("菊");
     }
 
     private List<OkatteSummaryRow> loadOkatteCandidates() {
@@ -312,7 +344,8 @@ public class OkatteService {
         String hostNickname,
         List<String> tags,
         boolean owner,
-        String pinClass
+        String pinClass,
+        int displayNumber
     ) {
     }
 
@@ -361,7 +394,8 @@ public class OkatteService {
                 hostNickname,
                 tags,
                 owner,
-                PIN_CLASSES[0]
+                PIN_CLASSES[0],
+                1
             );
         }
 
