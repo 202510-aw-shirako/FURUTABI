@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 @Profile("dev")
 public class DevUserSeed implements ApplicationRunner {
 
-    // Development-only fixed credentials for manual verification.
-    // These users are not part of the production specification and can be removed later.
     private final JdbcTemplate jdbcTemplate;
     private final PasswordEncoder passwordEncoder;
     private final boolean enabled;
@@ -118,8 +116,6 @@ public class DevUserSeed implements ApplicationRunner {
     }
 
     private void seedPilotGateProposal() {
-        // Development-only pilot case for manual verification.
-        // Remove this once real gate proposal creation or richer dev fixtures are ready.
         long hostUserId = requireUserIdByEmail("local@example.com");
         long bridgeUserId = requireUserIdByEmail("bridge@example.com");
         String title = "【dev確認用】ちいきの入り口 申請確認";
@@ -147,10 +143,10 @@ public class DevUserSeed implements ApplicationRunner {
                 bridgeUserId,
                 hostUserId,
                 title,
-                "dev専用の申請確認用パイロットケースです。",
-                "user@example.com で gate 詳細を開き、申請導線を手動確認するための dev 専用データです。",
+                "dev確認用の申請確認ケースです。",
+                "user@example.com で gate 詳細を開き、申請動作を確認するための dev 用データです。",
                 90,
-                "開発用シード町",
+                "確認用シード",
                 "published",
                 "public",
                 null,
@@ -179,42 +175,40 @@ public class DevUserSeed implements ApplicationRunner {
     private void seedAdditionalGateProposals() {
         seedProposal(
             "GATE",
-            "海まで歩いて景色の話を聞く",
-            "海を見ながら、この土地の好きな時間をたどる入口です。",
-            "短時間で地域の空気に触れられる、やわらかな入口カードです。",
-            30,
-            "凪咲町の海辺",
+            GateSeedData.ITO_WALK.title(),
+            GateSeedData.ITO_WALK.summary(),
+            GateSeedData.ITO_WALK.body(),
+            GateSeedData.ITO_WALK.durationMinutes(),
+            GateSeedData.ITO_WALK.locationName(),
             "public",
-            List.of("sea", "short-walk")
+            GateSeedData.ITO_WALK.tags()
         );
         seedProposal(
             "GATE",
-            "ハウスの前で野菜を見る",
-            "育てているものを見ながら、地域の挑戦を少し聞きます。",
-            "会話が多すぎない、小さな入口として選びやすいカードです。",
-            20,
-            "凪咲町の畑",
+            GateSeedData.ITO_FLOWER.title(),
+            GateSeedData.ITO_FLOWER.summary(),
+            GateSeedData.ITO_FLOWER.body(),
+            GateSeedData.ITO_FLOWER.durationMinutes(),
+            GateSeedData.ITO_FLOWER.locationName(),
             "public",
-            List.of("farm", "quiet")
+            GateSeedData.ITO_FLOWER.tags()
         );
         seedProposal(
             "GATE",
-            "丘の上から季節の景色を見る",
-            "その時期ならではの風景を、無理なく味わいます。",
-            "少し歩いて景色を見る、季節の入口カードです。",
-            45,
-            "凪咲町の高台",
+            GateSeedData.HASEGAWA.title(),
+            GateSeedData.HASEGAWA.summary(),
+            GateSeedData.HASEGAWA.body(),
+            GateSeedData.HASEGAWA.durationMinutes(),
+            GateSeedData.HASEGAWA.locationName(),
             "public",
-            List.of("view", "season")
+            GateSeedData.HASEGAWA.tags()
         );
     }
 
     private void seedPilotOkatteProposal() {
-        // Development-only pilot case for manual verification.
-        // Remove this once real okatte proposal creation or richer dev fixtures are ready.
         long hostUserId = requireUserIdByEmail("local@example.com");
         long bridgeUserId = requireUserIdByEmail("bridge@example.com");
-        String title = "【dev確認用】ちいきのおかって 候補確認";
+        String title = "【dev確認用】ちいきのおかって 相談確認";
 
         List<Long> existingProposalIds = jdbcTemplate.query(
             "SELECT id FROM proposals WHERE title = ? AND host_user_id = ? AND deleted_at IS NULL",
@@ -239,10 +233,10 @@ public class DevUserSeed implements ApplicationRunner {
                 bridgeUserId,
                 hostUserId,
                 title,
-                "dev確認用のおかって候補パイロットケースです。",
-                "user@example.com で候補を見て選び、申請導線まで手動確認するための dev 専用データです。",
+                "dev確認用のおかって申請確認ケースです。",
+                "user@example.com でおかって詳細を開き、申請動作を確認するための dev 用データです。",
                 120,
-                "開発用おかって会場",
+                "確認用おかって",
                 "published",
                 "public",
                 null,
@@ -273,7 +267,7 @@ public class DevUserSeed implements ApplicationRunner {
             "OKATTE",
             "郷土料理をみんなで作る午後",
             "台所を囲みながら、少し長めの時間を一緒に過ごします。",
-            "関係ができたあとに開かれる、台所の時間の候補です。",
+            "台所を囲みながら、少し長めの時間を一緒に過ごします。",
             120,
             "凪咲町の共同台所",
             "public",
@@ -283,7 +277,7 @@ public class DevUserSeed implements ApplicationRunner {
             "OKATTE",
             "港で牡蠣の仕事を見学する",
             "海の仕事をそばで見ながら、暮らしの話を聞きます。",
-            "少し奥の時間として、仕事場の空気に触れる候補です。",
+            "海の仕事をそばで見ながら、暮らしの話を聞きます。",
             90,
             "凪咲町の港",
             "public",
@@ -293,7 +287,7 @@ public class DevUserSeed implements ApplicationRunner {
             "OKATTE",
             "畑の手入れを一緒にする朝",
             "いつもの作業を少しだけ一緒にしながら、季節の話をします。",
-            "背伸びをしない関わり方として開かれる候補です。",
+            "いつもの作業を少しだけ一緒にしながら、季節の話をします。",
             75,
             "凪咲町の畑",
             "public",
@@ -360,6 +354,26 @@ public class DevUserSeed implements ApplicationRunner {
             );
         } else {
             proposalId = existingProposalIds.getFirst();
+            jdbcTemplate.update(
+                """
+                    UPDATE proposals
+                    SET summary = ?,
+                        body = ?,
+                        duration_minutes = ?,
+                        location_name = ?,
+                        visibility_scope = ?,
+                        status = 'published',
+                        updated_at = ?
+                    WHERE id = ?
+                    """,
+                summary,
+                body,
+                durationMinutes,
+                locationName,
+                visibilityScope,
+                Timestamp.from(Instant.now()),
+                proposalId
+            );
         }
 
         for (int i = 0; i < tags.size(); i++) {
@@ -374,16 +388,22 @@ public class DevUserSeed implements ApplicationRunner {
             proposalId,
             tagName
         );
-        if (count != null && count > 0) {
+        if (count == null || count == 0) {
+            jdbcTemplate.update(
+                "INSERT INTO proposal_tags (proposal_id, tag_name, sort_order, created_at) VALUES (?, ?, ?, ?)",
+                proposalId,
+                tagName,
+                sortOrder,
+                Timestamp.from(Instant.now())
+            );
             return;
         }
 
         jdbcTemplate.update(
-            "INSERT INTO proposal_tags (proposal_id, tag_name, sort_order, created_at) VALUES (?, ?, ?, ?)",
-            proposalId,
-            tagName,
+            "UPDATE proposal_tags SET sort_order = ? WHERE proposal_id = ? AND tag_name = ?",
             sortOrder,
-            Timestamp.from(Instant.now())
+            proposalId,
+            tagName
         );
     }
 
@@ -395,6 +415,42 @@ public class DevUserSeed implements ApplicationRunner {
                 email
             ),
             "Dev seed user ID was not found for email: " + email
+        );
+    }
+
+    private record GateSeedData(
+        String title,
+        String summary,
+        String body,
+        int durationMinutes,
+        String locationName,
+        List<String> tags
+    ) {
+        private static final GateSeedData ITO_WALK = new GateSeedData(
+            "海を眺めながら、この街の話を聞く散歩",
+            "海を見渡せる場所を伊藤さんとゆっくり歩きながら、この土地のこと、人のこと、ここでの暮らしのことを少しずつ聞いていく時間です。観光案内ではなく、この街に入っていくための最初の入口のような散歩です。",
+            "この時間は、名所を次々に案内するような散歩ではありません。海を見渡せる場所を伊藤さんと歩きながら、この土地のこと、人のこと、ここで暮らす時間の流れを少しずつ知っていく入口です。伊藤さんは強く引っ張るタイプではなく、景色を前にしながら、その場所にまつわる話や、この土地で生きてきた感覚を静かに渡してくれます。はじめて来た人でも、無理なくこの街に入っていける時間です。",
+            40,
+            "海の見える場所",
+            List.of("sea", "walk")
+        );
+
+        private static final GateSeedData ITO_FLOWER = new GateSeedData(
+            "海辺の花を手入れする日",
+            "海辺の景色をよくするために、花を手入れしたり、少し場所を整えたりする時間です。ただ眺めるだけでなく、この土地に少し手をかけることで、街との距離が少し近くなります。",
+            "伊藤さんがひらくもう一つの入口は、土地の景色に少し手をかける時間です。花を手入れしたり、周りを整えたりしながら、誰かがまた来たくなる風景を一緒につくる。大がかりな作業ではありませんが、ただ見に来るだけではわからない、この土地との関わり方が少し見えてきます。伊藤さんにとって景色は、眺めるものというより、守ったり整えたりしながら次に渡していくものでもあります。その感覚に少し触れられる入口です。",
+            60,
+            "海辺の花壇",
+            List.of("flower", "care")
+        );
+
+        private static final GateSeedData HASEGAWA = new GateSeedData(
+            "コーヒーを飲みながら、町の見え方が少し変わる",
+            "長谷川さんとコーヒーを飲みながら少し話すことで、この町の今の空気や、地域の挑戦の途中にやわらかく触れていく時間です。強い体験ではなく、まずは話しやすさの中から、この土地との距離が少し縮まる入口です。",
+            "この時間は、どこかへ連れて行ってもらう体験というより、まずは話してみる入口です。長谷川さんとコーヒーを飲みながら、この土地で今どんなことが起きているのか、どんな人たちが動いているのかを少しずつ聞いていきます。長谷川さんはやわらかく話しやすいので、はじめての人でも身構えすぎずに入っていけます。でも、そのやわらかさの奥には、地域の仕事や未来に対するまっすぐな感覚があります。この町の見え方が、少しだけ内側から変わるような入口です。",
+            40,
+            "町のコーヒースタンド",
+            List.of("coffee", "talk")
         );
     }
 }
