@@ -20,7 +20,9 @@ public class OkatteService {
     private static final String[] PIN_CLASSES = {
         "okattePin--a",
         "okattePin--b",
-        "okattePin--c"
+        "okattePin--c",
+        "okattePin--d",
+        "okattePin--e"
     };
 
     private final JdbcTemplate jdbcTemplate;

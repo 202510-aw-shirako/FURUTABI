@@ -29,72 +29,88 @@
         <a class="sectionTitleLink" href="/about.html?context=app#feature-okatte">ちいきのおかってについて</a>
       </div>
       <p class="lead">
-        地域の暮らしの延長にあるお願いごとです。地図で位置を見て、
-        その下のカードから詳しく見られます。
+        地域でひらかれている食卓や仕事の場に、少し入れてもらう時間です。
+        地図で場所を見て、その下のカードから詳しい詳細へ進めます。
       </p>
     </section>
 
     <section class="section" th:if="${#lists.isEmpty(pageData.items)}">
       <div class="card">
-        <div class="h2">まだ候補はありません</div>
-        <p class="note">地域側の準備が進むと、ここに地図とカードが並びます。</p>
+        <div class="h2">まだおかってはありません</div>
+        <p class="note">地域の準備が整うと、ここに地図とカードが並びます。</p>
       </div>
     </section>
 
-    <section class="section proposalDetailMapSection" th:if="${not #lists.isEmpty(pageData.items)}">
+    <section class="section proposalDetailMapSection" th:if="${not #lists.isEmpty(pageData.items)}" th:with="initialItem=${pageData.items[0]}">
       <div class="sectionTitleRow">
         <h2 class="h2">地図で見る</h2>
-        <span class="note">地図のピンと下のカードが対応しています。</span>
+        <span class="note">ピンを押すと、今見ているおかってのカードが切り替わります。</span>
       </div>
-      <p class="lead">場所を見てから、気になるおかっての詳細へ進めます。</p>
+      <p class="lead">場所を見ながら、その下のカードからそれぞれのおかってへ進めます。</p>
 
-      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout" style="margin-top:16px;">
+      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout proposalSyncLayout"
+           style="margin-top:16px;"
+           data-proposal-map
+           th:attr="data-proposal-initial-id=${initialItem.proposalId}">
         <div class="myMapMain">
           <div class="topMapStage" aria-label="ちいきのおかっての地図">
             <div class="myMapViewport">
               <img class="topMapCanvas topMapCanvasImage" src="/assets/images/凪咲町.svg" alt="ちいきのおかっての地図" />
               <div class="myMapPinsLayer" aria-hidden="false">
-                <a
-                  class="topMapPin"
-                  th:classappend="${item.pinClass}"
-                  th:href="@{/app/okatte/{id}(id=${item.proposalId})}"
-                  th:each="item, stat : ${pageData.items}"
-                  th:aria-label="${item.title}">
+                <button class="topMapPin"
+                        type="button"
+                        data-proposal-pin
+                        th:classappend="${item.pinClass} + (item.proposalId == initialItem.proposalId ? ' is-active' : '')"
+                        th:attr="data-proposal-id=${item.proposalId},aria-label=${item.title}"
+                        th:each="item, stat : ${pageData.items}">
                   <span th:text="${stat.count}">1</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="proposalGrid" style="margin-top:16px;">
-        <article class="card proposalCard proposalCard--okatte" th:each="item, stat : ${pageData.items}">
-          <figure class="proposalVisual">
-            <div class="ph ph--pageHero" aria-hidden="true"></div>
-            <span class="proposalFaceChip">
-              <div class="ph ph--avatar" aria-hidden="true"></div>
-            </span>
-          </figure>
-          <div class="proposalCardMeta">
-            <span class="topMapMarker proposalCardMarker"><span th:text="${stat.count}">1</span></span>
-            <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は相談で調整'}">60分</span>
-            <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
-          </div>
-          <div class="proposalCardBody">
-            <h3 class="proposalTitle" th:text="${item.title}">おかってタイトル</h3>
-            <p class="proposalSummary" th:text="${item.summary != null ? item.summary : '地域の暮らしの中でお願いしたい内容を短くまとめています。'}">summary</p>
-            <div class="proposalTags">
-              <span class="proposalTag" th:text="${item.visibilityLabel}">公開範囲</span>
-              <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
-              <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;">
+        <div class="entryCarouselStage">
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前のおかって"></button>
+          <div class="entryCarouselViewport">
+            <div class="entryCarouselTrack" data-entry-track>
+              <article class="card proposalCard proposalCard--okatte entryCarouselCard proposalStripCard"
+                       data-entry-card
+                       data-proposal-sync-item
+                       th:classappend="${item.proposalId == initialItem.proposalId} ? ' is-active' : ''"
+                       th:attr="data-proposal-id=${item.proposalId}"
+                       th:each="item, stat : ${pageData.items}">
+                <figure class="proposalVisual">
+                  <div class="ph ph--pageHero" aria-hidden="true"></div>
+                  <span class="proposalFaceChip">
+                    <div class="ph ph--avatar" aria-hidden="true"></div>
+                  </span>
+                </figure>
+                <div class="proposalCardMeta">
+                  <span class="topMapMarker proposalCardMarker"><span th:text="${stat.count}">1</span></span>
+                  <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要は相談して決めます'}">90分</span>
+                  <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
+                </div>
+                <div class="proposalCardBody">
+                  <h3 class="proposalTitle" th:text="${item.title}">ちいきのおかって</h3>
+                  <p class="proposalSummary" th:text="${item.summary != null ? item.summary : '地域でひらかれる食卓や仕事場に、少し入れてもらう時間です。'}">summary</p>
+                  <div class="proposalTags">
+                    <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
+                    <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
+                    <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <a class="btn ghost proposalMore" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">詳細</a>
+                  <span class="btn ghost" th:if="${item.owner}">作成者</span>
+                </div>
+              </article>
             </div>
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-            <a class="btn ghost proposalMore" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">詳細</a>
-            <span class="btn ghost" th:if="${item.owner}">申込み中</span>
-          </div>
-        </article>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次のおかって"></button>
+        </div>
       </div>
     </section>
 
@@ -107,5 +123,7 @@
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/entry-carousel.js"></script>
+  <script src="/assets/scripts/proposal-map-sync.js"></script>
 </body>
 </html>

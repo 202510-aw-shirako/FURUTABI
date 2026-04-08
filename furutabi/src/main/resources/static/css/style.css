@@ -2968,6 +2968,16 @@ body.hasProposalModal {
   top: 70%;
 }
 
+.okattePin--d {
+  left: 78%;
+  top: 34%;
+}
+
+.okattePin--e {
+  left: 61%;
+  top: 57%;
+}
+
 .gateEntryPin--a {
   left: 28%;
   top: 39%;
@@ -3261,6 +3271,8 @@ body.hasProposalModal {
   z-index: 3;
   width: 24px;
   height: 24px;
+  padding: 0;
+  border: 0;
   border-radius: 50% 50% 50% 0;
   background: #222;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
@@ -3271,6 +3283,7 @@ body.hasProposalModal {
   font-size: 11px;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
@@ -3769,6 +3782,30 @@ body.hasProposalModal {
 .topMapPin--c {
   left: 68%;
   top: 70%;
+}
+
+.topMapPin--d {
+  left: 79%;
+  top: 27%;
+}
+
+.topMapPin--e {
+  left: 84%;
+  top: 41%;
+}
+
+.proposalSyncLayout {
+  min-height: var(--top-map-stage-height);
+}
+
+.proposalStripCard {
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.proposalStripCard.is-active {
+  border-color: rgba(34, 34, 34, 0.22);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.08);
 }
 
 /* ===== Map stage with pins overlay (TOP + App fragments map) ===== */

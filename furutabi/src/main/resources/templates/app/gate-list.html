@@ -26,72 +26,88 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきの入り口</h1>
-        <a class="sectionTitleLink" href="/about.html?context=app#feature-gate">私たちの目指すもの</a>
+        <a class="sectionTitleLink" href="/about.html?context=app#feature-gate">私たちの目指すものへ</a>
       </div>
       <p class="lead">
-        地域の方に教わりながら、少しずつその土地に入っていくための入口です。
-        まず地図で場所を見て、その下のカードから詳しく進めます。
+        地域の方に教わりながら、少しずつその場に入っていくための入り口です。
+        まずは地図で場所を見て、その下のカードから詳しい詳細へ進めます。
       </p>
     </section>
 
     <section class="section" th:if="${#lists.isEmpty(pageData.items)}">
       <div class="card">
-        <div class="h2">まだ見えている入口はありません</div>
-        <p class="note">公開状態や関わり方に応じて、ここに見える入口が変わります。</p>
+        <div class="h2">まだ見えている入り口はありません</div>
+        <p class="note">公開準備や関わり方に応じて、ここに見える入り口が増わります。</p>
       </div>
     </section>
 
-    <section class="section proposalDetailMapSection" th:if="${not #lists.isEmpty(pageData.items)}">
+    <section class="section proposalDetailMapSection" th:if="${not #lists.isEmpty(pageData.items)}" th:with="initialItem=${pageData.items[0]}">
       <div class="sectionTitleRow">
         <h2 class="h2">地図で見る</h2>
-        <span class="note">気になる場所を押すと、下のカードと同じ入口に進めます。</span>
+        <span class="note">ピンを押すと、今見ている入り口のカードが切り替わります。</span>
       </div>
-      <p class="lead">まず地図で気になる入口を見つけ、その下のカードから詳細へ進みます。</p>
+      <p class="lead">地図で場所を見つつ、その下のカードから詳細ページへ進めます。</p>
 
-      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout" style="margin-top:16px;">
+      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout proposalSyncLayout"
+           style="margin-top:16px;"
+           data-proposal-map
+           th:attr="data-proposal-initial-id=${initialItem.proposalId}">
         <div class="myMapMain">
           <div class="topMapStage" aria-label="ちいきの入り口の地図">
             <div class="myMapViewport">
               <img class="topMapCanvas topMapCanvasImage" src="/assets/images/凪咲町.svg" alt="ちいきの入り口の地図" />
               <div class="myMapPinsLayer" aria-hidden="false">
-                <a
-                  class="topMapPin"
-                  th:classappend="${item.pinClass}"
-                  th:href="@{/app/gate/{id}(id=${item.proposalId})}"
-                  th:each="item, stat : ${pageData.items}"
-                  th:aria-label="${item.title}">
+                <button class="topMapPin"
+                        type="button"
+                        data-proposal-pin
+                        th:classappend="${item.pinClass} + (item.proposalId == initialItem.proposalId ? ' is-active' : '')"
+                        th:attr="data-proposal-id=${item.proposalId},aria-label=${item.title}"
+                        th:each="item, stat : ${pageData.items}">
                   <span th:text="${stat.count}">1</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="proposalGrid" style="margin-top:16px;">
-        <article class="card proposalCard proposalCard--gate" th:each="item, stat : ${pageData.items}">
-          <figure class="proposalPortrait">
-            <div class="ph ph--thumb" aria-hidden="true"></div>
-          </figure>
-          <div class="proposalCardMeta">
-            <span class="topMapMarker proposalCardMarker"><span th:text="${stat.count}">1</span></span>
-            <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要時間は相談で調整'}">45分</span>
-            <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
-          </div>
-          <div class="proposalCardBody">
-            <h3 class="proposalTitle" th:text="${item.title}">入口タイトル</h3>
-            <p class="proposalSummary" th:text="${item.summary != null ? item.summary : 'この入口の空気や進み方を短くまとめています。'}">summary</p>
-            <div class="proposalTags">
-              <span class="proposalTag" th:text="${item.visibilityLabel}">公開範囲</span>
-              <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
-              <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;">
+        <div class="entryCarouselStage">
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入り口"></button>
+          <div class="entryCarouselViewport">
+            <div class="entryCarouselTrack" data-entry-track>
+              <article class="card proposalCard proposalCard--gate entryCarouselCard proposalStripCard"
+                       data-entry-card
+                       data-proposal-sync-item
+                       th:classappend="${item.proposalId == initialItem.proposalId} ? ' is-active' : ''"
+                       th:attr="data-proposal-id=${item.proposalId}"
+                       th:each="item, stat : ${pageData.items}">
+                <figure class="proposalPortrait">
+                  <div class="ph ph--thumb" aria-hidden="true"></div>
+                </figure>
+                <div class="proposalCardMeta">
+                  <span class="topMapMarker proposalCardMarker"><span th:text="${stat.count}">1</span></span>
+                  <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要は相談して決めます'}">45分</span>
+                  <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
+                </div>
+                <div class="proposalCardBody">
+                  <h3 class="proposalTitle" th:text="${item.title}">地域の入り口</h3>
+                  <p class="proposalSummary" th:text="${item.summary != null ? item.summary : 'まずはその場の空気に入っていくための入口です。'}">summary</p>
+                  <div class="proposalTags">
+                    <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
+                    <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
+                    <span class="proposalTag" th:each="tag : ${item.tags}" th:text="${tag}">tag</span>
+                  </div>
+                </div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                  <a class="btn ghost proposalMore" th:href="@{/app/gate/{id}(id=${item.proposalId})}">詳細</a>
+                  <span class="btn ghost" th:if="${item.owner}">作成者</span>
+                </div>
+              </article>
             </div>
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-            <a class="btn ghost proposalMore" th:href="@{/app/gate/{id}(id=${item.proposalId})}">詳細</a>
-            <span class="btn ghost" th:if="${item.owner}">申請中</span>
-          </div>
-        </article>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の入り口"></button>
+        </div>
       </div>
     </section>
 
@@ -104,5 +120,7 @@
   </main>
 
   <script src="/assets/scripts/shared-ui.js"></script>
+  <script src="/assets/scripts/entry-carousel.js"></script>
+  <script src="/assets/scripts/proposal-map-sync.js"></script>
 </body>
 </html>
