@@ -1366,9 +1366,9 @@ a.link {
 
 .proposalDetailHero {
   display: grid;
-  grid-template-columns: minmax(320px, 1.1fr) minmax(0, 0.9fr);
-  gap: 24px;
-  align-items: center;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.2fr);
+  gap: 20px;
+  align-items: start;
 }
 
 .proposalDetailHeroMedia {
@@ -1381,12 +1381,14 @@ a.link {
 
 .proposalDetailHeroCopy {
   display: grid;
-  gap: 14px;
+  gap: 12px;
+  align-content: start;
 }
 
 .proposalDetailHeroMediaWrap {
   display: grid;
-  gap: 14px;
+  gap: 12px;
+  align-content: start;
 }
 
 .proposalDetailHeroMedia img,
@@ -1400,13 +1402,13 @@ a.link {
 .proposalDetailThumbRow {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
 
 .proposalDetailThumb {
   padding: 0;
   border: 1px solid rgba(34, 34, 34, 0.1);
-  border-radius: 18px;
+  border-radius: 14px;
   overflow: hidden;
   background: #f3efe8;
   aspect-ratio: 4 / 3;
@@ -1425,8 +1427,8 @@ a.link {
 }
 
 .proposalDetailTitle {
-  font-size: clamp(30px, 4vw, 48px);
-  line-height: 1.18;
+  font-size: clamp(30px, 3.8vw, 52px);
+  line-height: 1.14;
 }
 
 .proposalDetailKicker {
@@ -1437,9 +1439,9 @@ a.link {
 
 .proposalDetailIntro {
   margin: 0;
-  max-width: 36rem;
+  max-width: none;
   font-size: 15px;
-  line-height: 1.9;
+  line-height: 1.75;
   color: #534d47;
 }
 
@@ -1456,7 +1458,8 @@ a.link {
 
 .proposalDetailMetaPanel {
   display: grid;
-  gap: 14px;
+  gap: 12px;
+  align-content: start;
 }
 
 .proposalDetailNoteList,
@@ -1470,7 +1473,8 @@ a.link {
 
 .proposalDetailNoteList li {
   color: #4f4a44;
-  line-height: 1.8;
+  line-height: 1.7;
+  font-size: 14px;
 }
 
 .proposalDetailScheduleList li {
@@ -1500,8 +1504,9 @@ a.link {
 
 .proposalDetailTwoCol {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
 }
 
 .proposalDetailPanel {
@@ -1519,13 +1524,13 @@ a.link {
 
 .proposalDetailCopy {
   display: grid;
-  gap: 12px;
+  gap: 18px;
 }
 
 .proposalDetailCopy p {
   margin: 0;
   color: #514d48;
-  line-height: 1.9;
+  line-height: 1.85;
 }
 
 .proposalDetailPersonSection {
@@ -1534,7 +1539,9 @@ a.link {
 }
 
 .proposalDetailPersonCard {
-  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  grid-template-areas: "body media";
   gap: 20px;
   align-items: stretch;
   border-radius: 24px;
@@ -1542,12 +1549,14 @@ a.link {
 }
 
 .proposalDetailPersonMedia {
+  grid-area: media;
   overflow: hidden;
   border-radius: 20px;
   background: #ece8df;
 }
 
 .proposalDetailPersonBody {
+  grid-area: body;
   display: grid;
   gap: 12px;
   align-content: start;
@@ -1555,7 +1564,7 @@ a.link {
 
 .proposalDetailPersonHeading {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .proposalDetailPersonRole,
@@ -1637,10 +1646,10 @@ a.link {
 
 .proposalPersonModalDialog {
   position: relative;
-  width: min(920px, 100vw - 40px);
-  max-height: calc(100vh - 40px);
-  margin: 20px auto;
-  padding: 22px;
+  width: min(1020px, 100vw - 48px);
+  max-height: calc(100vh - 48px);
+  margin: 24px auto;
+  padding: 18px 18px 20px;
   overflow: auto;
   border-radius: 28px;
   background: #f8f5ef;
@@ -1657,7 +1666,7 @@ a.link {
 
 .proposalPersonModalBody {
   display: grid;
-  gap: 22px;
+  gap: 20px;
 }
 
 .proposalPersonModalHeader {
@@ -1677,19 +1686,22 @@ a.link {
 
 .proposalPersonModalIntro {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .proposalPersonModalSection {
   display: grid;
   gap: 10px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(34, 34, 34, 0.08);
+  padding: 14px 16px;
+  border: 1px solid rgba(34, 34, 34, 0.08);
+  border-radius: 18px;
+  background: #fdfbf7;
 }
 
 .proposalPersonModalHeading {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 1.4;
 }
 
 .proposalPersonModalText {
@@ -4117,6 +4129,15 @@ body.hasProposalModal {
   .proposalPersonModalHeader {
     grid-template-columns: 1fr;
   }
+  .proposalDetailPersonCard {
+    grid-template-areas:
+      "body"
+      "media";
+  }
+  .proposalDetailPersonMedia {
+    max-width: 280px;
+    justify-self: end;
+  }
   .topMapLayout {
     width: 100%;
     margin-right: 0;
@@ -4272,6 +4293,21 @@ body.hasProposalModal {
     width: calc(100vw - 24px);
     margin: 12px auto;
     padding: 16px;
+  }
+  .proposalDetailHeroMedia {
+    aspect-ratio: 5 / 4;
+  }
+  .proposalDetailTwoCol {
+    grid-template-columns: 1fr;
+  }
+  .proposalDetailPersonCard {
+    grid-template-areas:
+      "body"
+      "media";
+  }
+  .proposalDetailPersonMedia {
+    max-width: 220px;
+    justify-self: end;
   }
   .localQuoteCard,
   .localSoftCard,

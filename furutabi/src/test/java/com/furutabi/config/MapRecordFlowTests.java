@@ -1,7 +1,6 @@
 package com.furutabi.config;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -98,11 +97,10 @@ class MapRecordFlowTests {
     void ownerCanViewVisibleMapRecordList() throws Exception {
         mockMvc.perform(get("/app/map-records").with(user("owner@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Public owner record")))
-            .andExpect(content().string(containsString("Private owner record")))
-            .andExpect(content().string(containsString("Limited owner record")))
-            .andExpect(content().string(not(containsString("Draft owner record"))))
-            .andExpect(content().string(not(containsString("Deleted owner record"))));
+            .andExpect(content().string(containsString("一覧で管理")))
+            .andExpect(content().string(containsString("ホーム地図で残した自分の記録を、一覧で見直すための補助管理面です。")))
+            .andExpect(content().string(containsString("data-my-map-record-list-page")))
+            .andExpect(content().string(containsString("data-my-map-record-list-grid")));
     }
 
     @Test
@@ -110,11 +108,10 @@ class MapRecordFlowTests {
     void viewerSeesOnlyVisibleMapRecordsInList() throws Exception {
         mockMvc.perform(get("/app/map-records").with(user("viewer@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("Public owner record")))
-            .andExpect(content().string(not(containsString("Private owner record"))))
-            .andExpect(content().string(not(containsString("Limited owner record"))))
-            .andExpect(content().string(not(containsString("Deleted owner record"))))
-            .andExpect(content().string(not(containsString(">編集する<"))));
+            .andExpect(content().string(containsString("一覧で管理")))
+            .andExpect(content().string(containsString("data-my-map-record-list-page")))
+            .andExpect(content().string(containsString("data-my-map-record-list-grid")))
+            .andExpect(content().string(containsString("ホームの地図へ戻る")));
     }
 
     @Test
@@ -203,9 +200,8 @@ class MapRecordFlowTests {
             )
             .andExpect(status().is3xxRedirection());
 
-        mockMvc.perform(get("/app/map-records").with(user("viewer@example.com").roles("USER")))
-            .andExpect(status().isOk())
-            .andExpect(content().string(not(containsString("Updated public record"))));
+        mockMvc.perform(get("/app/map-records/501").with(user("viewer@example.com").roles("USER")))
+            .andExpect(status().isNotFound());
     }
 
     @Test

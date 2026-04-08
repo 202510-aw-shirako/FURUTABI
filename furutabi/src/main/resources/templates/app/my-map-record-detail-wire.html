@@ -48,6 +48,7 @@
           <div class="h2">記録メモ</div>
           <p class="note" data-wire-record-date>記録日: 未設定</p>
           <p class="note" data-wire-record-photo>写真メモ: まだありません</p>
+          <p class="note" data-wire-record-reactions>いいね 0 / ありがとう 0</p>
           <p class="note">公開範囲は詳細ページと編集モーダルの両方で見直せます。</p>
         </div>
         <div class="card">
@@ -56,6 +57,15 @@
           <div class="commentList" data-wire-record-comments>
             <p class="note">まだコメントはありません。</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <div class="h2">画像</div>
+        <div data-wire-record-gallery>
+          <p class="note">画像はまだありません。</p>
         </div>
       </div>
     </section>
@@ -142,6 +152,8 @@
       var bodyEl;
       var dateEl;
       var photoEl;
+      var reactionsEl;
+      var galleryEl;
       var commentsEl;
       var missingEl;
       var editLink;
@@ -194,6 +206,8 @@
       bodyEl = root.querySelector('[data-wire-record-body]');
       dateEl = root.querySelector('[data-wire-record-date]');
       photoEl = root.querySelector('[data-wire-record-photo]');
+      reactionsEl = root.querySelector('[data-wire-record-reactions]');
+      galleryEl = root.querySelector('[data-wire-record-gallery]');
       commentsEl = root.querySelector('[data-wire-record-comments]');
       missingEl = root.querySelector('[data-wire-record-missing]');
       editLink = root.querySelector('[data-wire-record-edit-link]');
@@ -277,6 +291,7 @@
 
       function renderDetail() {
         var record = getRecord(selectedId);
+        var reactions;
 
         if (!record) {
           if (missingEl) {
@@ -300,6 +315,19 @@
         bodyEl.textContent = record.body || 'まだ本文は入っていません。';
         dateEl.textContent = '記録日: ' + (record.recordedAt || '未設定');
         photoEl.textContent = '写真メモ: ' + (record.photoNote || 'まだありません');
+        reactions = interactions.getReactionSummary('map_record', record.id);
+        if (reactionsEl) {
+          reactionsEl.textContent = 'いいね ' + reactions.like.count + ' / ありがとう ' + reactions.thank_you.count;
+        }
+        if (galleryEl) {
+          if (Array.isArray(record.images) && record.images.length) {
+            galleryEl.innerHTML = record.images.map(function (image, index) {
+              return '<img src="' + escapeHtml(image.dataUrl) + '" alt="記録画像 ' + String(index + 1) + '" style="width:140px;height:140px;object-fit:cover;border-radius:10px;border:1px solid #d9e0e6;margin:6px;" />';
+            }).join('');
+          } else {
+            galleryEl.innerHTML = '<p class="note">画像はまだありません。</p>';
+          }
+        }
         if (editLink) {
           editLink.setAttribute('href', homePath + '?editPin=' + encodeURIComponent(record.id) + '#tab-map');
         }
