@@ -1,4 +1,4 @@
-package com.furutabi.app;
+﻿package com.furutabi.app;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -16,6 +16,12 @@ import com.furutabi.visibility.VisibilityScope;
 
 @Service
 public class OkatteService {
+
+    private static final String TITLE_ITO_OKATTE = "牡蠣小屋で、海のものを囲む時間";
+    private static final String TITLE_HASEGAWA_GRAPE = "葡萄を通して、地域の挑戦の途中にふれる";
+    private static final String TITLE_HASEGAWA_CHRYSANTHEMUM = "菊の仕事場に、少し通してもらう";
+    private static final String TITLE_HOSYO_ANAGO = "名物あなご丼を、少し遊びながらつくる昼";
+    private static final String TITLE_HOSYO_SCENERY = "何度も来ると見えてくる、町の風景の奥をたどる";
 
     private static final String[] PIN_CLASSES = {
         "okattePin--a",
@@ -35,12 +41,13 @@ public class OkatteService {
 
     public OkatteListPageData loadVisibleOkatteList(String email) {
         Long viewerUserId = findUserIdByEmail(email);
-        List<OkatteSummary> visibleItems = loadOkatteCandidates().stream()
+        Map<String, OkatteSummary> uniqueItems = new LinkedHashMap<>();
+        loadOkatteCandidates().stream()
             .filter(item -> visibilityAccessService.canViewProposal(viewerUserId, item.proposalId()))
             .filter(item -> isCanonicalOkatteProposal(item.title(), item.hostNickname()))
             .map(item -> item.withOwner(viewerUserId != null && viewerUserId == item.hostUserId()))
-            .toList();
-        return new OkatteListPageData(assignPinClasses(visibleItems));
+            .forEach(item -> uniqueItems.putIfAbsent(item.title(), item));
+        return new OkatteListPageData(assignPinClasses(new ArrayList<>(uniqueItems.values())));
     }
 
     public OkatteDetailPageData loadVisibleOkatteDetail(String email, long proposalId) {
@@ -124,19 +131,15 @@ public class OkatteService {
         }
         return loadApplicationStatus(viewerUserId, row.proposalId()) == null;
     }
-
     private boolean isCanonicalOkatteProposal(String title, String hostNickname) {
-        if (hostNickname != null && (hostNickname.contains("伊藤") || hostNickname.contains("長谷川"))) {
-            return true;
-        }
         if (title == null) {
             return false;
         }
-        return title.contains("牡蠣小屋")
-            || title.contains("牡蠣")
-            || title.contains("港")
-            || title.contains("葡萄")
-            || title.contains("菊");
+        return TITLE_ITO_OKATTE.equals(title)
+            || TITLE_HASEGAWA_GRAPE.equals(title)
+            || TITLE_HASEGAWA_CHRYSANTHEMUM.equals(title)
+            || TITLE_HOSYO_ANAGO.equals(title)
+            || TITLE_HOSYO_SCENERY.equals(title);
     }
 
     private List<OkatteSummaryRow> loadOkatteCandidates() {

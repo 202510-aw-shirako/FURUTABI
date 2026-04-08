@@ -41,6 +41,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedUser("user@example.com", "USER", "User Seed", "User Seed");
         seedUser("local@example.com", "LOCAL", "Local Seed", "Local Seed");
         seedUser("bridge@example.com", "BRIDGE", "Bridge Seed", "Bridge Seed");
+        seedNamedUser("hosyo@example.com", "LOCAL", "宝生さん", "宝生さん", "宝生さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -49,6 +50,10 @@ public class DevUserSeed implements ApplicationRunner {
     }
 
     private void seedUser(String email, String roleName, String name, String nameKana) {
+        seedNamedUser(email, roleName, roleName.toLowerCase() + "-seed", name, nameKana);
+    }
+
+    private void seedNamedUser(String email, String roleName, String nickname, String name, String nameKana) {
         List<Long> existingUserIds = jdbcTemplate.query(
             "SELECT id FROM users WHERE email = ?",
             (rs, rowNum) -> rs.getLong("id"),
@@ -70,7 +75,7 @@ public class DevUserSeed implements ApplicationRunner {
                     """,
                 email,
                 passwordEncoder.encode("password123"),
-                roleName.toLowerCase() + "-seed",
+                nickname,
                 name,
                 nameKana,
                 Date.valueOf("1990-01-01"),
@@ -203,6 +208,17 @@ public class DevUserSeed implements ApplicationRunner {
             "public",
             GateSeedData.HASEGAWA.tags()
         );
+        seedProposalForHost(
+            "hosyo@example.com",
+            "GATE",
+            GateSeedData.HOSYO.title(),
+            GateSeedData.HOSYO.summary(),
+            GateSeedData.HOSYO.body(),
+            GateSeedData.HOSYO.durationMinutes(),
+            GateSeedData.HOSYO.locationName(),
+            "public",
+            GateSeedData.HOSYO.tags()
+        );
     }
 
     private void seedPilotOkatteProposal() {
@@ -303,6 +319,28 @@ public class DevUserSeed implements ApplicationRunner {
             "public",
             List.of("chrysanthemum", "work")
         );
+        seedProposalForHost(
+            "hosyo@example.com",
+            "OKATTE",
+            "名物あなご丼を、少し遊びながらつくる昼",
+            "この土地の名物として育てているあなご丼を、少し遊び心も交えながら一緒につくって食べる時間です。料理教室というより、名物づくりの途中に少し加わるようなおかってです。",
+            "このおかっては、完成した名物をただ食べるだけの時間ではありません。この土地の名物として育てているあなご丼を、一緒に少しつくりながら、その食べ方や遊び心も含めて味わう時間です。料理教室のようにきっちり教わるというより、宝生さんが育ててきた食の空気に少し通してもらう感じが近いです。だから、ただおいしいで終わるのではなく、「この町でこういうふうに育ててきたんだな」と少し見えてきます。旅館の主人として人を迎えてきた宝生さんらしく、食卓ごと町の魅力に通してくれるおかってです。",
+            120,
+            "旅館の台所",
+            "public",
+            List.of("anago", "lunch")
+        );
+        seedProposalForHost(
+            "hosyo@example.com",
+            "OKATTE",
+            "何度も来ると見えてくる、町の風景の奥をたどる",
+            "一度では見えにくいこの町の風景や歴史の奥を、宝生さんと少しずつたどっていく時間です。観光案内ではなく、通うほど見え方が深くなる町の楽しみ方に触れるおかってです。",
+            "このおかっては、初めての人向けの町歩きとは少し違います。宝生さんと一緒に、何度か来るうちに見えてくるこの町の風景や歴史の奥をたどっていく時間です。派手な名所より、ふつうに見える道や建物や景色の中に、「ここはこういう場所なんです」と少し奥行きが生まれていく。宝生さんは、町の全部を一気に説明する人ではなく、通うほど少しずつ見せてくれる方です。だからこの時間は、知識をもらうというより、この町との付き合い方が少し深くなるおかってになっています。",
+            90,
+            "町の路地",
+            "public",
+            List.of("town", "history")
+        );
     }
 
     private void seedProposal(
@@ -315,7 +353,21 @@ public class DevUserSeed implements ApplicationRunner {
         String visibilityScope,
         List<String> tags
     ) {
-        long hostUserId = requireUserIdByEmail("local@example.com");
+        seedProposalForHost("local@example.com", proposalType, title, summary, body, durationMinutes, locationName, visibilityScope, tags);
+    }
+
+    private void seedProposalForHost(
+        String hostEmail,
+        String proposalType,
+        String title,
+        String summary,
+        String body,
+        int durationMinutes,
+        String locationName,
+        String visibilityScope,
+        List<String> tags
+    ) {
+        long hostUserId = requireUserIdByEmail(hostEmail);
         long bridgeUserId = requireUserIdByEmail("bridge@example.com");
 
         List<Long> existingProposalIds = jdbcTemplate.query(
@@ -461,6 +513,15 @@ public class DevUserSeed implements ApplicationRunner {
             40,
             "町のコーヒースタンド",
             List.of("coffee", "talk")
+        );
+
+        private static final GateSeedData HOSYO = new GateSeedData(
+            "猫の町を歩く",
+            "宝生さんと一緒に町を歩きながら、猫のいる風景や、この土地の日常の気配に少しずつ馴染んでいく時間です。観光スポットを回るのではなく、町の空気ごとゆっくり入っていくための入口です。",
+            "この時間は、猫の名所を効率よく回るような散歩ではありません。宝生さんと町を歩きながら、猫のいる風景や路地の空気、人の気配に少しずつ馴染んでいく入口です。猫は主役というより、この町の空気の中に自然にいる存在として現れます。だから、歩いているうちに「猫の町」と言いたくなるような感覚が少しずつ育っていく。宝生さんはそれを強く説明しすぎず、この町の歩き方として静かに渡してくれる方です。",
+            40,
+            "猫のいる町の路地",
+            List.of("cat", "walk")
         );
     }
 }

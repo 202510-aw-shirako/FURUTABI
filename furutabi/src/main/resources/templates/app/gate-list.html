@@ -83,14 +83,15 @@
                        th:attr="data-proposal-id=${item.proposalId}"
                        th:with="isItoWalk=${item.templateKind == 'ITO_WALK'},
                                 isItoFlower=${item.templateKind == 'ITO_FLOWER'},
-                                isHasegawa=${item.templateKind == 'HASEGAWA'}"
+                                isHasegawa=${item.templateKind == 'HASEGAWA'},
+                                isHosyo=${item.templateKind == 'HOSYO'}"
                        th:each="item, stat : ${pageData.items}">
                 <figure class="proposalVisual">
-                  <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isItoFlower ? '/assets/images/伊藤さん写真/ito4.png' : '/assets/images/伊藤さん写真/ito2.png')}"
+                  <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : (isItoFlower ? '/assets/images/伊藤さん写真/ito4.png' : '/assets/images/伊藤さん写真/ito2.png'))}"
                        th:alt="${item.title}" />
                   <span class="proposalFaceChip">
-                    <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : '/assets/images/伊藤さん写真/ito1.png'}"
-                         th:alt="${isHasegawa ? '長谷川さん' : '伊藤 朗士さん'}" />
+                    <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo1.png' : '/assets/images/伊藤さん写真/ito1.png')}"
+                         th:alt="${isHasegawa ? '長谷川さん' : (isHosyo ? '宝生さん' : '伊藤 朗士さん')}" />
                   </span>
                 </figure>
                 <div class="proposalCardMeta">
@@ -113,7 +114,11 @@
                     長谷川さんとコーヒーを飲みながら少し話すことで、この町の今の空気や、地域の挑戦の途中にやわらかく触れていく時間です。
                     強い体験ではなく、まずは話しやすさの中から、この土地との距離が少し縮まる入口です。
                   </p>
-                  <p class="proposalSummary" th:if="${!isItoWalk and !isItoFlower and !isHasegawa}"
+                  <p class="proposalSummary" th:if="${isHosyo}">
+                    宝生さんと一緒に町を歩きながら、猫のいる風景や、この土地の日常の気配に少しずつ馴染んでいく時間です。
+                    観光スポットを回るのではなく、町の空気ごとゆっくり入っていくための入口です。
+                  </p>
+                  <p class="proposalSummary" th:if="${!isItoWalk and !isItoFlower and !isHasegawa and !isHosyo}"
                      th:text="${item.summary != null ? item.summary : 'この入り口の空気を、地図の場所とあわせて静かに見ていく時間です。'}">
                     この入り口の空気を、地図の場所とあわせて静かに見ていく時間です。
                   </p>

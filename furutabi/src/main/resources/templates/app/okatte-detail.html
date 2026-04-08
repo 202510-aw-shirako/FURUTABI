@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ja" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
@@ -18,13 +18,17 @@
 
   <main class="container" aria-label="ちいきのおかって 詳細"
         th:with="isHasegawa=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '長谷川')) or (pageData.title != null and (#strings.contains(pageData.title, '葡萄') or #strings.contains(pageData.title, '菊')))},
+                 isHosyo=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '宝生')) or (pageData.title != null and (#strings.contains(pageData.title, 'あなご丼') or #strings.contains(pageData.title, '町の風景の奥')))},
                  isIto=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '伊藤')) or (pageData.title != null and (#strings.contains(pageData.title, '牡蠣小屋') or #strings.contains(pageData.title, '牡蠣') or #strings.contains(pageData.title, '港')))},
-                 isGenericOkatte=${!isHasegawa and !isIto}">
+                 isHosyoScenery=${pageData.title != null and #strings.contains(pageData.title, '町の風景の奥')},
+                 isGenericOkatte=${!isHasegawa and !isHosyo and !isIto}">
     <section class="section proposalDetailLead">
       <div class="sectionTitleRow">
         <h1 class="h1" th:if="${isIto}">牡蠣小屋で、海のものを囲む時間</h1>
         <h1 class="h1" th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">葡萄を通して、地域の挑戦の途中にふれる</h1>
         <h1 class="h1" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">菊の仕事場に、少し通してもらう</h1>
+        <h1 class="h1" th:if="${isHosyo and !isHosyoScenery}">名物あなご丼を、少し遊びながらつくる昼</h1>
+        <h1 class="h1" th:if="${isHosyo and isHosyoScenery}">何度も来ると見えてくる、町の風景の奥をたどる</h1>
         <h1 class="h1" th:if="${isGenericOkatte}" th:text="${pageData.title}">ちいきのおかって</h1>
         <a class="sectionTitleLink" th:href="${pageData.listPath}">一覧へ戻る</a>
       </div>
@@ -39,21 +43,21 @@
           <figure class="proposalDetailHeroMedia">
             <img
               data-proposal-main-image
-              th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : '/assets/images/伊藤さん写真/ito3.png'}"
+              th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : '/assets/images/伊藤さん写真/ito3.png')}"
               th:alt="${pageData.title}" />
           </figure>
           <div class="proposalDetailThumbRow" aria-label="写真の切り替え">
             <button class="proposalDetailThumb is-active" type="button"
-                    th:attr="data-proposal-image=${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : '/assets/images/伊藤さん写真/ito3.png'},data-proposal-alt=${pageData.title}">
-              <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : '/assets/images/伊藤さん写真/ito3.png'}" alt="" />
+                    th:attr="data-proposal-image=${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : '/assets/images/伊藤さん写真/ito3.png')},data-proposal-alt=${pageData.title}">
+              <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : '/assets/images/伊藤さん写真/ito3.png')}" alt="" />
             </button>
             <button class="proposalDetailThumb" type="button"
-                    th:attr="data-proposal-image=${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa3.png' : '/assets/images/伊藤さん写真/ito2.png'},data-proposal-alt=${pageData.title + ' の別の場面'}">
-              <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa3.png' : '/assets/images/伊藤さん写真/ito2.png'}" alt="" />
+                    th:attr="data-proposal-image=${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa3.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo4.png' : '/assets/images/伊藤さん写真/ito2.png')},data-proposal-alt=${pageData.title + ' の別の場面'}">
+              <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa3.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo4.png' : '/assets/images/伊藤さん写真/ito2.png')}" alt="" />
             </button>
             <button class="proposalDetailThumb" type="button"
-                    th:attr="data-proposal-image=${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa5.png' : '/assets/images/伊藤さん写真/ito5.png'},data-proposal-alt=${pageData.title + ' の空気が伝わる写真'}">
-              <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa5.png' : '/assets/images/伊藤さん写真/ito5.png'}" alt="" />
+                    th:attr="data-proposal-image=${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa5.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo5.png' : '/assets/images/伊藤さん写真/ito5.png')},data-proposal-alt=${pageData.title + ' の空気が伝わる写真'}">
+              <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa5.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo5.png' : '/assets/images/伊藤さん写真/ito5.png')}" alt="" />
             </button>
           </div>
         </article>
@@ -63,6 +67,8 @@
           <h2 class="proposalDetailTitle" th:if="${isIto}">牡蠣小屋で、海のものを囲む時間</h2>
           <h2 class="proposalDetailTitle" th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">葡萄を通して、地域の挑戦の途中にふれる</h2>
           <h2 class="proposalDetailTitle" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">菊の仕事場に、少し通してもらう</h2>
+          <h2 class="proposalDetailTitle" th:if="${isHosyo and !isHosyoScenery}">名物あなご丼を、少し遊びながらつくる昼</h2>
+          <h2 class="proposalDetailTitle" th:if="${isHosyo and isHosyoScenery}">何度も来ると見えてくる、町の風景の奥をたどる</h2>
           <h2 class="proposalDetailTitle" th:if="${isGenericOkatte}" th:text="${pageData.title}">ちいきのおかって</h2>
           <p class="proposalDetailIntro" th:if="${isIto}">
             海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。
@@ -75,6 +81,14 @@
           <p class="proposalDetailIntro" th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">
             菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。
             長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。
+          </p>
+          <p class="proposalDetailIntro" th:if="${isHosyo and !isHosyoScenery}">
+            この土地の名物として育てているあなご丼を、少し遊び心も交えながら一緒につくって食べる時間です。
+            料理教室というより、名物づくりの途中に少し加わるようなおかってです。
+          </p>
+          <p class="proposalDetailIntro" th:if="${isHosyo and isHosyoScenery}">
+            一度では見えにくいこの町の風景や歴史の奥を、宝生さんと少しずつたどっていく時間です。
+            観光案内ではなく、通うほど見え方が深くなる町の楽しみ方に触れるおかってです。
           </p>
           <p class="proposalDetailIntro" th:if="${isGenericOkatte}"
              th:text="${pageData.summary != null ? pageData.summary : 'この土地の食卓や手仕事の空気を、少し近くで感じる時間です。'}">
@@ -95,17 +109,30 @@
               <li th:if="${isIto}">目安: 2時間</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">目安: 2時間</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">目安: 1.5時間</li>
+              <li th:if="${isHosyo and !isHosyoScenery}">目安: 2時間</li>
+              <li th:if="${isHosyo and isHosyoScenery}">目安: 1.5時間</li>
               <li th:if="${isGenericOkatte}">目安: <span th:text="${pageData.durationMinutes != null ? pageData.durationMinutes + '分' : '2時間ほど'}">2時間ほど</span></li>
-              <li th:text="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')} ? '料金: 1,500円 / 人' : '料金: 3,500円 / 人'">料金: 3,500円 / 人</li>
+              <li th:if="${isIto}">料金: 3,500円 / 人</li>
+              <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">料金: 3,500円 / 人</li>
+              <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">料金: 1,500円 / 人</li>
+              <li th:if="${isHosyo and !isHosyoScenery}">料金: 4,000円 / 人</li>
+              <li th:if="${isHosyo and isHosyoScenery}">料金: 2,000円 / 組</li>
               <li th:if="${isIto}" th:text="'開きやすい時期: 季節により調整'">開きやすい時期: 季節により調整</li>
               <li th:if="${isHasegawa}" th:text="${pageData.title != null and #strings.contains(pageData.title, '菊')} ? '開きやすい時期: 菊の時期' : '開きやすい時期: 季節により調整'">開きやすい時期: 季節により調整</li>
+              <li th:if="${isHosyo and !isHosyoScenery}">開きやすい時間: 昼</li>
+              <li th:if="${isHosyo and isHosyoScenery}">開きやすい時間: 日中</li>
               <li th:if="${isGenericOkatte}" th:text="${'場所: ' + (pageData.locationName != null ? pageData.locationName : '調整中')}">場所: 調整中</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">長谷川さんは同席しないことがあります</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">ワイン向けと一般向けの葡萄の食べ比べとぶどうジュースの試飲で飲み比べ、ワインの試飲もあります。</li>
               <li th:if="${isIto}">飲み物・追加注文は別料金</li>
+              <li th:if="${isHosyo and !isHosyoScenery}">飲み物は別料金</li>
+              <li th:if="${isHosyo and !isHosyoScenery}">一般的でない材料をご希望の場合、料金が変わることがあります</li>
+              <li th:if="${isHosyo and isHosyoScenery}">歩きやすい服装推奨</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">汚れてもよい服装がおすすめです</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">以前葡萄を植えるおかってご参加の方は、その葡萄も食べられます。</li>
               <li th:if="${isIto}">内容はその日の海や食材の状況により少し変わります</li>
+              <li th:if="${isHosyo and !isHosyoScenery}">内容は仕入れや時期により少し変わります</li>
+              <li th:if="${isHosyo and isHosyoScenery}">天候により変更あり</li>
               <li th:if="${isGenericOkatte}">内容はその日の状況により変わることがあります</li>
               <li th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">この土地の挑戦の途中に触れ、応援できるのはこのサイトならではです</li>
               <li th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">内容は花の状態や時期により変わります</li>
@@ -155,6 +182,20 @@
             <li><span>少し作業や場の空気に</span><span>触れる</span></li>
             <li><span>解散</span><span></span></li>
           </ul>
+          <ul class="proposalDetailScheduleList" th:if="${isHosyo and !isHosyoScenery}">
+            <li><span>集合</span><span></span></li>
+            <li><span>あなご丼の話を</span><span>聞く</span></li>
+            <li><span>少し手を</span><span>動かす</span></li>
+            <li><span>一緒に</span><span>食べる</span></li>
+            <li><span>解散</span><span></span></li>
+          </ul>
+          <ul class="proposalDetailScheduleList" th:if="${isHosyo and isHosyoScenery}">
+            <li><span>集合</span><span></span></li>
+            <li><span>町の中を</span><span>たどる</span></li>
+            <li><span>風景や歴史の話を</span><span>聞く</span></li>
+            <li><span>少し立ち止まりながら</span><span>過ごす</span></li>
+            <li><span>解散</span><span></span></li>
+          </ul>
           <ul class="proposalDetailScheduleList" th:if="${isGenericOkatte}">
             <li><span>集合</span><span>場の様子を確かめます</span></li>
             <li><span>おかってへ</span><span>向かいます</span></li>
@@ -166,18 +207,35 @@
         <article class="denseBox proposalDetailPanel">
           <h2 class="proposalDetailSectionTitle">どんな時間か</h2>
           <div class="proposalDetailCopy">
-            <p th:if="${pageData.body != null and isHasegawa}" th:text="${pageData.body}">この時間についての本文。</p>
             <p th:if="${isIto}">このおかっては、豪華な海鮮体験ではありません。</p>
             <p th:if="${isIto}">海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の食卓のあたたかさに少し入れてもらう時間です。</p>
             <p th:if="${isIto}">伊藤さんがいることで、外から来た人も無理なくその場に入っていけます。</p>
             <p th:if="${isIto}">観光向けに整えられた食事ではなく、海のそばの人たちが大事にしてきた食べ方や場の空気が、そのまま少しひらかれている感じが魅力です。</p>
             <p th:if="${isIto}">海を見て終わるのではなく、最後に食卓までつながる伊藤さんらしいおかってです。</p>
             <p th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">
-              このおかってでは、葡萄を通して、この土地で進んでいる挑戦の途中にふれます。完成したものを見るのではなく、まだ育っている途中のもの、試している途中のものに少し触れられるのが魅力です。
+              このおかってでは、葡萄を通して、この土地で進んでいる挑戦の途中にふれます。
             </p>
+            <p th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">商品として完成したものを見るのではなく、まだ育っている途中のもの、試している途中のもの、考えている途中のものに少し触れられるのが魅力です。</p>
+            <p th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">長谷川さんは、その途中をうまく隠さずに見せてくれる方です。</p>
+            <p th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">だから、ただ「いいものですね」で終わらず、「この先どうなるんだろう」と少し応援したくなる。</p>
+            <p th:if="${isHasegawa and pageData.title != null and !#strings.contains(pageData.title, '菊')}">この土地の挑戦に、外から来た人も少しだけ関われる時間です。</p>
             <p th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">
-              このおかっては、華やかな花体験ではありません。菊がどう育てられ、どう手をかけられているのか、その仕事場の空気に少し通してもらう時間です。
+              このおかっては、華やかな花体験ではありません。
             </p>
+            <p th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">菊がどう育てられ、どう手をかけられているのか、その仕事場の空気に少し通してもらう時間です。</p>
+            <p th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">長谷川さん自身が前面に出るというより、地域で続いてきた花の仕事へ、外から来た人が少し近づく入口に近いかたちです。</p>
+            <p th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">見た目の美しさだけではなく、続けるための手間や静かな積み重ねに触れられる。</p>
+            <p th:if="${isHasegawa and pageData.title != null and #strings.contains(pageData.title, '菊')}">この土地の仕事の厚みを感じられるおかってです。</p>
+            <p th:if="${isHosyo and !isHosyoScenery}">このおかっては、完成した名物をただ食べるだけの時間ではありません。</p>
+            <p th:if="${isHosyo and !isHosyoScenery}">この土地の名物として育てているあなご丼を、一緒に少しつくりながら、その食べ方や遊び心も含めて味わう時間です。</p>
+            <p th:if="${isHosyo and !isHosyoScenery}">料理教室のようにきっちり教わるというより、宝生さんが育ててきた食の空気に少し通してもらう感じが近いです。</p>
+            <p th:if="${isHosyo and !isHosyoScenery}">だから、ただおいしいで終わるのではなく、「この町でこういうふうに育ててきたんだな」と少し見えてきます。</p>
+            <p th:if="${isHosyo and !isHosyoScenery}">旅館の主人として人を迎えてきた宝生さんらしく、食卓ごと町の魅力に通してくれるおかってです。</p>
+            <p th:if="${isHosyo and isHosyoScenery}">このおかっては、初めての人向けの町歩きとは少し違います。</p>
+            <p th:if="${isHosyo and isHosyoScenery}">宝生さんと一緒に、何度か来るうちに見えてくるこの町の風景や歴史の奥をたどっていく時間です。</p>
+            <p th:if="${isHosyo and isHosyoScenery}">派手な名所より、ふつうに見える道や建物や景色の中に、「ここはこういう場所なんです」と少し奥行きが生まれていく。</p>
+            <p th:if="${isHosyo and isHosyoScenery}">宝生さんは、町の全部を一気に説明する人ではなく、通うほど少しずつ見せてくれる方です。</p>
+            <p th:if="${isHosyo and isHosyoScenery}">だからこの時間は、知識をもらうというより、この町との付き合い方が少し深くなるおかってになっています。</p>
             <p th:if="${isGenericOkatte and pageData.body != null}" th:text="${pageData.body}">この時間についての本文。</p>
             <p th:if="${isGenericOkatte and pageData.body == null}" th:text="${pageData.summary != null ? pageData.summary : 'この土地のおかってを近くで感じる時間です。'}">この土地のおかってを近くで感じる時間です。</p>
           </div>
@@ -188,17 +246,17 @@
     <section class="section proposalDetailPersonSection">
       <article class="denseBox proposalDetailPanel proposalDetailPersonCard">
         <figure class="proposalDetailPersonMedia">
-          <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : '/assets/images/伊藤さん写真/ito1.png'}"
-               th:alt="${isHasegawa ? '長谷川さんの写真' : '伊藤 朗士さんの写真'}" />
+          <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo1.png' : '/assets/images/伊藤さん写真/ito1.png')}"
+               th:alt="${isHasegawa ? '長谷川さんの写真' : (isHosyo ? '宝生さんの写真' : '伊藤 朗士さんの写真')}" />
         </figure>
         <div class="proposalDetailPersonBody">
           <p class="proposalDetailPersonRole">この時間をひらく方</p>
           <div class="proposalDetailPersonHeading">
-            <h2 class="proposalDetailPersonName" th:text="${isHasegawa ? '長谷川さん' : (isIto ? '伊藤 朗士さん' : (pageData.hostNickname != null ? pageData.hostNickname : '地域の方'))}">伊藤 朗士さん</h2>
+            <h2 class="proposalDetailPersonName" th:text="${isHasegawa ? '長谷川さん' : (isHosyo ? '宝生さん' : (isIto ? '伊藤 朗士さん' : (pageData.hostNickname != null ? pageData.hostNickname : '地域の方')))}">伊藤 朗士さん</h2>
             <div class="proposalTags proposalDetailTags">
-              <span class="proposalTag" th:text="${isHasegawa ? '若い世代のつなぎ役' : (isIto ? '地域のまとめ役' : 'おかってをひらく方')}">地域のまとめ役</span>
-              <span class="proposalTag" th:text="${isHasegawa ? '地域の挑戦の途中' : (isIto ? '長く信頼されてきた人' : '場をひらく人')}">長く信頼されてきた人</span>
-              <span class="proposalTag" th:text="${isHasegawa ? '葡萄と菊の人' : (isIto ? '頼れる受け皿' : '地域の時間')}">頼れる受け皿</span>
+              <span class="proposalTag" th:text="${isHasegawa ? '若い世代のつなぎ役' : (isHosyo ? '旅館の主人' : (isIto ? '地域のまとめ役' : 'おかってをひらく方'))}">地域のまとめ役</span>
+              <span class="proposalTag" th:text="${isHasegawa ? '地域の挑戦の途中' : (isHosyo ? '猫のいる町' : (isIto ? '長く信頼されてきた人' : '場をひらく人'))}">長く信頼されてきた人</span>
+              <span class="proposalTag" th:text="${isHasegawa ? '葡萄と菊の人' : (isHosyo ? '土地の奥を知る人' : (isIto ? '頼れる受け皿' : '地域の時間'))}">頼れる受け皿</span>
             </div>
           </div>
           <p class="proposalDetailPersonSummary" th:if="${isIto}">伊藤さんは、この土地の景色や人のつながりを長く見てきた方です。</p>
@@ -207,6 +265,9 @@
           <p class="proposalDetailPersonSummary" th:if="${isHasegawa}">
             地域で働きながら、少しずつ新しい風も入れている若い世代の方です。葡萄やワイン、菊などを通して、この土地の手仕事や挑戦の途中に触れさせてくれます。
           </p>
+          <p class="proposalDetailPersonSummary" th:if="${isHosyo}">旅館を営みながら、この土地の人や景色、食のことを長く見てきた方です。</p>
+          <p class="proposalDetailPersonSummary" th:if="${isHosyo}">本業は旅館の主人ですが、その延長で猫のいる町の空気を大事にしたり、地域の食の名物づくりにも関わったりしています。</p>
+          <p class="proposalDetailPersonSummary" th:if="${isHosyo}">派手に案内する人ではなく、何度か通ううちに少しずつこの町の奥を見せてくれる方です。</p>
           <p class="proposalDetailPersonSummary" th:if="${isGenericOkatte}" th:text="${pageData.summary != null ? pageData.summary : 'この時間をひらく地域の方です。'}">この時間をひらく地域の方です。</p>
           <div class="proposalDetailActionRow">
             <button class="btn ghost" type="button" data-host-modal-trigger>詳細はこちら</button>
@@ -260,16 +321,18 @@
                 th:classappend="${item.proposalId == pageData.proposalId} ? ' is-active' : ''"
                 th:attr="data-proposal-id=${item.proposalId}"
                 th:with="itemIsHasegawa=${(item.hostNickname != null and #strings.contains(item.hostNickname, '長谷川')) or (item.title != null and (#strings.contains(item.title, '葡萄') or #strings.contains(item.title, '菊')))},
+                         itemIsHosyo=${(item.hostNickname != null and #strings.contains(item.hostNickname, '宝生')) or (item.title != null and (#strings.contains(item.title, 'あなご丼') or #strings.contains(item.title, '町の風景の奥')))},
                          itemIsIto=${(item.hostNickname != null and #strings.contains(item.hostNickname, '伊藤')) or (item.title != null and (#strings.contains(item.title, '牡蠣小屋') or #strings.contains(item.title, '牡蠣') or #strings.contains(item.title, '港')))},
                          itemIsChrysanthemum=${item.title != null and #strings.contains(item.title, '菊')},
-                         itemIsGenericOkatte=${!itemIsHasegawa and !itemIsIto}"
+                         itemIsHosyoScenery=${item.title != null and #strings.contains(item.title, '町の風景の奥')},
+                         itemIsGenericOkatte=${!itemIsHasegawa and !itemIsHosyo and !itemIsIto}"
                 th:each="item, stat : ${pageData.relatedItems}">
                 <figure class="proposalVisual">
-                  <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (itemIsIto ? '/assets/images/伊藤さん写真/ito3.png' : '/assets/images/伊藤さん写真/ito5.png')}"
+                  <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (itemIsHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : (itemIsIto ? '/assets/images/伊藤さん写真/ito3.png' : '/assets/images/伊藤さん写真/ito5.png'))}"
                        th:alt="${item.title}" />
                   <span class="proposalFaceChip">
-                    <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : '/assets/images/伊藤さん写真/ito1.png'}"
-                         th:alt="${itemIsHasegawa ? '長谷川さん' : (itemIsIto ? '伊藤 朗士さん' : '地域の方')}" />
+                    <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : (itemIsHosyo ? '/assets/images/宝生さん写真/hosyo1.png' : '/assets/images/伊藤さん写真/ito1.png')}"
+                         th:alt="${itemIsHasegawa ? '長谷川さん' : (itemIsHosyo ? '宝生さん' : (itemIsIto ? '伊藤 朗士さん' : '地域の方'))}" />
                   </span>
                 </figure>
                 <div class="proposalCardMeta">
@@ -281,10 +344,14 @@
                   <h3 class="proposalTitle" th:if="${itemIsIto}">牡蠣小屋で、海のものを囲む時間</h3>
                   <h3 class="proposalTitle" th:if="${itemIsHasegawa and !itemIsChrysanthemum}">葡萄を通して、地域の挑戦の途中にふれる</h3>
                   <h3 class="proposalTitle" th:if="${itemIsHasegawa and itemIsChrysanthemum}">菊の仕事場に、少し通してもらう</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsHosyo and !itemIsHosyoScenery}">名物あなご丼を、少し遊びながらつくる昼</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsHosyo and itemIsHosyoScenery}">何度も来ると見えてくる、町の風景の奥をたどる</h3>
                   <h3 class="proposalTitle" th:if="${itemIsGenericOkatte}" th:text="${item.title}">title</h3>
                   <p class="proposalSummary" th:if="${itemIsIto}">海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。気取った食事ではなく、海のそばの暮らしの延長にある食卓に少し入れてもらうようなおかってです。</p>
                   <p class="proposalSummary" th:if="${itemIsHasegawa and !itemIsChrysanthemum}">葡萄にふれながら、この土地で進んでいる挑戦の途中を少し見せてもらう時間です。完成したワインや商品を見るだけではなく、その手前の育てる現場や考えていることに触れられるおかってです。</p>
                   <p class="proposalSummary" th:if="${itemIsHasegawa and itemIsChrysanthemum}">菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsHosyo and !itemIsHosyoScenery}">この土地の名物として育てているあなご丼を、少し遊び心も交えながら一緒につくって食べる時間です。料理教室というより、名物づくりの途中に少し加わるようなおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsHosyo and itemIsHosyoScenery}">一度では見えにくいこの町の風景や歴史の奥を、宝生さんと少しずつたどっていく時間です。観光案内ではなく、通うほど見え方が深くなる町の楽しみ方に触れるおかってです。</p>
                   <p class="proposalSummary" th:if="${itemIsGenericOkatte}" th:text="${item.summary != null ? item.summary : 'この土地のおかっての空気に少し触れる時間です。'}">summary</p>
                   <div class="proposalTags">
                     <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
@@ -306,23 +373,27 @@
   </main>
 
   <div class="proposalPersonModal" data-host-modal hidden
-       th:with="isHasegawa=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '長谷川')) or (pageData.title != null and (#strings.contains(pageData.title, '葡萄') or #strings.contains(pageData.title, '菊')))}">
+       th:with="isHasegawa=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '長谷川')) or (pageData.title != null and (#strings.contains(pageData.title, '葡萄') or #strings.contains(pageData.title, '菊')))},
+                isHosyo=${(pageData.hostNickname != null and #strings.contains(pageData.hostNickname, '宝生')) or (pageData.title != null and (#strings.contains(pageData.title, 'あなご丼') or #strings.contains(pageData.title, '町の風景の奥')))}">
     <button class="proposalPersonModalBackdrop" type="button" aria-label="人物詳細を閉じる" data-host-modal-close></button>
     <div class="proposalPersonModalDialog" role="dialog" aria-modal="true" aria-labelledby="host-modal-title" aria-describedby="host-modal-lead" tabindex="-1">
       <button class="btn ghost proposalPersonModalClose" type="button" aria-label="閉じる" data-host-modal-close>閉じる</button>
       <div class="proposalPersonModalBody">
         <section class="proposalPersonModalIntro">
           <p class="proposalPersonModalRole">人物紹介</p>
-          <h2 class="proposalPersonModalName" id="host-modal-title" th:text="${isHasegawa ? '長谷川さんについて' : '伊藤 朗士さんについて'}">伊藤 朗士さんについて</h2>
-          <p class="proposalPersonModalLead" id="host-modal-lead" th:if="${!isHasegawa}">
+          <h2 class="proposalPersonModalName" id="host-modal-title" th:text="${isHasegawa ? '長谷川さんについて' : (isHosyo ? '宝生さんについて' : '伊藤 朗士さんについて')}">伊藤 朗士さんについて</h2>
+          <p class="proposalPersonModalLead" id="host-modal-lead" th:if="${!isHasegawa and !isHosyo}">
             この方の背景や、地域の中でどんなことを一緒に考えてきたのかを読むためのモーダルです。具体的な提案内容ではなく、人と地域での動きを中心に見せています。
           </p>
           <p class="proposalPersonModalLead" id="host-modal-lead" th:if="${isHasegawa}">
             この方の背景や、地域の中でどんな挑戦の途中に立っているのかを読むためのモーダルです。完成した紹介ではなく、いま動いている空気を中心に見せています。
           </p>
+          <p class="proposalPersonModalLead" id="host-modal-lead" th:if="${isHosyo}">
+            この方の背景や、旅館の主人として町をどう見てきたのかを読むためのモーダルです。猫のいる風景や食のことにも関わる視点を中心に見せています。
+          </p>
         </section>
 
-        <section class="proposalPersonModalSection" th:if="${!isHasegawa}">
+        <section class="proposalPersonModalSection" th:if="${!isHasegawa and !isHosyo}">
           <h3 class="proposalPersonModalHeading">この土地で長く見てきたのは…</h3>
           <div class="proposalPersonModalText">
             <p>伊藤さんは、この土地で長く生き、地域の移り変わりを見てきた方です。もともとは航空自衛隊のパイロットとして厳しい仕事に就いていました。</p>
@@ -330,7 +401,7 @@
           </div>
         </section>
 
-        <section class="proposalPersonModalSection" th:if="${!isHasegawa}">
+        <section class="proposalPersonModalSection" th:if="${!isHasegawa and !isHosyo}">
           <h3 class="proposalPersonModalHeading">頼れるのに押しつけがましくないのは…</h3>
           <div class="proposalPersonModalText">
             <p>伊藤さんは、ただ強い人というより、受け皿になれる人です。何かあったときに頼れるけれど、必要以上に前に出たり、自分の話ばかりしたりはしません。</p>
@@ -338,7 +409,7 @@
           </div>
         </section>
 
-        <section class="proposalPersonModalSection" th:if="${!isHasegawa}">
+        <section class="proposalPersonModalSection" th:if="${!isHasegawa and !isHosyo}">
           <h3 class="proposalPersonModalHeading">人をつなげるのは…</h3>
           <div class="proposalPersonModalText">
             <p>伊藤さんのよさは、地域の中だけに閉じていないことです。土地の人とも、外から来た人とも、世代の違う人とも自然につながれる。</p>
@@ -346,7 +417,7 @@
           </div>
         </section>
 
-        <section class="proposalPersonModalSection" th:if="${!isHasegawa}">
+        <section class="proposalPersonModalSection" th:if="${!isHasegawa and !isHosyo}">
           <h3 class="proposalPersonModalHeading">土地に手をかけてきたのは…</h3>
           <div class="proposalPersonModalText">
             <p>伊藤さんは、この土地の景色や営みをただ眺めてきた人ではありません。人と一緒に花を植えたり、場所を整えたり、誰かがまた来たくなる風景をつくることにも関わってきました。</p>
@@ -383,6 +454,42 @@
           <div class="proposalPersonModalText">
             <p>長谷川さんのよさは、「できあがった地域」を見せるのではなく、「まだ育っている地域」を一緒に見せてくれるところです。とくに葡萄の時間には、その土地の挑戦の途中に少し触れ、応援したくなる感覚が生まれます。</p>
             <p>完成品を見るだけでは出てこない、関係の芽のようなものがある方です。</p>
+          </div>
+        </section>
+
+        <section class="proposalPersonModalSection" th:if="${isHosyo}">
+          <h3 class="proposalPersonModalHeading">本業は旅館なのに…</h3>
+          <div class="proposalPersonModalText">
+            <p>宝生さんは、旅館を営む方です。</p>
+            <p>ただ泊まってもらうだけでなく、この土地に来た人が町をどう感じ、また来たいと思うかまで、長く見てきました。</p>
+            <p>そのため宝生さんの時間には、旅館の主人としての落ち着きと、地域をひらく人としての目線が自然にあります。</p>
+          </div>
+        </section>
+
+        <section class="proposalPersonModalSection" th:if="${isHosyo}">
+          <h3 class="proposalPersonModalHeading">猫の町を大事にしているのは…</h3>
+          <div class="proposalPersonModalText">
+            <p>宝生さんは、本業の延長で猫のいる町の空気も大事にしてきた方です。</p>
+            <p>猫を観光の記号として見せるのではなく、この町の日常や人の気配の中に、自然に猫がいる感じを守ろうとしている。</p>
+            <p>だから宝生さんの入口は、にぎやかな猫スポット巡りではなく、町を歩くうちに猫のいる空気に少しずつ馴染んでいく時間になります。</p>
+          </div>
+        </section>
+
+        <section class="proposalPersonModalSection" th:if="${isHosyo}">
+          <h3 class="proposalPersonModalHeading">食のことにも関わっているのは…</h3>
+          <div class="proposalPersonModalText">
+            <p>宝生さんは、地域の名物づくりにも関わっています。</p>
+            <p>とくに食は、この土地にまた来たくなる理由の一つでもあるので、旅館の仕事と切り離さずに見ている方です。</p>
+            <p>そのため、宝生さんがひらくおかってには、町歩きだけでは終わらない、この土地の食卓への入口もあります。</p>
+          </div>
+        </section>
+
+        <section class="proposalPersonModalSection" th:if="${isHosyo}">
+          <h3 class="proposalPersonModalHeading">何度も来ると見えてくるのは…</h3>
+          <div class="proposalPersonModalText">
+            <p>宝生さんは、初対面から全部ひらく人ではありません。</p>
+            <p>でも、何度か来たり、少しずつ時間を重ねたりするうちに、この町の風景や歴史や人のつながりの奥を見せてくれる方です。</p>
+            <p>一回で消費する観光ではなく、少しずつ関係が深まる町の見え方を渡してくれる人です。</p>
           </div>
         </section>
 

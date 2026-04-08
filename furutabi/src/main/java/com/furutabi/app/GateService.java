@@ -20,11 +20,13 @@ public class GateService {
     public static final String GATE_KIND_ITO_WALK = "ITO_WALK";
     public static final String GATE_KIND_ITO_FLOWER = "ITO_FLOWER";
     public static final String GATE_KIND_HASEGAWA = "HASEGAWA";
+    public static final String GATE_KIND_HOSYO = "HOSYO";
     public static final String GATE_KIND_UNKNOWN = "UNKNOWN";
 
     public static final String TITLE_ITO_WALK = "海を眺めながら、この街の話を聞く散歩";
     public static final String TITLE_ITO_FLOWER = "海辺の花を手入れする日";
     public static final String TITLE_HASEGAWA = "コーヒーを飲みながら、町の見え方が少し変わる";
+    public static final String TITLE_HOSYO = "猫の町を歩く";
 
     private static final String[] PIN_CLASSES = {
         "gateEntryPin--a",
@@ -107,7 +109,7 @@ public class GateService {
 
     private List<GateSummary> selectPrimaryGateItems(List<GateSummary> items) {
         List<GateSummary> selected = new ArrayList<>();
-        for (String kind : List.of(GATE_KIND_ITO_WALK, GATE_KIND_ITO_FLOWER, GATE_KIND_HASEGAWA)) {
+        for (String kind : List.of(GATE_KIND_ITO_WALK, GATE_KIND_ITO_FLOWER, GATE_KIND_HASEGAWA, GATE_KIND_HOSYO)) {
             items.stream()
                 .filter(item -> kind.equals(item.templateKind()))
                 .findFirst()
@@ -331,6 +333,9 @@ public class GateService {
         if (TITLE_HASEGAWA.equals(title)) {
             return GATE_KIND_HASEGAWA;
         }
+        if (TITLE_HOSYO.equals(title)) {
+            return GATE_KIND_HOSYO;
+        }
         return GATE_KIND_UNKNOWN;
     }
 
@@ -420,6 +425,9 @@ public class GateService {
         }
         if (TITLE_HASEGAWA.equals(title)) {
             return GATE_KIND_HASEGAWA;
+        }
+        if (TITLE_HOSYO.equals(title)) {
+            return GATE_KIND_HOSYO;
         }
         return GATE_KIND_UNKNOWN;
     }

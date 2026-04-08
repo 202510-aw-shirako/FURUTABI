@@ -86,16 +86,18 @@
               <article class="card proposalCard proposalCard--okatte entryCarouselCard proposalStripCard"
                        data-entry-card
                        th:with="itemIsHasegawa=${(item.hostNickname != null and #strings.contains(item.hostNickname, '長谷川')) or (item.title != null and (#strings.contains(item.title, '葡萄') or #strings.contains(item.title, '菊')))},
+                                itemIsHosyo=${(item.hostNickname != null and #strings.contains(item.hostNickname, '宝生')) or (item.title != null and (#strings.contains(item.title, 'あなご丼') or #strings.contains(item.title, '町の風景の奥')))},
                                 itemIsIto=${(item.hostNickname != null and #strings.contains(item.hostNickname, '伊藤')) or (item.title != null and (#strings.contains(item.title, '牡蠣小屋') or #strings.contains(item.title, '牡蠣') or #strings.contains(item.title, '港')))},
                                 itemIsChrysanthemum=${item.title != null and #strings.contains(item.title, '菊')},
-                                itemIsGenericOkatte=${!itemIsHasegawa and !itemIsIto}"
+                                itemIsHosyoScenery=${item.title != null and #strings.contains(item.title, '町の風景の奥')},
+                                itemIsGenericOkatte=${!itemIsHasegawa and !itemIsHosyo and !itemIsIto}"
                        th:each="item, stat : ${okattePageData.items}">
                 <figure class="proposalVisual">
-                  <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : '/assets/images/伊藤さん写真/ito3.png'}"
+                  <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (itemIsHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : '/assets/images/伊藤さん写真/ito3.png')}"
                        th:alt="${item.title}" />
                   <span class="proposalFaceChip">
-                    <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : '/assets/images/伊藤さん写真/ito1.png'}"
-                         th:alt="${itemIsHasegawa ? '長谷川さん' : '伊藤 朗士さん'}" />
+                    <img th:src="${itemIsHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : (itemIsHosyo ? '/assets/images/宝生さん写真/hosyo1.png' : '/assets/images/伊藤さん写真/ito1.png')}"
+                         th:alt="${itemIsHasegawa ? '長谷川さん' : (itemIsHosyo ? '宝生さん' : '伊藤 朗士さん')}" />
                   </span>
                 </figure>
                 <div class="proposalCardMeta">
@@ -108,10 +110,14 @@
                   <h3 class="proposalTitle" th:if="${itemIsIto}">牡蠣小屋で、海のものを囲む時間</h3>
                   <h3 class="proposalTitle" th:if="${itemIsHasegawa and !itemIsChrysanthemum}">葡萄を通して、地域の挑戦の途中にふれる</h3>
                   <h3 class="proposalTitle" th:if="${itemIsHasegawa and itemIsChrysanthemum}">菊の仕事場に、少し通してもらう</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsHosyo and !itemIsHosyoScenery}">名物あなご丼を、少し遊びながらつくる昼</h3>
+                  <h3 class="proposalTitle" th:if="${itemIsHosyo and itemIsHosyoScenery}">何度も来ると見えてくる、町の風景の奥をたどる</h3>
                   <h3 class="proposalTitle" th:if="${itemIsGenericOkatte}" th:text="${item.title}">ちいきのおかって</h3>
                   <p class="proposalSummary" th:if="${itemIsIto}">海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。気取った食事ではなく、海のそばの暮らしの延長にある食卓に少し入れてもらうようなおかってです。</p>
                   <p class="proposalSummary" th:if="${itemIsHasegawa and !itemIsChrysanthemum}">葡萄にふれながら、この土地で進んでいる挑戦の途中を少し見せてもらう時間です。完成したワインや商品を見るだけではなく、その手前の育てる現場や考えていることに触れられるおかってです。</p>
                   <p class="proposalSummary" th:if="${itemIsHasegawa and itemIsChrysanthemum}">菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsHosyo and !itemIsHosyoScenery}">この土地の名物として育てているあなご丼を、少し遊び心も交えながら一緒につくって食べる時間です。料理教室というより、名物づくりの途中に少し加わるようなおかってです。</p>
+                  <p class="proposalSummary" th:if="${itemIsHosyo and itemIsHosyoScenery}">一度では見えにくいこの町の風景や歴史の奥を、宝生さんと少しずつたどっていく時間です。観光案内ではなく、通うほど見え方が深くなる町の楽しみ方に触れるおかってです。</p>
                   <p class="proposalSummary" th:if="${itemIsGenericOkatte}" th:text="${item.summary != null ? item.summary : 'この地域の食卓や仕事場に少し触れられる時間です。'}">summary</p>
                   <div class="proposalTags">
                     <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
@@ -466,14 +472,15 @@
                          data-entry-card
                          th:with="isItoWalk=${item.templateKind == 'ITO_WALK'},
                                   isItoFlower=${item.templateKind == 'ITO_FLOWER'},
-                                  isHasegawa=${item.templateKind == 'HASEGAWA'}"
+                                  isHasegawa=${item.templateKind == 'HASEGAWA'},
+                                  isHosyo=${item.templateKind == 'HOSYO'}"
                          th:each="item, stat : ${gatePageData.items}">
                   <figure class="proposalVisual">
-                    <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isItoFlower ? '/assets/images/伊藤さん写真/ito4.png' : '/assets/images/伊藤さん写真/ito2.png')}"
+                    <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : (isItoFlower ? '/assets/images/伊藤さん写真/ito4.png' : '/assets/images/伊藤さん写真/ito2.png'))}"
                          th:alt="${item.title}" />
                     <span class="proposalFaceChip">
-                      <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : '/assets/images/伊藤さん写真/ito1.png'}"
-                           th:alt="${isHasegawa ? '長谷川さん' : '伊藤 朗士さん'}" />
+                      <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo1.png' : '/assets/images/伊藤さん写真/ito1.png')}"
+                           th:alt="${isHasegawa ? '長谷川さん' : (isHosyo ? '宝生さん' : '伊藤 朗士さん')}" />
                     </span>
                   </figure>
                   <div class="proposalCardMeta">
@@ -487,7 +494,8 @@
                     <p class="proposalSummary" th:if="${isItoWalk}">海を見渡せる場所を伊藤さんとゆっくり歩きながら、この土地のこと、人のこと、ここでの暮らしのことを少しずつ聞いていく時間です。観光案内ではなく、この街に入っていくための最初の入口のような散歩です。</p>
                     <p class="proposalSummary" th:if="${isItoFlower}">海辺の景色をよくするために、花を手入れしたり、少し場所を整えたりする時間です。ただ眺めるだけでなく、この土地に少し手をかけることで、街との距離が少し近くなります。</p>
                     <p class="proposalSummary" th:if="${isHasegawa}">長谷川さんとコーヒーを飲みながら少し話すことで、この町の今の空気や、地域の挑戦の途中にやわらかく触れていく時間です。強い体験ではなく、まずは話しやすさの中から、この土地との距離が少し縮まる入口です。</p>
-                    <p class="proposalSummary" th:if="${!isItoWalk and !isItoFlower and !isHasegawa}"
+                    <p class="proposalSummary" th:if="${isHosyo}">宝生さんと一緒に町を歩きながら、猫のいる風景や、この土地の日常の気配に少しずつ馴染んでいく時間です。観光スポットを回るのではなく、町の空気ごとゆっくり入っていくための入口です。</p>
+                    <p class="proposalSummary" th:if="${!isItoWalk and !isItoFlower and !isHasegawa and !isHosyo}"
                        th:text="${item.summary != null ? item.summary : 'この入口の空気を、まずは短く見てみるための時間です。'}">summary</p>
                     <div class="proposalTags">
                       <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
