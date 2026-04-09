@@ -15,9 +15,29 @@ public class ProposalPresentationCatalog {
     private static final String HOST_TODO = "TODO";
     private static final String HOST_GENERIC = "GENERIC";
 
+    public static final long HOST_USER_ID_ITO = 101L;
+    public static final long HOST_USER_ID_HASEGAWA = 102L;
+    public static final long HOST_USER_ID_HOSYO = 103L;
+    public static final long HOST_USER_ID_TODO = 104L;
+
+    public static final long PROPOSAL_ID_ITO_WALK = 1001L;
+    public static final long PROPOSAL_ID_ITO_FLOWER = 1002L;
+    public static final long PROPOSAL_ID_HASEGAWA_GATE = 1003L;
+    public static final long PROPOSAL_ID_HOSYO_GATE = 1004L;
+    public static final long PROPOSAL_ID_TODO_WALK = 1005L;
+    public static final long PROPOSAL_ID_TODO_LEATHER = 1006L;
+    public static final long PROPOSAL_ID_ITO_OKATTE = 22001L;
+    public static final long PROPOSAL_ID_HASEGAWA_GRAPE = 23002L;
+    public static final long PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM = 23003L;
+    public static final long PROPOSAL_ID_HOSYO_ANAGO = 23004L;
+    public static final long PROPOSAL_ID_HOSYO_SCENERY = 23005L;
+    public static final long PROPOSAL_ID_TODO_OKATTE = 23006L;
+
     private static final Map<String, HostProfile> HOSTS = new LinkedHashMap<>();
     private static final Map<String, ProgramContent> PROGRAMS = new LinkedHashMap<>();
     private static final Map<String, String> TITLE_TO_KIND = new LinkedHashMap<>();
+    private static final Map<Long, HostProfile> HOSTS_BY_USER_ID = new LinkedHashMap<>();
+    private static final Map<Long, ProgramContent> PROGRAMS_BY_PROPOSAL_ID = new LinkedHashMap<>();
 
     static {
         HOSTS.put(HOST_ITO, new HostProfile(
@@ -483,6 +503,46 @@ public class ProposalPresentationCatalog {
         return HOSTS.get(HOST_GENERIC);
     }
 
+    public static ProgramContent resolveProgramByProposalId(long proposalId, String fallbackTitle, String fallbackSummary, String fallbackBody,
+                                                            Integer durationMinutes, String locationName) {
+        ProgramContent known = PROGRAMS_BY_PROPOSAL_ID.get(proposalId);
+        if (known != null) {
+            return known;
+        }
+        if (fallbackTitle != null && !fallbackTitle.isBlank()) {
+            return resolveProgramByTitle(fallbackTitle, fallbackSummary, fallbackBody, durationMinutes, locationName);
+        }
+        return resolveProgram(null, fallbackTitle, fallbackSummary, fallbackBody, durationMinutes, locationName);
+    }
+
+    public static HostProfile resolveHostByUserId(long hostUserId, String fallbackHostNickname) {
+        HostProfile known = HOSTS_BY_USER_ID.get(hostUserId);
+        if (known != null) {
+            return known;
+        }
+        return resolveHost(null, fallbackHostNickname);
+    }
+
+    public static HostProfile resolveHostForProposal(long hostUserId, long proposalId, String fallbackTitle, String fallbackHostNickname) {
+        HostProfile known = HOSTS_BY_USER_ID.get(hostUserId);
+        if (known != null) {
+            return known;
+        }
+        ProgramContent byProposalId = PROGRAMS_BY_PROPOSAL_ID.get(proposalId);
+        if (byProposalId != null) {
+            return resolveHost(byProposalId.hostKey(), fallbackHostNickname);
+        }
+        if (fallbackTitle != null && !fallbackTitle.isBlank()) {
+            return resolveHostByTitle(fallbackTitle, fallbackHostNickname);
+        }
+        return resolveHost(null, fallbackHostNickname);
+    }
+
+    public static String resolveTemplateKindByProposalId(long proposalId) {
+        ProgramContent known = PROGRAMS_BY_PROPOSAL_ID.get(proposalId);
+        return known != null ? known.templateKind() : null;
+    }
+
     public static String hostKeyForTemplate(String templateKind) {
         ProgramContent content = PROGRAMS.get(templateKind);
         return content != null ? content.hostKey() : HOST_GENERIC;
@@ -546,5 +606,22 @@ public class ProposalPresentationCatalog {
 
     static {
         PROGRAMS.values().forEach(program -> TITLE_TO_KIND.put(program.title(), program.templateKind()));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_ITO, HOSTS.get(HOST_ITO));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_HASEGAWA, HOSTS.get(HOST_HASEGAWA));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_HOSYO, HOSTS.get(HOST_HOSYO));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_TODO, HOSTS.get(HOST_TODO));
+
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_WALK, PROGRAMS.get(GateService.GATE_KIND_ITO_WALK));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_FLOWER, PROGRAMS.get(GateService.GATE_KIND_ITO_FLOWER));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_GATE, PROGRAMS.get(GateService.GATE_KIND_HASEGAWA));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_GATE, PROGRAMS.get(GateService.GATE_KIND_HOSYO));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_WALK, PROGRAMS.get(GateService.GATE_KIND_TODO_WALK));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_LEATHER, PROGRAMS.get(GateService.GATE_KIND_TODO_LEATHER));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_ITO));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_GRAPE, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_GRAPE));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_ANAGO, PROGRAMS.get(OkatteService.OKATTE_KIND_HOSYO_ANAGO));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_SCENERY, PROGRAMS.get(OkatteService.OKATTE_KIND_HOSYO_SCENERY));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_TODO));
     }
 }

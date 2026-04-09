@@ -60,8 +60,8 @@ public class OkatteService {
         List<OkatteSummary> relatedItems = new ArrayList<>(loadVisibleOkatteList(email).items());
         boolean currentIncluded = relatedItems.stream().anyMatch(item -> item.proposalId() == proposalId);
         if (!currentIncluded) {
-            ProposalPresentationCatalog.ProgramContent currentProgram = ProposalPresentationCatalog.resolveProgramByTitle(row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName()));
-            ProposalPresentationCatalog.HostProfile currentHost = ProposalPresentationCatalog.resolveHostByTitle(row.title(), nullableText(row.hostNickname()));
+            ProposalPresentationCatalog.ProgramContent currentProgram = ProposalPresentationCatalog.resolveProgramByProposalId(proposalId, row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName()));
+            ProposalPresentationCatalog.HostProfile currentHost = ProposalPresentationCatalog.resolveHostForProposal(row.hostUserId(), proposalId, row.title(), nullableText(row.hostNickname()));
             relatedItems.add(0, new OkatteSummary(
                 proposalId,
                 currentProgram.title(),
@@ -74,12 +74,27 @@ public class OkatteService {
                 viewerUserId != null && viewerUserId == row.hostUserId(),
                 PIN_CLASSES[0],
                 1,
-                ProposalPresentationCatalog.resolveTemplateKindByTitle(row.title()),
+                currentProgram.templateKind(),
                 currentProgram.cardImage(),
                 currentHost.portraitImage(),
                 currentHost.portraitAlt()
             ));
         }
+
+        ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByProposalId(
+            proposalId,
+            row.title(),
+            nullableText(row.summary()),
+            nullableText(row.body()),
+            row.durationMinutes(),
+            nullableText(row.locationName())
+        );
+        ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostForProposal(
+            row.hostUserId(),
+            proposalId,
+            row.title(),
+            nullableText(row.hostNickname())
+        );
 
         return new OkatteDetailPageData(
             proposalId,
@@ -101,9 +116,9 @@ public class OkatteService {
             loadSupportNoteUrl(viewerUserId, row),
             "/app/okatte",
             relatedItems,
-            ProposalPresentationCatalog.resolveTemplateKindByTitle(row.title()),
-            ProposalPresentationCatalog.resolveProgramByTitle(row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName())),
-            ProposalPresentationCatalog.resolveHostByTitle(row.title(), nullableText(row.hostNickname()))
+            program.templateKind(),
+            program,
+            host
         );
     }
 
@@ -396,9 +411,8 @@ public class OkatteService {
         List<String> tags
     ) {
         private OkatteSummary withOwner(boolean owner) {
-            String templateKind = ProposalPresentationCatalog.resolveTemplateKindByTitle(title);
-            ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByTitle(title, titleIfBlank(summary), null, durationMinutes, locationName);
-            ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostByTitle(title, hostNickname);
+            ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByProposalId(proposalId, title, titleIfBlank(summary), null, durationMinutes, locationName);
+            ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostForProposal(hostUserId, proposalId, title, hostNickname);
             return new OkatteSummary(
                 proposalId,
                 program.title(),
@@ -411,7 +425,7 @@ public class OkatteService {
                 owner,
                 PIN_CLASSES[0],
                 1,
-                templateKind,
+                program.templateKind(),
                 program.cardImage(),
                 host.portraitImage(),
                 host.portraitAlt()

@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.furutabi.app.ProposalPresentationCatalog;
+
 @Component
 @Profile("dev")
 public class DevUserSeed implements ApplicationRunner {
@@ -41,8 +43,10 @@ public class DevUserSeed implements ApplicationRunner {
         seedUser("user@example.com", "USER", "User Seed", "User Seed");
         seedUser("local@example.com", "LOCAL", "Local Seed", "Local Seed");
         seedUser("bridge@example.com", "BRIDGE", "Bridge Seed", "Bridge Seed");
-        seedNamedUser("hosyo@example.com", "LOCAL", "宝生さん", "宝生さん", "宝生さん");
-        seedNamedUser("todo@example.com", "LOCAL", "東堂さん", "東堂さん", "東堂さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_ITO, "ito@example.com", "LOCAL", "伊藤 朗士さん", "伊藤 朗士さん", "伊藤 朗士さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_HASEGAWA, "hasegawa@example.com", "LOCAL", "長谷川さん", "長谷川さん", "長谷川さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_HOSYO, "hosyo@example.com", "LOCAL", "宝生さん", "宝生さん", "宝生さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_TODO, "todo@example.com", "LOCAL", "東堂さん", "東堂さん", "東堂さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -51,10 +55,10 @@ public class DevUserSeed implements ApplicationRunner {
     }
 
     private void seedUser(String email, String roleName, String name, String nameKana) {
-        seedNamedUser(email, roleName, roleName.toLowerCase() + "-seed", name, nameKana);
+        seedNamedUser(null, email, roleName, roleName.toLowerCase() + "-seed", name, nameKana);
     }
 
-    private void seedNamedUser(String email, String roleName, String nickname, String name, String nameKana) {
+    private void seedNamedUser(Long preferredUserId, String email, String roleName, String nickname, String name, String nameKana) {
         List<Long> existingUserIds = jdbcTemplate.query(
             "SELECT id FROM users WHERE email = ?",
             (rs, rowNum) -> rs.getLong("id"),
@@ -68,12 +72,13 @@ public class DevUserSeed implements ApplicationRunner {
             jdbcTemplate.update(
                 """
                     INSERT INTO users (
-                        email, password_hash, nickname, name, name_kana, birthday, gender,
+                        id, email, password_hash, nickname, name, name_kana, birthday, gender,
                         phone_number, address, sms_verified, additional_verification_status,
                         created_at, updated_at
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
+                preferredUserId,
                 email,
                 passwordEncoder.encode("password123"),
                 nickname,
@@ -180,6 +185,8 @@ public class DevUserSeed implements ApplicationRunner {
 
     private void seedAdditionalGateProposals() {
         seedProposal(
+            ProposalPresentationCatalog.PROPOSAL_ID_ITO_WALK,
+            "ito@example.com",
             "GATE",
             GateSeedData.ITO_WALK.title(),
             GateSeedData.ITO_WALK.summary(),
@@ -190,6 +197,8 @@ public class DevUserSeed implements ApplicationRunner {
             GateSeedData.ITO_WALK.tags()
         );
         seedProposal(
+            ProposalPresentationCatalog.PROPOSAL_ID_ITO_FLOWER,
+            "ito@example.com",
             "GATE",
             GateSeedData.ITO_FLOWER.title(),
             GateSeedData.ITO_FLOWER.summary(),
@@ -200,6 +209,8 @@ public class DevUserSeed implements ApplicationRunner {
             GateSeedData.ITO_FLOWER.tags()
         );
         seedProposal(
+            ProposalPresentationCatalog.PROPOSAL_ID_HASEGAWA_GATE,
+            "hasegawa@example.com",
             "GATE",
             GateSeedData.HASEGAWA.title(),
             GateSeedData.HASEGAWA.summary(),
@@ -210,6 +221,7 @@ public class DevUserSeed implements ApplicationRunner {
             GateSeedData.HASEGAWA.tags()
         );
         seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_HOSYO_GATE,
             "hosyo@example.com",
             "GATE",
             GateSeedData.HOSYO.title(),
@@ -221,6 +233,7 @@ public class DevUserSeed implements ApplicationRunner {
             GateSeedData.HOSYO.tags()
         );
         seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_TODO_WALK,
             "todo@example.com",
             "GATE",
             GateSeedData.TODO_WALK.title(),
@@ -232,6 +245,7 @@ public class DevUserSeed implements ApplicationRunner {
             GateSeedData.TODO_WALK.tags()
         );
         seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_TODO_LEATHER,
             "todo@example.com",
             "GATE",
             GateSeedData.TODO_LEATHER.title(),
@@ -303,6 +317,8 @@ public class DevUserSeed implements ApplicationRunner {
 
     private void seedAdditionalOkatteProposals() {
         seedProposal(
+            ProposalPresentationCatalog.PROPOSAL_ID_ITO_OKATTE,
+            "ito@example.com",
             "OKATTE",
             "牡蠣小屋で、海のものを囲む時間",
             "海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。気取った食事ではなく、海のそばの暮らしの延長にある食卓に少し入れてもらうようなおかってです。",
@@ -323,6 +339,8 @@ public class DevUserSeed implements ApplicationRunner {
             List.of("harbor", "work")
         );
         seedProposal(
+            ProposalPresentationCatalog.PROPOSAL_ID_HASEGAWA_GRAPE,
+            "hasegawa@example.com",
             "OKATTE",
             "葡萄を通して、地域の挑戦の途中にふれる",
             "葡萄にふれながら、この土地で進んでいる挑戦の途中を少し見せてもらう時間です。完成したワインや商品を見るだけではなく、その手前の育てる現場や考えていることに触れられるおかってです。",
@@ -333,6 +351,8 @@ public class DevUserSeed implements ApplicationRunner {
             List.of("grape", "challenge")
         );
         seedProposal(
+            ProposalPresentationCatalog.PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM,
+            "hasegawa@example.com",
             "OKATTE",
             "菊の仕事場に、少し通してもらう",
             "菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。",
@@ -343,6 +363,7 @@ public class DevUserSeed implements ApplicationRunner {
             List.of("chrysanthemum", "work")
         );
         seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_HOSYO_ANAGO,
             "hosyo@example.com",
             "OKATTE",
             "名物あなご丼を、少し遊びながらつくる昼",
@@ -354,6 +375,7 @@ public class DevUserSeed implements ApplicationRunner {
             List.of("anago", "lunch")
         );
         seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_HOSYO_SCENERY,
             "hosyo@example.com",
             "OKATTE",
             "何度も来ると見えてくる、町の風景の奥をたどる",
@@ -365,6 +387,7 @@ public class DevUserSeed implements ApplicationRunner {
             List.of("town", "history")
         );
         seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_TODO_OKATTE,
             "todo@example.com",
             "OKATTE",
             "工房の奥で、もう少し深い制作に向き合う",
@@ -390,7 +413,37 @@ public class DevUserSeed implements ApplicationRunner {
         seedProposalForHost("local@example.com", proposalType, title, summary, body, durationMinutes, locationName, visibilityScope, tags);
     }
 
+    private void seedProposal(
+        long preferredProposalId,
+        String hostEmail,
+        String proposalType,
+        String title,
+        String summary,
+        String body,
+        int durationMinutes,
+        String locationName,
+        String visibilityScope,
+        List<String> tags
+    ) {
+        seedProposalForHost(preferredProposalId, hostEmail, proposalType, title, summary, body, durationMinutes, locationName, visibilityScope, tags);
+    }
+
     private void seedProposalForHost(
+        String hostEmail,
+        String proposalType,
+        String title,
+        String summary,
+        String body,
+        int durationMinutes,
+        String locationName,
+        String visibilityScope,
+        List<String> tags
+    ) {
+        seedProposalForHost(null, hostEmail, proposalType, title, summary, body, durationMinutes, locationName, visibilityScope, tags);
+    }
+
+    private void seedProposalForHost(
+        Long preferredProposalId,
         String hostEmail,
         String proposalType,
         String title,
@@ -417,12 +470,13 @@ public class DevUserSeed implements ApplicationRunner {
             jdbcTemplate.update(
                 """
                     INSERT INTO proposals (
-                        proposal_type, bridge_user_id, host_user_id, title, summary, body,
+                        id, proposal_type, bridge_user_id, host_user_id, title, summary, body,
                         duration_minutes, location_name, status, visibility_scope,
                         cover_image_path, created_at, updated_at, deleted_at
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
+                preferredProposalId,
                 proposalType,
                 bridgeUserId,
                 hostUserId,

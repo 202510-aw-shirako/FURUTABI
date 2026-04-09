@@ -58,6 +58,21 @@ public class GateService {
 
         List<GateSummary> relatedItems = loadVisibleGateList(email).items();
 
+        ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByProposalId(
+            proposalId,
+            row.title(),
+            nullableText(row.summary()),
+            nullableText(row.body()),
+            row.durationMinutes(),
+            nullableText(row.locationName())
+        );
+        ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostForProposal(
+            row.hostUserId(),
+            proposalId,
+            row.title(),
+            nullableText(row.hostNickname())
+        );
+
         return new GateDetailPageData(
             proposalId,
             row.title(),
@@ -78,9 +93,9 @@ public class GateService {
             loadSupportNoteUrl(viewerUserId, row),
             "/app/gate",
             relatedItems,
-            ProposalPresentationCatalog.resolveTemplateKindByTitle(row.title()),
-            ProposalPresentationCatalog.resolveProgramByTitle(row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName())),
-            ProposalPresentationCatalog.resolveHostByTitle(row.title(), nullableText(row.hostNickname()))
+            program.templateKind(),
+            program,
+            host
         );
     }
 
@@ -397,9 +412,8 @@ public class GateService {
         List<String> tags
     ) {
         private GateSummary withOwner(boolean owner) {
-            String templateKind = ProposalPresentationCatalog.resolveTemplateKindByTitle(title);
-            ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByTitle(title, titleIfBlank(summary), null, durationMinutes, locationName);
-            ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostByTitle(title, hostNickname);
+            ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByProposalId(proposalId, title, titleIfBlank(summary), null, durationMinutes, locationName);
+            ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostForProposal(hostUserId, proposalId, title, hostNickname);
             return new GateSummary(
                 proposalId,
                 program.title(),
@@ -411,7 +425,7 @@ public class GateService {
                 tags,
                 owner,
                 PIN_CLASSES[0],
-                templateKind,
+                program.templateKind(),
                 program.cardImage(),
                 host.portraitImage(),
                 host.portraitAlt()
