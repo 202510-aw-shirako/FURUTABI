@@ -26,30 +26,30 @@
     <section class="section fv">
       <div class="sectionTitleRow">
         <h1 class="h1">ちいきの入り口</h1>
-        <a class="sectionTitleLink" href="/about.html?context=app#feature-gate">この入り口について</a>
+        <a class="sectionTitleLink" href="/about.html?context=app#feature-gate">ちいきの入り口について</a>
       </div>
       <p class="lead">
-        地図で場所を見ながら、少しずつその場に入っていくための入り口です。
-        まずは地域で開かれている時間を見て、その下のカードから詳しい詳細へ進めます。
+        地域で場所を見ながら、少しずつその場に入っていくための入り口です。
+        まずは地図で場を見て、その下のカードから気になる詳細へ進みます。
       </p>
     </section>
 
-    <section class="section" th:if="${#lists.isEmpty(pageData.items)}">
-      <div class="card">
-        <div class="h2">まだ見えている入り口はありません</div>
-        <p class="note">公開準備が整い次第、ここに入り口が並びます。</p>
-      </div>
-    </section>
-
-    <section class="section proposalDetailMapSection" th:if="${not #lists.isEmpty(pageData.items)}" th:with="initialItem=${pageData.items[0]}">
+    <section class="section proposalDetailMapSection"
+             th:with="initialItem=${#lists.isEmpty(pageData.items) ? null : pageData.items[0]}">
       <div class="sectionTitleRow">
         <h2 class="h2">地図で見る</h2>
         <span class="note">ピンを押すと、下のカードがその入り口に切り替わります。</span>
       </div>
-      <p class="lead">地図で場所を見つつ、その下のカードから詳しい詳細へ進めます。</p>
+      <p class="lead">場所から入り、その先の時間を静かに選べるようにしています。</p>
+
+      <div class="card" style="margin-top:16px;" th:if="${#lists.isEmpty(pageData.items)}">
+        <div class="h2">まだ見えている入り口はありません</div>
+        <p class="note">公開条件が整い次第、ここに入り口が並びます。</p>
+      </div>
 
       <div class="topMapLayout appTopMapLayout proposalDetailMapLayout proposalSyncLayout"
            style="margin-top:16px;"
+           th:if="${not #lists.isEmpty(pageData.items)}"
            data-proposal-map
            th:attr="data-proposal-initial-id=${initialItem.proposalId}">
         <div class="myMapMain">
@@ -71,7 +71,7 @@
         </div>
       </div>
 
-      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;">
+      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;" th:if="${not #lists.isEmpty(pageData.items)}">
         <div class="entryCarouselStage">
           <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の入り口"></button>
           <div class="entryCarouselViewport">
@@ -81,17 +81,11 @@
                        data-proposal-sync-item
                        th:classappend="${item.proposalId == initialItem.proposalId} ? ' is-active' : ''"
                        th:attr="data-proposal-id=${item.proposalId}"
-                       th:with="isItoWalk=${item.templateKind == 'ITO_WALK'},
-                                isItoFlower=${item.templateKind == 'ITO_FLOWER'},
-                                isHasegawa=${item.templateKind == 'HASEGAWA'},
-                                isHosyo=${item.templateKind == 'HOSYO'}"
                        th:each="item, stat : ${pageData.items}">
                 <figure class="proposalVisual">
-                  <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa2.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo2.png' : (isItoFlower ? '/assets/images/伊藤さん写真/ito4.png' : '/assets/images/伊藤さん写真/ito2.png'))}"
-                       th:alt="${item.title}" />
-                  <span class="proposalFaceChip">
-                    <img th:src="${isHasegawa ? '/assets/images/長谷川さん写真/hasegawa1.png' : (isHosyo ? '/assets/images/宝生さん写真/hosyo1.png' : '/assets/images/伊藤さん写真/ito1.png')}"
-                         th:alt="${isHasegawa ? '長谷川さん' : (isHosyo ? '宝生さん' : '伊藤 朗士さん')}" />
+                  <img th:src="${item.cardImagePath}" th:alt="${item.title}" />
+                  <span class="proposalFaceChip" th:if="${item.faceImagePath != null}">
+                    <img th:src="${item.faceImagePath}" th:alt="${item.faceImageAlt}" />
                   </span>
                 </figure>
                 <div class="proposalCardMeta">
@@ -101,26 +95,10 @@
                         th:text="${item.hostNickname != null and #strings.contains(item.hostNickname, 'bridge') ? '架け橋さん' : (item.hostNickname != null and #strings.contains(item.hostNickname, 'local') ? '地域の方' : 'ごひいきさん')}">地域の方</span>
                 </div>
                 <div class="proposalCardBody">
-                  <h3 class="proposalTitle" th:text="${item.title}">海を眺めながら、この街の話を聞く散歩</h3>
-                  <p class="proposalSummary" th:if="${isItoWalk}">
-                    海を見渡せる場所を伊藤さんとゆっくり歩きながら、この土地のこと、人のこと、ここでの暮らしのことを少しずつ聞いていく時間です。
-                    観光案内ではなく、この街に入っていくための最初の入口のような散歩です。
-                  </p>
-                  <p class="proposalSummary" th:if="${isItoFlower}">
-                    海辺の景色をよくするために、花を手入れしたり、少し場所を整えたりする時間です。
-                    ただ眺めるだけでなく、この土地に少し手をかけることで、街との距離が少し近くなります。
-                  </p>
-                  <p class="proposalSummary" th:if="${isHasegawa}">
-                    長谷川さんとコーヒーを飲みながら少し話すことで、この町の今の空気や、地域の挑戦の途中にやわらかく触れていく時間です。
-                    強い体験ではなく、まずは話しやすさの中から、この土地との距離が少し縮まる入口です。
-                  </p>
-                  <p class="proposalSummary" th:if="${isHosyo}">
-                    宝生さんと一緒に町を歩きながら、猫のいる風景や、この土地の日常の気配に少しずつ馴染んでいく時間です。
-                    観光スポットを回るのではなく、町の空気ごとゆっくり入っていくための入口です。
-                  </p>
-                  <p class="proposalSummary" th:if="${!isItoWalk and !isItoFlower and !isHasegawa and !isHosyo}"
-                     th:text="${item.summary != null ? item.summary : 'この入り口の空気を、地図の場所とあわせて静かに見ていく時間です。'}">
-                    この入り口の空気を、地図の場所とあわせて静かに見ていく時間です。
+                  <h3 class="proposalTitle" th:text="${item.title}">ちいきの入り口</h3>
+                  <p class="proposalSummary"
+                     th:text="${item.summary != null ? item.summary : 'この土地に少しずつ入っていくための時間です。'}">
+                    summary
                   </p>
                   <div class="proposalTags">
                     <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
@@ -130,7 +108,7 @@
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
                   <a class="btn ghost proposalMore" th:href="@{/app/gate/{id}(id=${item.proposalId})}">詳細</a>
-                  <span class="btn ghost" th:if="${item.owner}">編集用</span>
+                  <span class="btn ghost" th:if="${item.owner}">申請受付中</span>
                 </div>
               </article>
             </div>

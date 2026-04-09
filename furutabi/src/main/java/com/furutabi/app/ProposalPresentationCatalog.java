@@ -1,0 +1,550 @@
+package com.furutabi.app;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class ProposalPresentationCatalog {
+
+    private static final String HOST_ITO = "ITO";
+    private static final String HOST_HASEGAWA = "HASEGAWA";
+    private static final String HOST_HOSYO = "HOSYO";
+    private static final String HOST_TODO = "TODO";
+    private static final String HOST_GENERIC = "GENERIC";
+
+    private static final Map<String, HostProfile> HOSTS = new LinkedHashMap<>();
+    private static final Map<String, ProgramContent> PROGRAMS = new LinkedHashMap<>();
+    private static final Map<String, String> TITLE_TO_KIND = new LinkedHashMap<>();
+
+    static {
+        HOSTS.put(HOST_ITO, new HostProfile(
+            HOST_ITO,
+            "伊藤 朗士さん",
+            List.of("地域のまとめ役", "長く信頼されてきた人", "頼れる受け皿"),
+            "/assets/images/伊藤さん写真/ito1.png",
+            "伊藤 朗士さんの写真",
+            "伊藤 朗士さんについて",
+            "この方の背景や、地域の中でどんなことを一緒に考えてきたのかを読むためのモーダルです。具体的な提案内容ではなく、人と地域での動きを中心に見せています。",
+            List.of(
+                new ModalSection("この土地で長く見てきたのは…", List.of(
+                    "伊藤さんは、この土地で長く生き、地域の移り変わりを見てきた方です。もともとは航空自衛隊のパイロットとして厳しい仕事に就いていました。",
+                    "その後も自治会長として地域に関わり続け、日々の暮らしのことから土地の未来のことまで、静かに支えてきた方です。"
+                )),
+                new ModalSection("頼れるのに押しつけがましくないのは…", List.of(
+                    "伊藤さんは、ただ強い人というより、受け皿になれる人です。何かあったときに頼れるけれど、必要以上に前に出たり、自分の話ばかりしたりはしません。",
+                    "その場の人や空気をよく見て、その人がこの土地に自然に入っていけるよう整えられる方です。"
+                )),
+                new ModalSection("人をつなげるのは…", List.of(
+                    "伊藤さんのよさは、地域の中だけに閉じていないことです。土地の人とも、外から来た人とも、世代の違う人とも自然につながれる。",
+                    "だからこそ、この方がひらく時間には、観光情報ではなく、地域との関係の入口のような厚みがあります。"
+                )),
+                new ModalSection("土地に手をかけてきたのは…", List.of(
+                    "伊藤さんは、この土地の景色や営みをただ眺めてきた人ではありません。人と一緒に花を植えたり、場所を整えたり、誰かがまた来たくなる風景をつくることにも関わってきました。",
+                    "そのため伊藤さんの時間には、案内だけでなく「この土地を少し一緒につくる」感覚があります。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_HASEGAWA, new HostProfile(
+            HOST_HASEGAWA,
+            "長谷川さん",
+            List.of("若い世代のつなぎ役", "地域の挑戦の途中", "葡萄と菊の人"),
+            "/assets/images/長谷川さん写真/hasegawa1.png",
+            "長谷川さんの写真",
+            "長谷川さんについて",
+            "この方の背景や、地域の中でどんな挑戦の途中に立っているのかを読むためのモーダルです。完成した紹介ではなく、いま動いている空気を中心に見せています。",
+            List.of(
+                new ModalSection("若い世代として動いているのは…", List.of(
+                    "長谷川さんは、地域の中で働きながら、少しずつ新しい流れもつくっている若い世代の方です。昔からある仕事や土地の営みを大事にしつつ、その先にある新しい挑戦にも関わっています。",
+                    "外から来た人にとっても、少し話しかけやすく、この土地の今の空気に触れやすい入口になれる方です。"
+                )),
+                new ModalSection("葡萄や菊に関わっているのは…", List.of(
+                    "長谷川さんの時間には、葡萄やワイン、菊など、この土地で育てられているものが自然に出てきます。ただ育てる人というより、その作物の向こうにある挑戦や試行錯誤の途中も含めて見せてくれる人です。",
+                    "完成したものをただ消費するのではなく、その途中に少し触れられるのが、この方の魅力です。"
+                )),
+                new ModalSection("やわらかいのに芯があるのは…", List.of(
+                    "長谷川さんは、強く前に出るタイプではありません。でも、やわらかく話しやすい雰囲気の中に、仕事や地域の未来に対するまっすぐさがあります。",
+                    "軽い案内役ではなく、自分もこの地域の途中に立ちながら、人をその中へ少し招き入れてくれる方です。"
+                )),
+                new ModalSection("応援したくなるのは…", List.of(
+                    "長谷川さんのよさは、「できあがった地域」を見せるのではなく、「まだ育っている地域」を一緒に見せてくれるところです。とくに葡萄の時間には、その土地の挑戦の途中に少し触れ、応援したくなる感覚が生まれます。",
+                    "完成品を見るだけでは出てこない、関係の芽のようなものがある方です。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_HOSYO, new HostProfile(
+            HOST_HOSYO,
+            "宝生さん",
+            List.of("旅館の主人", "猫のいる町", "土地の奥を知る人"),
+            "/assets/images/宝生さん写真/hosyo1.png",
+            "宝生さんの写真",
+            "宝生さんについて",
+            "この方の背景や、旅館の主人として町をどう見てきたのかを読むためのモーダルです。猫のいる風景や食のことにも関わる視点を中心に見せています。",
+            List.of(
+                new ModalSection("本業は旅館なのに…", List.of(
+                    "宝生さんは、旅館を営む方です。",
+                    "ただ泊まってもらうだけでなく、この土地に来た人が町をどう感じ、また来たいと思うかまで、長く見てきました。",
+                    "そのため宝生さんの時間には、旅館の主人としての落ち着きと、地域をひらく人としての目線が自然にあります。"
+                )),
+                new ModalSection("猫の町を大事にしているのは…", List.of(
+                    "宝生さんは、本業の延長で猫のいる町の空気も大事にしてきた方です。",
+                    "猫を観光の記号として見せるのではなく、この町の日常や人の気配の中に、自然に猫がいる感じを守ろうとしている。",
+                    "だから宝生さんの入口は、にぎやかな猫スポット巡りではなく、町を歩くうちに猫のいる空気に少しずつ馴染んでいく時間になります。"
+                )),
+                new ModalSection("食のことにも関わっているのは…", List.of(
+                    "宝生さんは、地域の名物づくりにも関わっています。",
+                    "とくに食は、この土地にまた来たくなる理由の一つでもあるので、旅館の仕事と切り離さずに見ている方です。",
+                    "そのため、宝生さんがひらくおかってには、町歩きだけでは終わらない、この土地の食卓への入口もあります。"
+                )),
+                new ModalSection("何度も来ると見えてくるのは…", List.of(
+                    "宝生さんは、初対面から全部ひらく人ではありません。",
+                    "でも、何度か来たり、少しずつ時間を重ねたりするうちに、この町の風景や歴史や人のつながりの奥を見せてくれる方です。",
+                    "一回で消費する観光ではなく、少しずつ関係が深まる町の見え方を渡してくれる人です。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_TODO, new HostProfile(
+            HOST_TODO,
+            "東堂 主税さん",
+            List.of("革の鞄と小物の職人", "町の“いい仕事”の案内人", "夫婦で続ける革仕事"),
+            "/assets/images/東堂さん写真/todo1.png",
+            "東堂 主税さんの写真",
+            "東堂 主税さんについて",
+            "この方の背景や、革の仕事と町の“いい仕事”がどうつながっているのかを読むためのモーダルです。軽い職人体験ではなく、町の厚みへ入る入口を中心に見せています。",
+            List.of(
+                new ModalSection("革の仕事を続けてきたのは…", List.of(
+                    "東堂さんは、革の鞄を中心に、財布やケース、ストラップ、キーホルダーなどの革小物を長くつくってきた職人です。",
+                    "靴職人ではなく、暮らしの中で使われる革のものを、使うほど味が出るように丁寧につくってきた方です。",
+                    "量産の工房というより、小さな工房で長年手を動かしながら、夫婦で一つの仕事を育ててきた人として立っています。"
+                )),
+                new ModalSection("少し入りにくいのは…", List.of(
+                    "東堂さんは、誰にでもやわらかく開くタイプではありません。",
+                    "少し気難しそうで、仕事にも人にもこだわりがあり、ものを見る目が厳しい方です。",
+                    "でもそれは閉じているというより、軽く扱わないということでもあります。",
+                    "相性はありますが、そのぶん懐に入ると、町の見え方や人のつながり方がぐっと深くなる方です。"
+                )),
+                new ModalSection("町の“いい仕事”を見分けるのは…", List.of(
+                    "東堂さんの強みは、自分の革仕事だけに閉じていないことです。",
+                    "割烹や手仕事の人、町工場、道具屋、小さな店など、分野は違っても「ちゃんとしている仕事」を見分けて、その入口を少し開けることができます。",
+                    "だから東堂さんの時間は、単なる職人体験ではなく、この町の厚みそのものに触れる入口にもなっています。"
+                )),
+                new ModalSection("ご夫婦でやっているのは…", List.of(
+                    "東堂さんご夫妻はとても仲がよく、二人とも同じ革仕事の中にいます。",
+                    "奥さんは特にデザインや見せ方にも強みがありますが、夫が本体で妻が補助という関係ではありません。",
+                    "夫婦で同じ仕事を長く続けてきた呼吸があり、その空気も東堂さんの場の大事な一部です。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_GENERIC, new HostProfile(
+            HOST_GENERIC,
+            "地域の方",
+            List.of("地域の方", "場をひらく人", "この土地の時間"),
+            "/assets/images/伊藤さん写真/ito1.png",
+            "地域の方の写真",
+            "この方について",
+            "この方の背景や、この土地の中でどんな時間をひらいているのかを見るためのモーダルです。",
+            List.of(new ModalSection("この方について", List.of("この土地で時間をひらいている方です。")))));
+
+        PROGRAMS.put(GateService.GATE_KIND_ITO_WALK, new ProgramContent(
+            GateService.GATE_KIND_ITO_WALK, HOST_ITO,
+            "海を眺めながら、この街の話を聞く散歩",
+            "海を見渡せる場所を伊藤さんとゆっくり歩きながら、この土地のこと、人のこと、ここでの暮らしのことを少しずつ聞いていく時間です。観光案内ではなく、この街に入っていくための最初の入口のような散歩です。",
+            List.of("目安：40分", "料金：無料", "開きやすい時間：日中", "歩きやすい服装推奨", "天候により変更あり"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("海の見える場所まで歩く", ""), new ScheduleEntry("景色を見ながら少し話す", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "この時間は、名所を次々に案内するような散歩ではありません。",
+                "海を見渡せる場所を伊藤さんと歩きながら、この土地のこと、人のこと、ここで暮らす時間の流れを少しずつ知っていく入口です。",
+                "伊藤さんは強く引っ張るタイプではなく、景色を前にしながら、その場所にまつわる話や、この土地で生きてきた感覚を静かに渡してくれます。",
+                "はじめて来た人でも、無理なくこの街に入っていける時間です。"
+            ),
+            List.of(
+                "この土地で長く生き、地域の人たちから深く信頼されてきた方です。",
+                "もともとは航空自衛隊のパイロットとして厳しい任務に就き、その後も自治会長として地域のことに長く関わってきました。",
+                "頼れる人でありながら、前に出すぎず、土地のことも人のことも静かによく見ている方です。"
+            ),
+            "/assets/images/伊藤さん写真/ito2.png",
+            "/assets/images/伊藤さん写真/ito3.png",
+            "/assets/images/伊藤さん写真/ito5.png",
+            "/assets/images/伊藤さん写真/ito2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_ITO_FLOWER, new ProgramContent(
+            GateService.GATE_KIND_ITO_FLOWER, HOST_ITO,
+            "海辺の花を手入れする日",
+            "海辺の景色をよくするために、花を手入れしたり、少し場所を整えたりする時間です。ただ眺めるだけでなく、この土地に少し手をかけることで、街との距離が少し近くなります。",
+            List.of("目安：1時間", "料金：無料", "開きやすい時期：春〜秋", "汚れてもよい服装推奨", "軍手など必要なものはご案内します"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("花や周辺の手入れをする", ""), new ScheduleEntry("少し景色を見る", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "伊藤さんがひらくもう一つの入口は、土地の景色に少し手をかける時間です。",
+                "花を手入れしたり、周りを整えたりしながら、誰かがまた来たくなる風景を一緒につくる。",
+                "大がかりな作業ではありませんが、ただ見に来るだけではわからない、この土地との関わり方が少し見えてきます。",
+                "伊藤さんにとって景色は、眺めるものというより、守ったり整えたりしながら次に渡していくものでもあります。",
+                "その感覚に少し触れられる入口です。"
+            ),
+            List.of(
+                "この土地で長く生き、地域の人たちから深く信頼されてきた方です。",
+                "もともとは航空自衛隊のパイロットとして厳しい任務に就き、その後も自治会長として地域のことに長く関わってきました。",
+                "頼れる人でありながら、前に出すぎず、土地のことも人のことも静かによく見ている方です。"
+            ),
+            "/assets/images/伊藤さん写真/ito4.png",
+            "/assets/images/伊藤さん写真/ito2.png",
+            "/assets/images/伊藤さん写真/ito5.png",
+            "/assets/images/伊藤さん写真/ito4.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_HASEGAWA, new ProgramContent(
+            GateService.GATE_KIND_HASEGAWA, HOST_HASEGAWA,
+            "コーヒーを飲みながら、町の見え方が少し変わる",
+            "長谷川さんとコーヒーを飲みながら少し話すことで、この町の今の空気や、地域の挑戦の途中にやわらかく触れていく時間です。強い体験ではなく、まずは話しやすさの中から、この土地との距離が少し縮まる入口です。",
+            List.of("目安：40分", "料金：500円／人", "開きやすい時間：日中", "コーヒー代込み", "天候に左右されず開きやすいです"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("コーヒーを飲みながら話す", ""), new ScheduleEntry("地域のことや仕事のことを少し聞く", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "この時間は、どこかへ連れて行ってもらう体験というより、まずは話してみる入口です。",
+                "長谷川さんとコーヒーを飲みながら、この土地で今どんなことが起きているのか、どんな人たちが動いているのかを少しずつ聞いていきます。",
+                "長谷川さんはやわらかく話しやすいので、はじめての人でも身構えすぎずに入っていけます。",
+                "でも、そのやわらかさの奥には、地域の仕事や未来に対するまっすぐな感覚があります。",
+                "この町の見え方が、少しだけ内側から変わるような入口です。"
+            ),
+            List.of(
+                "地域で働きながら、少しずつ新しい風も入れている若い世代の方です。",
+                "葡萄やワイン、菊などを通して、この土地の手仕事や挑戦の途中に触れさせてくれます。",
+                "やわらかく話しやすい一方で、自分の仕事や地域の未来に対して、静かにまっすぐ向き合っている方です。"
+            ),
+            "/assets/images/長谷川さん写真/hasegawa2.png",
+            "/assets/images/長谷川さん写真/hasegawa3.png",
+            "/assets/images/長谷川さん写真/hasegawa5.png",
+            "/assets/images/長谷川さん写真/hasegawa2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_HOSYO, new ProgramContent(
+            GateService.GATE_KIND_HOSYO, HOST_HOSYO,
+            "猫の町を歩く",
+            "宝生さんと一緒に町を歩きながら、猫のいる風景や、この土地の日常の気配に少しずつ馴染んでいく時間です。観光スポットを回るのではなく、町の空気ごとゆっくり入っていくための入口です。",
+            List.of("目安：40分", "料金：無料", "開きやすい時間：日中", "歩きやすい服装推奨", "天候により変更あり"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("町を歩く", ""), new ScheduleEntry("猫や町の気配を感じる", ""), new ScheduleEntry("少し話す", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "この時間は、猫の名所を効率よく回るような散歩ではありません。",
+                "宝生さんと町を歩きながら、猫のいる風景や路地の空気、人の気配に少しずつ馴染んでいく入口です。",
+                "猫は主役というより、この町の空気の中に自然にいる存在として現れます。",
+                "だから、歩いているうちに「猫の町」と言いたくなるような感覚が少しずつ育っていく。",
+                "宝生さんはそれを強く説明しすぎず、この町の歩き方として静かに渡してくれる方です。"
+            ),
+            List.of(
+                "旅館を営みながら、この土地の人や景色、食のことを長く見てきた方です。",
+                "本業は旅館の主人ですが、その延長で猫のいる町の空気を大事にしたり、地域の食の名物づくりにも関わったりしています。",
+                "派手に案内する人ではなく、何度か通ううちに少しずつこの町の奥を見せてくれる方です。"
+            ),
+            "/assets/images/宝生さん写真/hosyo2.png",
+            "/assets/images/宝生さん写真/hosyo4.png",
+            "/assets/images/宝生さん写真/hosyo5.png",
+            "/assets/images/宝生さん写真/hosyo2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_TODO_WALK, new ProgramContent(
+            GateService.GATE_KIND_TODO_WALK, HOST_TODO,
+            "町の“いい仕事”を訪ねる散歩",
+            "東堂さんと町を歩きながら、普段なら通り過ぎる店や、少し入りにくいけれど町の厚みを支えている仕事の場に少し触れていく時間です。観光名所ではなく、この土地の“ちゃんとした仕事”を手がかりに町の奥行きを知る入口です。",
+            List.of("目安：40分", "料金：無料", "開きやすい時間：日中", "歩きやすい服装推奨", "天候により変更あり"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("町を歩く", ""), new ScheduleEntry("店や仕事の場に少し触れる", ""), new ScheduleEntry("途中で少し話す", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "この時間は、名店巡りや観光ガイドではありません。",
+                "東堂さんと町を歩きながら、呉服店や木工所、小さな工房、割烹、道具屋など、普段なら通り過ぎたり、少し気後れして入りにくかったりする仕事の場に少し近づいていく入口です。",
+                "東堂さんは強く説明しすぎず、「ここはちゃんとしてる」という目利きの感覚を少しだけ渡してくれます。",
+                "その流れの中で、後の滞在にも役立つご飯屋さんや喫茶店を、さりげなく教えてもらえることもあります。",
+                "観光情報を集めるというより、この町でどこが本当にいいかの感覚を少し分けてもらう時間です。"
+            ),
+            List.of(
+                "革の鞄や革小物を長くつくってきた職人です。",
+                "少し気難しそうに見えることもありますが、仕事を見る目が厳しく、同じようにちゃんとした仕事をしている人たちとのつながりも深い方です。",
+                "ご夫婦で同じ革仕事を続けていて、町の“いい仕事”を手がかりに、この土地の奥行きを少しずつ見せてくれる方です。"
+            ),
+            "/assets/images/東堂さん写真/todo2.png",
+            "/assets/images/東堂さん写真/todo4.png",
+            "/assets/images/東堂さん写真/todo5.png",
+            "/assets/images/東堂さん写真/todo2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_TODO_LEATHER, new ProgramContent(
+            GateService.GATE_KIND_TODO_LEATHER, HOST_TODO,
+            "この町で身につける、小さな革のものをつくる",
+            "東堂さんご夫妻の工房で、革のキーホルダーやストラップのような小さなものをつくる入口です。旅の記念品を買うのではなく、この町で自分の手を通したものを持ち帰ることで、町との距離が少し変わっていきます。",
+            List.of("目安：1時間", "料金：2,000円／人", "2500円の商品と同じ材料を使います", "開きやすい時間：日中", "汚れてもよい服装だと安心", "内容はその日の進め方により少し変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("工房で素材や形を見る", ""), new ScheduleEntry("小さな革のものをつくる", ""), new ScheduleEntry("仕上げる", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "この時間は、深い制作体験そのものが目的ではありません。",
+                "東堂さんご夫妻の工房で、革のキーホルダーやストラップのような小さなものをつくり、この町で自分の手を通したものを持ち帰る入口です。",
+                "端材を使った軽い体験ではありますが、雑貨づくりのワークショップにはしません。",
+                "小さいながらも、素材を見ること、形を考えること、手を動かすことの中に、東堂さんご夫妻の仕事の考え方が少し入っています。",
+                "工房が少しだけひらかれ、その奥に入る前の静かで確かな入口になっています。"
+            ),
+            List.of(
+                "東堂さんご夫妻は、革の鞄と小物を長くつくってきた人たちです。",
+                "東堂さんは使うものとしてちゃんとしているかを見る目があり、奥さんは色や形、見え方を自然に見ています。",
+                "夫婦で同じ仕事を続けてきたからこそ、小さなものづくりでも仕事の空気がちゃんと残ります。"
+            ),
+            "/assets/images/東堂さん写真/todo3.png",
+            "/assets/images/東堂さん写真/todo4.png",
+            "/assets/images/東堂さん写真/todo6.png",
+            "/assets/images/東堂さん写真/todo3.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_ITO, new ProgramContent(
+            OkatteService.OKATTE_KIND_ITO, HOST_ITO,
+            "牡蠣小屋で、海のものを囲む時間",
+            "海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の人のあたたかさや海の恵みに触れる時間です。気取った食事ではなく、海のそばの暮らしの延長にある食卓に少し入れてもらうようなおかってです。",
+            List.of("目安：2時間", "料金：3,500円／人", "開きやすい時期：季節により調整", "飲み物・追加注文は別料金", "内容はその日の海や食材の状況により少し変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("牡蠣小屋へ移動", ""), new ScheduleEntry("海のものを囲んで過ごす", ""), new ScheduleEntry("少し話す", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "このおかっては、豪華な海鮮体験ではありません。",
+                "海辺の素朴な牡蠣小屋で、牡蠣や海のものを囲みながら、この土地の食卓のあたたかさに少し入れてもらう時間です。",
+                "伊藤さんがいることで、外から来た人も無理なくその場に入っていけます。",
+                "観光向けに整えられた食事ではなく、海のそばの人たちが大事にしてきた食べ方や場の空気が、そのまま少しひらかれている感じが魅力です。",
+                "海を見て終わるのではなく、最後に食卓までつながる伊藤さんらしいおかってです。"
+            ),
+            List.of(
+                "伊藤さんは、この土地の景色や人のつながりを長く見てきた方です。",
+                "頼れるけれど押しつけがましくなく、地域の人と外から来た人のあいだに、ちょうどよい橋をかけられます。",
+                "この方がいることで、海の食卓も、観光の場ではなく、関係のはじまりとしてひらかれます。"
+            ),
+            "/assets/images/伊藤さん写真/ito3.png",
+            "/assets/images/伊藤さん写真/ito2.png",
+            "/assets/images/伊藤さん写真/ito5.png",
+            "/assets/images/伊藤さん写真/ito3.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_HASEGAWA_GRAPE, new ProgramContent(
+            OkatteService.OKATTE_KIND_HASEGAWA_GRAPE, HOST_HASEGAWA,
+            "葡萄を通して、地域の挑戦の途中にふれる",
+            "葡萄にふれながら、この土地で進んでいる挑戦の途中を少し見せてもらう時間です。完成したワインや商品を見るだけではなく、その手前の育てる現場や考えていることに触れられるおかってです。",
+            List.of("目安：2時間", "料金：3,500円／人", "開きやすい時期：季節により調整", "ワイン向けと一般向けの葡萄の食べ比べとぶどうジュースの試飲で飲み比べ、ワインの試飲もあります。", "以前葡萄を植えるおかってご参加の方は、その葡萄も食べられます。", "この土地の挑戦の途中に触れ、応援できるのはこのサイトならではです"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("葡萄の話を聞く", ""), new ScheduleEntry("畑や育ち方を見る", ""), new ScheduleEntry("少し味わう", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "このおかってでは、葡萄を通して、この土地で進んでいる挑戦の途中にふれます。",
+                "商品として完成したものを見るのではなく、まだ育っている途中のもの、試している途中のもの、考えている途中のものに少し触れられるのが魅力です。",
+                "長谷川さんは、その途中をうまく隠さずに見せてくれる方です。",
+                "だから、ただ「いいものですね」で終わらず、「この先どうなるんだろう」と少し応援したくなる。",
+                "この土地の挑戦に、外から来た人も少しだけ関われる時間です。"
+            ),
+            List.of(
+                "長谷川さんは、地域の中で働きながら、少しずつ新しい挑戦にも関わっている方です。",
+                "葡萄やワインを、完成品として見せるのではなく、途中の手ざわりごとひらけるのがこの方らしさです。",
+                "やわらかく話せるけれど、仕事には静かに芯が通っている方です。"
+            ),
+            "/assets/images/長谷川さん写真/hasegawa2.png",
+            "/assets/images/長谷川さん写真/hasegawa3.png",
+            "/assets/images/長谷川さん写真/hasegawa5.png",
+            "/assets/images/長谷川さん写真/hasegawa2.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM, new ProgramContent(
+            OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM, HOST_HASEGAWA,
+            "菊の仕事場に、少し通してもらう",
+            "菊の育つ場や手入れの仕事に少し触れながら、この土地で続いてきた花の仕事の空気を感じる時間です。長谷川さん本人がずっと一緒にいる形ではなく、地域の仕事場に少し通してもらうようなおかってです。",
+            List.of("目安：1.5時間", "料金：1,500円／人", "開きやすい時期：菊の時期", "長谷川さんは同席しないことがあります", "汚れてもよい服装推奨", "内容は花の状態や時期により変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("菊の仕事場へ向かう", ""), new ScheduleEntry("花や手入れの話を聞く", ""), new ScheduleEntry("少し作業や場の空気に触れる", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "このおかっては、華やかな花体験ではありません。",
+                "菊がどう育てられ、どう手をかけられているのか、その仕事場の空気に少し通してもらう時間です。",
+                "長谷川さん自身が前面に出るというより、地域で続いてきた花の仕事へ、外から来た人が少し近づく入口に近いかたちです。",
+                "見た目の美しさだけではなく、続けるための手間や静かな積み重ねに触れられる。",
+                "この土地の仕事の厚みを感じられるおかってです。"
+            ),
+            List.of(
+                "長谷川さんは、自分の仕事だけを見せるのではなく、地域の中にある別の仕事や挑戦にも人をつなげられる方です。",
+                "そのため、この時間は長谷川さん自身の場というより、長谷川さんが少しひらいてくれる地域の仕事場として成り立っています。"
+            ),
+            "/assets/images/長谷川さん写真/hasegawa2.png",
+            "/assets/images/長谷川さん写真/hasegawa3.png",
+            "/assets/images/長谷川さん写真/hasegawa5.png",
+            "/assets/images/長谷川さん写真/hasegawa2.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_HOSYO_ANAGO, new ProgramContent(
+            OkatteService.OKATTE_KIND_HOSYO_ANAGO, HOST_HOSYO,
+            "名物あなご丼を、少し遊びながらつくる昼",
+            "この土地の名物として育てているあなご丼を、少し遊び心も交えながら一緒につくって食べる時間です。料理教室というより、名物づくりの途中に少し加わるようなおかってです。",
+            List.of("目安：2時間", "料金：4,000円／人", "開きやすい時間：昼", "飲み物は別料金", "一般的でない材料をご希望の場合、料金が変わることがあります", "内容は仕入れや時期により少し変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("あなご丼の話を聞く", ""), new ScheduleEntry("少し手を動かす", ""), new ScheduleEntry("一緒に食べる", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "このおかっては、完成した名物をただ食べるだけの時間ではありません。",
+                "この土地の名物として育てているあなご丼を、一緒に少しつくりながら、その食べ方や遊び心も含めて味わう時間です。",
+                "料理教室のようにきっちり教わるというより、宝生さんが育ててきた食の空気に少し通してもらう感じが近いです。",
+                "だから、ただおいしいで終わるのではなく、「この町でこういうふうに育ててきたんだな」と少し見えてきます。",
+                "旅館の主人として人を迎えてきた宝生さんらしく、食卓ごと町の魅力に通してくれるおかってです。"
+            ),
+            List.of(
+                "宝生さんは、旅館を営みながら、この町にまた来たくなる理由を食や風景の中に少しずつ育ててきた方です。",
+                "あなご丼の時間も、ただ食べてもらうのではなく、町の名物がどう根づいていくかの途中をひらく時間として成り立っています。",
+                "迎え入れる人でありながら、押しつけすぎず、自然にその輪に通してくれる方です。"
+            ),
+            "/assets/images/宝生さん写真/hosyo2.png",
+            "/assets/images/宝生さん写真/hosyo4.png",
+            "/assets/images/宝生さん写真/hosyo5.png",
+            "/assets/images/宝生さん写真/hosyo2.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_HOSYO_SCENERY, new ProgramContent(
+            OkatteService.OKATTE_KIND_HOSYO_SCENERY, HOST_HOSYO,
+            "何度も来ると見えてくる、町の風景の奥をたどる",
+            "一度では見えにくいこの町の風景や歴史の奥を、宝生さんと少しずつたどっていく時間です。観光案内ではなく、通うほど見え方が深くなる町の楽しみ方に触れるおかってです。",
+            List.of("目安：1.5時間", "料金：2,000円／組", "開きやすい時間：日中", "歩きやすい服装推奨", "天候により変更あり"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("町の中をたどる", ""), new ScheduleEntry("風景や歴史の話を聞く", ""), new ScheduleEntry("少し立ち止まりながら過ごす", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "このおかっては、初めての人向けの町歩きとは少し違います。",
+                "宝生さんと一緒に、何度か来るうちに見えてくるこの町の風景や歴史の奥をたどっていく時間です。",
+                "派手な名所より、ふつうに見える道や建物や景色の中に、「ここはこういう場所なんです」と少し奥行きが生まれていく。",
+                "宝生さんは、町の全部を一気に説明する人ではなく、通うほど少しずつ見せてくれる方です。",
+                "だからこの時間は、知識をもらうというより、この町との付き合い方が少し深くなるおかってになっています。"
+            ),
+            List.of(
+                "旅館の主人として、この町に来る人と長く向き合ってきた方です。",
+                "そのため、初めて来た人に入口を渡すことも、何度か来た人にもう少し奥の見え方を渡すこともできます。",
+                "宝生さんの時間は、一回で消費するのではなく、少しずつ関係が育っていく町の見え方をひらいてくれます。"
+            ),
+            "/assets/images/宝生さん写真/hosyo2.png",
+            "/assets/images/宝生さん写真/hosyo4.png",
+            "/assets/images/宝生さん写真/hosyo5.png",
+            "/assets/images/宝生さん写真/hosyo2.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_TODO, new ProgramContent(
+            OkatteService.OKATTE_KIND_TODO, HOST_TODO,
+            "工房の奥で、もう少し深い制作に向き合う",
+            "その方の能力や希望に応じて、しおり・キーチェーン・名刺入れなどの小さなものから、バッグなどより時間のかかる制作まで、一緒に向き合うものが変わります。軽い体験ではなく、工房の中で本気で手を動かし、仕事の奥へ少し入っていくおかってです。",
+            List.of("目安：6〜8時間", "指導料：4,000円／組・2時間", "材料費：一例　財布 12,000円／人", "開きやすい時間：日中", "内容や難易度はその方の能力や希望に応じて変わります", "途中でもお預かりして、再訪時に途中から作業を始められます", "複数人で申し込む場合の進め方はご相談ください"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("作るものや進め方を相談", ""), new ScheduleEntry("工房で制作する", ""), new ScheduleEntry("途中で確認しながら進める", ""), new ScheduleEntry("その日の区切りで解散", "")),
+            List.of(
+                "このおかっては、楽しいワークショップではありません。",
+                "工房の中で、その人の能力や希望に応じて、しおりやキーチェーン、名刺入れのような小さなものから、より時間のかかる制作まで、本気で向き合っていく時間です。",
+                "東堂さんは話しすぎず、褒めすぎず、でも本気で向き合っている相手だからこそ本気で見てくれます。",
+                "奥さんもまた、形や収まり、細部の見え方を同じ仕事の人として見ています。",
+                "軽い観光体験ではなく、静かな緊張感のある工房で、仕事の厳しさと楽しさの両方に少し触れる。",
+                "観光客に広くは開きにくい高級品や、本物の仕事の奥に少し入れるのは、このサイトならではの時間です。"
+            ),
+            List.of(
+                "東堂さんは、革の仕事を長く続けてきた職人です。",
+                "少し気難しそうで、仕事にも人にもこだわりがありますが、そのぶん軽く扱わず、本気で向き合う相手には工房の奥を少しひらいてくれます。",
+                "奥さんと二人で同じ仕事を続けてきた場だからこそ、制作そのものだけでなく、仕事の空気に触れる時間にもなっています。"
+            ),
+            "/assets/images/東堂さん写真/todo6.png",
+            "/assets/images/東堂さん写真/todo4.png",
+            "/assets/images/東堂さん写真/todo5.png",
+            "/assets/images/東堂さん写真/todo6.png"
+        ));
+    }
+
+    public static ProgramContent resolveProgram(String templateKind, String fallbackTitle, String fallbackSummary, String fallbackBody,
+                                         Integer durationMinutes, String locationName) {
+        ProgramContent known = PROGRAMS.get(templateKind);
+        if (known != null) {
+            return known;
+        }
+        return new ProgramContent(
+            templateKind,
+            HOST_GENERIC,
+            fallbackTitle != null ? fallbackTitle : "地域の時間",
+            fallbackSummary != null ? fallbackSummary : "この土地の時間に少し触れる入口です。",
+            List.of(
+                "目安：" + (durationMinutes != null ? durationMinutes + "分" : "調整中"),
+                "場所：" + (locationName != null ? locationName : "調整中")
+            ),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("過ごす", ""), new ScheduleEntry("解散", "")),
+            fallbackBody != null ? List.of(fallbackBody) : List.of(fallbackSummary != null ? fallbackSummary : "この土地の時間に少し触れる入口です。"),
+            List.of(fallbackSummary != null ? fallbackSummary : "この時間をひらく地域の方です。"),
+            "/assets/images/伊藤さん写真/ito2.png",
+            "/assets/images/伊藤さん写真/ito3.png",
+            "/assets/images/伊藤さん写真/ito5.png",
+            "/assets/images/伊藤さん写真/ito2.png"
+        );
+    }
+
+    public static HostProfile resolveHost(String hostKey, String fallbackHostNickname) {
+        HostProfile known = HOSTS.get(hostKey);
+        if (known != null) {
+            return known;
+        }
+        if (fallbackHostNickname != null && !fallbackHostNickname.isBlank()) {
+            return new HostProfile(
+                HOST_GENERIC,
+                fallbackHostNickname,
+                List.of("地域の方", "場をひらく人", "この土地の時間"),
+                "/assets/images/伊藤さん写真/ito1.png",
+                fallbackHostNickname + "の写真",
+                fallbackHostNickname + "について",
+                "この方の背景や、この土地の中でどんな時間をひらいているのかを見るためのモーダルです。",
+                List.of(new ModalSection("この方について", List.of("この土地で時間をひらいている方です。"))));
+        }
+        return HOSTS.get(HOST_GENERIC);
+    }
+
+    public static String hostKeyForTemplate(String templateKind) {
+        ProgramContent content = PROGRAMS.get(templateKind);
+        return content != null ? content.hostKey() : HOST_GENERIC;
+    }
+
+    public static String resolveTemplateKindByTitle(String title) {
+        if (title == null || title.isBlank()) {
+            return null;
+        }
+        return TITLE_TO_KIND.get(title);
+    }
+
+    public static boolean isKnownProgramTitle(String title) {
+        return resolveTemplateKindByTitle(title) != null;
+    }
+
+    public static ProgramContent resolveProgramByTitle(String title, String fallbackSummary, String fallbackBody,
+                                                       Integer durationMinutes, String locationName) {
+        String templateKind = resolveTemplateKindByTitle(title);
+        return resolveProgram(templateKind, title, fallbackSummary, fallbackBody, durationMinutes, locationName);
+    }
+
+    public static HostProfile resolveHostByTitle(String title, String fallbackHostNickname) {
+        String templateKind = resolveTemplateKindByTitle(title);
+        return resolveHost(hostKeyForTemplate(templateKind), fallbackHostNickname);
+    }
+
+    public record ProgramContent(
+        String templateKind,
+        String hostKey,
+        String title,
+        String cardSummary,
+        List<String> noteItems,
+        List<ScheduleEntry> scheduleEntries,
+        List<String> bodyParagraphs,
+        List<String> personCardParagraphs,
+        String heroImagePrimary,
+        String heroImageSecondary,
+        String heroImageTertiary,
+        String cardImage
+    ) {
+    }
+
+    public record HostProfile(
+        String hostKey,
+        String name,
+        List<String> tags,
+        String portraitImage,
+        String portraitAlt,
+        String modalTitle,
+        String modalLead,
+        List<ModalSection> modalSections
+    ) {
+    }
+
+    public record ScheduleEntry(String left, String right) {
+    }
+
+    public record ModalSection(String heading, List<String> paragraphs) {
+    }
+
+    static {
+        PROGRAMS.values().forEach(program -> TITLE_TO_KIND.put(program.title(), program.templateKind()));
+    }
+}

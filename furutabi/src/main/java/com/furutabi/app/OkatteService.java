@@ -1,4 +1,4 @@
-﻿package com.furutabi.app;
+package com.furutabi.app;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,11 +17,13 @@ import com.furutabi.visibility.VisibilityScope;
 @Service
 public class OkatteService {
 
-    private static final String TITLE_ITO_OKATTE = "牡蠣小屋で、海のものを囲む時間";
-    private static final String TITLE_HASEGAWA_GRAPE = "葡萄を通して、地域の挑戦の途中にふれる";
-    private static final String TITLE_HASEGAWA_CHRYSANTHEMUM = "菊の仕事場に、少し通してもらう";
-    private static final String TITLE_HOSYO_ANAGO = "名物あなご丼を、少し遊びながらつくる昼";
-    private static final String TITLE_HOSYO_SCENERY = "何度も来ると見えてくる、町の風景の奥をたどる";
+    public static final String OKATTE_KIND_ITO = "ITO_OKATTE";
+    public static final String OKATTE_KIND_HASEGAWA_GRAPE = "HASEGAWA_GRAPE";
+    public static final String OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM = "HASEGAWA_CHRYSANTHEMUM";
+    public static final String OKATTE_KIND_HOSYO_ANAGO = "HOSYO_ANAGO";
+    public static final String OKATTE_KIND_HOSYO_SCENERY = "HOSYO_SCENERY";
+    public static final String OKATTE_KIND_TODO = "TODO_OKATTE";
+    public static final String OKATTE_KIND_UNKNOWN = "UNKNOWN";
 
     private static final String[] PIN_CLASSES = {
         "okattePin--a",
@@ -33,7 +35,6 @@ public class OkatteService {
 
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
-
     public OkatteService(JdbcTemplate jdbcTemplate, VisibilityAccessService visibilityAccessService) {
         this.jdbcTemplate = jdbcTemplate;
         this.visibilityAccessService = visibilityAccessService;
@@ -44,7 +45,6 @@ public class OkatteService {
         Map<String, OkatteSummary> uniqueItems = new LinkedHashMap<>();
         loadOkatteCandidates().stream()
             .filter(item -> visibilityAccessService.canViewProposal(viewerUserId, item.proposalId()))
-            .filter(item -> isCanonicalOkatteProposal(item.title(), item.hostNickname()))
             .map(item -> item.withOwner(viewerUserId != null && viewerUserId == item.hostUserId()))
             .forEach(item -> uniqueItems.putIfAbsent(item.title(), item));
         return new OkatteListPageData(assignPinClasses(new ArrayList<>(uniqueItems.values())));
@@ -60,10 +60,12 @@ public class OkatteService {
         List<OkatteSummary> relatedItems = new ArrayList<>(loadVisibleOkatteList(email).items());
         boolean currentIncluded = relatedItems.stream().anyMatch(item -> item.proposalId() == proposalId);
         if (!currentIncluded) {
+            ProposalPresentationCatalog.ProgramContent currentProgram = ProposalPresentationCatalog.resolveProgramByTitle(row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName()));
+            ProposalPresentationCatalog.HostProfile currentHost = ProposalPresentationCatalog.resolveHostByTitle(row.title(), nullableText(row.hostNickname()));
             relatedItems.add(0, new OkatteSummary(
                 proposalId,
-                row.title(),
-                nullableText(row.summary()),
+                currentProgram.title(),
+                currentProgram.cardSummary(),
                 nullableText(row.locationName()),
                 row.durationMinutes(),
                 VisibilityScope.fromDbValue(row.visibilityScope()).name(),
@@ -71,7 +73,11 @@ public class OkatteService {
                 loadTags(proposalId),
                 viewerUserId != null && viewerUserId == row.hostUserId(),
                 PIN_CLASSES[0],
-                1
+                1,
+                ProposalPresentationCatalog.resolveTemplateKindByTitle(row.title()),
+                currentProgram.cardImage(),
+                currentHost.portraitImage(),
+                currentHost.portraitAlt()
             ));
         }
 
@@ -94,7 +100,10 @@ public class OkatteService {
             "/app/history",
             loadSupportNoteUrl(viewerUserId, row),
             "/app/okatte",
-            relatedItems
+            relatedItems,
+            ProposalPresentationCatalog.resolveTemplateKindByTitle(row.title()),
+            ProposalPresentationCatalog.resolveProgramByTitle(row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName())),
+            ProposalPresentationCatalog.resolveHostByTitle(row.title(), nullableText(row.hostNickname()))
         );
     }
 
@@ -113,7 +122,11 @@ public class OkatteService {
                 item.tags(),
                 item.owner(),
                 PIN_CLASSES[i % PIN_CLASSES.length],
-                i + 1
+                i + 1,
+                item.templateKind(),
+                item.cardImagePath(),
+                item.faceImagePath(),
+                item.faceImageAlt()
             ));
         }
         return assigned;
@@ -131,17 +144,6 @@ public class OkatteService {
         }
         return loadApplicationStatus(viewerUserId, row.proposalId()) == null;
     }
-    private boolean isCanonicalOkatteProposal(String title, String hostNickname) {
-        if (title == null) {
-            return false;
-        }
-        return TITLE_ITO_OKATTE.equals(title)
-            || TITLE_HASEGAWA_GRAPE.equals(title)
-            || TITLE_HASEGAWA_CHRYSANTHEMUM.equals(title)
-            || TITLE_HOSYO_ANAGO.equals(title)
-            || TITLE_HOSYO_SCENERY.equals(title);
-    }
-
     private List<OkatteSummaryRow> loadOkatteCandidates() {
         Map<Long, List<String>> tagMap = loadTagMap();
         return jdbcTemplate.query(
@@ -348,7 +350,11 @@ public class OkatteService {
         List<String> tags,
         boolean owner,
         String pinClass,
-        int displayNumber
+        int displayNumber,
+        String templateKind,
+        String cardImagePath,
+        String faceImagePath,
+        String faceImageAlt
     ) {
     }
 
@@ -371,7 +377,10 @@ public class OkatteService {
         String historyPath,
         String supportNoteUrl,
         String listPath,
-        List<OkatteSummary> relatedItems
+        List<OkatteSummary> relatedItems,
+        String templateKind,
+        ProposalPresentationCatalog.ProgramContent program,
+        ProposalPresentationCatalog.HostProfile host
     ) {
     }
 
@@ -387,10 +396,13 @@ public class OkatteService {
         List<String> tags
     ) {
         private OkatteSummary withOwner(boolean owner) {
+            String templateKind = ProposalPresentationCatalog.resolveTemplateKindByTitle(title);
+            ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByTitle(title, titleIfBlank(summary), null, durationMinutes, locationName);
+            ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostByTitle(title, hostNickname);
             return new OkatteSummary(
                 proposalId,
-                title,
-                titleIfBlank(summary),
+                program.title(),
+                program.cardSummary(),
                 locationName,
                 durationMinutes,
                 VisibilityScope.fromDbValue(visibilityScope).name(),
@@ -398,7 +410,11 @@ public class OkatteService {
                 tags,
                 owner,
                 PIN_CLASSES[0],
-                1
+                1,
+                templateKind,
+                program.cardImage(),
+                host.portraitImage(),
+                host.portraitAlt()
             );
         }
 

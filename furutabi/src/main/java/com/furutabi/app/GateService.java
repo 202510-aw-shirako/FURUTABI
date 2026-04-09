@@ -21,12 +21,9 @@ public class GateService {
     public static final String GATE_KIND_ITO_FLOWER = "ITO_FLOWER";
     public static final String GATE_KIND_HASEGAWA = "HASEGAWA";
     public static final String GATE_KIND_HOSYO = "HOSYO";
+    public static final String GATE_KIND_TODO_WALK = "TODO_WALK";
+    public static final String GATE_KIND_TODO_LEATHER = "TODO_LEATHER";
     public static final String GATE_KIND_UNKNOWN = "UNKNOWN";
-
-    public static final String TITLE_ITO_WALK = "海を眺めながら、この街の話を聞く散歩";
-    public static final String TITLE_ITO_FLOWER = "海辺の花を手入れする日";
-    public static final String TITLE_HASEGAWA = "コーヒーを飲みながら、町の見え方が少し変わる";
-    public static final String TITLE_HOSYO = "猫の町を歩く";
 
     private static final String[] PIN_CLASSES = {
         "gateEntryPin--a",
@@ -38,7 +35,6 @@ public class GateService {
 
     private final JdbcTemplate jdbcTemplate;
     private final VisibilityAccessService visibilityAccessService;
-
     public GateService(JdbcTemplate jdbcTemplate, VisibilityAccessService visibilityAccessService) {
         this.jdbcTemplate = jdbcTemplate;
         this.visibilityAccessService = visibilityAccessService;
@@ -82,7 +78,9 @@ public class GateService {
             loadSupportNoteUrl(viewerUserId, row),
             "/app/gate",
             relatedItems,
-            classifyGateKind(row.title())
+            ProposalPresentationCatalog.resolveTemplateKindByTitle(row.title()),
+            ProposalPresentationCatalog.resolveProgramByTitle(row.title(), nullableText(row.summary()), nullableText(row.body()), row.durationMinutes(), nullableText(row.locationName())),
+            ProposalPresentationCatalog.resolveHostByTitle(row.title(), nullableText(row.hostNickname()))
         );
     }
 
@@ -101,7 +99,10 @@ public class GateService {
                 item.tags(),
                 item.owner(),
                 PIN_CLASSES[i % PIN_CLASSES.length],
-                item.templateKind()
+                item.templateKind(),
+                item.cardImagePath(),
+                item.faceImagePath(),
+                item.faceImageAlt()
             ));
         }
         return assigned;
@@ -109,12 +110,26 @@ public class GateService {
 
     private List<GateSummary> selectPrimaryGateItems(List<GateSummary> items) {
         List<GateSummary> selected = new ArrayList<>();
-        for (String kind : List.of(GATE_KIND_ITO_WALK, GATE_KIND_ITO_FLOWER, GATE_KIND_HASEGAWA, GATE_KIND_HOSYO)) {
+        List<Long> selectedIds = new ArrayList<>();
+        for (String kind : List.of(
+            GATE_KIND_ITO_WALK,
+            GATE_KIND_ITO_FLOWER,
+            GATE_KIND_HASEGAWA,
+            GATE_KIND_HOSYO,
+            GATE_KIND_TODO_WALK,
+            GATE_KIND_TODO_LEATHER
+        )) {
             items.stream()
                 .filter(item -> kind.equals(item.templateKind()))
                 .findFirst()
-                .ifPresent(selected::add);
+                .ifPresent(item -> {
+                    selected.add(item);
+                    selectedIds.add(item.proposalId());
+                });
         }
+        items.stream()
+            .filter(item -> !selectedIds.contains(item.proposalId()))
+            .forEach(selected::add);
         return selected;
     }
 
@@ -323,22 +338,6 @@ public class GateService {
         return value;
     }
 
-    private String classifyGateKind(String title) {
-        if (TITLE_ITO_WALK.equals(title)) {
-            return GATE_KIND_ITO_WALK;
-        }
-        if (TITLE_ITO_FLOWER.equals(title)) {
-            return GATE_KIND_ITO_FLOWER;
-        }
-        if (TITLE_HASEGAWA.equals(title)) {
-            return GATE_KIND_HASEGAWA;
-        }
-        if (TITLE_HOSYO.equals(title)) {
-            return GATE_KIND_HOSYO;
-        }
-        return GATE_KIND_UNKNOWN;
-    }
-
     public record GateListPageData(List<GateSummary> items) {
     }
 
@@ -353,7 +352,10 @@ public class GateService {
         List<String> tags,
         boolean owner,
         String pinClass,
-        String templateKind
+        String templateKind,
+        String cardImagePath,
+        String faceImagePath,
+        String faceImageAlt
     ) {
     }
 
@@ -377,7 +379,9 @@ public class GateService {
         String supportNoteUrl,
         String listPath,
         List<GateSummary> relatedItems,
-        String templateKind
+        String templateKind,
+        ProposalPresentationCatalog.ProgramContent program,
+        ProposalPresentationCatalog.HostProfile host
     ) {
     }
 
@@ -393,10 +397,13 @@ public class GateService {
         List<String> tags
     ) {
         private GateSummary withOwner(boolean owner) {
+            String templateKind = ProposalPresentationCatalog.resolveTemplateKindByTitle(title);
+            ProposalPresentationCatalog.ProgramContent program = ProposalPresentationCatalog.resolveProgramByTitle(title, titleIfBlank(summary), null, durationMinutes, locationName);
+            ProposalPresentationCatalog.HostProfile host = ProposalPresentationCatalog.resolveHostByTitle(title, hostNickname);
             return new GateSummary(
                 proposalId,
-                title,
-                titleIfBlank(summary),
+                program.title(),
+                program.cardSummary(),
                 locationName,
                 durationMinutes,
                 VisibilityScope.fromDbValue(visibilityScope).name(),
@@ -404,7 +411,10 @@ public class GateService {
                 tags,
                 owner,
                 PIN_CLASSES[0],
-                classifyGateKindStatic(title)
+                templateKind,
+                program.cardImage(),
+                host.portraitImage(),
+                host.portraitAlt()
             );
         }
 
@@ -414,22 +424,6 @@ public class GateService {
             }
             return value;
         }
-    }
-
-    private static String classifyGateKindStatic(String title) {
-        if (TITLE_ITO_WALK.equals(title)) {
-            return GATE_KIND_ITO_WALK;
-        }
-        if (TITLE_ITO_FLOWER.equals(title)) {
-            return GATE_KIND_ITO_FLOWER;
-        }
-        if (TITLE_HASEGAWA.equals(title)) {
-            return GATE_KIND_HASEGAWA;
-        }
-        if (TITLE_HOSYO.equals(title)) {
-            return GATE_KIND_HOSYO;
-        }
-        return GATE_KIND_UNKNOWN;
     }
 
     private record GateDetailRow(

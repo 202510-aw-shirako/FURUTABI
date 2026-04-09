@@ -42,6 +42,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedUser("local@example.com", "LOCAL", "Local Seed", "Local Seed");
         seedUser("bridge@example.com", "BRIDGE", "Bridge Seed", "Bridge Seed");
         seedNamedUser("hosyo@example.com", "LOCAL", "宝生さん", "宝生さん", "宝生さん");
+        seedNamedUser("todo@example.com", "LOCAL", "東堂さん", "東堂さん", "東堂さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -219,6 +220,28 @@ public class DevUserSeed implements ApplicationRunner {
             "public",
             GateSeedData.HOSYO.tags()
         );
+        seedProposalForHost(
+            "todo@example.com",
+            "GATE",
+            GateSeedData.TODO_WALK.title(),
+            GateSeedData.TODO_WALK.summary(),
+            GateSeedData.TODO_WALK.body(),
+            GateSeedData.TODO_WALK.durationMinutes(),
+            GateSeedData.TODO_WALK.locationName(),
+            "public",
+            GateSeedData.TODO_WALK.tags()
+        );
+        seedProposalForHost(
+            "todo@example.com",
+            "GATE",
+            GateSeedData.TODO_LEATHER.title(),
+            GateSeedData.TODO_LEATHER.summary(),
+            GateSeedData.TODO_LEATHER.body(),
+            GateSeedData.TODO_LEATHER.durationMinutes(),
+            GateSeedData.TODO_LEATHER.locationName(),
+            "public",
+            GateSeedData.TODO_LEATHER.tags()
+        );
     }
 
     private void seedPilotOkatteProposal() {
@@ -340,6 +363,17 @@ public class DevUserSeed implements ApplicationRunner {
             "町の路地",
             "public",
             List.of("town", "history")
+        );
+        seedProposalForHost(
+            "todo@example.com",
+            "OKATTE",
+            "工房の奥で、もう少し深い制作に向き合う",
+            "その方の能力や希望に応じて、しおり・キーチェーン・名刺入れなどの小さなものから、バッグなどより時間のかかる制作まで、一緒に向き合うものが変わります。軽い体験ではなく、工房の中で本気で手を動かし、仕事の奥へ少し入っていくおかってです。",
+            "このおかっては、楽しいワークショップではありません。工房の中で、その人の能力や希望に応じて、しおりやキーチェーン、名刺入れのような小さなものから、より時間のかかる制作まで、本気で向き合っていく時間です。東堂さんは話しすぎず、褒めすぎず、でも本気で向き合っている相手だからこそ本気で見てくれます。奥さんもまた、形や収まり、細部の見え方を同じ仕事の人として見ています。軽い観光体験ではなく、静かな緊張感のある工房で、仕事の厳しさと楽しさの両方に少し触れる。観光客に広くは開きにくい高級品や、本物の仕事の奥に少し入れるのは、このサイトならではの時間です。",
+            420,
+            "革工房",
+            "public",
+            List.of("leather", "atelier")
         );
     }
 
@@ -522,6 +556,24 @@ public class DevUserSeed implements ApplicationRunner {
             40,
             "猫のいる町の路地",
             List.of("cat", "walk")
+        );
+
+        private static final GateSeedData TODO_WALK = new GateSeedData(
+            "町の“いい仕事”を訪ねる散歩",
+            "東堂さんと町を歩きながら、普段なら通り過ぎる店や、少し入りにくいけれど町の厚みを支えている仕事の場に少し触れていく時間です。観光名所ではなく、この土地の“ちゃんとした仕事”を手がかりに町の奥行きを知る入口です。",
+            "この時間は、名店巡りや観光ガイドではありません。東堂さんと町を歩きながら、呉服店や木工所、小さな工房、割烹、道具屋など、普段なら通り過ぎたり、少し気後れして入りにくかったりする仕事の場に少し近づいていく入口です。東堂さんは強く説明しすぎず、「ここはちゃんとしてる」という目利きの感覚を少しだけ渡してくれます。その流れの中で、後の滞在にも役立つご飯屋さんや喫茶店を、さりげなく教えてもらえることもあります。観光情報を集めるというより、この町でどこが本当にいいかの感覚を少し分けてもらう時間です。",
+            40,
+            "町の仕事場",
+            List.of("craft", "walk")
+        );
+
+        private static final GateSeedData TODO_LEATHER = new GateSeedData(
+            "この町で身につける、小さな革のものをつくる",
+            "東堂さんご夫妻の工房で、革のキーホルダーやストラップのような小さなものをつくる入口です。旅の記念品を買うのではなく、この町で自分の手を通したものを持ち帰ることで、町との距離が少し変わっていきます。",
+            "この時間は、深い制作体験そのものが目的ではありません。東堂さんご夫妻の工房で、革のキーホルダーやストラップのような小さなものをつくり、この町で自分の手を通したものを持ち帰る入口です。端材を使った軽い体験ではありますが、雑貨づくりのワークショップにはしません。小さいながらも、素材を見ること、形を考えること、手を動かすことの中に、東堂さんご夫妻の仕事の考え方が少し入っています。工房が少しだけひらかれ、その奥に入る前の静かで確かな入口になっています。",
+            60,
+            "革工房",
+            List.of("leather", "workshop")
         );
     }
 }
