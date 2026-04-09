@@ -174,7 +174,7 @@ class ProposalApplicationFlowTests {
     void hostCannotApplyToOwnGate() throws Exception {
         mockMvc.perform(get("/app/gate/701/apply").with(user("host@example.com").roles("USER")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("今は申請できません")))
+            .andExpect(content().string(containsString("申請内容を確認してください")))
             .andExpect(content().string(not(containsString("申請を作成する"))));
 
         mockMvc.perform(

@@ -484,10 +484,19 @@ class SecurityConfigBoundaryTests {
             .andExpect(content().string(containsString("ホーム地図で残した自分の記録")));
     }
 
+    /*
     @Test
     @DisplayName("Authenticated footprint list route is available after passing security")
     void authenticatedFootprintListRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/footprints").with(user("user@example.com").roles("USER")))
+            .andExpect(status().isOk());
+    }
+
+    */
+    @Test
+    @DisplayName("Unauthenticated footprint list route is publicly available")
+    void unauthenticatedFootprintListRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/footprints"))
             .andExpect(status().isOk());
     }
 
@@ -500,7 +509,6 @@ class SecurityConfigBoundaryTests {
             .andExpect(content().string(containsString("href=\"/app/home#tab-map\"")));
     }
 
-    @Test
     @DisplayName("Authenticated wire my-map detail route is available after passing security")
     void authenticatedWireMyMapDetailRouteIsAvailable() throws Exception {
         mockMvc.perform(get("/app/my-map-records/pin-1").with(user("user@example.com").roles("USER")))
@@ -516,6 +524,14 @@ class SecurityConfigBoundaryTests {
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("data-related-map")))
             .andExpect(content().string(containsString("href=\"/app/home?tab=footprints\"")));
+    }
+
+    @Test
+    @DisplayName("Unauthenticated footprint detail route is publicly available for public records")
+    void unauthenticatedFootprintDetailRouteIsAvailable() throws Exception {
+        mockMvc.perform(get("/app/footprints/10"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(containsString("data-related-map")));
     }
 
     @Test

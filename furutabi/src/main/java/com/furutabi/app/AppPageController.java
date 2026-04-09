@@ -347,7 +347,8 @@ public class AppPageController {
             Authentication authentication,
             @RequestParam(required = false) Long userId,
             Model model) {
-        model.addAttribute("pageData", mapRecordService.loadVisibleFootprintList(authentication.getName(), userId));
+        model.addAttribute("pageData", mapRecordService.loadVisibleFootprintList(currentEmail(authentication), userId));
+        model.addAttribute("viewerAuthenticated", isAuthenticated(authentication));
         return "app/footprint-list";
     }
 
@@ -470,21 +471,15 @@ public class AppPageController {
         }
     }
 
-    @GetMapping("/my-map-records/{clientId}")
-    public String myMapRecordDetail(@PathVariable String clientId, Authentication authentication, Model model) {
-        model.addAttribute("siteNavKey", isLocalViewer(authentication) ? "app_local_member" : "app_home");
-        model.addAttribute("homePath", isLocalViewer(authentication) ? "/app/local-member-home" : "/app/home");
-        model.addAttribute("clientId", clientId);
-        return "app/my-map-record-detail-wire";
-    }
-
     @GetMapping("/footprints/{id}")
     public String footprintDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
-            model.addAttribute("pageData", mapRecordService.loadVisibleFootprintDetail(authentication.getName(), id));
+            String email = currentEmail(authentication);
+            model.addAttribute("pageData", mapRecordService.loadVisibleFootprintDetail(email, id));
             model.addAttribute("commentPageData",
-                    mapRecordCommentService.loadVisibleComments(authentication.getName(), id));
+                    mapRecordCommentService.loadVisibleComments(email, id));
             model.addAttribute("mapRecordCommentForm", new MapRecordCommentForm());
+            model.addAttribute("viewerAuthenticated", isAuthenticated(authentication));
             return "app/footprint-detail";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Footprint not found", ex);
@@ -671,9 +666,17 @@ public class AppPageController {
         return fallback;
     }
 
+    private String currentEmail(Authentication authentication) {
+        return isAuthenticated(authentication) ? authentication.getName() : null;
+    }
+
     private boolean isLocalViewer(Authentication authentication) {
         return authentication != null && authentication.getAuthorities().stream()
                 .anyMatch(authority -> "ROLE_LOCAL".equals(authority.getAuthority())
                         || "ROLE_BRIDGE".equals(authority.getAuthority()));
+    }
+
+    private boolean isAuthenticated(Authentication authentication) {
+        return authentication != null && authentication.isAuthenticated() && !"anonymousUser".equals(authentication.getName());
     }
 }

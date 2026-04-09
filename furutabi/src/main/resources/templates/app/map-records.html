@@ -120,7 +120,7 @@
         empty.hidden = true;
         grid.innerHTML = records.map(function (record, index) {
           var stateLabel = record.isDraft ? '下書き' : '公開中';
-          var detailHref = '/app/my-map-records/' + encodeURIComponent(record.id);
+          var detailHref = '/app/map-records/' + encodeURIComponent(record.id);
           var editHref = '/app/home?editPin=' + encodeURIComponent(record.id) + '#tab-map';
 
           return [

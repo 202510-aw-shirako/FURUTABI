@@ -64,12 +64,12 @@
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;">
             <span class="note" th:text="'いいね ' + ${record.engagement.likeCount}">いいね 0</span>
             <span class="note" th:text="'ありがとう ' + ${record.engagement.thanksCount}">ありがとう 0</span>
-            <form th:if="${record.engagement.reactionAllowed}" th:action="@{/app/footprints/{id}/reaction(id=${record.id})}" method="post" style="display:inline;">
+            <form th:if="${viewerAuthenticated and record.engagement.reactionAllowed}" th:action="@{/app/footprints/{id}/reaction(id=${record.id})}" method="post" style="display:inline;">
               <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
               <input type="hidden" name="returnTo" th:value="${pageData.filterState.active ? '/app/footprints?userId=' + pageData.filterState.ownerUserId : '/app/footprints'}" />
               <button class="btn ghost" type="submit" th:text="${record.engagement.reactionActive} ? ${record.engagement.reactionLabel + 'を解除'} : ${record.engagement.reactionLabel}">いいね</button>
             </form>
-            <form th:action="@{/app/footprints/{id}/bookmark(id=${record.id})}" method="post" style="display:inline;">
+            <form th:if="${viewerAuthenticated}" th:action="@{/app/footprints/{id}/bookmark(id=${record.id})}" method="post" style="display:inline;">
               <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
               <input type="hidden" name="returnTo" th:value="${pageData.filterState.active ? '/app/footprints?userId=' + pageData.filterState.ownerUserId : '/app/footprints'}" />
               <button class="btn ghost" type="submit" th:text="${record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>

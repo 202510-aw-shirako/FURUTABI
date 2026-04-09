@@ -30,7 +30,6 @@ class PublicPageFlowTests {
             "/gate.html",
             "/gate-entry.html",
             "/local.html",
-            "/story.html",
             "/notices.html",
             "/notice.html",
             "/okatte-entry.html",

@@ -4,6 +4,7 @@ import com.furutabi.auth.LoginSuccessHandler;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,6 @@ public class SecurityConfig {
                     "/gate", "/gate.html",
                     "/gate-entry", "/gate-entry.html",
                     "/local", "/local.html",
-                    "/story", "/story.html",
                     "/notices", "/notices.html",
                     "/notice", "/notice.html",
                     "/okatte-entry", "/okatte-entry.html",
@@ -42,6 +42,7 @@ public class SecurityConfig {
                     "/safety-complete", "/safety-complete.html",
                     "/tour", "/tour.html"
                 ).permitAll()
+                .requestMatchers(HttpMethod.GET, "/app/footprints", "/app/footprints.html", "/app/footprints/*").permitAll()
                 .requestMatchers("/login", "/register", "/register/**").permitAll()
                 // Preview pages depend on these static assets being readable without authentication.
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/assets/**").permitAll()

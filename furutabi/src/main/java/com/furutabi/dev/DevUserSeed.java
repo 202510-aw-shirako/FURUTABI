@@ -47,11 +47,15 @@ public class DevUserSeed implements ApplicationRunner {
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_HASEGAWA, "hasegawa@example.com", "LOCAL", "長谷川さん", "長谷川さん", "長谷川さん");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_HOSYO, "hosyo@example.com", "LOCAL", "宝生さん", "宝生さん", "宝生さん");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_TODO, "todo@example.com", "LOCAL", "東堂さん", "東堂さん", "東堂さん");
+        seedNamedUser(null, "footprint1@example.com", "USER", "ごひいきさんA", "ごひいきさんA", "ごひいきさんA");
+        seedNamedUser(null, "footprint2@example.com", "USER", "ごひいきさんB", "ごひいきさんB", "ごひいきさんB");
+        seedNamedUser(null, "footprint3@example.com", "USER", "ごひいきさんC", "ごひいきさんC", "ごひいきさんC");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
         seedPilotOkatteProposal();
         seedAdditionalOkatteProposals();
+        seedSharedFootprints();
     }
 
     private void seedUser(String email, String roleName, String name, String nameKana) {
@@ -554,6 +558,129 @@ public class DevUserSeed implements ApplicationRunner {
             sortOrder,
             proposalId,
             tagName
+        );
+    }
+
+    private void seedSharedFootprints() {
+        seedMapRecord(
+            1001L,
+            "footprint1@example.com",
+            "境内の風と、OOさんのおはぎ",
+            """
+                境内のベンチに座っていると、時々サーっと風が渡ってきます。
+
+                木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。
+
+                観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。
+                """,
+            "境内のベンチ",
+            "public",
+            "area",
+            "2026-03-12T10:00:00Z"
+        );
+        seedMapRecord(
+            1002L,
+            "footprint2@example.com",
+            "小さな店先で、ひとこと教わる",
+            """
+                通りの角にある小さな店先で、季節の話を少しだけ聞かせてもらいました。
+
+                何かを買うことよりも、まずその場にある空気を受け取ることが大事なのだと感じました。店の人の言葉は短かったけれど、暮らしに根ざした重みがありました。
+
+                こういう時間は、強いおすすめ文句にしなくても十分に残ると思います。読み終わったあとに、町を歩く速度が少し変わるような足あとになればと思っています。
+                """,
+            "通りの角の小さな店先",
+            "public",
+            "area",
+            "2026-07-12T10:00:00Z"
+        );
+        seedMapRecord(
+            1003L,
+            "footprint3@example.com",
+            "朝の入り口で見つけた、町のやさしさ",
+            """
+                朝の入口を歩いていると、急いでいない人たちのやりとりが自然に目に入ってきました。
+
+                誰かが何かをしてあげているというより、その場で当たり前に支え合っている感じがありました。旅先として見るより先に、生活の輪郭を受け取った気がしました。
+
+                まだ言葉にしきれないけれど、その優しさをちゃんと返せる旅人でいたいと思いました。
+                """,
+            "朝の入り口",
+            "public",
+            "area",
+            "2026-11-12T10:00:00Z"
+        );
+    }
+
+    private void seedMapRecord(
+        long preferredMapRecordId,
+        String ownerEmail,
+        String title,
+        String body,
+        String locationName,
+        String visibility,
+        String locationPrecisionLevel,
+        String createdAtIso
+    ) {
+        long ownerUserId = requireUserIdByEmail(ownerEmail);
+        Timestamp timestamp = Timestamp.from(Instant.parse(createdAtIso));
+
+        Long existingId = jdbcTemplate.query(
+            "SELECT id FROM map_records WHERE id = ? AND deleted_at IS NULL",
+            rs -> rs.next() ? rs.getLong("id") : null,
+            preferredMapRecordId
+        );
+
+        if (existingId == null) {
+            jdbcTemplate.update(
+                """
+                    INSERT INTO map_records (
+                        id, user_id, title, body, visibility, location_name, latitude, longitude,
+                        location_precision_level, is_draft, created_at, updated_at, visibility_updated_at, deleted_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                preferredMapRecordId,
+                ownerUserId,
+                title,
+                body,
+                visibility,
+                locationName,
+                null,
+                null,
+                locationPrecisionLevel,
+                false,
+                timestamp,
+                timestamp,
+                timestamp,
+                null
+            );
+            return;
+        }
+
+        jdbcTemplate.update(
+            """
+                UPDATE map_records
+                SET user_id = ?,
+                    title = ?,
+                    body = ?,
+                    visibility = ?,
+                    location_name = ?,
+                    location_precision_level = ?,
+                    is_draft = FALSE,
+                    updated_at = ?,
+                    visibility_updated_at = ?,
+                    deleted_at = NULL
+                WHERE id = ?
+                """,
+            ownerUserId,
+            title,
+            body,
+            visibility,
+            locationName,
+            locationPrecisionLevel,
+            timestamp,
+            timestamp,
+            preferredMapRecordId
         );
     }
 

@@ -21,9 +21,9 @@
     <!-- わたしの地図はログイン後専用機能として維持し、公開側とは責務を分けると分かりやすそうです。 -->
     <!-- Java移行時メモ: 公開の「地域の方へ」ページとは別で、登録済み地域ユーザーだけが入るログイン後ホームの想定です。 -->
     <!-- 将来は LOCAL ロールのホームとして使い、一般ユーザーの home と中身を分けて育てられるようにしてあります。 -->
-    <section class="section section--hero" aria-label="ヒーローイメージ">
+    <section class="section fv section--hero topHeroSection" aria-label="ヒーロー">
       <div class="fullbleed">
-        <div class="fvHero fvHero--app">
+        <div class="fvHero fvHero--public">
           <div class="fvHeroSlides" aria-hidden="true">
             <figure class="fvHeroSlide is-pan-a" style="--fv-delay: 0s;">
               <img class="fvHeroImage" src="/assets/images/ファーストビュー/ファーストビュー1.png" alt="" fetchpriority="high" />
@@ -47,13 +47,8 @@
           <div class="fvHeroOverlay"></div>
           <div class="container fvHeroContentWrap">
             <div class="fvHeroContent">
-              <p class="fvHeroEyebrow">地域登録ユーザー向けホーム</p>
-              <h1 class="fvHeroTitle">地域の視点から、旅の入口を静かにひらく。</h1>
-              <p class="fvHeroText">わたしの地図、ごひいきさんの足あと、ちいきのおかってを行き来しながら、次の動きへつながる導入にします。</p>
-              <div class="fvHeroActions">
-                <a class="fvHeroLink" href="#tab-map">地図を見る</a>
-                <a class="fvHeroLink fvHeroLink--ghost" href="#tab-contact">連絡へ</a>
-              </div>
+              <h1 class="fvHeroTitle">見物から<br />関係の旅へ</h1>
+              <p class="fvHeroText">良い地域は良い旅人で育つ。いい地域も、また。</p>
             </div>
           </div>
         </div>
@@ -529,7 +524,6 @@
         footprints: {
           label: 'ごひいきさんの足あと',
           link: '/app/footprints',
-          reactions: { like: 12, thanks: 4 },
           stories: footprintStories && Object.keys(footprintStories).length
             ? footprintStories
             : (footprints
@@ -583,12 +577,12 @@
         footprints.initPreviewMap(topMap, config.stories, {
           label: config.label,
           initialStoryId: '1',
-          onSync: function () {
+          onSync: function (story) {
             if (likeBtn) {
-              likeBtn.textContent = String(config.reactions.like);
+              likeBtn.textContent = String(story && story.reactions ? story.reactions.like : 0);
             }
             if (thanksBtn) {
-              thanksBtn.textContent = String(config.reactions.thanks);
+              thanksBtn.textContent = String(story && story.reactions ? story.reactions.thanks : 0);
             }
           }
         });
@@ -1160,7 +1154,7 @@
                 : 'コメント 0件';
             }
             if (myMapDetail) {
-              myMapDetail.setAttribute('href', '/app/my-map-records/' + encodeURIComponent(pin.id));
+              myMapDetail.setAttribute('href', '/app/map-records/' + encodeURIComponent(pin.id));
             }
           }
         }

@@ -32,14 +32,16 @@ public class MapRecordCommentService {
     }
 
     public MapRecordCommentPageData loadVisibleComments(String email, long mapRecordId) {
-        UserRow currentUser = requireUser(email);
+        UserRow currentUser = findUser(email);
+        Long viewerUserId = currentUser == null ? null : currentUser.id();
 
-        if (!visibilityAccessService.canViewMapRecord(currentUser.id(), mapRecordId)) {
+        if (!visibilityAccessService.canViewMapRecord(viewerUserId, mapRecordId)) {
             throw new IllegalStateException("Map record comments are not visible for current user: " + mapRecordId);
         }
 
         MapRecordRow mapRecord = requireMapRecord(mapRecordId);
-        boolean canModerate = mapRecord.ownerUserId() == currentUser.id() || isAdmin(currentUser.id());
+        boolean canModerate = currentUser != null
+            && (mapRecord.ownerUserId() == currentUser.id() || isAdmin(currentUser.id()));
         List<MapRecordCommentView> comments = jdbcTemplate.query(
             """
                 SELECT mc.id, mc.user_id, mc.body, mc.created_at, u.email, u.nickname, u.name
@@ -64,7 +66,7 @@ public class MapRecordCommentService {
         return new MapRecordCommentPageData(
             mapRecordId,
             canModerate,
-            currentUser.id() == mapRecord.ownerUserId(),
+            currentUser != null && currentUser.id() == mapRecord.ownerUserId(),
             comments
         );
     }
@@ -146,7 +148,10 @@ public class MapRecordCommentService {
         }
     }
 
-    private UserRow requireUser(String email) {
+    private UserRow findUser(String email) {
+        if (email == null || email.isBlank()) {
+            return null;
+        }
         try {
             return Objects.requireNonNull(
                 jdbcTemplate.queryForObject(
@@ -168,6 +173,14 @@ public class MapRecordCommentService {
         } catch (EmptyResultDataAccessException ex) {
             throw new IllegalStateException("User not found for map record comments: " + email, ex);
         }
+    }
+
+    private UserRow requireUser(String email) {
+        UserRow user = findUser(email);
+        if (user == null) {
+            throw new IllegalStateException("User not found for map record comments: " + email);
+        }
+        return user;
     }
 
     private boolean isAdmin(long userId) {

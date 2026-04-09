@@ -25,14 +25,13 @@
 
     <section class="section fv">
       <h1 class="h1">ログイン</h1>
-      <p class="lead">ここでは既存アカウントのログインだけを最小実装しています。</p>
+      <p class="lead">ここでは既存アカウントでログインできます。</p>
     </section>
 
     <section class="section">
       <div class="grid2 loginRoleGrid">
         <div class="card">
           <div class="h2">既存アカウントでログイン</div>
-          <p class="note">今の段階では <code>/login</code> と <code>/logout</code> の最小実装だけを接続しています。</p>
 
           <div class="denseBox" th:if="${param.error}" style="margin-top:16px;">
             <div>
@@ -61,32 +60,15 @@
             <input type="hidden" name="returnTo" th:if="${returnTo != null}" th:value="${returnTo}" />
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
               <button class="btn primary" type="submit">ログイン</button>
-              <a class="btn ghost" href="/preview/login">preview を見る</a>
             </div>
           </form>
 
           <div class="denseBox" style="margin-top:16px;">
             <div>
               <div class="h2">はじめての方</div>
-              <p class="note">新規登録や SMS 認証は次の作業で接続します。</p>
+              <p class="note">新規登録と SMS 認証は次の導線で案内しています。</p>
             </div>
             <a class="btn ghost" href="/register">新規登録へ</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="h2">まだ実装していないもの</div>
-          <ul class="aboutFeatureList" style="margin-top:12px;">
-            <li><code>returnTo</code> の許可範囲の詳細調整</li>
-            <li>ログイン成功後の role 別遷移</li>
-            <li>地域の方 / 管理者向けの個別認証導線</li>
-            <li>register / SMS は最小実装済み、proposal / chat はまだ未実装</li>
-          </ul>
-          <div class="denseBox" style="margin-top:16px;">
-            <div>
-              <div class="h2">位置づけ</div>
-              <p class="note"><code>/preview/login</code> は preview route のまま残し、<code>/login</code> は本実装の最小入口として分けています。</p>
-            </div>
           </div>
         </div>
       </div>

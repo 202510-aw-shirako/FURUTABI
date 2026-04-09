@@ -215,7 +215,9 @@
         category: story.category,
         pinClass: story.pinClass,
         body: story.body.slice(),
-        link: (basePath || '') + 'story.html?story=' + story.id,
+        link: basePath && basePath.indexOf('{id}') >= 0
+          ? basePath.replace('{id}', story.id)
+          : '/app/footprints/100' + story.id,
         aria: defaultLabel + ' ' + story.id
       };
       return acc;
@@ -254,6 +256,10 @@
         body: [record.summary || ''],
         link: record.detailPath || (linkPrefix + record.id),
         aria: label + ' ' + String(index + 1),
+        reactions: {
+          like: Number(record.likeCount || 0),
+          thanks: Number(record.thanksCount || 0)
+        },
         x: position.x,
         y: position.y
       };
