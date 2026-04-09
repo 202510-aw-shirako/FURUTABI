@@ -54,6 +54,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_RURIKAWA, "rurikawa@example.com", "LOCAL", "瑠璃川 乙羽さん", "瑠璃川 乙羽さん", "瑠璃川 乙羽さん");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_WATANABE, "watanabe@example.com", "LOCAL", "渡辺 楓さん", "渡辺 楓さん", "渡辺 楓さん");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_WATANABE_COLLAB, "watanabe-collab@example.com", "LOCAL", "渡辺 楓さんと瑠璃川 乙羽さん", "渡辺 楓さんと瑠璃川 乙羽さん", "渡辺 楓さんと瑠璃川 乙羽さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_YOSHINO, "yoshino@example.com", "LOCAL", "吉野 大至さん", "吉野 大至さん", "吉野 大至さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -337,6 +338,18 @@ public class DevUserSeed implements ApplicationRunner {
             "public",
             GateSeedData.WATANABE_STREAM.tags()
         );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_YOSHINO_BIKE,
+            "yoshino@example.com",
+            "GATE",
+            GateSeedData.YOSHINO_BIKE.title(),
+            GateSeedData.YOSHINO_BIKE.summary(),
+            GateSeedData.YOSHINO_BIKE.body(),
+            GateSeedData.YOSHINO_BIKE.durationMinutes(),
+            GateSeedData.YOSHINO_BIKE.locationName(),
+            "public",
+            GateSeedData.YOSHINO_BIKE.tags()
+        );
     }
 
     private void seedPilotOkatteProposal() {
@@ -538,6 +551,18 @@ public class DevUserSeed implements ApplicationRunner {
             "乙羽さんの畑",
             "public",
             List.of("imoni", "support")
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_YOSHINO_FARM,
+            "yoshino@example.com",
+            "OKATTE",
+            "土から始める、実際の農業の入口",
+            "本業のハウスとは別の区画で、トマトやコーンなどの夏野菜を育てるために、土づくりから植え付けまでしっかり関わるおかってです。気軽な畑体験ではなく、吉野さんが普段どこを見て、どう考えて土をつくっているのか、その入口を少し見せてもらいます。その後、収穫の時期にまた来てもらい、最後は奥さんの料理で食卓までつながっていきます。",
+            "このおかっては、よくある気軽な農業体験ではありません。吉野さんが普段どこを見て土をつくり、どう考えて畝を立てているのか、その入口を少し見せてもらう時間です。土は、ただ作物を支える下地ではなく、命を育てる土台でもあります。肥料を入れ、混ぜ、整えながら、土をつくることの大事さや、土が持っている力を少しずつ知っていきます。本業のハウスとは別の区画で、トマトやコーンなどの夏野菜を育てるために、土づくりから植え付けまで行います。その後、季節が進んだらまた来てもらい、自分たちで関わった畑の収穫をし、最後は奥さんの料理で食卓につながっていきます。仕事の入口を見せてもらいながら、最後は暮らしの実りにも出会える、吉野さん一家らしいおかってです。",
+            150,
+            "畑",
+            "public",
+            List.of("farm", "season")
         );
     }
 
@@ -1000,6 +1025,15 @@ public class DevUserSeed implements ApplicationRunner {
             120,
             "渓流",
             List.of("stream", "entry")
+        );
+
+        private static final GateSeedData YOSHINO_BIKE = new GateSeedData(
+            "レンタサイクルで走る、吉野さんの景色のコース",
+            "観光協会のレンタサイクルを使って、吉野さんと一緒に海や坂のある道を走り、この土地の光や風に触れていく時間です。途中、小高い場所にあるきれいなカフェでひと休みしながら、吉野さんがこの地域に惚れ込んだ理由を少しずつたどります。",
+            "吉野さんと一緒に海や坂のある道を走りながら、この土地の風や光の感じに少しずつ馴染んでいく入口です。途中で小高い場所のカフェに立ち寄ることで、景色の中でひと息つく時間もあります。吉野さんは、この地域の朝日や夕日に惚れ込んで移住を決めた人なので、観光の絶景案内というより、「自分はここで決まっちゃったんですよね」と少し照れながら話してくれそうな、その人の目線で景色に触れられるのが魅力です。",
+            120,
+            "海辺の道",
+            List.of("bicycle", "view")
         );
     }
 }

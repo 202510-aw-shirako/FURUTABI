@@ -17,6 +17,7 @@ public class ProposalPresentationCatalog {
     private static final String HOST_RURIKAWA = "RURIKAWA";
     private static final String HOST_WATANABE = "WATANABE";
     private static final String HOST_WATANABE_COLLAB = "WATANABE_COLLAB";
+    private static final String HOST_YOSHINO = "YOSHINO";
     private static final String HOST_GENERIC = "GENERIC";
 
     public static final long HOST_USER_ID_ITO = 101L;
@@ -27,6 +28,7 @@ public class ProposalPresentationCatalog {
     public static final long HOST_USER_ID_RURIKAWA = 109L;
     public static final long HOST_USER_ID_WATANABE = 110L;
     public static final long HOST_USER_ID_WATANABE_COLLAB = 111L;
+    public static final long HOST_USER_ID_YOSHINO = 112L;
 
     public static final long PROPOSAL_ID_ITO_WALK = 1001L;
     public static final long PROPOSAL_ID_ITO_FLOWER = 1002L;
@@ -40,6 +42,7 @@ public class ProposalPresentationCatalog {
     public static final long PROPOSAL_ID_RURIKAWA_WALK = 1010L;
     public static final long PROPOSAL_ID_WATANABE_WATER = 1011L;
     public static final long PROPOSAL_ID_WATANABE_STREAM = 1012L;
+    public static final long PROPOSAL_ID_YOSHINO_BIKE = 1013L;
     public static final long PROPOSAL_ID_ITO_OKATTE = 22001L;
     public static final long PROPOSAL_ID_HASEGAWA_GRAPE = 23002L;
     public static final long PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM = 23003L;
@@ -51,6 +54,7 @@ public class ProposalPresentationCatalog {
     public static final long PROPOSAL_ID_WATANABE_SEA_OKATTE = 23009L;
     public static final long PROPOSAL_ID_WATANABE_IMONI = 23010L;
     public static final long PROPOSAL_ID_WATANABE_IMONI_HELP = 23011L;
+    public static final long PROPOSAL_ID_YOSHINO_FARM = 23012L;
 
     private static final Map<String, HostProfile> HOSTS = new LinkedHashMap<>();
     private static final Map<String, ProgramContent> PROGRAMS = new LinkedHashMap<>();
@@ -286,6 +290,39 @@ public class ProposalPresentationCatalog {
                 new ModalSection("この時間をひらく方", List.of(
                     "楓さんは外から来た人の入口を整える人、乙羽さんは食と場の中心で輪の中へ通す人です。",
                     "この二人が一緒にいることで、地域の食卓に、初めての人でも無理なく入っていける時間が生まれます。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_YOSHINO, new HostProfile(
+            HOST_YOSHINO,
+            "吉野 大至さん",
+            List.of("移住5年目", "実直な農の人", "景色に惚れて選んだ暮らし"),
+            "/assets/images/吉野さん写真/yoshino1.png",
+            "吉野 大至さんの写真",
+            "吉野 大至さんについて",
+            "移住5年目。都会で銀行勤務をしていましたが、仕事に疲れたことに加え、子ども二人をのびのびした環境で育てたい思いもあって、この地域に移住した方です。今はハウスでチコリやアーティチョークなど、少し珍しい野菜を育てて卸しています。実直で朴訥、少し無口そうにも見えますが、話してみると移住のことや畑のことをぽつぽつ面白く話してくれる方です。",
+            List.of(
+                new ModalSection("この土地を選んだのは…", List.of(
+                    "吉野さんは、都会で銀行勤務をしていましたが、仕事に疲れたことに加え、子どもたちをのびのびした場所で育てたい思いもあって、この地域に移住した方です。",
+                    "海から昇る朝日と夕日に惚れ込み、この土地を選びました。",
+                    "理屈だけではなく、景色への実感が人生を動かした方でもあります。"
+                )),
+                new ModalSection("今やっているのは…", List.of(
+                    "今はハウスで、チコリやアーティチョークなど、フランス料理にも使われる少し珍しい野菜を育て、卸しています。",
+                    "洒落た農家というより、実直にそれを地域の農として成立させようとしている方です。",
+                    "元銀行員らしい段取りのよさや数字感覚もありますが、農業を始めてからは、土や天気は思う通りにいかないことも受け入れながら、少しずつ考え方を変えてきた方です。"
+                )),
+                new ModalSection("家族で育てているのは…", List.of(
+                    "吉野さんには同い年の奥さんと子ども二人がいます。",
+                    "奥さんは、畑で育てた野菜をもとに、週一で小さなファーマーレストランを開き始めました。",
+                    "高級フレンチではなく、少しフレンチの手つきが入った、畑の延長にあるような食堂のような場です。",
+                    "地元の人も来てくれていて、子どもたちもその賑わいを喜んでいます。"
+                )),
+                new ModalSection("話すとじわっと面白いのは…", List.of(
+                    "吉野さんはメガネをかけた実直な人で、最初は少し朴訥として見えるかもしれません。",
+                    "でも話してみると、移住した頃の失敗や、珍しい野菜を地域で育てる難しさ、朝日と夕日の話などを、ぽつぽつと面白く話してくれます。",
+                    "完成された移住者というより、この土地で家族ごと根を張りながら、まだ育ち続けている人という感じが強い方です。"
                 ))
             )
         ));
@@ -629,6 +666,28 @@ public class ProposalPresentationCatalog {
             "/assets/images/渡辺さん写真/watanabe5.png"
         ));
 
+        PROGRAMS.put(GateService.GATE_KIND_YOSHINO_BIKE, new ProgramContent(
+            GateService.GATE_KIND_YOSHINO_BIKE, HOST_YOSHINO,
+            "レンタサイクルで走る、吉野さんの景色のコース",
+            "観光協会のレンタサイクルを使って、吉野さんと一緒に海や坂のある道を走り、この土地の光や風に触れていく時間です。途中、小高い場所にあるきれいなカフェでひと休みしながら、吉野さんがこの地域に惚れ込んだ理由を少しずつたどります。",
+            List.of("目安：2時間", "料金：500円／人", "レンタサイクル代・カフェでの飲み物代は実費", "開きやすい時間：朝〜日中", "動きやすい服装推奨", "天候によりコース変更あり"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("レンタサイクルで出発", ""), new ScheduleEntry("海や坂のある道を走る", ""), new ScheduleEntry("小高い場所のカフェでひと休み", ""), new ScheduleEntry("景色を見ながら少し話す", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "吉野さんと一緒に海や坂のある道を走りながら、この土地の風や光の感じに少しずつ馴染んでいく入口です。",
+                "途中で小高い場所のカフェに立ち寄ることで、景色の中でひと息つく時間もあります。",
+                "吉野さんは、この地域の朝日や夕日に惚れ込んで移住を決めた人なので、観光の絶景案内というより、「自分はここで決まっちゃったんですよね」と少し照れながら話してくれそうな、その人の目線で景色に触れられるのが魅力です。"
+            ),
+            List.of(
+                "移住5年目。都会で銀行勤務をしていましたが、仕事に疲れたことに加え、子ども二人をのびのびした環境で育てたい思いもあって、この地域に移住した方です。",
+                "今はハウスでチコリやアーティチョークなど、少し珍しい野菜を育てて卸しています。",
+                "実直で朴訥、少し無口そうにも見えますが、話してみると移住のことや畑のことをぽつぽつ面白く話してくれる方です。"
+            ),
+            "/assets/images/吉野さん写真/yoshino2.png",
+            "/assets/images/吉野さん写真/yoshino3.png",
+            "/assets/images/吉野さん写真/yoshino4.png",
+            "/assets/images/吉野さん写真/yoshino2.png"
+        ));
+
         PROGRAMS.put(OkatteService.OKATTE_KIND_ITO, new ProgramContent(
             OkatteService.OKATTE_KIND_ITO, HOST_ITO,
             "牡蠣小屋で、海のものを囲む時間",
@@ -905,6 +964,32 @@ public class ProposalPresentationCatalog {
             "/assets/images/渡辺さん写真/watanabe2.png",
             "/assets/images/渡辺さん写真/watanabe5.png"
         ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_YOSHINO_FARM, new ProgramContent(
+            OkatteService.OKATTE_KIND_YOSHINO_FARM, HOST_YOSHINO,
+            "土から始める、実際の農業の入口",
+            "本業のハウスとは別の区画で、トマトやコーンなどの夏野菜を育てるために、土づくりから植え付けまでしっかり関わるおかってです。気軽な畑体験ではなく、吉野さんが普段どこを見て、どう考えて土をつくっているのか、その入口を少し見せてもらいます。その後、収穫の時期にまた来てもらい、最後は奥さんの料理で食卓までつながっていきます。",
+            List.of("初回（土づくり・植え付け）：2時間", "初回参加費：2,000円／人", "育成管理費：1,500円／区画", "収穫回：2.5時間", "収穫回：3,500円／人", "汚れてもよい服装推奨", "本業のハウスではなく、別の区画で行います", "天候や生育状況により時期や内容が少し変わります", "収穫の時期に来られない場合は、こちらで育ててお送りします。別途送料をいただきます"),
+            List.of(new ScheduleEntry("初回：集合 / 土の状態を見る / 肥料を入れる・混ぜる / 畝を整える / 植え付け / 解散", ""), new ScheduleEntry("収穫回：集合 / 畑で収穫する / レストランへ移動 / ランチを食べる / 解散", "")),
+            List.of(
+                "このおかっては、よくある気軽な農業体験ではありません。",
+                "吉野さんが普段どこを見て土をつくり、どう考えて畝を立てているのか、その入口を少し見せてもらう時間です。",
+                "土は、ただ作物を支える下地ではなく、命を育てる土台でもあります。",
+                "肥料を入れ、混ぜ、整えながら、土をつくることの大事さや、土が持っている力を少しずつ知っていきます。",
+                "本業のハウスとは別の区画で、トマトやコーンなどの夏野菜を育てるために、土づくりから植え付けまで行います。",
+                "その後、季節が進んだらまた来てもらい、自分たちで関わった畑の収穫をし、最後は奥さんの料理で食卓につながっていきます。",
+                "仕事の入口を見せてもらいながら、最後は暮らしの実りにも出会える、吉野さん一家らしいおかってです。"
+            ),
+            List.of(
+                "吉野さんは、農業そのものを見せる人というより、農業のある暮らしを少しひらく人です。",
+                "本業のハウスはきちんと守りながら、その外側で、農業の入口と暮らしの実りを少しひらいています。",
+                "実直に仕事を守りながら、その外側で、農業の入口と暮らしの実りを少しひらいている方です。"
+            ),
+            "/assets/images/吉野さん写真/yoshino4.png",
+            "/assets/images/吉野さん写真/yoshino5.png",
+            "/assets/images/吉野さん写真/yoshino6.png",
+            "/assets/images/吉野さん写真/yoshino4.png"
+        ));
     }
 
     public static ProgramContent resolveProgram(String templateKind, String fallbackTitle, String fallbackSummary, String fallbackBody,
@@ -1062,6 +1147,7 @@ public class ProposalPresentationCatalog {
         HOSTS_BY_USER_ID.put(HOST_USER_ID_RURIKAWA, HOSTS.get(HOST_RURIKAWA));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_WATANABE, HOSTS.get(HOST_WATANABE));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_WATANABE_COLLAB, HOSTS.get(HOST_WATANABE_COLLAB));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_YOSHINO, HOSTS.get(HOST_YOSHINO));
 
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_WALK, PROGRAMS.get(GateService.GATE_KIND_ITO_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_FLOWER, PROGRAMS.get(GateService.GATE_KIND_ITO_FLOWER));
@@ -1075,6 +1161,7 @@ public class ProposalPresentationCatalog {
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RURIKAWA_WALK, PROGRAMS.get(GateService.GATE_KIND_RURIKAWA_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_WATER, PROGRAMS.get(GateService.GATE_KIND_WATANABE_WATER));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_STREAM, PROGRAMS.get(GateService.GATE_KIND_WATANABE_STREAM));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_YOSHINO_BIKE, PROGRAMS.get(GateService.GATE_KIND_YOSHINO_BIKE));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_ITO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_GRAPE, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_GRAPE));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM));
@@ -1086,5 +1173,6 @@ public class ProposalPresentationCatalog {
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_SEA_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_SEA));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_IMONI, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_IMONI));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_IMONI_HELP, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_IMONI_HELP));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_YOSHINO_FARM, PROGRAMS.get(OkatteService.OKATTE_KIND_YOSHINO_FARM));
     }
 }

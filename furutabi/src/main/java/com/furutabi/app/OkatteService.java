@@ -28,6 +28,7 @@ public class OkatteService {
     public static final String OKATTE_KIND_WATANABE_SEA = "WATANABE_SEA";
     public static final String OKATTE_KIND_WATANABE_IMONI = "WATANABE_IMONI";
     public static final String OKATTE_KIND_WATANABE_IMONI_HELP = "WATANABE_IMONI_HELP";
+    public static final String OKATTE_KIND_YOSHINO_FARM = "YOSHINO_FARM";
     public static final String OKATTE_KIND_UNKNOWN = "UNKNOWN";
 
     private static final String[] PIN_CLASSES = {
