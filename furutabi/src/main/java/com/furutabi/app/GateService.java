@@ -25,6 +25,8 @@ public class GateService {
     public static final String GATE_KIND_TODO_LEATHER = "TODO_LEATHER";
     public static final String GATE_KIND_RIKYU_CAFE = "RIKYU_CAFE";
     public static final String GATE_KIND_RIKYU_WALK = "RIKYU_WALK";
+    public static final String GATE_KIND_RURIKAWA_FARM = "RURIKAWA_FARM";
+    public static final String GATE_KIND_RURIKAWA_WALK = "RURIKAWA_WALK";
     public static final String GATE_KIND_UNKNOWN = "UNKNOWN";
 
     private static final String[] PIN_CLASSES = {
@@ -136,7 +138,9 @@ public class GateService {
             GATE_KIND_TODO_WALK,
             GATE_KIND_TODO_LEATHER,
             GATE_KIND_RIKYU_CAFE,
-            GATE_KIND_RIKYU_WALK
+            GATE_KIND_RIKYU_WALK,
+            GATE_KIND_RURIKAWA_FARM,
+            GATE_KIND_RURIKAWA_WALK
         )) {
             items.stream()
                 .filter(item -> kind.equals(item.templateKind()))

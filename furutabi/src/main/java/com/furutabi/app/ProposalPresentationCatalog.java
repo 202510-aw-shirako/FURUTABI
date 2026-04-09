@@ -14,6 +14,7 @@ public class ProposalPresentationCatalog {
     private static final String HOST_HOSYO = "HOSYO";
     private static final String HOST_TODO = "TODO";
     private static final String HOST_RIKYU = "RIKYU";
+    private static final String HOST_RURIKAWA = "RURIKAWA";
     private static final String HOST_GENERIC = "GENERIC";
 
     public static final long HOST_USER_ID_ITO = 101L;
@@ -21,6 +22,7 @@ public class ProposalPresentationCatalog {
     public static final long HOST_USER_ID_HOSYO = 103L;
     public static final long HOST_USER_ID_TODO = 104L;
     public static final long HOST_USER_ID_RIKYU = 108L;
+    public static final long HOST_USER_ID_RURIKAWA = 109L;
 
     public static final long PROPOSAL_ID_ITO_WALK = 1001L;
     public static final long PROPOSAL_ID_ITO_FLOWER = 1002L;
@@ -30,6 +32,8 @@ public class ProposalPresentationCatalog {
     public static final long PROPOSAL_ID_TODO_LEATHER = 1006L;
     public static final long PROPOSAL_ID_RIKYU_CAFE = 1007L;
     public static final long PROPOSAL_ID_RIKYU_WALK = 1008L;
+    public static final long PROPOSAL_ID_RURIKAWA_FARM = 1009L;
+    public static final long PROPOSAL_ID_RURIKAWA_WALK = 1010L;
     public static final long PROPOSAL_ID_ITO_OKATTE = 22001L;
     public static final long PROPOSAL_ID_HASEGAWA_GRAPE = 23002L;
     public static final long PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM = 23003L;
@@ -194,6 +198,36 @@ public class ProposalPresentationCatalog {
                     "利休さんの時間は、喫茶の中だけに閉じていません。",
                     "近くの木漏れ日のきれいな林道を静かに歩く時間や、梅林で季節の手仕事をする時間も、利休さんらしい入口やおかってになっています。",
                     "にぎやかな体験より、季節の手ざわりを静かに受け取る時間が、この方にはよく似合います。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_RURIKAWA, new HostProfile(
+            HOST_RURIKAWA,
+            "瑠璃川 乙羽さん",
+            List.of("おばあちゃんたちのまとめ役", "分ける暮らし", "場を立ち上げる人"),
+            "/assets/images/瑠璃川さん写真/rurikawa1.png",
+            "瑠璃川 乙羽さんの写真",
+            "瑠璃川 乙羽さんについて",
+            "おばあちゃんたちのまとめ役として、みんなで郷土料理を作る会を開いたり、楽しいことを自然に始められる方です。大きな農地は子どもに譲り、今はその一角の小さな農園で、自分たちが食べたり人にあげたりするための野菜を育てています。畑の野菜を漁師に渡し、その代わりにもらうホタテやウニをみんなに振る舞うのが喜びという、農と海と人を自然につないでいる方です。",
+            List.of(
+                new ModalSection("みんなでやろう、が自然なのは…", List.of(
+                    "乙羽さんは、おばあちゃんたちのまとめ役です。",
+                    "外から来た人も呼んで、みんなで郷土料理を作る会を主催するなど、「じゃあみんなでやろう」が自然にできる方です。",
+                    "ただ穏やかで親切なおばあちゃんというより、人を巻き込み、場を立ち上げられる方です。"
+                )),
+                new ModalSection("小さな農園にしているのは…", List.of(
+                    "もともと大きな農地を持っていましたが、それは子どもに譲り、今はその一角の小さな農園で、自分たちが食べたり、人にあげたりするための野菜を育てています。",
+                    "広げるための畑ではなく、分けるための畑であることが、乙羽さんらしい大事なところです。"
+                )),
+                new ModalSection("農と海がつながっているのは…", List.of(
+                    "知り合いの漁師たちに野菜をあげ、その代わりにもらうホタテやウニを、みんなに振る舞うのが喜び。",
+                    "乙羽さんは、育てる、渡す、もらう、みんなで食べる、という流れを自然につなげられる方です。",
+                    "ごちそうを出す人というより、人が集まって楽しくなる理由を自然につくれる人なのだと思います。"
+                )),
+                new ModalSection("少し遊びもあるのは…", List.of(
+                    "乙羽さんは占いが得意で、運がよければ占ってもらえるかもしれません。",
+                    "食べる、育てる、分けるだけでなく、そうした小さな遊び心が差し込まれるのも、この方の場らしさです。"
                 ))
             )
         ));
@@ -418,6 +452,77 @@ public class ProposalPresentationCatalog {
             "/assets/images/利休さん写真/rikyu6.png",
             "/assets/images/利休さん写真/rikyu7.png",
             "/assets/images/利休さん写真/rikyu5.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_RURIKAWA_FARM, new ProgramContent(
+            GateService.GATE_KIND_RURIKAWA_FARM, HOST_RURIKAWA,
+            "小さな農園で、おでって",
+            "乙羽さんの小さな農園で、外から来た人が少し畑仕事を手伝いながら、育てて分ける暮らしの輪に触れる時間です。本格的な農業体験ではなく、生活の延長にある畑仕事に、少し混ざらせてもらう入口です。",
+            List.of(
+                "目安：1時間",
+                "料金：無料",
+                "開きやすい時間：日中",
+                "汚れてもよい服装推奨",
+                "お茶っこあり",
+                "天候や季節により内容が少し変わります"
+            ),
+            List.of(
+                new ScheduleEntry("集合・顔合わせ", ""),
+                new ScheduleEntry("小さな農園で少し手を貸す", ""),
+                new ScheduleEntry("畑や野菜の話を聞く", ""),
+                new ScheduleEntry("お茶っこ", ""),
+                new ScheduleEntry("解散", "")
+            ),
+            List.of(
+                "この時間は、観光農園や収穫体験ではありません。",
+                "乙羽さんの小さな農園で、野菜を収穫したり、雑草を取ったり、苗を整えたりしながら、育てることを少し手伝う入口です。",
+                "でも、その畑は自分のためだけの畑ではありません。自分たちが食べるため、人にあげるため、漁師に渡すための畑でもあります。",
+                "だからここでは、作業そのものより、育てて分ける暮らしの輪に少し入る感じが大事です。",
+                "「これ持ってって」「その野菜はあの人にもあげるの」みたいなやりとりの中で、この土地のつながりが自然に見えてきます。"
+            ),
+            List.of(
+                "おばあちゃんたちのまとめ役として、みんなで郷土料理を作る会を開いたり、楽しいことを自然に始められる方です。",
+                "大きな農地は子どもに譲り、今はその一角の小さな農園で、自分たちが食べたり人にあげたりするための野菜を育てています。",
+                "畑の野菜を漁師に渡し、その代わりにもらうホタテやウニをみんなに振る舞うのが喜びという、農と海と人を自然につないでいる方です。"
+            ),
+            "/assets/images/瑠璃川さん写真/rurikawa2.png",
+            "/assets/images/瑠璃川さん写真/rurikawa3.png",
+            "/assets/images/瑠璃川さん写真/rurikawa4.png",
+            "/assets/images/瑠璃川さん写真/rurikawa2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_RURIKAWA_WALK, new ProgramContent(
+            GateService.GATE_KIND_RURIKAWA_WALK, HOST_RURIKAWA,
+            "畑のあいだを歩きながら、暮らしに触れる",
+            "畑の縁や小さな道を乙羽さんと一緒に歩きながら、人のつながりや季節の気配に少し触れていく時間です。のんびりした時間の流れの中で、ときどき立ち止まり、座って風を感じながら、この土地の見え方を少し分けてもらいます。",
+            List.of(
+                "目安：40分",
+                "料金：無料",
+                "開きやすい時間：日中",
+                "歩きやすい服装推奨",
+                "天候により変更あり"
+            ),
+            List.of(
+                new ScheduleEntry("集合", ""),
+                new ScheduleEntry("畑沿いや小道を歩く", ""),
+                new ScheduleEntry("途中で座って風を感じながら少し話す", ""),
+                new ScheduleEntry("解散", "")
+            ),
+            List.of(
+                "この散歩は、景色の名所を案内してもらう時間ではありません。",
+                "乙羽さんと、畑の縁や小さな農道、家と畑のあいだの道を歩きながら、「この野菜はあの人にもあげるの」「この先に漁師さんがいてね」といった話が自然に出てくるような散歩です。",
+                "そして乙羽さんらしいのは、歩き続けるだけでなく、よく知っている落ち着く場所でときどき立ち止まり、座って風を感じたり、町の自然や人の気配を眺めたりすることです。",
+                "のんびりした時間の流れの中で、ご年齢ならでは、乙羽さんならではのものの見方を、ご一緒することで少し垣間見られる。そんな入口です。"
+            ),
+            List.of(
+                "おばあちゃんたちのまとめ役として、みんなで郷土料理を作る会を開いたり、楽しいことを自然に始められる方です。",
+                "大きな農地は子どもに譲り、今はその一角の小さな農園で、自分たちが食べたり人にあげたりするための野菜を育てています。",
+                "畑の野菜を漁師に渡し、その代わりにもらうホタテやウニをみんなに振る舞うのが喜びという、農と海と人を自然につないでいる方です。"
+            ),
+            "/assets/images/瑠璃川さん写真/rurikawa5.png",
+            "/assets/images/瑠璃川さん写真/rurikawa6.png",
+            "/assets/images/瑠璃川さん写真/rurikawa7.png",
+            "/assets/images/瑠璃川さん写真/rurikawa5.png"
         ));
 
         PROGRAMS.put(OkatteService.OKATTE_KIND_ITO, new ProgramContent(
@@ -754,6 +859,7 @@ public class ProposalPresentationCatalog {
         HOSTS_BY_USER_ID.put(HOST_USER_ID_HOSYO, HOSTS.get(HOST_HOSYO));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_TODO, HOSTS.get(HOST_TODO));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_RIKYU, HOSTS.get(HOST_RIKYU));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_RURIKAWA, HOSTS.get(HOST_RURIKAWA));
 
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_WALK, PROGRAMS.get(GateService.GATE_KIND_ITO_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_FLOWER, PROGRAMS.get(GateService.GATE_KIND_ITO_FLOWER));
@@ -763,6 +869,8 @@ public class ProposalPresentationCatalog {
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_LEATHER, PROGRAMS.get(GateService.GATE_KIND_TODO_LEATHER));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_CAFE, PROGRAMS.get(GateService.GATE_KIND_RIKYU_CAFE));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_WALK, PROGRAMS.get(GateService.GATE_KIND_RIKYU_WALK));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RURIKAWA_FARM, PROGRAMS.get(GateService.GATE_KIND_RURIKAWA_FARM));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RURIKAWA_WALK, PROGRAMS.get(GateService.GATE_KIND_RURIKAWA_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_ITO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_GRAPE, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_GRAPE));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM));

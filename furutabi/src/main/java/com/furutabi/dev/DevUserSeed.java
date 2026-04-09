@@ -51,6 +51,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedNamedUser(null, "footprint2@example.com", "USER", "ごひいきさんB", "ごひいきさんB", "ごひいきさんB");
         seedNamedUser(null, "footprint3@example.com", "USER", "ごひいきさんC", "ごひいきさんC", "ごひいきさんC");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_RIKYU, "rikyu@example.com", "LOCAL", "利休 縫依乃さん", "利休 縫依乃さん", "利休 縫依乃さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_RURIKAWA, "rurikawa@example.com", "LOCAL", "瑠璃川 乙羽さん", "瑠璃川 乙羽さん", "瑠璃川 乙羽さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -285,6 +286,30 @@ public class DevUserSeed implements ApplicationRunner {
             GateSeedData.RIKYU_WALK.locationName(),
             "public",
             GateSeedData.RIKYU_WALK.tags()
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_RURIKAWA_FARM,
+            "rurikawa@example.com",
+            "GATE",
+            GateSeedData.RURIKAWA_FARM.title(),
+            GateSeedData.RURIKAWA_FARM.summary(),
+            GateSeedData.RURIKAWA_FARM.body(),
+            GateSeedData.RURIKAWA_FARM.durationMinutes(),
+            GateSeedData.RURIKAWA_FARM.locationName(),
+            "public",
+            GateSeedData.RURIKAWA_FARM.tags()
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_RURIKAWA_WALK,
+            "rurikawa@example.com",
+            "GATE",
+            GateSeedData.RURIKAWA_WALK.title(),
+            GateSeedData.RURIKAWA_WALK.summary(),
+            GateSeedData.RURIKAWA_WALK.body(),
+            GateSeedData.RURIKAWA_WALK.durationMinutes(),
+            GateSeedData.RURIKAWA_WALK.locationName(),
+            "public",
+            GateSeedData.RURIKAWA_WALK.tags()
         );
     }
 
@@ -866,6 +891,23 @@ public class DevUserSeed implements ApplicationRunner {
             40,
             "梅林地区",
             List.of("walk", "komorebi")
+        );
+        private static final GateSeedData RURIKAWA_FARM = new GateSeedData(
+            "小さな農園で、おでって",
+            "乙羽さんの小さな農園で、外から来た人が少し畑仕事を手伝いながら、育てて分ける暮らしの輪に触れる時間です。本格的な農業体験ではなく、生活の延長にある畑仕事に、少し混ざらせてもらう入口です。",
+            "この時間は、観光農園や収穫体験ではありません。乙羽さんの小さな農園で、野菜を収穫したり、雑草を取ったり、苗を整えたりしながら、育てることを少し手伝う入口です。でも、その畑は自分のためだけの畑ではありません。自分たちが食べるため、人にあげるため、漁師に渡すための畑でもあります。だからここでは、作業そのものより、育てて分ける暮らしの輪に少し入る感じが大事です。「これ持ってって」「その野菜はあの人にもあげるの」みたいなやりとりの中で、この土地のつながりが自然に見えてきます。",
+            60,
+            "小さな農園",
+            List.of("farm", "share")
+        );
+
+        private static final GateSeedData RURIKAWA_WALK = new GateSeedData(
+            "畑のあいだを歩きながら、暮らしに触れる",
+            "畑の縁や小さな道を乙羽さんと一緒に歩きながら、人のつながりや季節の気配に少し触れていく時間です。のんびりした時間の流れの中で、ときどき立ち止まり、座って風を感じながら、この土地の見え方を少し分けてもらいます。",
+            "この散歩は、景色の名所を案内してもらう時間ではありません。乙羽さんと、畑の縁や小さな農道、家と畑のあいだの道を歩きながら、「この野菜はあの人にもあげるの」「この先に漁師さんがいてね」といった話が自然に出てくるような散歩です。そして乙羽さんらしいのは、歩き続けるだけでなく、よく知っている落ち着く場所でときどき立ち止まり、座って風を感じたり、町の自然や人の気配を眺めたりすることです。のんびりした時間の流れの中で、ご年齢ならでは、乙羽さんならではのものの見方を、ご一緒することで少し垣間見られる。そんな入口です。",
+            40,
+            "畑沿いの小道",
+            List.of("walk", "field")
         );
     }
 }
