@@ -602,6 +602,13 @@ a.link {
   background: url("/assets/images/ヘッダー集/おかって.png") center / cover no-repeat;
 }
 
+.ph--pageHeroInuwashi {
+  min-height: 0;
+  aspect-ratio: 2064 / 512;
+  background: url("/assets/images/ヘッダー集/inuwashi.png") center / cover no-repeat;
+}
+
+
 .ph--map {
   aspect-ratio: 16/9;
 }
@@ -3885,10 +3892,19 @@ html {
   border-radius: 0;
 }
 
+.aboutHero--vision {
+  min-height: 0;
+  aspect-ratio: 2064 / 512;
+}
+
 .aboutHeroMedia {
   position: absolute;
   inset: 0;
   background: linear-gradient(145deg, rgba(180, 194, 210, 0.45), rgba(239, 227, 208, 0.72)), linear-gradient(0deg, rgba(31, 36, 48, 0.32), rgba(31, 36, 48, 0.12)), #d9d9d9;
+}
+
+.aboutHeroMedia--vision {
+  background: url("/assets/images/ヘッダー集/私たちの目指すもの.png") center / cover no-repeat;
 }
 
 .placeholder {
