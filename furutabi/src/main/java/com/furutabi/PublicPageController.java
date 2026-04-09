@@ -1,12 +1,20 @@
 package com.furutabi;
 
+import com.furutabi.app.MapRecordService;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PublicPageController {
 
     private static final String TOUR_EXTERNAL_URL = "https://example.com/furutabi-tour";
+    private final MapRecordService mapRecordService;
+
+    public PublicPageController(MapRecordService mapRecordService) {
+        this.mapRecordService = mapRecordService;
+    }
 
     @GetMapping({ "/", "/bridge", "/bridge.html" })
     public String bridge() {
@@ -14,7 +22,8 @@ public class PublicPageController {
     }
 
     @GetMapping({ "/index", "/index.html" })
-    public String index() {
+    public String index(Model model) {
+        model.addAttribute("footprintStories", mapRecordService.loadPublicHomeFootprintStories());
         return "public/index";
     }
 
@@ -41,11 +50,6 @@ public class PublicPageController {
     @GetMapping({ "/local", "/local.html" })
     public String local() {
         return "public/local";
-    }
-
-    @GetMapping({ "/story", "/story.html" })
-    public String story() {
-        return "public/story";
     }
 
     @GetMapping({ "/notices", "/notices.html" })
