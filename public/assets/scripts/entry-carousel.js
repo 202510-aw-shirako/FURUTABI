@@ -1,6 +1,7 @@
 (function () {
   function initCarousel(root) {
     var track = root.querySelector('[data-entry-track]');
+    var viewport = root.querySelector('.entryCarouselViewport');
     var prev = root.querySelector('[data-entry-prev]');
     var next = root.querySelector('[data-entry-next]');
     var desktopQuery = window.matchMedia('(min-width: 981px)');
@@ -37,11 +38,27 @@
       return firstCard.getBoundingClientRect().width + parseFloat(styles.columnGap || styles.gap || '0');
     }
 
+    function moveByScroll(direction) {
+      var stepWidth = getStepWidth();
+      var delta = stepWidth || (viewport ? viewport.clientWidth : 0);
+
+      if (!viewport || !delta) {
+        return;
+      }
+
+      viewport.scrollBy({ left: delta * direction, behavior: 'smooth' });
+    }
+
     function moveNext() {
       var stepWidth = getStepWidth();
       var first;
 
-      if (!desktopQuery.matches || isAnimating || !stepWidth) {
+      if (!desktopQuery.matches) {
+        moveByScroll(1);
+        return;
+      }
+
+      if (isAnimating || !stepWidth) {
         return;
       }
 
@@ -65,7 +82,12 @@
       var stepWidth = getStepWidth();
       var last;
 
-      if (!desktopQuery.matches || isAnimating || !stepWidth) {
+      if (!desktopQuery.matches) {
+        moveByScroll(-1);
+        return;
+      }
+
+      if (isAnimating || !stepWidth) {
         return;
       }
 
