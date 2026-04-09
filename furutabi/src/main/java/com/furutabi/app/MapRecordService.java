@@ -43,6 +43,7 @@ public class MapRecordService {
                 SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
                        u.email, u.nickname, u.name,
                        (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                       (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                        (
                            SELECT COUNT(*)
                            FROM map_record_comments mc
@@ -74,6 +75,7 @@ public class MapRecordService {
                     SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
                            u.email, u.nickname, u.name,
                            (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                           (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                            (
                                SELECT COUNT(*)
                                FROM map_record_comments mc
@@ -109,6 +111,7 @@ public class MapRecordService {
                 SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
                        u.email, u.nickname, u.name,
                        (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                       (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                        (
                            SELECT COUNT(*)
                            FROM map_record_comments mc
@@ -164,6 +167,7 @@ public class MapRecordService {
                            mr.location_precision_level, mr.created_at, mr.updated_at, mr.visibility_updated_at,
                            u.email, u.nickname, u.name,
                            (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                           (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                            (
                                SELECT COUNT(*)
                                FROM map_record_comments mc
@@ -193,6 +197,7 @@ public class MapRecordService {
                             scope.name(),
                             visibilityLabel(scope),
                             rs.getInt("image_count"),
+                            rs.getString("lead_image_path"),
                             rs.getInt("comment_count"),
                             engagement,
                             "/app/footprints?userId=" + ownerUserId
@@ -226,6 +231,7 @@ public class MapRecordService {
                                mr.location_precision_level, mr.created_at, mr.updated_at, mr.visibility_updated_at,
                                u.email, u.nickname, u.name,
                                (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                               (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                                (
                                    SELECT COUNT(*)
                                    FROM map_record_comments mc
@@ -256,6 +262,7 @@ public class MapRecordService {
                                 scope.name(),
                                 visibilityLabel(scope),
                                 rs.getInt("image_count"),
+                                rs.getString("lead_image_path"),
                                 rs.getInt("comment_count"),
                                 loadViewerEngagement(null, mapRecordId, viewerRoleContext),
                                 "/app/footprints?userId=" + ownerUserId
@@ -618,6 +625,7 @@ public class MapRecordService {
                     scope.name(),
                     visibilityLabel(scope),
                     rs.getInt("image_count"),
+                    rs.getString("lead_image_path"),
                     rs.getInt("comment_count"),
                     currentUser.id() == ownerUserId,
                     null,
@@ -658,6 +666,7 @@ public class MapRecordService {
                 SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
                        u.email, u.nickname, u.name,
                        (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                       (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                        (
                            SELECT COUNT(*)
                            FROM map_record_comments mc
@@ -684,6 +693,7 @@ public class MapRecordService {
                 SELECT mr.id, mr.user_id, mr.title, mr.body, mr.visibility, mr.location_name, mr.created_at,
                        u.email, u.nickname, u.name,
                        (SELECT COUNT(*) FROM map_record_images mi WHERE mi.map_record_id = mr.id) AS image_count,
+                       (SELECT mi.file_path FROM map_record_images mi WHERE mi.map_record_id = mr.id ORDER BY mi.sort_order ASC, mi.id ASC LIMIT 1) AS lead_image_path,
                        (
                            SELECT COUNT(*)
                            FROM map_record_comments mc
@@ -719,6 +729,7 @@ public class MapRecordService {
                     scope.name(),
                     visibilityLabel(scope),
                     rs.getInt("image_count"),
+                    rs.getString("lead_image_path"),
                     rs.getInt("comment_count"),
                     currentUser.id() == ownerUserId,
                     null,
@@ -766,6 +777,7 @@ public class MapRecordService {
                 record.visibilityKey(),
                 record.visibilityLabel(),
                 detailBasePath + record.id(),
+                record.leadImagePath(),
                 record.engagement().likeCount(),
                 record.engagement().thanksCount()
             ))
@@ -789,6 +801,7 @@ public class MapRecordService {
                     scope.name(),
                     visibilityLabel(scope),
                     rs.getInt("image_count"),
+                    rs.getString("lead_image_path"),
                     rs.getInt("comment_count"),
                     viewerUserId != null && viewerUserId.longValue() == ownerUserId,
                     null,
@@ -1035,6 +1048,7 @@ public class MapRecordService {
         String visibilityKey,
         String visibilityLabel,
         int imageCount,
+        String leadImagePath,
         int commentCount,
         boolean owner,
         ViewerEngagement engagement,
@@ -1052,6 +1066,7 @@ public class MapRecordService {
                 visibilityKey,
                 visibilityLabel,
                 imageCount,
+                leadImagePath,
                 commentCount,
                 owner,
                 updatedEngagement,
@@ -1086,6 +1101,7 @@ public class MapRecordService {
         String visibilityKey,
         String visibilityLabel,
         int imageCount,
+        String leadImagePath,
         int commentCount,
         ViewerEngagement engagement,
         String ownerFilterPath
@@ -1110,6 +1126,7 @@ public class MapRecordService {
         String visibilityKey,
         String visibilityLabel,
         String detailPath,
+        String leadImagePath,
         int likeCount,
         int thanksCount
     ) {

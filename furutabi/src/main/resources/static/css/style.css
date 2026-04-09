@@ -1222,6 +1222,7 @@ a.link {
   font-size: 15px;
   line-height: 1.9;
   color: #2d2d2d;
+  white-space: pre-line;
 }
 
 .proposalGrid {

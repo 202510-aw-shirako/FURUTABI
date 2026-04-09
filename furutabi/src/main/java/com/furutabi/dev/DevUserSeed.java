@@ -56,6 +56,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedPilotOkatteProposal();
         seedAdditionalOkatteProposals();
         seedSharedFootprints();
+        refreshSharedFootprintPresentation();
     }
 
     private void seedUser(String email, String roleName, String name, String nameKana) {
@@ -567,7 +568,7 @@ public class DevUserSeed implements ApplicationRunner {
             "footprint1@example.com",
             "境内の風と、OOさんのおはぎ",
             """
-                境内のベンチに座っていると、時々サーっと風が渡ってきます。
+                境内のベンチに座っていると、時々サーッと風が渡っていきます。
 
                 木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。
 
@@ -681,6 +682,62 @@ public class DevUserSeed implements ApplicationRunner {
             timestamp,
             timestamp,
             preferredMapRecordId
+        );
+    }
+
+    private void refreshSharedFootprintPresentation() {
+        jdbcTemplate.update(
+            """
+                UPDATE map_records
+                SET title = ?,
+                    body = ?,
+                    location_name = ?,
+                    updated_at = ?,
+                    visibility_updated_at = ?,
+                    deleted_at = NULL
+                WHERE id = ?
+                """,
+            "境内の風と、たわらやさんのおはぎ",
+            """
+                こちらの神社の境内のベンチに座っていると、時々サーッと風が渡っていきます。
+                木々がざわめき、きれいな紅葉が町に流れていくようで。
+                たわらやさんで買ったおはぎを食べながら、ゆっくり秋を感じるのがとても好きです。
+                """,
+            "こちらの神社の境内",
+            Timestamp.from(Instant.now()),
+            Timestamp.from(Instant.now()),
+            1001L
+        );
+
+        seedMapRecordImage(1001L, "/assets/images/おはぎ.png");
+    }
+
+    private void seedMapRecordImage(long mapRecordId, String filePath) {
+        Long existingId = jdbcTemplate.query(
+            "SELECT id FROM map_record_images WHERE map_record_id = ? AND sort_order = 0",
+            rs -> rs.next() ? rs.getLong("id") : null,
+            mapRecordId
+        );
+
+        if (existingId == null) {
+            jdbcTemplate.update(
+                """
+                    INSERT INTO map_record_images (
+                        map_record_id, file_path, sort_order, created_at
+                    ) VALUES (?, ?, ?, ?)
+                    """,
+                mapRecordId,
+                filePath,
+                0,
+                Timestamp.from(Instant.now())
+            );
+            return;
+        }
+
+        jdbcTemplate.update(
+            "UPDATE map_record_images SET file_path = ?, sort_order = 0 WHERE id = ?",
+            filePath,
+            existingId
         );
     }
 
