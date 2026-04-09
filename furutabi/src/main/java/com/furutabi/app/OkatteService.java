@@ -23,6 +23,7 @@ public class OkatteService {
     public static final String OKATTE_KIND_HOSYO_ANAGO = "HOSYO_ANAGO";
     public static final String OKATTE_KIND_HOSYO_SCENERY = "HOSYO_SCENERY";
     public static final String OKATTE_KIND_TODO = "TODO_OKATTE";
+    public static final String OKATTE_KIND_RIKYU = "RIKYU_OKATTE";
     public static final String OKATTE_KIND_UNKNOWN = "UNKNOWN";
 
     private static final String[] PIN_CLASSES = {

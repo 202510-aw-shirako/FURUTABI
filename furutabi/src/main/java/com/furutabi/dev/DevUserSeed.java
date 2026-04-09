@@ -50,6 +50,7 @@ public class DevUserSeed implements ApplicationRunner {
         seedNamedUser(null, "footprint1@example.com", "USER", "ごひいきさんA", "ごひいきさんA", "ごひいきさんA");
         seedNamedUser(null, "footprint2@example.com", "USER", "ごひいきさんB", "ごひいきさんB", "ごひいきさんB");
         seedNamedUser(null, "footprint3@example.com", "USER", "ごひいきさんC", "ごひいきさんC", "ごひいきさんC");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_RIKYU, "rikyu@example.com", "LOCAL", "利休 縫依乃さん", "利休 縫依乃さん", "利休 縫依乃さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -261,6 +262,30 @@ public class DevUserSeed implements ApplicationRunner {
             "public",
             GateSeedData.TODO_LEATHER.tags()
         );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_RIKYU_CAFE,
+            "rikyu@example.com",
+            "GATE",
+            GateSeedData.RIKYU_CAFE.title(),
+            GateSeedData.RIKYU_CAFE.summary(),
+            GateSeedData.RIKYU_CAFE.body(),
+            GateSeedData.RIKYU_CAFE.durationMinutes(),
+            GateSeedData.RIKYU_CAFE.locationName(),
+            "public",
+            GateSeedData.RIKYU_CAFE.tags()
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_RIKYU_WALK,
+            "rikyu@example.com",
+            "GATE",
+            GateSeedData.RIKYU_WALK.title(),
+            GateSeedData.RIKYU_WALK.summary(),
+            GateSeedData.RIKYU_WALK.body(),
+            GateSeedData.RIKYU_WALK.durationMinutes(),
+            GateSeedData.RIKYU_WALK.locationName(),
+            "public",
+            GateSeedData.RIKYU_WALK.tags()
+        );
     }
 
     private void seedPilotOkatteProposal() {
@@ -402,6 +427,18 @@ public class DevUserSeed implements ApplicationRunner {
             "革工房",
             "public",
             List.of("leather", "atelier")
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_RIKYU_OKATTE,
+            "rikyu@example.com",
+            "OKATTE",
+            "梅の季節を、静かに持ち帰る",
+            "梅林で梅の実を採り、梅干しや梅ジュース、梅酒を仕込む時間です。にぎやかな保存食ワークショップではなく、季節を自分の手で受け取り、暮らしに持ち帰る静かな手仕事としてひらかれます。",
+            "利休さんのおかっては、にぎやかな体験というより、とても静かに季節を持ち帰る手仕事です。梅の実を手に取り、香りを感じ、拭いて、瓶に入れ、氷砂糖や塩を重ねていく。そうやって、季節が少しずつ瓶の中に入っていく時間です。暮らしの知恵を教わる、というより、季節の手ざわりを一緒に受け取る。持ち帰ったあとも、食卓や晩酌の時間にその季節が続いていくところまで含めて、このおかっての魅力です。",
+            150,
+            "梅林地区",
+            "public",
+            List.of("ume", "season")
         );
     }
 
@@ -812,6 +849,23 @@ public class DevUserSeed implements ApplicationRunner {
             60,
             "革工房",
             List.of("leather", "workshop")
+        );
+        private static final GateSeedData RIKYU_CAFE = new GateSeedData(
+            "純喫茶で、少しずつほどける時間",
+            "利休さんの純喫茶で、コーヒーや手作りケーキを前に、少しずつこの町に馴染んでいく時間です。にぎやかに盛り上がるのではなく、「ここにいていい」と思える居場所から、この町へ入っていきます。",
+            "利休さんの入り口は、名物喫茶に行く時間というより、この町で安心して自分のままでいられる入口です。コーヒーや手作りケーキを前に、猫の気配や店の空気に触れているうちに、少しずつ緊張がほどけていきます。利休さんは無理に距離を詰めたり、話を引っ張ったりしません。同じものを見ながら、同じ場にいることで、自然に町に馴染んでいける。そんな時間です。",
+            40,
+            "利休さんの純喫茶",
+            List.of("cafe", "quiet")
+        );
+
+        private static final GateSeedData RIKYU_WALK = new GateSeedData(
+            "木漏れ日の道を、静かに歩く",
+            "梅林地区の木漏れ日のきれいな道を、利休さんと静かに歩く時間です。観光ガイドの散策ではなく、喫茶の延長のようなやわらかな歩みの中で、この町に少し馴染んでいきます。",
+            "この散歩は、絶景スポットを案内してもらう時間ではありません。利休さんと一緒に、木漏れ日のきれいな林道や小道を、無理に話しすぎず、同じ方向を見ながら歩いていく時間です。人見知りの方でも、ずっと目を合わせたり、距離を詰めすぎたりしなくていい。景色を見ながら同じ方向を向いて歩くことで、気まずくならずに町に少し馴染んでいけます。喫茶の延長にあるような、やわらかな入口です。",
+            40,
+            "梅林地区",
+            List.of("walk", "komorebi")
         );
     }
 }

@@ -13,12 +13,14 @@ public class ProposalPresentationCatalog {
     private static final String HOST_HASEGAWA = "HASEGAWA";
     private static final String HOST_HOSYO = "HOSYO";
     private static final String HOST_TODO = "TODO";
+    private static final String HOST_RIKYU = "RIKYU";
     private static final String HOST_GENERIC = "GENERIC";
 
     public static final long HOST_USER_ID_ITO = 101L;
     public static final long HOST_USER_ID_HASEGAWA = 102L;
     public static final long HOST_USER_ID_HOSYO = 103L;
     public static final long HOST_USER_ID_TODO = 104L;
+    public static final long HOST_USER_ID_RIKYU = 108L;
 
     public static final long PROPOSAL_ID_ITO_WALK = 1001L;
     public static final long PROPOSAL_ID_ITO_FLOWER = 1002L;
@@ -26,12 +28,15 @@ public class ProposalPresentationCatalog {
     public static final long PROPOSAL_ID_HOSYO_GATE = 1004L;
     public static final long PROPOSAL_ID_TODO_WALK = 1005L;
     public static final long PROPOSAL_ID_TODO_LEATHER = 1006L;
+    public static final long PROPOSAL_ID_RIKYU_CAFE = 1007L;
+    public static final long PROPOSAL_ID_RIKYU_WALK = 1008L;
     public static final long PROPOSAL_ID_ITO_OKATTE = 22001L;
     public static final long PROPOSAL_ID_HASEGAWA_GRAPE = 23002L;
     public static final long PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM = 23003L;
     public static final long PROPOSAL_ID_HOSYO_ANAGO = 23004L;
     public static final long PROPOSAL_ID_HOSYO_SCENERY = 23005L;
     public static final long PROPOSAL_ID_TODO_OKATTE = 23006L;
+    public static final long PROPOSAL_ID_RIKYU_OKATTE = 23007L;
 
     private static final Map<String, HostProfile> HOSTS = new LinkedHashMap<>();
     private static final Map<String, ProgramContent> PROGRAMS = new LinkedHashMap<>();
@@ -157,6 +162,38 @@ public class ProposalPresentationCatalog {
                     "東堂さんご夫妻はとても仲がよく、二人とも同じ革仕事の中にいます。",
                     "奥さんは特にデザインや見せ方にも強みがありますが、夫が本体で妻が補助という関係ではありません。",
                     "夫婦で同じ仕事を長く続けてきた呼吸があり、その空気も東堂さんの場の大事な一部です。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_RIKYU, new HostProfile(
+            HOST_RIKYU,
+            "利休 縫依乃さん",
+            List.of("純喫茶の店主", "人見知りの方に", "静かな居場所"),
+            "/assets/images/利休さん写真/rikyu1.png",
+            "利休 縫依乃さんの写真",
+            "利休 縫依乃さんについて",
+            "昔ながらの純喫茶を営みながら、地域の中に安心していられる居場所をつくってきた方です。猫をこよなく愛し、猫にも愛されていて、人見知りの方でも無理なく入っていけるやわらかさがあります。その一方で、実はコーヒーにかなり強いこだわりがあり、豆探しを理由に世界を旅してきた、奥行きのある方でもあります。",
+            List.of(
+                new ModalSection("まず伝わるのは…", List.of(
+                    "利休さんは、昔ながらの純喫茶を営む方です。",
+                    "猫がいて、手作りケーキがあって、地域の方がふらっと立ち寄る。そんな安心感のある場を、長く守ってきました。",
+                    "人見知りの方でも無理なくその場にいられることは、利休さんのとても大事な魅力です。"
+                )),
+                new ModalSection("ただやさしいだけではなく…", List.of(
+                    "利休さんは、やわらかく迎え入れる方ですが、それだけではありません。",
+                    "実はコーヒーにかなり深いこだわりがあり、豆探しを理由に世界を旅してきた方でもあります。",
+                    "味への感覚、選ぶ目、旅の蓄積が、喫茶の静かな時間の奥にちゃんとあります。"
+                )),
+                new ModalSection("地域の中でいてくれるのは…", List.of(
+                    "利休さんの店は、ただの喫茶店というより、地域の温度が保たれている場所です。",
+                    "子ども会や清掃活動にも積極的で、地域の人にとっても、いてくれると少し安心する大人の一人です。",
+                    "昼は静かな喫茶で、時間帯によって少し場の空気がゆるみ、笑いが増えていく。その移ろいも、この方らしい場の一部です。"
+                )),
+                new ModalSection("季節をひらくのは…", List.of(
+                    "利休さんの時間は、喫茶の中だけに閉じていません。",
+                    "近くの木漏れ日のきれいな林道を静かに歩く時間や、梅林で季節の手仕事をする時間も、利休さんらしい入口やおかってになっています。",
+                    "にぎやかな体験より、季節の手ざわりを静かに受け取る時間が、この方にはよく似合います。"
                 ))
             )
         ));
@@ -314,6 +351,75 @@ public class ProposalPresentationCatalog {
             "/assets/images/東堂さん写真/todo3.png"
         ));
 
+        PROGRAMS.put(GateService.GATE_KIND_RIKYU_CAFE, new ProgramContent(
+            GateService.GATE_KIND_RIKYU_CAFE, HOST_RIKYU,
+            "純喫茶で、少しずつほどける時間",
+            "利休さんの純喫茶で、コーヒーや手作りケーキを前に、少しずつこの町に馴染んでいく時間です。にぎやかに盛り上がるのではなく、「ここにいていい」と思える居場所から、この町へ入っていきます。",
+            List.of(
+                "目安：40分",
+                "料金：実費のみ",
+                "開きやすい時間：日中",
+                "店内では静かに過ごせる方におすすめ",
+                "飲み物やケーキを注文した場合は、その分をご負担いただきます"
+            ),
+            List.of(
+                new ScheduleEntry("集合・顔合わせ", ""),
+                new ScheduleEntry("喫茶で過ごす", ""),
+                new ScheduleEntry("コーヒーやケーキを楽しむ", ""),
+                new ScheduleEntry("少し話す", ""),
+                new ScheduleEntry("解散", "")
+            ),
+            List.of(
+                "利休さんの入り口は、名物喫茶に行く時間というより、この町で安心して自分のままでいられる入口です。",
+                "コーヒーや手作りケーキを前に、猫の気配や店の空気に触れているうちに、少しずつ緊張がほどけていきます。",
+                "利休さんは無理に距離を詰めたり、話を引っ張ったりしません。",
+                "同じものを見ながら、同じ場にいることで、自然に町に馴染んでいける。そんな時間です。"
+            ),
+            List.of(
+                "昔ながらの純喫茶を営みながら、地域の中に安心していられる居場所をつくってきた方です。",
+                "猫をこよなく愛し、猫にも愛されていて、人見知りの方でも無理なく入っていけるやわらかさがあります。",
+                "その一方で、実はコーヒーにかなり強いこだわりがあり、豆探しを理由に世界を旅してきた、奥行きのある方でもあります。"
+            ),
+            "/assets/images/利休さん写真/rikyu2.png",
+            "/assets/images/利休さん写真/rikyu3.png",
+            "/assets/images/利休さん写真/rikyu4.png",
+            "/assets/images/利休さん写真/rikyu2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_RIKYU_WALK, new ProgramContent(
+            GateService.GATE_KIND_RIKYU_WALK, HOST_RIKYU,
+            "木漏れ日の道を、静かに歩く",
+            "梅林地区の木漏れ日のきれいな道を、利休さんと静かに歩く時間です。観光ガイドの散策ではなく、喫茶の延長のようなやわらかな歩みの中で、この町に少し馴染んでいきます。",
+            List.of(
+                "目安：40分",
+                "料金：無料",
+                "開きやすい時間：日中",
+                "歩きやすい服装推奨",
+                "天候により変更あり"
+            ),
+            List.of(
+                new ScheduleEntry("集合", ""),
+                new ScheduleEntry("木漏れ日の道を歩く", ""),
+                new ScheduleEntry("途中で少し話す", ""),
+                new ScheduleEntry("解散", "")
+            ),
+            List.of(
+                "この散歩は、絶景スポットを案内してもらう時間ではありません。",
+                "利休さんと一緒に、木漏れ日のきれいな林道や小道を、無理に話しすぎず、同じ方向を見ながら歩いていく時間です。",
+                "人見知りの方でも、ずっと目を合わせたり、距離を詰めすぎたりしなくていい。景色を見ながら同じ方向を向いて歩くことで、気まずくならずに町に少し馴染んでいけます。",
+                "喫茶の延長にあるような、やわらかな入口です。"
+            ),
+            List.of(
+                "昔ながらの純喫茶を営みながら、地域の中に安心していられる居場所をつくってきた方です。",
+                "猫をこよなく愛し、猫にも愛されていて、人見知りの方でも無理なく入っていけるやわらかさがあります。",
+                "その一方で、実はコーヒーにかなり強いこだわりがあり、豆探しを理由に世界を旅してきた、奥行きのある方でもあります。"
+            ),
+            "/assets/images/利休さん写真/rikyu5.png",
+            "/assets/images/利休さん写真/rikyu6.png",
+            "/assets/images/利休さん写真/rikyu7.png",
+            "/assets/images/利休さん写真/rikyu5.png"
+        ));
+
         PROGRAMS.put(OkatteService.OKATTE_KIND_ITO, new ProgramContent(
             OkatteService.OKATTE_KIND_ITO, HOST_ITO,
             "牡蠣小屋で、海のものを囲む時間",
@@ -456,6 +562,43 @@ public class ProposalPresentationCatalog {
             "/assets/images/東堂さん写真/todo4.png",
             "/assets/images/東堂さん写真/todo5.png",
             "/assets/images/東堂さん写真/todo6.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_RIKYU, new ProgramContent(
+            OkatteService.OKATTE_KIND_RIKYU, HOST_RIKYU,
+            "梅の季節を、静かに持ち帰る",
+            "梅林で梅の実を採り、梅干しや梅ジュース、梅酒を仕込む時間です。にぎやかな保存食ワークショップではなく、季節を自分の手で受け取り、暮らしに持ち帰る静かな手仕事としてひらかれます。",
+            List.of(
+                "目安：2〜3時間",
+                "料金：3,000円",
+                "開きやすい時期：梅の季節",
+                "汚れてもよい服装推奨",
+                "持ち帰り用の容器が必要になることがあります",
+                "梅酒は自家消費用として持ち帰る前提です"
+            ),
+            List.of(
+                new ScheduleEntry("集合", ""),
+                new ScheduleEntry("梅林で梅の実を採る", ""),
+                new ScheduleEntry("仕込みの場に移る", ""),
+                new ScheduleEntry("梅干し / 梅ジュース / 梅酒を仕込む", ""),
+                new ScheduleEntry("持ち帰る", ""),
+                new ScheduleEntry("解散", "")
+            ),
+            List.of(
+                "利休さんのおかっては、にぎやかな体験というより、とても静かに季節を持ち帰る手仕事です。",
+                "梅の実を手に取り、香りを感じ、拭いて、瓶に入れ、氷砂糖や塩を重ねていく。そうやって、季節が少しずつ瓶の中に入っていく時間です。",
+                "暮らしの知恵を教わる、というより、季節の手ざわりを一緒に受け取る。",
+                "持ち帰ったあとも、食卓や晩酌の時間にその季節が続いていくところまで含めて、このおかっての魅力です。"
+            ),
+            List.of(
+                "昔ながらの純喫茶を営みながら、地域の中に安心していられる居場所をつくってきた方です。",
+                "猫をこよなく愛し、猫にも愛されていて、人見知りの方でも無理なく入っていけるやわらかさがあります。",
+                "その一方で、実はコーヒーにかなり強いこだわりがあり、豆探しを理由に世界を旅してきた、奥行きのある方でもあります。"
+            ),
+            "/assets/images/利休さん写真/rikyu6.png",
+            "/assets/images/利休さん写真/rikyu4.png",
+            "/assets/images/利休さん写真/rikyu7.png",
+            "/assets/images/利休さん写真/rikyu6.png"
         ));
     }
 
@@ -610,6 +753,7 @@ public class ProposalPresentationCatalog {
         HOSTS_BY_USER_ID.put(HOST_USER_ID_HASEGAWA, HOSTS.get(HOST_HASEGAWA));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_HOSYO, HOSTS.get(HOST_HOSYO));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_TODO, HOSTS.get(HOST_TODO));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_RIKYU, HOSTS.get(HOST_RIKYU));
 
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_WALK, PROGRAMS.get(GateService.GATE_KIND_ITO_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_FLOWER, PROGRAMS.get(GateService.GATE_KIND_ITO_FLOWER));
@@ -617,11 +761,14 @@ public class ProposalPresentationCatalog {
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_GATE, PROGRAMS.get(GateService.GATE_KIND_HOSYO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_WALK, PROGRAMS.get(GateService.GATE_KIND_TODO_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_LEATHER, PROGRAMS.get(GateService.GATE_KIND_TODO_LEATHER));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_CAFE, PROGRAMS.get(GateService.GATE_KIND_RIKYU_CAFE));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_WALK, PROGRAMS.get(GateService.GATE_KIND_RIKYU_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_ITO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_GRAPE, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_GRAPE));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_ANAGO, PROGRAMS.get(OkatteService.OKATTE_KIND_HOSYO_ANAGO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_SCENERY, PROGRAMS.get(OkatteService.OKATTE_KIND_HOSYO_SCENERY));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_TODO));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_RIKYU));
     }
 }
