@@ -52,6 +52,8 @@ public class DevUserSeed implements ApplicationRunner {
         seedNamedUser(null, "footprint3@example.com", "USER", "ごひいきさんC", "ごひいきさんC", "ごひいきさんC");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_RIKYU, "rikyu@example.com", "LOCAL", "利休 縫依乃さん", "利休 縫依乃さん", "利休 縫依乃さん");
         seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_RURIKAWA, "rurikawa@example.com", "LOCAL", "瑠璃川 乙羽さん", "瑠璃川 乙羽さん", "瑠璃川 乙羽さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_WATANABE, "watanabe@example.com", "LOCAL", "渡辺 楓さん", "渡辺 楓さん", "渡辺 楓さん");
+        seedNamedUser(ProposalPresentationCatalog.HOST_USER_ID_WATANABE_COLLAB, "watanabe-collab@example.com", "LOCAL", "渡辺 楓さんと瑠璃川 乙羽さん", "渡辺 楓さんと瑠璃川 乙羽さん", "渡辺 楓さんと瑠璃川 乙羽さん");
         seedUser("admin@example.com", "ADMIN", "Admin Seed", "Admin Seed");
         seedPilotGateProposal();
         seedAdditionalGateProposals();
@@ -311,6 +313,30 @@ public class DevUserSeed implements ApplicationRunner {
             "public",
             GateSeedData.RURIKAWA_WALK.tags()
         );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_WATANABE_WATER,
+            "watanabe@example.com",
+            "GATE",
+            GateSeedData.WATANABE_WATER.title(),
+            GateSeedData.WATANABE_WATER.summary(),
+            GateSeedData.WATANABE_WATER.body(),
+            GateSeedData.WATANABE_WATER.durationMinutes(),
+            GateSeedData.WATANABE_WATER.locationName(),
+            "public",
+            GateSeedData.WATANABE_WATER.tags()
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_WATANABE_STREAM,
+            "watanabe@example.com",
+            "GATE",
+            GateSeedData.WATANABE_STREAM.title(),
+            GateSeedData.WATANABE_STREAM.summary(),
+            GateSeedData.WATANABE_STREAM.body(),
+            GateSeedData.WATANABE_STREAM.durationMinutes(),
+            GateSeedData.WATANABE_STREAM.locationName(),
+            "public",
+            GateSeedData.WATANABE_STREAM.tags()
+        );
     }
 
     private void seedPilotOkatteProposal() {
@@ -464,6 +490,54 @@ public class DevUserSeed implements ApplicationRunner {
             "梅林地区",
             "public",
             List.of("ume", "season")
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_WATANABE_STREAM_OKATTE,
+            "watanabe@example.com",
+            "OKATTE",
+            "やさしい入口の先にある、少し深い渓流釣り",
+            "入口より少し深く、希望や経験に応じて踏み込める渓流釣りの時間です。基本はのべ竿で、必要に応じてその先の釣り方にも広げていけます。",
+            "入口よりもう少し踏み込んで、ちゃんと釣る時間に入っていくおかってです。基本はのべ竿で、やさしい川釣りをしながら、水辺との距離をもう一歩深めていきます。必要があれば、その人の経験や希望に応じて、延べ竿の先の釣り方にも広げることができます。楓さんは上級者を見せる人ではなく、その人の経験や気分に合わせて、無理のない釣り方を選んでくれる人です。だから、釣りが好きになりかけた人にも、もう少しちゃんと入りたい人にも合う。やさしい入口の先で、水辺との関係を少し深める時間です。",
+            180,
+            "渓流",
+            "public",
+            List.of("stream", "fishing")
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_WATANABE_SEA_OKATTE,
+            "watanabe@example.com",
+            "OKATTE",
+            "地域のつながりがあるからこそ開ける、少し特別な海釣り",
+            "知り合いの漁師に船を出してもらって行く、小さな海釣りの時間です。観光クルーズではなく、楓さんのつながりがあるからこそ開ける、少し特別な海のおかってです。",
+            "この海釣りは、豪華な観光クルーズではありません。知り合いの漁師に船を出してもらうからこそ成り立つ、地域のつながりの上にある海の時間です。海釣りをしたい人にはしっかり釣りの楽しさがあり、釣りにこだわりすぎなくても、海から地域を見るクルージングのような時間として楽しむこともできます。家族連れにも、ごひいきさんにも開きやすく、釣れた魚をその先の店につなげたり、次のツアーの話を育てたりもできる。楓さんらしい、「その場で終わらない海の時間」になっています。",
+            180,
+            "港",
+            "public",
+            List.of("sea", "fishing")
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_WATANABE_IMONI,
+            "watanabe-collab@example.com",
+            "OKATTE",
+            "感謝の芋煮会",
+            "乙羽さんの畑で採れた芋や野菜、知り合いの漁師から届く海のものを囲んで開かれる、感謝の芋煮会です。楓さんが外から来た人をやわらかくつなぎ、乙羽さんが輪の中へ迎え入れることで、地域の人と同じ鍋を囲むところから、この土地の関係に入っていきます。",
+            "感謝の芋煮会は、ただの食イベントではありません。乙羽さんの畑で育ったもの、知り合いの漁師から届いたもの、人の手、季節の巡り、来てくれた人。そうしたものをひとつの鍋と食卓に集める場です。まずは「食べに来てね」と招かれて鍋を囲むところから入ることができます。楓さんは、外から来た人が無理なくその輪に入れるよう整える人です。乙羽さんは、「食べていきなさい」と自然に輪の中へ通す人です。この二人がいることで、交流ではなく、同じ鍋を囲む関係が生まれます。",
+            120,
+            "乙羽さんの畑",
+            "public",
+            List.of("imoni", "collab")
+        );
+        seedProposalForHost(
+            ProposalPresentationCatalog.PROPOSAL_ID_WATANABE_IMONI_HELP,
+            "watanabe-collab@example.com",
+            "OKATTE",
+            "感謝の芋煮会\nおでってお願いします。",
+            "感謝の芋煮会の準備から少し手を貸してもらい、その流れのまま最後にみんなで同じ鍋を囲む参加のしかたです。食べるだけでなく、季節の行事を少し一緒につくった感じが残ります。",
+            "「おでってお願いします。」は、感謝の芋煮会の準備から少し手を貸してもらう形です。芋をむく、野菜を運ぶ、鍋の準備をする。そうした食べる前の手仕事に加わったあと、そのままみんなで同じ鍋を囲みます。楓さんが、外から来た人が無理なく入れるよう整え、乙羽さんがその手の動きごと輪の中へ通してくれる。食べるだけでなく、季節の行事を自分も少し一緒につくった感じが残る参加のしかたです。",
+            210,
+            "乙羽さんの畑",
+            "public",
+            List.of("imoni", "support")
         );
     }
 
@@ -908,6 +982,24 @@ public class DevUserSeed implements ApplicationRunner {
             40,
             "畑沿いの小道",
             List.of("walk", "field")
+        );
+
+        private static final GateSeedData WATANABE_WATER = new GateSeedData(
+            "水辺の空気を、やわらかくひらく散歩",
+            "海辺や水辺を楓さんとゆっくり歩きながら、その日の風や水の色、船や港の気配に少しずつ馴染んでいく時間です。観光ガイドの町歩きではなく、この土地の水辺にやわらかく入っていくための入口です。",
+            "この散歩は、観光名所を説明して回る時間ではありません。楓さんと一緒に、海辺や港まわり、堤防や川沿いを歩きながら、その日の潮や風、水の色、光の感じを少しずつ受け取っていく時間です。話しすぎなくても気まずくなく、同じ景色を見ることで、町に少し馴染んでいける。楓さんは強く引っ張るのではなく、「この時間の水辺、いいですよ」と静かに言えそうな距離感で、この土地の入口をひらいてくれます。",
+            40,
+            "海辺",
+            List.of("water", "walk")
+        );
+
+        private static final GateSeedData WATANABE_STREAM = new GateSeedData(
+            "渓流までの道も楽しい、やさしい釣りの入口",
+            "釣りをやってみたいけれどハードルが高い人向けに、楓さんがやさしくひらく渓流釣りの入口です。川に着くまでの道や、水辺を探していく時間も含めて、釣りを少し身近に感じていきます。",
+            "渓流まで行く道中も含めて、水辺に入っていく感覚そのものを楽しむ入口です。道具がわからない、どこでやればいいかわからない、子ども連れでできるか不安、そんなハードルを楓さんがやわらかく下げてくれます。家族連れでも参加しやすく、子どもは心配な子やはじめての子ならのべ竿、大人もまずはやさしい形で水辺に入っていけます。釣ることの難しさより、まずは川辺の空気や魚の気配を感じて、「やってみてもいいかも」と思えるようになる。そんな入口です。",
+            120,
+            "渓流",
+            List.of("stream", "entry")
         );
     }
 }

@@ -15,6 +15,8 @@ public class ProposalPresentationCatalog {
     private static final String HOST_TODO = "TODO";
     private static final String HOST_RIKYU = "RIKYU";
     private static final String HOST_RURIKAWA = "RURIKAWA";
+    private static final String HOST_WATANABE = "WATANABE";
+    private static final String HOST_WATANABE_COLLAB = "WATANABE_COLLAB";
     private static final String HOST_GENERIC = "GENERIC";
 
     public static final long HOST_USER_ID_ITO = 101L;
@@ -23,6 +25,8 @@ public class ProposalPresentationCatalog {
     public static final long HOST_USER_ID_TODO = 104L;
     public static final long HOST_USER_ID_RIKYU = 108L;
     public static final long HOST_USER_ID_RURIKAWA = 109L;
+    public static final long HOST_USER_ID_WATANABE = 110L;
+    public static final long HOST_USER_ID_WATANABE_COLLAB = 111L;
 
     public static final long PROPOSAL_ID_ITO_WALK = 1001L;
     public static final long PROPOSAL_ID_ITO_FLOWER = 1002L;
@@ -34,6 +38,8 @@ public class ProposalPresentationCatalog {
     public static final long PROPOSAL_ID_RIKYU_WALK = 1008L;
     public static final long PROPOSAL_ID_RURIKAWA_FARM = 1009L;
     public static final long PROPOSAL_ID_RURIKAWA_WALK = 1010L;
+    public static final long PROPOSAL_ID_WATANABE_WATER = 1011L;
+    public static final long PROPOSAL_ID_WATANABE_STREAM = 1012L;
     public static final long PROPOSAL_ID_ITO_OKATTE = 22001L;
     public static final long PROPOSAL_ID_HASEGAWA_GRAPE = 23002L;
     public static final long PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM = 23003L;
@@ -41,6 +47,10 @@ public class ProposalPresentationCatalog {
     public static final long PROPOSAL_ID_HOSYO_SCENERY = 23005L;
     public static final long PROPOSAL_ID_TODO_OKATTE = 23006L;
     public static final long PROPOSAL_ID_RIKYU_OKATTE = 23007L;
+    public static final long PROPOSAL_ID_WATANABE_STREAM_OKATTE = 23008L;
+    public static final long PROPOSAL_ID_WATANABE_SEA_OKATTE = 23009L;
+    public static final long PROPOSAL_ID_WATANABE_IMONI = 23010L;
+    public static final long PROPOSAL_ID_WATANABE_IMONI_HELP = 23011L;
 
     private static final Map<String, HostProfile> HOSTS = new LinkedHashMap<>();
     private static final Map<String, ProgramContent> PROGRAMS = new LinkedHashMap<>();
@@ -228,6 +238,54 @@ public class ProposalPresentationCatalog {
                 new ModalSection("少し遊びもあるのは…", List.of(
                     "乙羽さんは占いが得意で、運がよければ占ってもらえるかもしれません。",
                     "食べる、育てる、分けるだけでなく、そうした小さな遊び心が差し込まれるのも、この方の場らしさです。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_WATANABE, new HostProfile(
+            HOST_WATANABE,
+            "渡辺 楓さん",
+            List.of("一番接しやすい", "水辺の入口", "つなぐ人"),
+            "/assets/images/渡辺さん写真/watanabe1.png",
+            "渡辺 楓さんの写真",
+            "渡辺 楓さんについて",
+            "この地域で生まれ育ち、観光協会職員として、地域の人、移住者、リピーター、旅行会社、ごひいきさんをつなぎながら、今回のプロジェクトも日々試行錯誤しながら立ち上げている方です。一番接しやすいタイプで、一見すると少し文系で、やわらかく、控えめで、少し華奢に見えます。でも実はかなり広く動いていて、人と人をつなぎ、企画を育てている方です。釣りが好きで、海も渓流も好き。水辺の空気を知っていて、初心者のハードルをやさしく下げられる方でもあります。",
+            List.of(
+                new ModalSection("一番接しやすいのは…", List.of(
+                    "楓さんは、この地域で生まれ育った30代の女性で、観光協会職員として働いています。",
+                    "地域の人、移住者、リピーター、旅行会社、ごひいきさんたちをつなぎながら、今回のプロジェクトも日々試行錯誤しながら立ち上げている方です。",
+                    "一番接しやすい存在として、外から来た人が最初に安心して話しかけやすい方でもあります。"
+                )),
+                new ModalSection("一見するとやわらかいのに…", List.of(
+                    "楓さんは、いかにも強いリーダーには見えません。",
+                    "少し文系で、やわらかく、控えめで、少し華奢に見える。",
+                    "でもその雰囲気のまま、実はかなり広く動いていて、人と人をつなぎ、企画を育て、地域の人の力を少しずつひらいている方です。"
+                )),
+                new ModalSection("水辺が好きなのは…", List.of(
+                    "楓さんは釣りが好きで、海も渓流も好きです。",
+                    "ただの趣味というより、この土地の水辺の空気や、その日の光や風、水の色の違いをちゃんと知っている人として、水辺が楓さんの入口になっています。",
+                    "釣りをやってみたいけれどハードルが高い人の背中を、やさしく押せるのも楓さんらしいところです。"
+                )),
+                new ModalSection("関係を育てるのは…", List.of(
+                    "楓さんは、入口をひらくだけで終わる人ではありません。",
+                    "はじめての人には水辺をぐっと近づけ、家族連れには安心して参加できる形をつくり、常連さんとは釣りをしながら次のツアーの話も育てていける。",
+                    "水辺をきっかけに、その先の地域との関係まで少しずつ育てていける方です。"
+                ))
+            )
+        ));
+
+        HOSTS.put(HOST_WATANABE_COLLAB, new HostProfile(
+            HOST_WATANABE_COLLAB,
+            "渡辺 楓さんと瑠璃川 乙羽さん",
+            List.of("つなぐ人", "分ける暮らし", "同じ鍋を囲む時間"),
+            "/assets/images/渡辺さん写真/watanabe1.png",
+            "渡辺 楓さんと瑠璃川 乙羽さんの写真",
+            "渡辺 楓さんと瑠璃川 乙羽さんについて",
+            "楓さんは外から来た人の入口を整える人、乙羽さんは食と場の中心で輪の中へ通す人です。この二人が一緒にいることで、地域の食卓に、初めての人でも無理なく入っていける時間が生まれます。",
+            List.of(
+                new ModalSection("この時間をひらく方", List.of(
+                    "楓さんは外から来た人の入口を整える人、乙羽さんは食と場の中心で輪の中へ通す人です。",
+                    "この二人が一緒にいることで、地域の食卓に、初めての人でも無理なく入っていける時間が生まれます。"
                 ))
             )
         ));
@@ -525,6 +583,52 @@ public class ProposalPresentationCatalog {
             "/assets/images/瑠璃川さん写真/rurikawa5.png"
         ));
 
+        PROGRAMS.put(GateService.GATE_KIND_WATANABE_WATER, new ProgramContent(
+            GateService.GATE_KIND_WATANABE_WATER, HOST_WATANABE,
+            "水辺の空気を、やわらかくひらく散歩",
+            "海辺や水辺を楓さんとゆっくり歩きながら、その日の風や水の色、船や港の気配に少しずつ馴染んでいく時間です。観光ガイドの町歩きではなく、この土地の水辺にやわらかく入っていくための入口です。",
+            List.of("目安：40分", "料金：無料", "開きやすい時間：日中", "歩きやすい服装推奨", "天候により場所や流れが少し変わることがあります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("水辺を歩く", ""), new ScheduleEntry("途中で少し立ち止まる", ""), new ScheduleEntry("景色や空気を見ながら話す", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "この散歩は、観光名所を説明して回る時間ではありません。",
+                "楓さんと一緒に、海辺や港まわり、堤防や川沿いを歩きながら、その日の潮や風、水の色、光の感じを少しずつ受け取っていく時間です。",
+                "話しすぎなくても気まずくなく、同じ景色を見ることで、町に少し馴染んでいける。",
+                "楓さんは強く引っ張るのではなく、「この時間の水辺、いいですよ」と静かに言えそうな距離感で、この土地の入口をひらいてくれます。"
+            ),
+            List.of(
+                "この地域で生まれ育ち、観光協会職員として、地域の人、移住者、リピーター、旅行会社、ごひいきさんをつなぎながら、今回のプロジェクトも日々試行錯誤しながら立ち上げている方です。",
+                "一番接しやすいタイプで、一見すると少し文系で、やわらかく、控えめで、少し華奢に見えます。",
+                "でも実はかなり広く動いていて、人と人をつなぎ、企画を育てている方です。釣りが好きで、海も渓流も好き。水辺の空気を知っていて、初心者のハードルをやさしく下げられる方でもあります。"
+            ),
+            "/assets/images/渡辺さん写真/watanabe2.png",
+            "/assets/images/渡辺さん写真/watanabe3.png",
+            "/assets/images/渡辺さん写真/watanabe4.png",
+            "/assets/images/渡辺さん写真/watanabe2.png"
+        ));
+
+        PROGRAMS.put(GateService.GATE_KIND_WATANABE_STREAM, new ProgramContent(
+            GateService.GATE_KIND_WATANABE_STREAM, HOST_WATANABE,
+            "渓流までの道も楽しい、やさしい釣りの入口",
+            "釣りをやってみたいけれどハードルが高い人向けに、楓さんがやさしくひらく渓流釣りの入口です。川に着くまでの道や、水辺を探していく時間も含めて、釣りを少し身近に感じていきます。",
+            List.of("目安：1.5〜2時間", "料金：500円／人", "開きやすい時期：春〜秋", "歩きやすい服装・普通の靴で参加可", "川には入らない、安定した岸辺や川沿いで行います", "基本はのべ竿です", "天候や川の状況により内容が少し変わることがあります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("渓流まで向かう", ""), new ScheduleEntry("川辺で釣りの入口に触れる", ""), new ScheduleEntry("少しやってみる", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "渓流まで行く道中も含めて、水辺に入っていく感覚そのものを楽しむ入口です。",
+                "道具がわからない、どこでやればいいかわからない、子ども連れでできるか不安、そんなハードルを楓さんがやわらかく下げてくれます。",
+                "家族連れでも参加しやすく、子どもは心配な子やはじめての子ならのべ竿、大人もまずはやさしい形で水辺に入っていけます。",
+                "釣ることの難しさより、まずは川辺の空気や魚の気配を感じて、「やってみてもいいかも」と思えるようになる。そんな入口です。"
+            ),
+            List.of(
+                "この地域で生まれ育ち、観光協会職員として、地域の人、移住者、リピーター、旅行会社、ごひいきさんをつなぎながら、今回のプロジェクトも日々試行錯誤しながら立ち上げている方です。",
+                "一番接しやすいタイプで、一見すると少し文系で、やわらかく、控えめで、少し華奢に見えます。",
+                "でも実はかなり広く動いていて、人と人をつなぎ、企画を育てている方です。釣りが好きで、海も渓流も好き。水辺の空気を知っていて、初心者のハードルをやさしく下げられる方でもあります。"
+            ),
+            "/assets/images/渡辺さん写真/watanabe5.png",
+            "/assets/images/渡辺さん写真/watanabe6.png",
+            "/assets/images/渡辺さん写真/watanabe3.png",
+            "/assets/images/渡辺さん写真/watanabe5.png"
+        ));
+
         PROGRAMS.put(OkatteService.OKATTE_KIND_ITO, new ProgramContent(
             OkatteService.OKATTE_KIND_ITO, HOST_ITO,
             "牡蠣小屋で、海のものを囲む時間",
@@ -705,6 +809,102 @@ public class ProposalPresentationCatalog {
             "/assets/images/利休さん写真/rikyu7.png",
             "/assets/images/利休さん写真/rikyu6.png"
         ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_WATANABE_STREAM, new ProgramContent(
+            OkatteService.OKATTE_KIND_WATANABE_STREAM, HOST_WATANABE,
+            "やさしい入口の先にある、少し深い渓流釣り",
+            "入口より少し深く、希望や経験に応じて踏み込める渓流釣りの時間です。基本はのべ竿で、必要に応じてその先の釣り方にも広げていけます。",
+            List.of("目安：2.5〜3時間", "釣り案内料：3,000円／組", "延べ竿レンタル：500円／本", "開きやすい時期：春〜秋", "歩きやすい服装推奨", "リールなど延べ竿以外の装備レンタルが必要な場合は応相談です", "延べ竿は、別のおかってで木工所で作ることもできます。ご希望の方はお申し付けください", "川や時期、経験に応じて内容が変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("その日の場所や釣り方を相談", ""), new ScheduleEntry("川で釣る", ""), new ScheduleEntry("休みながら続ける", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "入口よりもう少し踏み込んで、ちゃんと釣る時間に入っていくおかってです。",
+                "基本はのべ竿で、やさしい川釣りをしながら、水辺との距離をもう一歩深めていきます。",
+                "必要があれば、その人の経験や希望に応じて、延べ竿の先の釣り方にも広げることができます。",
+                "楓さんは上級者を見せる人ではなく、その人の経験や気分に合わせて、無理のない釣り方を選んでくれる人です。",
+                "だから、釣りが好きになりかけた人にも、もう少しちゃんと入りたい人にも合う。",
+                "やさしい入口の先で、水辺との関係を少し深める時間です。"
+            ),
+            List.of(
+                "楓さんは、地域の人や外から来た人をつなぐだけでなく、水辺をきっかけにその人に合う楽しみ方を育てていける方です。",
+                "海も渓流も好きで、初心者の不安も、少し深めたい人の気持ちもわかるからこそ、このおかってが成り立っています。",
+                "釣りの技術を見せるというより、水辺との関係を少し深める人として、この時間をひらいています。"
+            ),
+            "/assets/images/渡辺さん写真/watanabe5.png",
+            "/assets/images/渡辺さん写真/watanabe6.png",
+            "/assets/images/渡辺さん写真/watanabe3.png",
+            "/assets/images/渡辺さん写真/watanabe5.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_WATANABE_SEA, new ProgramContent(
+            OkatteService.OKATTE_KIND_WATANABE_SEA, HOST_WATANABE,
+            "地域のつながりがあるからこそ開ける、少し特別な海釣り",
+            "知り合いの漁師に船を出してもらって行く、小さな海釣りの時間です。観光クルーズではなく、楓さんのつながりがあるからこそ開ける、少し特別な海のおかってです。",
+            List.of("目安：3時間", "乗船料：10,000円／組", "参加費：1,500円／人", "開きやすい時期：季節と海の状況による", "ライフジャケット着用必須", "船を出す都合や海況により中止・変更あり", "釣りだけでなく、クルージング的に海を楽しむ形にも広げられます"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("港へ移動 / 乗船準備", ""), new ScheduleEntry("海へ出る", ""), new ScheduleEntry("釣りまたは海の時間を楽しむ", ""), new ScheduleEntry("帰港・解散", "")),
+            List.of(
+                "この海釣りは、豪華な観光クルーズではありません。",
+                "知り合いの漁師に船を出してもらうからこそ成り立つ、地域のつながりの上にある海の時間です。",
+                "海釣りをしたい人にはしっかり釣りの楽しさがあり、釣りにこだわりすぎなくても、海から地域を見るクルージングのような時間として楽しむこともできます。",
+                "家族連れにも、ごひいきさんにも開きやすく、釣れた魚をその先の店につなげたり、次のツアーの話を育てたりもできる。",
+                "楓さんらしい、「その場で終わらない海の時間」になっています。"
+            ),
+            List.of(
+                "楓さんは、水辺の入口をひらくだけでなく、その先の関係や楽しみ方まで育てていける方です。",
+                "知り合いの漁師とのつながりがあり、外から来た人が無理なく海の時間に入れるよう整えられるからこそ、このおかってがひらけます。",
+                "海を強く押し出すのではなく、その人に合う海との関わり方をつくってくれる方です。"
+            ),
+            "/assets/images/渡辺さん写真/watanabe2.png",
+            "/assets/images/渡辺さん写真/watanabe4.png",
+            "/assets/images/渡辺さん写真/watanabe6.png",
+            "/assets/images/渡辺さん写真/watanabe2.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_WATANABE_IMONI, new ProgramContent(
+            OkatteService.OKATTE_KIND_WATANABE_IMONI, HOST_WATANABE_COLLAB,
+            "感謝の芋煮会",
+            "乙羽さんの畑で採れた芋や野菜、知り合いの漁師から届く海のものを囲んで開かれる、感謝の芋煮会です。楓さんが外から来た人をやわらかくつなぎ、乙羽さんが輪の中へ迎え入れることで、地域の人と同じ鍋を囲むところから、この土地の関係に入っていきます。",
+            List.of("日時：2026年10月25日（日）11:30〜13:30", "料金：3,000円／人", "汚れてもよい服装だと安心", "内容は季節や集まる人により少し変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("芋煮会の場へ入る", ""), new ScheduleEntry("鍋を囲む", ""), new ScheduleEntry("話しながら過ごす", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "感謝の芋煮会は、ただの食イベントではありません。",
+                "乙羽さんの畑で育ったもの、知り合いの漁師から届いたもの、人の手、季節の巡り、来てくれた人。そうしたものをひとつの鍋と食卓に集める場です。",
+                "まずは「食べに来てね」と招かれて鍋を囲むところから入ることができます。",
+                "楓さんは、外から来た人が無理なくその輪に入れるよう整える人です。",
+                "乙羽さんは、「食べていきなさい」と自然に輪の中へ通す人です。",
+                "この二人がいることで、交流ではなく、同じ鍋を囲む関係が生まれます。"
+            ),
+            List.of(
+                "楓さんは外から来た人の入口を整える人、乙羽さんは食と場の中心で輪の中へ通す人です。",
+                "この二人が一緒にいることで、地域の食卓に、初めての人でも無理なく入っていける時間が生まれます。"
+            ),
+            "/assets/images/渡辺さん写真/watanabe4.png",
+            "/assets/images/渡辺さん写真/watanabe2.png",
+            "/assets/images/渡辺さん写真/watanabe5.png",
+            "/assets/images/渡辺さん写真/watanabe4.png"
+        ));
+
+        PROGRAMS.put(OkatteService.OKATTE_KIND_WATANABE_IMONI_HELP, new ProgramContent(
+            OkatteService.OKATTE_KIND_WATANABE_IMONI_HELP, HOST_WATANABE_COLLAB,
+            "感謝の芋煮会\nおでってお願いします。",
+            "感謝の芋煮会の準備から少し手を貸してもらい、その流れのまま最後にみんなで同じ鍋を囲む参加のしかたです。食べるだけでなく、季節の行事を少し一緒につくった感じが残ります。",
+            List.of("日時：2026年10月25日（日）10:00〜13:30", "料金：1,500円／人", "手伝ってもらう時間は1.5時間ほどです", "汚れてもよい服装だと安心", "内容は季節や集まる人により少し変わります"),
+            List.of(new ScheduleEntry("集合", ""), new ScheduleEntry("芋煮会の準備を1.5時間ほど手伝う", ""), new ScheduleEntry("鍋を囲む", ""), new ScheduleEntry("話しながら過ごす", ""), new ScheduleEntry("解散", "")),
+            List.of(
+                "「おでってお願いします。」は、感謝の芋煮会の準備から少し手を貸してもらう形です。",
+                "芋をむく、野菜を運ぶ、鍋の準備をする。そうした食べる前の手仕事に加わったあと、そのままみんなで同じ鍋を囲みます。",
+                "楓さんが、外から来た人が無理なく入れるよう整え、乙羽さんがその手の動きごと輪の中へ通してくれる。",
+                "食べるだけでなく、季節の行事を自分も少し一緒につくった感じが残る参加のしかたです。"
+            ),
+            List.of(
+                "楓さんは、初めての人が地域の輪に無理なく入れるよう整える人です。",
+                "乙羽さんは、畑と食と人の場を動かす人です。",
+                "この二人がいることで、手伝いながら輪に入るという、少し深い参加のしかたが自然に成り立っています。"
+            ),
+            "/assets/images/渡辺さん写真/watanabe5.png",
+            "/assets/images/渡辺さん写真/watanabe4.png",
+            "/assets/images/渡辺さん写真/watanabe2.png",
+            "/assets/images/渡辺さん写真/watanabe5.png"
+        ));
     }
 
     public static ProgramContent resolveProgram(String templateKind, String fallbackTitle, String fallbackSummary, String fallbackBody,
@@ -860,6 +1060,8 @@ public class ProposalPresentationCatalog {
         HOSTS_BY_USER_ID.put(HOST_USER_ID_TODO, HOSTS.get(HOST_TODO));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_RIKYU, HOSTS.get(HOST_RIKYU));
         HOSTS_BY_USER_ID.put(HOST_USER_ID_RURIKAWA, HOSTS.get(HOST_RURIKAWA));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_WATANABE, HOSTS.get(HOST_WATANABE));
+        HOSTS_BY_USER_ID.put(HOST_USER_ID_WATANABE_COLLAB, HOSTS.get(HOST_WATANABE_COLLAB));
 
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_WALK, PROGRAMS.get(GateService.GATE_KIND_ITO_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_FLOWER, PROGRAMS.get(GateService.GATE_KIND_ITO_FLOWER));
@@ -871,6 +1073,8 @@ public class ProposalPresentationCatalog {
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_WALK, PROGRAMS.get(GateService.GATE_KIND_RIKYU_WALK));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RURIKAWA_FARM, PROGRAMS.get(GateService.GATE_KIND_RURIKAWA_FARM));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RURIKAWA_WALK, PROGRAMS.get(GateService.GATE_KIND_RURIKAWA_WALK));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_WATER, PROGRAMS.get(GateService.GATE_KIND_WATANABE_WATER));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_STREAM, PROGRAMS.get(GateService.GATE_KIND_WATANABE_STREAM));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_ITO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_ITO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_GRAPE, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_GRAPE));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HASEGAWA_CHRYSANTHEMUM, PROGRAMS.get(OkatteService.OKATTE_KIND_HASEGAWA_CHRYSANTHEMUM));
@@ -878,5 +1082,9 @@ public class ProposalPresentationCatalog {
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_HOSYO_SCENERY, PROGRAMS.get(OkatteService.OKATTE_KIND_HOSYO_SCENERY));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_TODO_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_TODO));
         PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_RIKYU_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_RIKYU));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_STREAM_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_STREAM));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_SEA_OKATTE, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_SEA));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_IMONI, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_IMONI));
+        PROGRAMS_BY_PROPOSAL_ID.put(PROPOSAL_ID_WATANABE_IMONI_HELP, PROGRAMS.get(OkatteService.OKATTE_KIND_WATANABE_IMONI_HELP));
     }
 }
