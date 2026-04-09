@@ -218,6 +218,41 @@
     </section>
 
   </main>
+  <div class="bridgeIntroModal" data-bridge-modal aria-hidden="true">
+    <div class="bridgeIntroModalBackdrop" data-bridge-modal-close></div>
+    <div class="bridgeIntroModalDialog" role="dialog" aria-modal="true" aria-label="プレゼン用メッセージ">
+      <button class="btn ghost bridgeIntroModalClose" type="button" data-bridge-modal-close>閉じる</button>
+      <div class="bridgeIntroModalBody">
+        <p class="bridgeIntroModalText">
+          <span class="bridgeIntroModalLine bridgeIntroModalLine--a">
+            古来から日本は、関係づくりによって人間関係を円滑にしてきた。<br />
+            <br />
+            その日本の良さをシステムに取り入れることで、<br />
+            <br />
+            事前に相手の良いところに目が向いて少し好意的になる。<br />
+            <br />
+            地域との継続的な関わりが前提になる方であることや、<br />
+            魅力的な共通の知り合いを通すことで、<br />
+            地域と旅人がお互いにいい相手であろうとする。<br />
+            <br />
+          </span>
+          <span class="bridgeIntroModalLine bridgeIntroModalLine--b">
+            身構えずに安心して、より相手に合わせた魅力的なプログラムを作ることができる。<br />
+            <br />
+            お礼の代わりに日記を返す。<br />
+            <br />
+            その積み重ねにより信用と関係をさらに深めていくことができる。<br />
+            まだ地域にはしっかり根付いている仕組みをうまく活用できたら。<br />
+            <br />
+            そう思って、このこの仕組みを作りました。<br />
+            <br />
+            (このモーダルはプレゼン用です。参考文献『安心社会から信頼社会へ』)
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/scripts/shared-ui.js"></script>
   <script src="/assets/scripts/proposals.js"></script>
   <script src="/assets/scripts/entry-carousel.js"></script>
@@ -253,6 +288,23 @@
             thanksNode.textContent = String(story && story.reactions ? story.reactions.thanks : 0);
           }
         }
+      });
+    })();
+  </script>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has('from')) return;
+      const modal = document.querySelector('[data-bridge-modal]');
+      if (!modal) return;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      const closeButtons = modal.querySelectorAll('[data-bridge-modal-close]');
+      closeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+        });
       });
     })();
   </script>

@@ -1743,6 +1743,136 @@ a.link {
   color: #4f4a44;
 }
 
+.bridgeIntroModal {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.bridgeIntroModal.is-open {
+  display: flex;
+}
+
+.bridgeIntroModalBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.6);
+}
+
+.bridgeIntroModalDialog {
+  position: relative;
+  width: min(920px, 100% - 24px);
+  max-height: calc(100vh - 48px);
+  padding: 28px 28px 32px;
+  border-radius: 20px;
+  background: #0e0f12;
+  overflow: auto;
+  z-index: 1;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.bridgeIntroModalClose {
+  position: sticky;
+  top: 0;
+  margin-left: auto;
+  color: #f6f4f0;
+}
+
+.bridgeIntroModalBody {
+  margin-top: 12px;
+}
+
+.bridgeIntroModalText {
+  margin: 0;
+  color: #f6f4f0;
+  line-height: 1.9;
+  font-size: 16px;
+  font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "MS PMincho", serif;
+  letter-spacing: 0.02em;
+}
+
+.bridgeIntroModalLine {
+  display: block;
+  opacity: 0;
+  transform: translateX(-18px);
+  animation: bridgeIntroSlide 0.9s ease-out forwards;
+}
+
+.bridgeIntroModalLine--a {
+  animation-delay: 0.15s;
+}
+
+.bridgeIntroModalLine--b {
+  animation-delay: 1.0s;
+}
+
+@keyframes bridgeIntroSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.okatteAllProgramsModal {
+  position: fixed;
+  inset: 0;
+  z-index: 220;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.okatteAllProgramsModal.is-open {
+  display: flex;
+}
+
+.okatteAllProgramsModalBackdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 17, 17, 0.6);
+}
+
+.okatteAllProgramsModalDialog {
+  position: relative;
+  width: min(920px, 100% - 24px);
+  max-height: calc(100vh - 48px);
+  padding: 24px 24px 28px;
+  border-radius: 20px;
+  background: #0e0f12;
+  overflow: auto;
+  z-index: 1;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.okatteAllProgramsModalClose {
+  position: sticky;
+  top: 0;
+  margin-left: auto;
+  color: #f6f4f0;
+}
+
+.okatteAllProgramsModalBody {
+  margin-top: 12px;
+}
+
+.okatteAllProgramsModalText {
+  margin: 0;
+  color: #f6f4f0;
+  line-height: 1.9;
+  font-size: 16px;
+  font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", "Hiragino Mincho Pro", "MS PMincho", serif;
+  letter-spacing: 0.02em;
+}
+
 body.hasProposalModal {
   overflow: hidden;
 }

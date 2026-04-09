@@ -4,7 +4,7 @@
   // 本実装では、header / footer / 導線リンクはサーバー側テンプレートや設定APIで出し分ける形も考えやすそうです。
   // bridge と ログイン後 はワイヤ用補助導線として置いているため、本番では utilityLinks から外す整理もしやすいです。
   // 特に app header から /preview/public/bridge.html へ飛ばす導線は、今は利便性優先の仮置きです。
-  // app 文脈から preview へ飛ばすリンクをどこまで許すかは、bridge の本実装時に整理対象として見直します。
+  // app 文脈では /app/bridge を使うことでログイン状態を維持します。
   var entryCards = [
     { id: 'gate-1', duration: '30分', title: '海まで歩いて景色の話を聞く', note: '海を見ながら、この土地の好きな時間をたどる入口です。' },
     { id: 'gate-2', duration: '20分', title: 'ハウスの前で野菜を見る', note: '育てているものを見ながら、地域の挑戦を少し聞きます。' },
@@ -221,7 +221,7 @@
       variant: 'app',
       brandHref: '/app/home',
       mainLinks: [
-        { href: '/preview/public/bridge.html', label: 'ブリッジ' },
+        { href: '/app/bridge', label: 'ブリッジ' },
         { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
         { href: '/app/home#tab-map', label: 'わたしの地図', currentMatchers: ['home', 'home.html'] },
         { href: '/app/home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['home', 'home.html'] },
@@ -241,7 +241,7 @@
       variant: 'app',
       brandHref: '/app/local-member-home',
       mainLinks: [
-        { href: '/preview/public/bridge.html', label: 'ブリッジ' },
+        { href: '/app/bridge', label: 'ブリッジ' },
         { href: '/app/gate', label: 'ちいきの入り口', currentMatchers: ['gate', 'gate.html'] },
         { href: '/app/local-member-home#tab-map', label: 'わたしの地図', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/local-member-home?tab=footprints', label: 'ごひいきさんの足あと', currentMatchers: ['local-member-home', 'local-member-home.html'] },
@@ -264,7 +264,7 @@
       // Java移行時メモ: app_local_member は登録済み地域ユーザー向けヘッダーです。
       // 公開の local.html と混ぜず、LOCAL ロールのログイン後導線として分ける前提です。
       mainLinks: [
-        { href: '/preview/public/bridge.html', label: '\u30d6\u30ea\u30c3\u30b8' },
+        { href: '/app/bridge', label: '\u30d6\u30ea\u30c3\u30b8' },
         { href: '/app/gate', label: '\u3061\u3044\u304d\u306e\u5165\u308a\u53e3', currentMatchers: ['gate', 'gate.html'] },
         { href: '/app/local-member-home#tab-map', label: '\u308f\u305f\u3057\u306e\u5730\u56f3', currentMatchers: ['local-member-home', 'local-member-home.html'] },
         { href: '/app/local-member-home?tab=footprints', label: '\u3054\u3072\u3044\u304d\u3055\u3093\u306e\u8db3\u3042\u3068', currentMatchers: ['local-member-home', 'local-member-home.html'] },

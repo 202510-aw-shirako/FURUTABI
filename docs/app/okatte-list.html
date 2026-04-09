@@ -110,7 +110,36 @@
     </section>
   </main>
 
+  <div class="okatteAllProgramsModal" data-okatte-all-programs-modal aria-hidden="true">
+    <div class="okatteAllProgramsModalBackdrop" data-okatte-all-programs-close></div>
+    <div class="okatteAllProgramsModalDialog" role="dialog" aria-modal="true" aria-label="おかってのご案内">
+      <button class="btn ghost okatteAllProgramsModalClose" type="button" data-okatte-all-programs-close>閉じる</button>
+      <div class="okatteAllProgramsModalBody">
+        <p class="okatteAllProgramsModalText">
+          通常は、ちいきの入り口で私の担当になってくださった方が、<br />
+          ユーザーと受け入れる方の相性などを見て３つほど候補を選んで出してくれる運用ですが、<br />
+          このアカウントではプログラムをすべて出します。
+        </p>
+      </div>
+    </div>
+  </div>
+
   <script src="../public/assets/scripts/shared-ui.js"></script>
   <script src="../public/assets/scripts/entry-carousel.js"></script>
+  <script>
+    (() => {
+      const modal = document.querySelector('[data-okatte-all-programs-modal]');
+      if (!modal) return;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      const closeButtons = modal.querySelectorAll('[data-okatte-all-programs-close]');
+      closeButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

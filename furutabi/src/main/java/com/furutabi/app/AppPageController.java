@@ -64,6 +64,11 @@ public class AppPageController {
         return "app/home";
     }
 
+    @GetMapping({ "/bridge", "/bridge.html" })
+    public String bridge() {
+        return "app/bridge";
+    }
+
     @GetMapping({ "/local-member-home", "/local-member-home.html" })
     public String localMemberHome(Authentication authentication, Model model) {
         model.addAttribute("footprintStories", mapRecordService.loadHomeFootprintStories(authentication.getName()));
@@ -371,6 +376,7 @@ public class AppPageController {
     @GetMapping({ "/okatte", "/okatte.html" })
     public String okatteList(Authentication authentication, Model model) {
         model.addAttribute("pageData", okatteService.loadVisibleOkatteList(authentication.getName()));
+        model.addAttribute("showOkatteAllProgramsModal", isOkatteAllProgramsUser(authentication));
         return "app/okatte-list";
     }
 
@@ -378,10 +384,19 @@ public class AppPageController {
     public String okatteDetail(@PathVariable long id, Authentication authentication, Model model) {
         try {
             model.addAttribute("pageData", okatteService.loadVisibleOkatteDetail(authentication.getName(), id));
+            model.addAttribute("showOkatteAllProgramsModal", isOkatteAllProgramsUser(authentication));
             return "app/okatte-detail";
         } catch (IllegalStateException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Okatte proposal not found", ex);
         }
+    }
+
+    private boolean isOkatteAllProgramsUser(Authentication authentication) {
+        if (authentication == null) {
+            return false;
+        }
+        String email = authentication.getName();
+        return email != null && email.equalsIgnoreCase("user@example.com");
     }
 
     @GetMapping("/gate/{id}/apply")
