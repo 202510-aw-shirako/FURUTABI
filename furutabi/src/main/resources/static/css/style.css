@@ -839,6 +839,12 @@ a.link {
   border-radius: 0;
 }
 
+.ph--pageHeroOkatte {
+  min-height: 0;
+  aspect-ratio: 2056 / 512;
+  background: url("/assets/images/ヘッダー集/おかって.png") center / cover no-repeat;
+}
+
 .ph--map {
   aspect-ratio: 16/9;
 }
