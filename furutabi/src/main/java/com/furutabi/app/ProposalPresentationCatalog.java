@@ -1066,10 +1066,7 @@ public class ProposalPresentationCatalog {
             return resolveHost(byProposalId.hostKey(), fallbackHostNickname);
         }
         if (fallbackTitle != null && !fallbackTitle.isBlank()) {
-            String templateKind = resolveTemplateKindByTitle(fallbackTitle);
-            if (templateKind != null) {
-                return resolveHost(hostKeyForTemplate(templateKind), fallbackHostNickname);
-            }
+            return resolveHostByTitle(fallbackTitle, fallbackHostNickname);
         }
         return resolveHost(null, fallbackHostNickname);
     }

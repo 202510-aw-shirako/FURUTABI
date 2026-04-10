@@ -100,7 +100,7 @@ class OkatteFlowTests {
         mockMvc.perform(get("/app/okatte/701").with(user("guest@example.com").roles("USER")))
             .andExpect(status().isOk())
             .andExpect(content().string(containsString("Public okatte")))
-            .andExpect(content().string(containsString("この提案で申し込む")));
+            .andExpect(content().string(containsString("この候補で申請する")));
 
         mockMvc.perform(get("/app/okatte/701/apply").with(user("guest@example.com").roles("USER")))
             .andExpect(status().isOk())

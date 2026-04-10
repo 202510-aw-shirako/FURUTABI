@@ -1579,33 +1579,22 @@
         (function () {
           var params = new URLSearchParams(window.location.search);
           var editPin = params.get('editPin');
-          var viewPin = params.get('viewPin');
           var pin;
 
-          if (editPin) {
-            pin = getMyMapPin(editPin);
-            if (!pin || !pin.registered) {
-              return;
-            }
-
-            myMapSelectedId = pin.id;
-            renderMyMapPins();
-            openMyMapMenu(pin);
-            openMyMapSheet('edit');
-            params.delete('editPin');
-          } else if (viewPin) {
-            pin = getMyMapPin(viewPin);
-            if (!pin || !pin.registered) {
-              return;
-            }
-
-            myMapSelectedId = pin.id;
-            renderMyMapPins();
-            openMyMapMenu(pin);
-            params.delete('viewPin');
-          } else {
+          if (!editPin) {
             return;
           }
+
+          pin = getMyMapPin(editPin);
+          if (!pin || !pin.registered) {
+            return;
+          }
+
+          myMapSelectedId = pin.id;
+          renderMyMapPins();
+          openMyMapMenu(pin);
+          openMyMapSheet('edit');
+          params.delete('editPin');
           if (window.history && window.history.replaceState) {
             window.history.replaceState({}, '', window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash);
           }
