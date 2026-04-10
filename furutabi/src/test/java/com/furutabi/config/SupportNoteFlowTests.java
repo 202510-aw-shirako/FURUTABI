@@ -37,7 +37,7 @@ class SupportNoteFlowTests {
 
     @BeforeEach
     void setUp() {
-        Timestamp now = Timestamp.from(Instant.parse("2026-03-30T00:00:00Z"));
+        Timestamp now = Timestamp.from(Instant.now());
 
         jdbcTemplate.update("DELETE FROM support_note_reports");
         jdbcTemplate.update("DELETE FROM support_notes");
@@ -189,11 +189,13 @@ class SupportNoteFlowTests {
     @DisplayName("host visibility uses completed close timestamp and region setting can shorten it")
     void hostVisibilityUsesCompletedCloseAndRegionSetting() throws Exception {
         long noteId = insertSupportNote(100L, 101L, "active", false, null, null, 300L);
+        Instant now = Instant.now();
+        Timestamp completedAt = Timestamp.from(now.minusSeconds(3 * 86400L));
 
         jdbcTemplate.update(
             "UPDATE proposal_applications SET application_status = ?, updated_at = ? WHERE id = ?",
             "completed",
-            Timestamp.from(Instant.parse("2026-03-27T00:00:00Z")),
+            completedAt,
             300L
         );
 
@@ -208,8 +210,8 @@ class SupportNoteFlowTests {
             "Tokyo",
             "support_note_close_grace_days",
             "2",
-            Timestamp.from(Instant.parse("2026-03-30T00:00:00Z")),
-            Timestamp.from(Instant.parse("2026-03-30T00:00:00Z"))
+            Timestamp.from(now),
+            Timestamp.from(now)
         );
 
         mockMvc.perform(get("/app/support-notes/" + noteId).with(user("host@example.com").roles("LOCAL")))
@@ -220,11 +222,14 @@ class SupportNoteFlowTests {
     @DisplayName("host visibility uses cancelled status history before chat close timing")
     void hostVisibilityUsesCancelledStatusHistory() throws Exception {
         long noteId = insertSupportNote(100L, 101L, "active", false, null, null, 300L);
+        Instant now = Instant.now();
+        Timestamp closedAt = Timestamp.from(now.minusSeconds(10 * 86400L));
+        Timestamp cancelledAt = Timestamp.from(now.minusSeconds(86400L));
 
         jdbcTemplate.update(
             "UPDATE chat_threads SET status = ?, closed_at = ? WHERE id = ?",
             "closed",
-            Timestamp.from(Instant.parse("2026-03-10T00:00:00Z")),
+            closedAt,
             400L
         );
         jdbcTemplate.update(
@@ -237,7 +242,7 @@ class SupportNoteFlowTests {
             "cancelled",
             "cancelled for support note visibility test",
             101L,
-            Timestamp.from(Instant.parse("2026-03-28T00:00:00Z"))
+            cancelledAt
         );
 
         mockMvc.perform(get("/app/support-notes/" + noteId).with(user("host@example.com").roles("LOCAL")))
@@ -527,7 +532,7 @@ class SupportNoteFlowTests {
     }
 
     private long insertSupportNote(long targetUserId, long createdByUserId, String noteStatus, boolean hidden, String hiddenReason, Timestamp hiddenAt, Long relatedCardId) {
-        Timestamp now = Timestamp.from(Instant.parse("2026-03-30T01:00:00Z"));
+        Timestamp now = Timestamp.from(Instant.now());
         jdbcTemplate.update(
             """
                 INSERT INTO support_notes (

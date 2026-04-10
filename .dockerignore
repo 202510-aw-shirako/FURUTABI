@@ -1,0 +1,7 @@
+.git
+.idea
+.vscode
+**/target
+**/build
+**/out
+node_modules

@@ -116,13 +116,13 @@ class ChatMessagingFlowTests {
     void adminCanReviewRelatedChatWithReasonAndAccessLog() throws Exception {
         mockMvc.perform(get("/app/support/950").with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("関連チャットを確認（理由を記録）")))
+            .andExpect(content().string(containsString("関係チャットを確認する")))
             .andExpect(content().string(containsString("/app/admin/chat-threads/901/review?supportRequestId=950")));
 
         mockMvc.perform(get("/app/admin/chat-threads/901/review?supportRequestId=950")
                 .with(user("admin@example.com").roles("ADMIN")))
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString("問題対応のための限定閲覧です。")))
+            .andExpect(content().string(containsString("support の文脈で必要なときだけ開く限定閲覧です。")))
             .andExpect(content().string(not(containsString("送信する"))));
 
         mockMvc.perform(post("/app/admin/chat-threads/901/review")
