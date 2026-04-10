@@ -26,14 +26,13 @@
 
     <section class="section fv">
       <h1 class="h1">ログイン</h1>
-      <p class="lead">ここでは既存アカウントのログインだけを最小実装しています。</p>
+      <p class="lead">ここでは既存アカウントでログインできます。</p>
     </section>
 
     <section class="section">
       <div class="grid2 loginRoleGrid">
         <div class="card">
           <div class="h2">既存アカウントでログイン</div>
-          <p class="note">今の段階では <code>/login</code> と <code>/logout</code> の最小実装だけを接続しています。</p>
 
           <div class="denseBox" th:if="${param.error}" style="margin-top:16px;">
             <div>
@@ -68,12 +67,11 @@
           <div class="denseBox" style="margin-top:16px;">
             <div>
               <div class="h2">はじめての方</div>
-              <p class="note">新規登録や SMS 認証は次の作業で接続します。</p>
+              <p class="note">新規登録と SMS 認証は次の導線で案内しています。</p>
             </div>
             <a class="btn ghost" href="register.html">新規登録へ</a>
           </div>
         </div>
-
       </div>
     </section>
   </main>

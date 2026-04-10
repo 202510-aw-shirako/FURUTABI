@@ -1,7 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const root = process.cwd();
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(scriptDir, '..');
 const resourcesRoot = path.join(root, 'furutabi', 'src', 'main', 'resources');
 const templatesRoot = path.join(resourcesRoot, 'templates');
 const staticRoot = path.join(resourcesRoot, 'static');

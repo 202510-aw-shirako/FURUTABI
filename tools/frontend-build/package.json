@@ -1,0 +1,14 @@
+{
+  "name": "furutabi-frontend-build",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:css": "sass --no-source-map ../../scss/style.scss ../../css/style.css",
+    "build:docs": "npm run build:css && npm run export:docs",
+    "watch:css": "sass --watch --no-source-map ../../scss/style.scss ../../css/style.css",
+    "export:docs": "node ../export-docs.mjs"
+  },
+  "devDependencies": {
+    "sass": "^1.98.0"
+  }
+}

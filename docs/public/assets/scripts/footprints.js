@@ -11,7 +11,7 @@
       id: '1',
       authorKey: 'author-1',
       pinClass: 'topMapPin--a',
-      title: '境内の風と、OOさんのおはぎ',
+      title: '境内の風と、たわらやさんのおはぎ',
       meta: '生まれ育った町を静かに見返す人',
       summary: '大きく説明するのではなく、時間の混ざり方が伝わるような足あとです。',
       recordedAt: '2026-03-12',
@@ -19,9 +19,9 @@
       year: '2026',
       category: 'food',
       body: [
-        '境内のベンチに座っていると、時々サーっと風が渡ってきます。',
-        '木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思いました。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。',
-        '観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。'
+        'こちらの神社の境内のベンチに座っていると、時々サーッと風が渡っていきます。',
+        '木々がざわめき、きれいな紅葉が町に流れていくようで。',
+        'たわらやさんで買ったおはぎを食べながら、ゆっくり秋を感じるのがとても好きです。'
       ]
     },
     '2': {
@@ -215,7 +215,9 @@
         category: story.category,
         pinClass: story.pinClass,
         body: story.body.slice(),
-        link: (basePath || '') + 'story.html?story=' + story.id,
+        link: basePath && basePath.indexOf('{id}') >= 0
+          ? basePath.replace('{id}', story.id)
+          : '/app/footprints/100' + story.id,
         aria: defaultLabel + ' ' + story.id
       };
       return acc;
@@ -254,6 +256,11 @@
         body: [record.summary || ''],
         link: record.detailPath || (linkPrefix + record.id),
         aria: label + ' ' + String(index + 1),
+        imagePath: record.leadImagePath || '',
+        reactions: {
+          like: Number(record.likeCount || 0),
+          thanks: Number(record.thanksCount || 0)
+        },
         x: position.x,
         y: position.y
       };
@@ -267,6 +274,23 @@
     }
 
     container.innerHTML = '<p class="topMapCommentText topMapCommentText--clamp">' + story.body.join(' ') + '</p>';
+  }
+
+  function renderPreviewThumb(card, story) {
+    var thumb = card ? card.querySelector('.topMapThumb') : null;
+
+    if (!thumb) {
+      return;
+    }
+
+    if (story && story.imagePath) {
+      thumb.classList.remove('ph', 'ph--thumb');
+      thumb.innerHTML = '<img src="' + story.imagePath + '" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;" />';
+      return;
+    }
+
+    thumb.classList.add('ph', 'ph--thumb');
+    thumb.innerHTML = '';
   }
 
   function renderPreviewCard(card, story, label) {
@@ -295,6 +319,7 @@
     if (card.querySelector('[data-top-map-title]')) {
       card.querySelector('[data-top-map-title]').textContent = story.title;
     }
+    renderPreviewThumb(card, story);
     metaNode = card.querySelector('[data-top-map-meta]');
     if (!metaNode && card.querySelector('[data-top-map-comment]')) {
       metaNode = document.createElement('p');

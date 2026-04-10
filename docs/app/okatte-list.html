@@ -29,61 +29,78 @@
         <h1 class="h1">ちいきのおかって</h1>
         <a class="sectionTitleLink" href="../public/about.html?context=app#feature-okatte">ちいきのおかってについて</a>
       </div>
-      <p class="lead">地域との距離感が心地よく、少し先の時間を想像できる提案だけを静かに並べています。地図から場所を見て、気になる提案の詳細へ進めます。</p>
+      <p class="lead">
+        食卓や工房や仕事場に少し通してもらい、その土地の奥行きへ静かに入っていく時間です。
+        地図とカードを行き来しながら、気になる場を選べます。
+      </p>
     </section>
 
-    <section class="section" th:if="${#lists.isEmpty(pageData.items)}">
-      <div class="card">
-        <div class="h2">まだ提案はありません</div>
-        <p class="note">公開された提案が増えると、このページに地図とカードが並びます。</p>
-      </div>
-    </section>
-
-    <section class="section" th:if="${not #lists.isEmpty(pageData.items)}">
+    <section class="section proposalDetailMapSection"
+             th:with="initialItem=${#lists.isEmpty(pageData.items) ? null : pageData.items[0]}">
       <div class="sectionTitleRow">
         <h2 class="h2">地図で見る</h2>
-        <span class="note">この地域の近くで見つかる提案を、場所感とあわせて見られます。</span>
+        <span class="note">ピンを押すと、下のカードがそのおかってに切り替わります。</span>
       </div>
-      <p class="lead">地図のピンや下のカードから、気になる提案の詳細へ進めます。</p>
+      <p class="lead">場所を見ながら、その場に流れている食卓や仕事の時間を選べます。</p>
 
-      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout" style="margin-top:16px;">
+      <div class="card" style="margin-top:16px;" th:if="${#lists.isEmpty(pageData.items)}">
+        <div class="h2">まだ見えているおかってはありません</div>
+        <p class="note">公開条件が整い次第、ここにおかってが並びます。</p>
+      </div>
+
+      <div class="topMapLayout appTopMapLayout proposalDetailMapLayout proposalSyncLayout"
+           style="margin-top:16px;"
+           th:if="${not #lists.isEmpty(pageData.items)}"
+           data-proposal-map
+           th:attr="data-proposal-initial-id=${initialItem.proposalId}">
         <div class="myMapMain">
           <div class="topMapStage" aria-label="ちいきのおかっての地図">
             <div class="myMapViewport">
               <img class="topMapCanvas topMapCanvasImage" src="../public/assets/images/凪咲町.svg" alt="ちいきのおかっての地図" />
               <div class="myMapPinsLayer" aria-hidden="false">
-                <a
-                  class="topMapPin"
-                  th:classappend="${item.pinClass}"
-                  th:href="@{/app/okatte/{id}(id=${item.proposalId})}"
-                  th:each="item, stat : ${pageData.items}">
-                  <span th:text="${stat.count}">1</span>
-                </a>
+                <button class="topMapPin"
+                        type="button"
+                        data-proposal-pin
+                        th:classappend="${item.pinClass} + (item.proposalId == initialItem.proposalId ? ' is-active' : '')"
+                        th:attr="data-proposal-id=${item.proposalId},aria-label=${item.title}"
+                        th:each="item : ${pageData.items}">
+                  <span th:text="${item.displayNumber}">1</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;">
+      <div class="entryCarousel" data-entry-carousel style="margin-top:16px;" th:if="${not #lists.isEmpty(pageData.items)}">
         <div class="entryCarouselStage">
-          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前の提案"></button>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--prev" type="button" data-entry-prev aria-label="前のおかって"></button>
           <div class="entryCarouselViewport">
             <div class="entryCarouselTrack" data-entry-track>
-              <article class="card proposalCard proposalCard--okatte entryCarouselCard" data-entry-card th:each="item : ${pageData.items}">
+              <article class="card proposalCard proposalCard--okatte entryCarouselCard proposalStripCard"
+                       data-entry-card
+                       data-proposal-sync-item
+                       th:classappend="${item.proposalId == initialItem.proposalId} ? ' is-active' : ''"
+                       th:attr="data-proposal-id=${item.proposalId}"
+                       th:each="item : ${pageData.items}">
                 <figure class="proposalVisual">
-                  <div class="ph ph--pageHero" aria-hidden="true"></div>
-                  <span class="proposalFaceChip">
-                    <div class="ph ph--avatar" aria-hidden="true"></div>
+                  <img th:src="${item.cardImagePath}" th:alt="${item.title}" />
+                  <span class="proposalFaceChip" th:if="${item.faceImagePath != null}">
+                    <img th:src="${item.faceImagePath}" th:alt="${item.faceImageAlt}" />
                   </span>
                 </figure>
                 <div class="proposalCardMeta">
-                  <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '所要時間は準備中'}">60分</span>
-                  <span class="proposalPersonMini" th:text="${item.hostNickname != null ? item.hostNickname : '地域の方'}">地域の方</span>
+                  <span class="topMapMarker proposalCardMarker"><span th:text="${item.displayNumber}">1</span></span>
+                  <span class="proposalDuration" th:text="${item.durationMinutes != null ? item.durationMinutes + '分' : '時間は調整中'}">90分</span>
+                  <span class="proposalPersonMini"
+                        th:text="${item.hostNickname != null and #strings.contains(item.hostNickname, 'bridge') ? '架け橋さん' : (item.hostNickname != null and #strings.contains(item.hostNickname, 'local') ? '地域の方' : 'ごひいきさん')}">地域の方</span>
                 </div>
                 <div class="proposalCardBody">
-                  <h3 class="proposalTitle" th:text="${item.title}">提案タイトル</h3>
-                  <p class="proposalSummary" th:text="${item.summary != null ? item.summary : '地域の関係が見えてくる提案です。'}">summary</p>
+                  <h3 class="proposalTitle" th:text="${item.title}">ちいきのおかって</h3>
+                  <p class="proposalSummary"
+                     th:text="${item.summary != null ? item.summary : 'この地域の食卓や仕事場に少し触れられる時間です。'}">
+                    summary
+                  </p>
                   <div class="proposalTags">
                     <span class="proposalTag" th:text="${item.visibilityLabel}">PUBLIC</span>
                     <span class="proposalTag" th:if="${item.locationName != null}" th:text="${item.locationName}">location</span>
@@ -92,25 +109,25 @@
                 </div>
                 <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
                   <a class="btn ghost proposalMore" th:href="@{/app/okatte/{id}(id=${item.proposalId})}">詳細</a>
-                  <span class="btn ghost" th:if="${item.owner}">申請中</span>
+                  <span class="btn ghost" th:if="${item.owner}">申請受付中</span>
                 </div>
               </article>
             </div>
           </div>
-          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次の提案"></button>
+          <button class="btn ghost entryCarouselArrow entryCarouselArrow--next" type="button" data-entry-next aria-label="次のおかって"></button>
         </div>
       </div>
     </section>
 
     <section class="section">
       <div class="card">
-        <div class="h2">運用ルール</div>
+        <div class="h2">知っておくこと</div>
         <ul class="aboutFeatureList" data-rule-list="okatte"></ul>
       </div>
     </section>
   </main>
 
-  <div class="okatteAllProgramsModal" data-okatte-all-programs-modal aria-hidden="true">
+  <div class="okatteAllProgramsModal" data-okatte-all-programs-modal aria-hidden="true" th:if="${showOkatteAllProgramsModal}">
     <div class="okatteAllProgramsModalBackdrop" data-okatte-all-programs-close></div>
     <div class="okatteAllProgramsModalDialog" role="dialog" aria-modal="true" aria-label="おかってのご案内">
       <button class="btn ghost okatteAllProgramsModalClose" type="button" data-okatte-all-programs-close>閉じる</button>
@@ -126,7 +143,8 @@
 
   <script src="../public/assets/scripts/shared-ui.js"></script>
   <script src="../public/assets/scripts/entry-carousel.js"></script>
-  <script>
+  <script src="../public/assets/scripts/proposal-map-sync.js"></script>
+  <script th:if="${showOkatteAllProgramsModal}">
     (() => {
       const modal = document.querySelector('[data-okatte-all-programs-modal]');
       if (!modal) return;

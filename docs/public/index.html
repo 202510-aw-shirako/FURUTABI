@@ -83,19 +83,19 @@
                   <span class="topMapMarker"><span data-top-map-marker>1</span></span>
                 </div>
                 <div class="topMapComment" data-top-map-comment="1">
-                  <div class="topMapCardTitle" data-top-map-title>境内の風と、OOさんのおはぎ</div>
+                  <div class="topMapCardTitle" data-top-map-title>境内の風と、たわらやさんのおはぎ</div>
                   <div data-top-map-comment-body>
-                    <p class="topMapCommentText topMapCommentText--clamp">境内のベンチに座っていると、時々サーっと風が渡ってきます。木々がざわめき、きれいな紅葉が町に流れていくようで、秋だなぁと思います。その日はOOさんで買ったおはぎを持っていって、景色を見ながらゆっくり食べました。観光地の見どころとして切り取るというより、この場所の時間に少し混ぜてもらった感じがしました。誰かに強くおすすめしたいというより、こういう時間がこの町にあることを、そっと返しておきたいと思って書いています。</p>
+                    <p class="topMapCommentText topMapCommentText--clamp">こちらの神社の境内のベンチに座っていると、時々サーッと風が渡っていきます。木々がざわめき、きれいな紅葉が町に流れていくようで。たわらやさんで買ったおはぎを食べながら、ゆっくり秋を感じるのがとても好きです。</p>
                   </div>
                 </div>
               </div>
             </div>
             <div class="topMapFooter">
               <div class="topMapActions" aria-label="反応">
-                <button class="topMapActionBtn" type="button">いいね <span>12</span></button>
-                <button class="topMapActionBtn topMapActionBtn--thanks" type="button">ありがとう <span>4</span></button>
+                <button class="topMapActionBtn" type="button">いいね <span data-top-map-like>12</span></button>
+                <button class="topMapActionBtn topMapActionBtn--thanks" type="button">ありがとう <span data-top-map-thanks>4</span></button>
               </div>
-              <a class="btn ghost topMapMore" href="story.html?story=1" data-top-map-link>続きは</a>
+              <a class="btn ghost topMapMore" href="app/footprints/1001" data-top-map-link>続きは</a>
             </div>
           </article>
         </div>
@@ -105,9 +105,9 @@
             <div class="myMapViewport" data-top-map-viewport>
               <img class="topMapCanvas topMapCanvasImage" src="./assets/images/凪咲町.svg" alt="わたしの地図" />
               <div class="myMapPinsLayer" aria-hidden="false" data-top-map-pins-layer>
-                <a class="topMapPin topMapPin--a is-active" href="story.html?story=1" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
-                <a class="topMapPin topMapPin--b" href="story.html?story=2" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
-                <a class="topMapPin topMapPin--c" href="story.html?story=3" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
+                <a class="topMapPin topMapPin--a is-active" href="app/footprints/1001" aria-label="ごひいきさんの足あと 1 の場所" data-top-map-pin="1"><span>1</span></a>
+                <a class="topMapPin topMapPin--b" href="app/footprints/1002" aria-label="ごひいきさんの足あと 2 の場所" data-top-map-pin="2"><span>2</span></a>
+                <a class="topMapPin topMapPin--c" href="app/footprints/1003" aria-label="ごひいきさんの足あと 3 の場所" data-top-map-pin="3"><span>3</span></a>
               </div>
             </div>
           </div>
@@ -219,7 +219,6 @@
     </section>
 
   </main>
-
   <div class="bridgeIntroModal" data-bridge-modal aria-hidden="true">
     <div class="bridgeIntroModalBackdrop" data-bridge-modal-close></div>
     <div class="bridgeIntroModalDialog" role="dialog" aria-modal="true" aria-label="プレゼン用メッセージ">
@@ -260,19 +259,36 @@
   <script src="assets/scripts/entry-carousel.js"></script>
   <script src="assets/scripts/footprints.js"></script>
   <script src="assets/scripts/notices.js"></script>
+  <script th:inline="javascript">
+    window.FURUTABI_PUBLIC_HOME_SEED = {
+      footprints: /*[[${footprintStories}]]*/ []
+    };
+  </script>
   <script>
     (() => {
       const topMap = document.querySelector('[data-top-map]');
       const footprints = window.FURUTABI_FOOTPRINTS;
+      const publicHomeSeed = window.FURUTABI_PUBLIC_HOME_SEED || {};
+      const likeNode = topMap ? topMap.querySelector('[data-top-map-like]') : null;
+      const thanksNode = topMap ? topMap.querySelector('[data-top-map-thanks]') : null;
       if (!topMap || !footprints) return;
-      const storyData = footprints.mergeStories(
-        footprints.withBasePath(''),
-        footprints.buildSharedMapStories('#top-footprints', { visibility: 'public' })
-      );
+      const storyData = footprints.buildStoriesFromRecords(publicHomeSeed.footprints || [], {
+        label: 'ごひいきさんの足あと',
+        linkPrefix: '/app/footprints/'
+      });
+      if (!Object.keys(storyData).length) return;
 
       footprints.initPreviewMap(topMap, storyData, {
         label: 'ごひいきさんの足あと',
-        initialStoryId: '1'
+        initialStoryId: Object.keys(storyData)[0],
+        onSync: (story) => {
+          if (likeNode) {
+            likeNode.textContent = String(story && story.reactions ? story.reactions.like : 0);
+          }
+          if (thanksNode) {
+            thanksNode.textContent = String(story && story.reactions ? story.reactions.thanks : 0);
+          }
+        }
       });
     })();
   </script>

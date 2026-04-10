@@ -851,6 +851,20 @@ a.link {
   background: url("/assets/images/ヘッダー集/inuwashi.png") center / cover no-repeat;
 }
 
+.ph--pageHeroGate {
+  min-height: 0;
+  aspect-ratio: 512 / 127;
+  border-radius: 0;
+  background: url("/assets/images/ヘッダー集/入り口.png") center / cover no-repeat;
+}
+
+.ph--pageHeroMap {
+  min-height: 0;
+  aspect-ratio: 1200 / 298;
+  border-radius: 0;
+  background: url("/assets/images/ヘッダー集/地図.png") center / cover no-repeat;
+}
+
 
 .ph--map {
   aspect-ratio: 16/9;
@@ -1235,6 +1249,7 @@ a.link {
   font-size: 15px;
   line-height: 1.9;
   color: #2d2d2d;
+  white-space: pre-line;
 }
 
 .proposalGrid {
@@ -1379,9 +1394,9 @@ a.link {
 
 .proposalDetailHero {
   display: grid;
-  grid-template-columns: minmax(320px, 1.1fr) minmax(0, 0.9fr);
-  gap: 24px;
-  align-items: center;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.2fr);
+  gap: 20px;
+  align-items: start;
 }
 
 .proposalDetailHeroMedia {
@@ -1394,24 +1409,121 @@ a.link {
 
 .proposalDetailHeroCopy {
   display: grid;
-  gap: 14px;
+  gap: 12px;
+  align-content: start;
+}
+
+.proposalDetailHeroMediaWrap {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.proposalDetailHeroMedia img,
+.proposalDetailPersonMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.proposalDetailThumbRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.proposalDetailThumb {
+  padding: 0;
+  border: 1px solid rgba(34, 34, 34, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f3efe8;
+  aspect-ratio: 4 / 3;
+  cursor: pointer;
+}
+
+.proposalDetailThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.proposalDetailThumb.is-active {
+  border-color: rgba(34, 34, 34, 0.36);
 }
 
 .proposalDetailTitle {
-  font-size: clamp(30px, 4vw, 48px);
-  line-height: 1.18;
+  font-size: clamp(30px, 3.8vw, 52px);
+  line-height: 1.14;
+}
+
+.proposalDetailKicker {
+  margin: 0;
+  color: #817567;
+  font-size: 14px;
 }
 
 .proposalDetailIntro {
   margin: 0;
-  max-width: 36rem;
+  max-width: none;
   font-size: 15px;
-  line-height: 1.9;
+  line-height: 1.75;
   color: #534d47;
 }
 
 .proposalDetailHeroAction {
   margin: 2px 0 0;
+}
+
+.proposalDetailActionRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.proposalDetailMetaPanel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.proposalDetailNoteList,
+.proposalDetailScheduleList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.proposalDetailNoteList li {
+  color: #4f4a44;
+  line-height: 1.7;
+  font-size: 14px;
+}
+
+.proposalDetailScheduleList li {
+  display: grid;
+  grid-template-columns: minmax(80px, 110px) minmax(0, 1fr);
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(34, 34, 34, 0.08);
+  color: #4f4a44;
+  line-height: 1.8;
+}
+
+.proposalDetailScheduleList li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.proposalDetailSupportLinks {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .proposalDetailTextSection {
@@ -1420,8 +1532,9 @@ a.link {
 
 .proposalDetailTwoCol {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
 }
 
 .proposalDetailPanel {
@@ -1439,13 +1552,13 @@ a.link {
 
 .proposalDetailCopy {
   display: grid;
-  gap: 12px;
+  gap: 18px;
 }
 
 .proposalDetailCopy p {
   margin: 0;
   color: #514d48;
-  line-height: 1.9;
+  line-height: 1.85;
 }
 
 .proposalDetailPersonSection {
@@ -1454,7 +1567,9 @@ a.link {
 }
 
 .proposalDetailPersonCard {
-  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  grid-template-areas: "body media";
   gap: 20px;
   align-items: stretch;
   border-radius: 24px;
@@ -1462,15 +1577,22 @@ a.link {
 }
 
 .proposalDetailPersonMedia {
+  grid-area: media;
   overflow: hidden;
   border-radius: 20px;
   background: #ece8df;
 }
 
 .proposalDetailPersonBody {
+  grid-area: body;
   display: grid;
   gap: 12px;
   align-content: start;
+}
+
+.proposalDetailPersonHeading {
+  display: grid;
+  gap: 8px;
 }
 
 .proposalDetailPersonRole,
@@ -1552,10 +1674,10 @@ a.link {
 
 .proposalPersonModalDialog {
   position: relative;
-  width: min(920px, 100vw - 40px);
-  max-height: calc(100vh - 40px);
-  margin: 20px auto;
-  padding: 22px;
+  width: min(1020px, 100vw - 48px);
+  max-height: calc(100vh - 48px);
+  margin: 24px auto;
+  padding: 18px 18px 20px;
   overflow: auto;
   border-radius: 28px;
   background: #f8f5ef;
@@ -1572,7 +1694,7 @@ a.link {
 
 .proposalPersonModalBody {
   display: grid;
-  gap: 22px;
+  gap: 20px;
 }
 
 .proposalPersonModalHeader {
@@ -1592,19 +1714,22 @@ a.link {
 
 .proposalPersonModalIntro {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .proposalPersonModalSection {
   display: grid;
   gap: 10px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(34, 34, 34, 0.08);
+  padding: 14px 16px;
+  border: 1px solid rgba(34, 34, 34, 0.08);
+  border-radius: 18px;
+  background: #fdfbf7;
 }
 
 .proposalPersonModalHeading {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 1.4;
 }
 
 .proposalPersonModalText {
@@ -1616,6 +1741,12 @@ a.link {
   margin: 0;
   line-height: 1.85;
   color: #4f4a44;
+}
+
+.proposalPersonModalFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
 }
 
 .proposalPersonModalList {
@@ -3007,6 +3138,16 @@ body.hasProposalModal {
   top: 70%;
 }
 
+.okattePin--d {
+  left: 78%;
+  top: 34%;
+}
+
+.okattePin--e {
+  left: 61%;
+  top: 57%;
+}
+
 .gateEntryPin--a {
   left: 28%;
   top: 39%;
@@ -3300,6 +3441,8 @@ body.hasProposalModal {
   z-index: 3;
   width: 24px;
   height: 24px;
+  padding: 0;
+  border: 0;
   border-radius: 50% 50% 50% 0;
   background: #222;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
@@ -3310,6 +3453,7 @@ body.hasProposalModal {
   font-size: 11px;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
   transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
@@ -3463,6 +3607,28 @@ body.hasProposalModal {
 
 .myMapMenuActions {
   justify-content: flex-start;
+}
+
+.myMapMediaColumn {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  align-self: start;
+}
+
+.myMapMediaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.myMapMediaActions .topMapActionBtn {
+  min-height: 34px;
+}
+
+.myMapMediaActions [data-my-map-detail],
+.myMapMediaActions [data-my-map-create] {
+  flex: 1 1 100%;
 }
 
 .myMapActionIcon {
@@ -3788,6 +3954,30 @@ body.hasProposalModal {
   top: 70%;
 }
 
+.topMapPin--d {
+  left: 79%;
+  top: 27%;
+}
+
+.topMapPin--e {
+  left: 84%;
+  top: 41%;
+}
+
+.proposalSyncLayout {
+  min-height: var(--top-map-stage-height);
+}
+
+.proposalStripCard {
+  cursor: pointer;
+  transition: box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.proposalStripCard.is-active {
+  border-color: rgba(34, 34, 34, 0.22);
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.08);
+}
+
 /* ===== Map stage with pins overlay (TOP + App fragments map) ===== */
 .mapStage {
   position: relative;
@@ -4097,6 +4287,15 @@ body.hasProposalModal {
   .proposalPersonModalHeader {
     grid-template-columns: 1fr;
   }
+  .proposalDetailPersonCard {
+    grid-template-areas:
+      "body"
+      "media";
+  }
+  .proposalDetailPersonMedia {
+    max-width: 280px;
+    justify-self: end;
+  }
   .topMapLayout {
     width: 100%;
     margin-right: 0;
@@ -4252,6 +4451,21 @@ body.hasProposalModal {
     width: calc(100vw - 24px);
     margin: 12px auto;
     padding: 16px;
+  }
+  .proposalDetailHeroMedia {
+    aspect-ratio: 5 / 4;
+  }
+  .proposalDetailTwoCol {
+    grid-template-columns: 1fr;
+  }
+  .proposalDetailPersonCard {
+    grid-template-areas:
+      "body"
+      "media";
+  }
+  .proposalDetailPersonMedia {
+    max-width: 220px;
+    justify-self: end;
   }
   .localQuoteCard,
   .localSoftCard,

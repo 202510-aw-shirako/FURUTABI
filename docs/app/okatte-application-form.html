@@ -51,7 +51,7 @@
         </div>
 
         <div class="card" th:if="${pageData.blockingMessage != null}">
-          <div class="h2">現在は申請できません</div>
+          <div class="h2">申請内容を確認してください</div>
           <p class="note" th:text="${pageData.blockingMessage}">blocking message</p>
           <p class="note" th:if="${pageData.existingApplicationStatus != null}"
              th:text="${'現在の申請状態: ' + pageData.existingApplicationStatus}">status</p>

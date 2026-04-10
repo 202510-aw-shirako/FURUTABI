@@ -52,6 +52,9 @@
       <p class="note">
         <a class="link" th:href="${pageData.record.ownerFilterPath}">このユーザーのピンだけ表示</a>
       </p>
+      <div class="card" style="margin-top:18px;" th:if="${pageData.record.leadImagePath != null}">
+        <img th:src="${pageData.record.leadImagePath}" alt="" style="width:100%;display:block;border-radius:18px;" />
+      </div>
       <div class="card noticeArticle" style="margin-top:18px;">
         <p th:text="${pageData.record.body} ?: 'まだ本文はありません。'">本文</p>
       </div>
@@ -61,12 +64,12 @@
         <form th:if="${pageData.record.engagement.reactionAllowed}" th:action="@{/app/footprints/{id}/reaction(id=${pageData.record.id})}" method="post" style="display:inline;">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <input type="hidden" name="returnTo" th:value="${'/app/footprints/' + pageData.record.id}" />
-          <button class="btn ghost" type="submit" th:text="${pageData.record.engagement.reactionActive} ? ${pageData.record.engagement.reactionLabel + 'を解除'} : ${pageData.record.engagement.reactionLabel}">いいね</button>
+          <button class="btn ghost" type="submit" th:disabled="${not viewerAuthenticated}" th:text="${pageData.record.engagement.reactionActive} ? ${pageData.record.engagement.reactionLabel + 'を解除'} : ${pageData.record.engagement.reactionLabel}">いいね</button>
         </form>
         <form th:action="@{/app/footprints/{id}/bookmark(id=${pageData.record.id})}" method="post" style="display:inline;">
           <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           <input type="hidden" name="returnTo" th:value="${'/app/footprints/' + pageData.record.id}" />
-          <button class="btn ghost" type="submit" th:text="${pageData.record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>
+          <button class="btn ghost" type="submit" th:disabled="${not viewerAuthenticated}" th:text="${pageData.record.engagement.bookmarkedByViewer} ? 'ブックマーク解除' : 'ブックマーク'">ブックマーク</button>
         </form>
       </div>
     </section>
@@ -86,12 +89,13 @@
             name="body"
             rows="4"
             maxlength="1000"
+            th:disabled="${not viewerAuthenticated}"
             style="width:100%;margin-top:8px;"
             placeholder="公開してよい感想だけを書いてください。支援メモや人間関係の詳しい話は別導線です。"
           ></textarea>
           <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap;">
             <p class="note">足あとコメントは chat や支援メモとは別の軽い公開コメントです。</p>
-            <button class="btn primary" type="submit">コメントを投稿</button>
+            <button class="btn primary" type="submit" th:disabled="${not viewerAuthenticated}">コメントを投稿</button>
           </div>
         </form>
       </div>
@@ -134,9 +138,9 @@
     </section>
     <section class="section" th:if="${not #lists.isEmpty(pageData.relatedStories)}">
       <div class="sectionTitleRow">
-        <h2 class="h2">地図からほかの足あとを見る</h2>
+        <h2 class="h2">ごひいきさんの足あと</h2>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a class="btn ghost" th:href="${pageData.homeFootprintsPath}">ホームの足あとへ戻る</a>
+          <a class="btn ghost" th:href="${pageData.homeFootprintsPath}">続きは</a>
           <a class="btn ghost" th:href="${pageData.homeMapPath}">ホームの地図へ戻る</a>
         </div>
       </div>
@@ -147,7 +151,7 @@
               <div class="ph ph--thumb topMapThumb" aria-hidden="true"></div>
               <div class="topMapCardText">
                 <div class="topMapCardHead">
-                  <span class="pill" data-top-map-label-text>地図からほかの足あとを見る</span>
+                  <span class="pill" data-top-map-label-text>ごひいきさんの足あと</span>
                   <span class="topMapMarker"><span data-top-map-marker>1</span></span>
                 </div>
                 <div class="topMapComment" data-top-map-comment="1">
@@ -159,7 +163,7 @@
               </div>
             </div>
             <div class="topMapFooter">
-              <a class="btn ghost topMapMore" th:href="${pageData.homeFootprintsPath}" data-top-map-link-anchor>足あとへ戻る</a>
+              <a class="btn ghost topMapMore" th:href="${pageData.homeFootprintsPath}" data-top-map-link-anchor>続きは</a>
             </div>
           </article>
         </div>
@@ -193,12 +197,12 @@
       }
 
       storyMap = footprints.buildStoriesFromRecords(relatedStories, {
-        label: '地図からほかの足あとを見る',
+        label: 'ごひいきさんの足あと',
         linkPrefix: '/app/footprints/'
       });
 
       footprints.initPreviewMap(root, storyMap, {
-        label: '地図からほかの足あとを見る',
+        label: 'ごひいきさんの足あと',
         initialStoryId: Object.keys(storyMap)[0]
       });
     }());
