@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 @Controller
@@ -345,6 +347,36 @@ public class AppPageController {
     public String mapRecords(Authentication authentication, Model model) {
         model.addAttribute("pageData", mapRecordService.loadVisibleMapRecordList(authentication.getName()));
         return "app/map-records";
+    }
+
+    @GetMapping("/api/map-records")
+    @ResponseBody
+    public java.util.List<MapRecordService.MyMapPinView> myMapRecords(Authentication authentication) {
+        return mapRecordService.loadMyMapPins(authentication.getName());
+    }
+
+    @PostMapping("/api/map-records")
+    @ResponseBody
+    public MapRecordService.MyMapPinView createMyMapRecord(
+            Authentication authentication,
+            @RequestBody MyMapRecordRequest request) {
+        return mapRecordService.createMyMapPin(authentication.getName(), request);
+    }
+
+    @PostMapping("/api/map-records/{id}")
+    @ResponseBody
+    public MapRecordService.MyMapPinView updateMyMapRecord(
+            @PathVariable long id,
+            Authentication authentication,
+            @RequestBody MyMapRecordRequest request) {
+        return mapRecordService.updateMyMapPin(authentication.getName(), id, request);
+    }
+
+    @PostMapping("/api/map-records/{id}/delete")
+    @ResponseBody
+    public java.util.Map<String, Boolean> deleteMyMapRecord(@PathVariable long id, Authentication authentication) {
+        mapRecordService.deleteRecord(authentication.getName(), id);
+        return java.util.Map.of("deleted", true);
     }
 
     @GetMapping({ "/footprints", "/footprints.html" })

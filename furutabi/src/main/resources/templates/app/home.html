@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>FURUTABI Wire | App</title>
   <link rel="stylesheet" href="/css/style.css" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
   <header class="topbar">
@@ -638,7 +640,7 @@
         var myMapImage = myMap.querySelector('[data-my-map-image]');
         var myMapZoomIn = myMap.querySelector('[data-my-map-zoom-in]');
         var myMapZoomOut = myMap.querySelector('[data-my-map-zoom-out]');
-        var myMapPinsData = interactions ? interactions.getMapRecords() : [];
+        var myMapPinsData = [];
         var myMapSelectedId = null;
         var myMapEditingId = null;
         var myMapIdSeed = myMapPinsData.reduce(function (max, pin) {
@@ -672,6 +674,118 @@
           winter: '冬',
           all: '季節をまたぐ'
         };
+        var myMapApiBase = '/app/api/map-records';
+
+        function isNumericMyMapId(id) {
+          return /^\d+$/.test(String(id || ''));
+        }
+
+        function getCsrfHeaders() {
+          var token = document.querySelector('meta[name="_csrf"]');
+          var header = document.querySelector('meta[name="_csrf_header"]');
+          var headers = { 'Content-Type': 'application/json' };
+
+          if (token && header && token.content && header.content) {
+            headers[header.content] = token.content;
+          }
+
+          return headers;
+        }
+
+        function buildMyMapPayload(pin, draft) {
+          return {
+            title: myMapTitleInput ? myMapTitleInput.value : (pin.title || ''),
+            body: myMapBodyInput ? myMapBodyInput.value : (pin.body || ''),
+            visibility: getSelectedVisibility(),
+            locationName: pin.locationName || '',
+            locationPrecisionLevel: pin.locationPrecisionLevel || 'area',
+            x: pin.x,
+            y: pin.y,
+            draft: !!draft
+          };
+        }
+
+        function normalizeMyMapApiPin(item) {
+          return normalizeMyMapPin({
+            id: String(item.id),
+            x: item.x,
+            y: item.y,
+            registered: true,
+            title: item.title || '',
+            photoNote: '',
+            body: item.body || '',
+            visibility: item.visibility || myMapDefaultVisibility,
+            visibilityLabel: item.visibilityLabel || '',
+            locationName: item.locationName || '',
+            locationPrecisionLevel: item.locationPrecisionLevel || 'area',
+            visibilityUpdatedAt: item.visibilityUpdatedAt || item.updatedAt || item.recordedAt || getTodayDateString(),
+            recordedAt: item.recordedAt || getTodayDateString(),
+            recordedYear: getRecordedYear(item.recordedAt),
+            season: getSeasonFromDateString(item.recordedAt),
+            recordType: 'stop',
+            images: [],
+            isDraft: !!item.draft,
+            commentCount: item.commentCount || 0,
+            engagement: item.engagement || null
+          });
+        }
+
+        function requestMyMapSave(pin, draft) {
+          var numeric = isNumericMyMapId(pin.id);
+          var url = numeric ? myMapApiBase + '/' + encodeURIComponent(pin.id) : myMapApiBase;
+
+          return fetch(url, {
+            method: 'POST',
+            headers: getCsrfHeaders(),
+            body: JSON.stringify(buildMyMapPayload(pin, draft))
+          }).then(function (response) {
+            if (!response.ok) {
+              throw new Error('map record save failed');
+            }
+            return response.json();
+          }).then(normalizeMyMapApiPin);
+        }
+
+        function requestMyMapDelete(pin) {
+          if (!pin || !isNumericMyMapId(pin.id)) {
+            return Promise.resolve();
+          }
+
+          return fetch(myMapApiBase + '/' + encodeURIComponent(pin.id) + '/delete', {
+            method: 'POST',
+            headers: getCsrfHeaders()
+          }).then(function (response) {
+            if (!response.ok) {
+              throw new Error('map record delete failed');
+            }
+          });
+        }
+
+        function replaceMyMapPin(oldId, nextPin) {
+          myMapPinsData = myMapPinsData.filter(function (pin) {
+            return String(pin.id) !== String(oldId);
+          });
+          myMapPinsData.push(nextPin);
+          myMapSelectedId = nextPin.id;
+          myMapEditingId = nextPin.id;
+          return nextPin;
+        }
+
+        function loadMyMapPinsFromServer() {
+          return fetch(myMapApiBase, { headers: { 'Accept': 'application/json' } })
+            .then(function (response) {
+              if (!response.ok) {
+                throw new Error('map record load failed');
+              }
+              return response.json();
+            })
+            .then(function (items) {
+              myMapPinsData = Array.isArray(items) ? items.map(normalizeMyMapApiPin) : [];
+              populateMyMapFilterYears();
+              renderMyMapPins();
+              return myMapPinsData;
+            });
+        }
 
         function getRecordedYear(dateString) {
           var date = new Date(dateString);
@@ -963,13 +1077,10 @@
         }
 
         function persistMyMapPins() {
-          if (interactions) {
-            interactions.saveMapRecords(myMapPinsData);
-          }
         }
 
         function getMyMapPin(id) {
-          return myMapPinsData.find(function (pin) { return pin.id === id; }) || null;
+          return myMapPinsData.find(function (pin) { return String(pin.id) === String(id); }) || null;
         }
 
         function getVisibleMyMapPins() {
@@ -991,7 +1102,7 @@
         function getMyMapMenuMarkerText(pin) {
           var visiblePins = getVisibleMyMapPins();
           var index = visiblePins.findIndex(function (item) {
-            return item.id === pin.id;
+            return String(item.id) === String(pin.id);
           });
 
           return String(index >= 0 ? index + 1 : 1);
@@ -1006,7 +1117,7 @@
           }
 
           myMapPinsData = myMapPinsData.filter(function (pin) {
-            return pin.id !== targetId;
+            return String(pin.id) !== String(targetId);
           });
 
           if (myMapSelectedId === targetId) {
@@ -1104,11 +1215,8 @@
             var visibility = getVisibilityMeta(pin.visibility);
             var dateText = pin.visibilityUpdatedAt ? '更新: ' + pin.visibilityUpdatedAt : '';
             var facets = getMyMapFacetText(pin);
-            var reactions = interactions ? interactions.getReactionSummary('map_record', pin.id) : {
-              like: { count: 0, isActive: false },
-              thank_you: { count: 0, isActive: false }
-            };
-            var comments = interactions ? interactions.getComments('map_record', pin.id) : [];
+            var reactions = pin.engagement || { likeCount: 0, thanksCount: 0 };
+            var commentCount = pin.commentCount || 0;
             return '' +
               '<article class="myMapRecordRow">' +
                 '<div class="myMapRecordMain">' +
@@ -1120,8 +1228,8 @@
                   '<div class="myMapRecordFacets"><span class="myMapFacetBadge">' + escapeMyMapText(facets) + '</span></div>' +
                   '<p class="myMapRecordBody">' + escapeMyMapText(pin.body || 'まだ本文は入っていません。') + '</p>' +
                   '<p class="myMapRecordHelp">' + visibility.hint + ' 迷う内容は、まずは本人のみで残せます。' + (dateText ? ' ' + dateText : '') + '</p>' +
-                  '<p class="note">リアクション: いいね ' + reactions.like.count + ' / ありがとう ' + reactions.thank_you.count + '</p>' +
-                  '<p class="note">コメント: ' + comments.length + '件</p>' +
+                  '<p class="note">リアクション: いいね ' + (reactions.likeCount || 0) + ' / ありがとう ' + (reactions.thanksCount || 0) + '</p>' +
+                  '<p class="note">コメント: ' + commentCount + '件</p>' +
                   '<p class="note">画像: ' + ((pin.images && pin.images.length) ? pin.images.length : 0) + '枚</p>' +
                 '</div>' +
                 '<button class="btn ghost" type="button" data-my-map-record-edit="' + pin.id + '">公開範囲を変更</button>' +
@@ -1195,11 +1303,8 @@
           if (myMapDelete) myMapDelete.hidden = false;
           if (myMapMenuMarker) myMapMenuMarker.textContent = getMyMapMenuMarkerText(pin);
           visibility = getVisibilityMeta(pin.visibility);
-          comments = interactions ? interactions.getComments('map_record', pin.id) : [];
-          reactions = interactions ? interactions.getReactionSummary('map_record', pin.id) : {
-            like: { count: 0, isActive: false },
-            thank_you: { count: 0, isActive: false }
-          };
+          comments = [];
+          reactions = pin.engagement || { likeCount: 0, thanksCount: 0 };
           if (myMapMenuTitle) myMapMenuTitle.textContent = pin.title || 'タイトル未設定';
           if (myMapMenuVisibility) {
             myMapMenuVisibility.textContent = visibility.label;
@@ -1209,15 +1314,13 @@
           if (myMapMenuDate) myMapMenuDate.textContent = pin.visibilityUpdatedAt ? '公開範囲更新: ' + pin.visibilityUpdatedAt : '';
           if (myMapMenuBody) myMapMenuBody.textContent = pin.body || 'まだ本文は入っていません。';
           if (myMapMenuReactions) {
-            myMapMenuReactions.textContent = 'いいね ' + reactions.like.count + ' / ありがとう ' + reactions.thank_you.count;
+            myMapMenuReactions.textContent = 'いいね ' + (reactions.likeCount || 0) + ' / ありがとう ' + (reactions.thanksCount || 0);
           }
           if (myMapMenuComments) {
-            myMapMenuComments.textContent = comments.length
-              ? 'コメント ' + comments.length + '件 / 最新: ' + comments[comments.length - 1].body
-              : 'コメント 0件';
+            myMapMenuComments.textContent = 'コメント ' + (pin.commentCount || 0) + '件';
           }
           if (myMapDetail) {
-            myMapDetail.setAttribute('href', '/app/map-records/' + encodeURIComponent(pin.id));
+            myMapDetail.setAttribute('href', isNumericMyMapId(pin.id) ? '/app/map-records/' + encodeURIComponent(pin.id) : myMapHomePath + '#tab-map');
           }
         }
 
@@ -1409,53 +1512,41 @@
         if (myMapSubmit) {
           myMapSubmit.addEventListener('click', function () {
             var pin = getMyMapPin(myMapEditingId);
+            var oldId;
             if (!pin) {
               return;
             }
             if (!window.confirm('この内容で登録を完了しますか？')) {
               return;
             }
-            pin.registered = true;
-            pin.isDraft = false;
-            pin.title = myMapTitleInput ? myMapTitleInput.value : '';
-            pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
-            pin.body = myMapBodyInput ? myMapBodyInput.value : '';
-            pin.images = myMapEditingImages.slice();
-            pin.visibility = getSelectedVisibility();
-            pin.visibilityUpdatedAt = getTodayDateString();
-            pin.recordedAt = pin.recordedAt || getTodayDateString();
-            pin.recordedYear = getRecordedYear(pin.recordedAt);
-            pin.season = myMapSeasonInput ? myMapSeasonInput.value : getSeasonFromDateString(pin.recordedAt);
-            pin.recordType = myMapTypeInput ? myMapTypeInput.value : 'stop';
-            persistMyMapPins();
-            populateMyMapFilterYears();
-            closeMyMapSheet(false);
-            renderMyMapPins();
-            openMyMapMenu(pin);
+            oldId = pin.id;
+            requestMyMapSave(pin, false).then(function (savedPin) {
+              pin = replaceMyMapPin(oldId, savedPin);
+              populateMyMapFilterYears();
+              closeMyMapSheet(false);
+              renderMyMapPins();
+              openMyMapMenu(pin);
+            }).catch(function () {
+              window.alert('保存できませんでした。時間をおいてもう一度お試しください。');
+            });
           });
         }
 
         if (myMapDraft) {
           myMapDraft.addEventListener('click', function () {
             var pin = getMyMapPin(myMapEditingId);
+            var oldId;
             if (pin) {
-              pin.title = myMapTitleInput ? myMapTitleInput.value : '';
-              pin.photoNote = myMapPhotoInput ? myMapPhotoInput.value : '';
-              pin.body = myMapBodyInput ? myMapBodyInput.value : '';
-              pin.images = myMapEditingImages.slice();
-              pin.visibility = getSelectedVisibility();
-              pin.visibilityUpdatedAt = getTodayDateString();
-              pin.recordedAt = pin.recordedAt || getTodayDateString();
-              pin.recordedYear = getRecordedYear(pin.recordedAt);
-              pin.season = myMapSeasonInput ? myMapSeasonInput.value : getSeasonFromDateString(pin.recordedAt);
-              pin.recordType = myMapTypeInput ? myMapTypeInput.value : 'stop';
-              pin.registered = true;
-              pin.isDraft = true;
-              persistMyMapPins();
-              populateMyMapFilterYears();
-              closeMyMapSheet(false);
-              renderMyMapPins();
-              openMyMapMenu(pin);
+              oldId = pin.id;
+              requestMyMapSave(pin, true).then(function (savedPin) {
+                pin = replaceMyMapPin(oldId, savedPin);
+                populateMyMapFilterYears();
+                closeMyMapSheet(false);
+                renderMyMapPins();
+                openMyMapMenu(pin);
+              }).catch(function () {
+                window.alert('保存できませんでした。時間をおいてもう一度お試しください。');
+              });
               return;
             }
             closeMyMapSheet(true);
@@ -1486,15 +1577,19 @@
 
         if (myMapConfirmDelete) {
           myMapConfirmDelete.addEventListener('click', function () {
-            myMapPinsData = myMapPinsData.filter(function (pin) {
-              return pin.id !== myMapSelectedId;
+            var targetPin = getMyMapPin(myMapSelectedId);
+            requestMyMapDelete(targetPin).then(function () {
+              myMapPinsData = myMapPinsData.filter(function (pin) {
+                return String(pin.id) !== String(myMapSelectedId);
+              });
+              myMapSelectedId = null;
+              populateMyMapFilterYears();
+              closeMyMapConfirm();
+              closeMyMapMenu();
+              renderMyMapPins();
+            }).catch(function () {
+              window.alert('削除できませんでした。時間をおいてもう一度お試しください。');
             });
-            myMapSelectedId = null;
-            persistMyMapPins();
-            populateMyMapFilterYears();
-            closeMyMapConfirm();
-            closeMyMapMenu();
-            renderMyMapPins();
           });
         }
 
@@ -1564,41 +1659,44 @@
           }
         });
 
-        renderMyMapPins();
-        if (!myMapSelectedId) {
+        loadMyMapPinsFromServer().then(function () {
+          if (!myMapSelectedId) {
+            (function () {
+              var latestPin = getLatestRegisteredMyMapPin();
+              if (!latestPin) {
+                return;
+              }
+              myMapSelectedId = latestPin.id;
+              renderMyMapPins();
+              openMyMapMenu(latestPin);
+            }());
+          }
           (function () {
-            var latestPin = getLatestRegisteredMyMapPin();
-            if (!latestPin) {
+            var params = new URLSearchParams(window.location.search);
+            var editPin = params.get('editPin');
+            var pin;
+
+            if (!editPin) {
               return;
             }
-            myMapSelectedId = latestPin.id;
+
+            pin = getMyMapPin(editPin);
+            if (!pin || !pin.registered) {
+              return;
+            }
+
+            myMapSelectedId = pin.id;
             renderMyMapPins();
-            openMyMapMenu(latestPin);
+            openMyMapMenu(pin);
+            openMyMapSheet('edit');
+            params.delete('editPin');
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState({}, '', window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash);
+            }
           }());
-        }
-        (function () {
-          var params = new URLSearchParams(window.location.search);
-          var editPin = params.get('editPin');
-          var pin;
-
-          if (!editPin) {
-            return;
-          }
-
-          pin = getMyMapPin(editPin);
-          if (!pin || !pin.registered) {
-            return;
-          }
-
-          myMapSelectedId = pin.id;
+        }).catch(function () {
           renderMyMapPins();
-          openMyMapMenu(pin);
-          openMyMapSheet('edit');
-          params.delete('editPin');
-          if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, '', window.location.pathname + (params.toString() ? '?' + params.toString() : '') + window.location.hash);
-          }
-        }());
+        });
         syncMyMapZoom();
       }
 

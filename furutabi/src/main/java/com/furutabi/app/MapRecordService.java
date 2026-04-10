@@ -65,6 +65,56 @@ public class MapRecordService {
         );
     }
 
+    public List<MyMapPinView> loadMyMapPins(String email) {
+        UserRow currentUser = requireUser(email);
+        ViewerRoleContext viewerRoleContext = loadViewerRoleContext(currentUser.id());
+        List<MyMapPinView> pins = jdbcTemplate.query(
+            """
+                SELECT mr.id, mr.title, mr.body, mr.visibility, mr.location_name, mr.latitude, mr.longitude,
+                       mr.location_precision_level, mr.is_draft, mr.created_at, mr.updated_at, mr.visibility_updated_at,
+                       (
+                           SELECT COUNT(*)
+                           FROM map_record_comments mc
+                           WHERE mc.map_record_id = mr.id AND mc.deleted_at IS NULL AND mc.is_hidden = FALSE
+                       ) AS comment_count
+                FROM map_records mr
+                WHERE mr.user_id = ? AND mr.deleted_at IS NULL
+                ORDER BY mr.created_at DESC, mr.id DESC
+                """,
+            (rs, rowNum) -> new MyMapPinView(
+                rs.getLong("id"),
+                clampPercent(rs.getObject("longitude", Double.class), 50.0),
+                clampPercent(rs.getObject("latitude", Double.class), 50.0),
+                rs.getString("title"),
+                rs.getString("body"),
+                VisibilityScope.fromDbValue(rs.getString("visibility")).name().toLowerCase(),
+                visibilityLabel(VisibilityScope.fromDbValue(rs.getString("visibility"))),
+                rs.getString("location_name"),
+                rs.getString("location_precision_level"),
+                rs.getBoolean("is_draft"),
+                formatTimestamp(rs.getTimestamp("created_at")),
+                formatTimestamp(rs.getTimestamp("updated_at")),
+                formatTimestamp(rs.getTimestamp("visibility_updated_at")),
+                rs.getInt("comment_count"),
+                ViewerEngagement.empty(viewerRoleContext.reactionType(), viewerRoleContext.reactionLabel())
+            ),
+            currentUser.id()
+        );
+
+        Map<Long, ViewerEngagement> engagementByRecordId = loadViewerEngagementByRecordIds(
+            currentUser.id(),
+            pins.stream().map(MyMapPinView::id).toList(),
+            viewerRoleContext
+        );
+
+        return pins.stream()
+            .map(pin -> pin.withEngagement(engagementByRecordId.getOrDefault(
+                pin.id(),
+                ViewerEngagement.empty(viewerRoleContext.reactionType(), viewerRoleContext.reactionLabel())
+            )))
+            .toList();
+    }
+
     public MapRecordListPageData loadVisibleFootprintList(String email, Long ownerUserIdFilter) {
         if (email == null || email.isBlank()) {
             ViewerRoleContext viewerRoleContext = new ViewerRoleContext(null, null);
@@ -376,6 +426,44 @@ public class MapRecordService {
         return new MapRecordSaveResult(mapRecordId, draft);
     }
 
+    public MyMapPinView createMyMapPin(String email, MyMapRecordRequest request) {
+        UserRow currentUser = requireUser(email);
+        Instant now = Instant.now();
+        Timestamp timestamp = Timestamp.from(now);
+        VisibilityScope scope = normalizeVisibility(request.getVisibility());
+        boolean draft = request.isDraft();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            var statement = connection.prepareStatement(
+                """
+                    INSERT INTO map_records (
+                        user_id, title, body, visibility, location_name, latitude, longitude,
+                        location_precision_level, is_draft, created_at, updated_at, visibility_updated_at, deleted_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                new String[] {"id"}
+            );
+            statement.setLong(1, currentUser.id());
+            statement.setString(2, normalizeTitle(request.getTitle()));
+            statement.setString(3, normalizeText(request.getBody()));
+            statement.setString(4, toDbVisibility(scope));
+            statement.setString(5, normalizeText(request.getLocationName()));
+            statement.setDouble(6, clampPercent(request.getY(), 50.0));
+            statement.setDouble(7, clampPercent(request.getX(), 50.0));
+            statement.setString(8, normalizePrecision(request.getLocationPrecisionLevel()));
+            statement.setBoolean(9, draft);
+            statement.setTimestamp(10, timestamp);
+            statement.setTimestamp(11, timestamp);
+            statement.setTimestamp(12, timestamp);
+            statement.setNull(13, Types.TIMESTAMP);
+            return statement;
+        }, keyHolder);
+        Number generatedId = Objects.requireNonNull(keyHolder.getKey(), "Map record ID was not generated");
+        long mapRecordId = generatedId.longValue();
+        userPointService.awardMapRecordPoint(currentUser.id(), mapRecordId, scope, draft);
+        return loadMyMapPin(currentUser.id(), mapRecordId);
+    }
+
     public MapRecordSaveResult updateRecord(String email, long mapRecordId, MapRecordForm form) {
         UserRow currentUser = requireUser(email);
         MapRecordRow currentRecord = requireOwnedRecord(currentUser.id(), mapRecordId);
@@ -411,6 +499,47 @@ public class MapRecordService {
             currentUser.id()
         );
         return new MapRecordSaveResult(mapRecordId, form.isDraft());
+    }
+
+    public MyMapPinView updateMyMapPin(String email, long mapRecordId, MyMapRecordRequest request) {
+        UserRow currentUser = requireUser(email);
+        MapRecordRow currentRecord = requireOwnedRecord(currentUser.id(), mapRecordId);
+        Instant now = Instant.now();
+        Timestamp timestamp = Timestamp.from(now);
+        VisibilityScope scope = normalizeVisibility(request.getVisibility());
+        Timestamp visibilityUpdatedAt = currentRecord.visibility().equalsIgnoreCase(toDbVisibility(scope))
+            ? currentRecord.visibilityUpdatedAt()
+            : timestamp;
+
+        jdbcTemplate.update(
+            """
+                UPDATE map_records
+                SET title = ?,
+                    body = ?,
+                    visibility = ?,
+                    location_name = ?,
+                    latitude = ?,
+                    longitude = ?,
+                    location_precision_level = ?,
+                    is_draft = ?,
+                    updated_at = ?,
+                    visibility_updated_at = ?
+                WHERE id = ? AND user_id = ? AND deleted_at IS NULL
+                """,
+            normalizeTitle(request.getTitle()),
+            normalizeText(request.getBody()),
+            toDbVisibility(scope),
+            normalizeText(request.getLocationName()),
+            clampPercent(request.getY(), 50.0),
+            clampPercent(request.getX(), 50.0),
+            normalizePrecision(request.getLocationPrecisionLevel()),
+            request.isDraft(),
+            timestamp,
+            visibilityUpdatedAt,
+            mapRecordId,
+            currentUser.id()
+        );
+        return loadMyMapPin(currentUser.id(), mapRecordId);
     }
 
     public void deleteRecord(String email, long mapRecordId) {
@@ -683,6 +812,49 @@ public class MapRecordService {
             ownerUserIdFilter,
             ownerUserIdFilter
         );
+    }
+
+    private MyMapPinView loadMyMapPin(long ownerUserId, long mapRecordId) {
+        ViewerRoleContext viewerRoleContext = loadViewerRoleContext(ownerUserId);
+        try {
+            MyMapPinView pin = jdbcTemplate.queryForObject(
+                """
+                    SELECT mr.id, mr.title, mr.body, mr.visibility, mr.location_name, mr.latitude, mr.longitude,
+                           mr.location_precision_level, mr.is_draft, mr.created_at, mr.updated_at, mr.visibility_updated_at,
+                           (
+                               SELECT COUNT(*)
+                               FROM map_record_comments mc
+                               WHERE mc.map_record_id = mr.id AND mc.deleted_at IS NULL AND mc.is_hidden = FALSE
+                           ) AS comment_count
+                    FROM map_records mr
+                    WHERE mr.id = ? AND mr.user_id = ? AND mr.deleted_at IS NULL
+                    """,
+                (rs, rowNum) -> new MyMapPinView(
+                    rs.getLong("id"),
+                    clampPercent(rs.getObject("longitude", Double.class), 50.0),
+                    clampPercent(rs.getObject("latitude", Double.class), 50.0),
+                    rs.getString("title"),
+                    rs.getString("body"),
+                    VisibilityScope.fromDbValue(rs.getString("visibility")).name().toLowerCase(),
+                    visibilityLabel(VisibilityScope.fromDbValue(rs.getString("visibility"))),
+                    rs.getString("location_name"),
+                    rs.getString("location_precision_level"),
+                    rs.getBoolean("is_draft"),
+                    formatTimestamp(rs.getTimestamp("created_at")),
+                    formatTimestamp(rs.getTimestamp("updated_at")),
+                    formatTimestamp(rs.getTimestamp("visibility_updated_at")),
+                    rs.getInt("comment_count"),
+                    ViewerEngagement.empty(viewerRoleContext.reactionType(), viewerRoleContext.reactionLabel())
+                ),
+                mapRecordId,
+                ownerUserId
+            );
+            ViewerEngagement engagement = loadViewerEngagementByRecordIds(ownerUserId, List.of(mapRecordId), viewerRoleContext)
+                .getOrDefault(mapRecordId, ViewerEngagement.empty(viewerRoleContext.reactionType(), viewerRoleContext.reactionLabel()));
+            return pin.withEngagement(engagement);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new IllegalStateException("Map record not found: " + mapRecordId, ex);
+        }
     }
 
     private List<MapRecordSummary> loadVisibleFootprintSummariesForViewer(Long viewerUserId, ViewerRoleContext viewerRoleContext, Long ownerUserIdFilter) {
@@ -1028,6 +1200,20 @@ public class MapRecordService {
         };
     }
 
+    private double clampPercent(Double value, double fallback) {
+        if (value == null || value.isNaN() || value.isInfinite()) {
+            return fallback;
+        }
+        return Math.max(0.0, Math.min(100.0, value));
+    }
+
+    private double clampPercent(double value, double fallback) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            return fallback;
+        }
+        return Math.max(0.0, Math.min(100.0, value));
+    }
+
     public record MapRecordListPageData(
         String currentUserLabel,
         List<MapRecordSummary> records,
@@ -1130,6 +1316,44 @@ public class MapRecordService {
         int likeCount,
         int thanksCount
     ) {
+    }
+
+    public record MyMapPinView(
+        long id,
+        double x,
+        double y,
+        String title,
+        String body,
+        String visibility,
+        String visibilityLabel,
+        String locationName,
+        String locationPrecisionLevel,
+        boolean draft,
+        String recordedAt,
+        String updatedAt,
+        String visibilityUpdatedAt,
+        int commentCount,
+        ViewerEngagement engagement
+    ) {
+        public MyMapPinView withEngagement(ViewerEngagement updatedEngagement) {
+            return new MyMapPinView(
+                id,
+                x,
+                y,
+                title,
+                body,
+                visibility,
+                visibilityLabel,
+                locationName,
+                locationPrecisionLevel,
+                draft,
+                recordedAt,
+                updatedAt,
+                visibilityUpdatedAt,
+                commentCount,
+                updatedEngagement
+            );
+        }
     }
 
     public record ViewerEngagement(

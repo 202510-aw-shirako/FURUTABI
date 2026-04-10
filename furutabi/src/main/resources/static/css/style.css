@@ -851,6 +851,20 @@ a.link {
   background: url("/assets/images/ヘッダー集/inuwashi.png") center / cover no-repeat;
 }
 
+.ph--pageHeroGate {
+  min-height: 0;
+  aspect-ratio: 512 / 127;
+  border-radius: 0;
+  background: url("/assets/images/ヘッダー集/入り口.png") center / cover no-repeat;
+}
+
+.ph--pageHeroMap {
+  min-height: 0;
+  aspect-ratio: 1200 / 298;
+  border-radius: 0;
+  background: url("/assets/images/ヘッダー集/地図.png") center / cover no-repeat;
+}
+
 
 .ph--map {
   aspect-ratio: 16/9;
