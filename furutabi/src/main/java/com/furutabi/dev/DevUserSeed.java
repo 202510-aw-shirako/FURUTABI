@@ -623,6 +623,41 @@ public class DevUserSeed implements ApplicationRunner {
         long hostUserId = requireUserIdByEmail(hostEmail);
         long bridgeUserId = requireUserIdByEmail("bridge@example.com");
 
+        if (preferredProposalId != null) {
+            Long existingById = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM proposals WHERE id = ? AND deleted_at IS NULL",
+                Long.class,
+                preferredProposalId
+            );
+            if (existingById != null && existingById > 0) {
+                jdbcTemplate.update(
+                    """
+                        UPDATE proposals
+                        SET summary = ?,
+                            body = ?,
+                            duration_minutes = ?,
+                            location_name = ?,
+                            visibility_scope = ?,
+                            status = 'published',
+                            updated_at = ?
+                        WHERE id = ?
+                        """,
+                    summary,
+                    body,
+                    durationMinutes,
+                    locationName,
+                    visibilityScope,
+                    Timestamp.from(Instant.now()),
+                    preferredProposalId
+                );
+
+                for (int i = 0; i < tags.size(); i++) {
+                    seedProposalTag(preferredProposalId, tags.get(i), i);
+                }
+                return;
+            }
+        }
+
         List<Long> existingProposalIds = jdbcTemplate.query(
             "SELECT id FROM proposals WHERE title = ? AND host_user_id = ? AND deleted_at IS NULL",
             (rs, rowNum) -> rs.getLong("id"),
